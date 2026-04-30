@@ -58,7 +58,9 @@ const (
 )
 
 type ServerTypeLocation struct {
-	Location *Location
+	Location    *Location
+	Available   bool
+	Recommended bool
 	DeprecatableResource
 }
 

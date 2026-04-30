@@ -35,14 +35,21 @@ type Image struct {
 	Deleted    time.Time
 }
 
+func (o *Image) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
+}
+
 // IsDeprecated returns whether the image is deprecated.
-func (image *Image) IsDeprecated() bool {
-	return !image.Deprecated.IsZero()
+func (o *Image) IsDeprecated() bool {
+	return !o.Deprecated.IsZero()
 }
 
 // IsDeleted returns whether the image is deleted.
-func (image *Image) IsDeleted() bool {
-	return !image.Deleted.IsZero()
+func (o *Image) IsDeleted() bool {
+	return !o.Deleted.IsZero()
 }
 
 // ImageProtection represents the protection level of an image.
@@ -77,7 +84,7 @@ const (
 // ImageClient is a client for the image API.
 type ImageClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*Image]
 }
 
 // GetByID retrieves an image by its ID. If the image does not exist, nil is returned.

@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesRepository
+// ScaRequestDataAttributesRepository Information about the source code repository being analyzed.
 type ScaRequestDataAttributesRepository struct {
-	//
+	// The URL of the repository.
 	Url *string `json:"url,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

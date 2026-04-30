@@ -12,7 +12,7 @@ import (
 
 // CaseManagementProject Case management project.
 type CaseManagementProject struct {
-	//
+	// Data object representing a case management project.
 	Data CaseManagementProjectData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

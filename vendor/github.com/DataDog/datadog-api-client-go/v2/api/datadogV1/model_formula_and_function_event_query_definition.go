@@ -18,8 +18,8 @@ type FormulaAndFunctionEventQueryDefinition struct {
 	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// Data source for event platform-based queries.
 	DataSource FormulaAndFunctionEventsDataSource `json:"data_source"`
-	// Group by options.
-	GroupBy []FormulaAndFunctionEventQueryGroupBy `json:"group_by,omitempty"`
+	// Group by configuration for a formula and functions events query. Accepts either a list of facet objects or a flat object that specifies a list of facet fields.
+	GroupBy *FormulaAndFunctionEventQueryGroupByConfig `json:"group_by,omitempty"`
 	// An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
 	Indexes []string `json:"indexes,omitempty"`
 	// Name of the query for use in formulas.
@@ -128,21 +128,21 @@ func (o *FormulaAndFunctionEventQueryDefinition) SetDataSource(v FormulaAndFunct
 }
 
 // GetGroupBy returns the GroupBy field value if set, zero value otherwise.
-func (o *FormulaAndFunctionEventQueryDefinition) GetGroupBy() []FormulaAndFunctionEventQueryGroupBy {
+func (o *FormulaAndFunctionEventQueryDefinition) GetGroupBy() FormulaAndFunctionEventQueryGroupByConfig {
 	if o == nil || o.GroupBy == nil {
-		var ret []FormulaAndFunctionEventQueryGroupBy
+		var ret FormulaAndFunctionEventQueryGroupByConfig
 		return ret
 	}
-	return o.GroupBy
+	return *o.GroupBy
 }
 
 // GetGroupByOk returns a tuple with the GroupBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FormulaAndFunctionEventQueryDefinition) GetGroupByOk() (*[]FormulaAndFunctionEventQueryGroupBy, bool) {
+func (o *FormulaAndFunctionEventQueryDefinition) GetGroupByOk() (*FormulaAndFunctionEventQueryGroupByConfig, bool) {
 	if o == nil || o.GroupBy == nil {
 		return nil, false
 	}
-	return &o.GroupBy, true
+	return o.GroupBy, true
 }
 
 // HasGroupBy returns a boolean if a field has been set.
@@ -150,9 +150,9 @@ func (o *FormulaAndFunctionEventQueryDefinition) HasGroupBy() bool {
 	return o != nil && o.GroupBy != nil
 }
 
-// SetGroupBy gets a reference to the given []FormulaAndFunctionEventQueryGroupBy and assigns it to the GroupBy field.
-func (o *FormulaAndFunctionEventQueryDefinition) SetGroupBy(v []FormulaAndFunctionEventQueryGroupBy) {
-	o.GroupBy = v
+// SetGroupBy gets a reference to the given FormulaAndFunctionEventQueryGroupByConfig and assigns it to the GroupBy field.
+func (o *FormulaAndFunctionEventQueryDefinition) SetGroupBy(v FormulaAndFunctionEventQueryGroupByConfig) {
+	o.GroupBy = &v
 }
 
 // GetIndexes returns the Indexes field value if set, zero value otherwise.
@@ -299,7 +299,7 @@ func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (er
 		Compute       *FormulaAndFunctionEventQueryDefinitionCompute `json:"compute"`
 		CrossOrgUuids []string                                       `json:"cross_org_uuids,omitempty"`
 		DataSource    *FormulaAndFunctionEventsDataSource            `json:"data_source"`
-		GroupBy       []FormulaAndFunctionEventQueryGroupBy          `json:"group_by,omitempty"`
+		GroupBy       *FormulaAndFunctionEventQueryGroupByConfig     `json:"group_by,omitempty"`
 		Indexes       []string                                       `json:"indexes,omitempty"`
 		Name          *string                                        `json:"name"`
 		Search        *FormulaAndFunctionEventQueryDefinitionSearch  `json:"search,omitempty"`

@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SyntheticsTestDetailsType Type of the Synthetic test, either `api` or `browser`.
+// SyntheticsTestDetailsType Type of the Synthetic test.
 type SyntheticsTestDetailsType string
 
 // List of SyntheticsTestDetailsType.
@@ -18,12 +18,14 @@ const (
 	SYNTHETICSTESTDETAILSTYPE_API     SyntheticsTestDetailsType = "api"
 	SYNTHETICSTESTDETAILSTYPE_BROWSER SyntheticsTestDetailsType = "browser"
 	SYNTHETICSTESTDETAILSTYPE_MOBILE  SyntheticsTestDetailsType = "mobile"
+	SYNTHETICSTESTDETAILSTYPE_NETWORK SyntheticsTestDetailsType = "network"
 )
 
 var allowedSyntheticsTestDetailsTypeEnumValues = []SyntheticsTestDetailsType{
 	SYNTHETICSTESTDETAILSTYPE_API,
 	SYNTHETICSTESTDETAILSTYPE_BROWSER,
 	SYNTHETICSTESTDETAILSTYPE_MOBILE,
+	SYNTHETICSTESTDETAILSTYPE_NETWORK,
 }
 
 // GetAllowedValues reeturns the list of possible values.

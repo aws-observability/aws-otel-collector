@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineRenameFieldsProcessor The `rename_fields` processor changes field names.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineRenameFieldsProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// A list of rename rules specifying which fields to rename in the event, what to rename them to, and whether to preserve the original fields.
 	Fields []ObservabilityPipelineRenameFieldsProcessorField `json:"fields"`
@@ -49,6 +53,34 @@ func NewObservabilityPipelineRenameFieldsProcessorWithDefaults() *ObservabilityP
 	var typeVar ObservabilityPipelineRenameFieldsProcessorType = OBSERVABILITYPIPELINERENAMEFIELDSPROCESSORTYPE_RENAME_FIELDS
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineRenameFieldsProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineRenameFieldsProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineRenameFieldsProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineRenameFieldsProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -172,6 +204,9 @@ func (o ObservabilityPipelineRenameFieldsProcessor) MarshalJSON() ([]byte, error
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["fields"] = o.Fields
 	toSerialize["id"] = o.Id
@@ -187,11 +222,12 @@ func (o ObservabilityPipelineRenameFieldsProcessor) MarshalJSON() ([]byte, error
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineRenameFieldsProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled *bool                                              `json:"enabled"`
-		Fields  *[]ObservabilityPipelineRenameFieldsProcessorField `json:"fields"`
-		Id      *string                                            `json:"id"`
-		Include *string                                            `json:"include"`
-		Type    *ObservabilityPipelineRenameFieldsProcessorType    `json:"type"`
+		DisplayName *string                                            `json:"display_name,omitempty"`
+		Enabled     *bool                                              `json:"enabled"`
+		Fields      *[]ObservabilityPipelineRenameFieldsProcessorField `json:"fields"`
+		Id          *string                                            `json:"id"`
+		Include     *string                                            `json:"include"`
+		Type        *ObservabilityPipelineRenameFieldsProcessorType    `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -213,12 +249,13 @@ func (o *ObservabilityPipelineRenameFieldsProcessor) UnmarshalJSON(bytes []byte)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "fields", "id", "include", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "fields", "id", "include", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.Fields = *all.Fields
 	o.Id = *all.Id

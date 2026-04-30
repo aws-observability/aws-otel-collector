@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ServiceListDataAttributes
+// ServiceListDataAttributes Attributes of a service list entry, containing metadata and a list of service names.
 type ServiceListDataAttributes struct {
-	//
+	// A list of metadata items associated with the service.
 	Metadata []ServiceListDataAttributesMetadataItems `json:"metadata,omitempty"`
-	//
+	// A list of service names.
 	Services []string `json:"services,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

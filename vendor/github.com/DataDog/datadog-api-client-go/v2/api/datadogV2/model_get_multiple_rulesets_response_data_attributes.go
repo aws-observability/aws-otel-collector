@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseDataAttributes
+// GetMultipleRulesetsResponseDataAttributes The attributes of the get-multiple-rulesets response, containing the list of requested rulesets.
 type GetMultipleRulesetsResponseDataAttributes struct {
-	//
+	// The list of rulesets returned in response to the batch request.
 	Rulesets []GetMultipleRulesetsResponseDataAttributesRulesetsItems `json:"rulesets,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

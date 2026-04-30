@@ -332,6 +332,7 @@ type GetEstimatedCostByOrgOptionalParameters struct {
 	EndMonth                 *time.Time
 	StartDate                *time.Time
 	EndDate                  *time.Time
+	CostAggregation          *CostAggregationType
 	IncludeConnectedAccounts *bool
 }
 
@@ -368,6 +369,12 @@ func (r *GetEstimatedCostByOrgOptionalParameters) WithStartDate(startDate time.T
 // WithEndDate sets the corresponding parameter name and returns the struct.
 func (r *GetEstimatedCostByOrgOptionalParameters) WithEndDate(endDate time.Time) *GetEstimatedCostByOrgOptionalParameters {
 	r.EndDate = &endDate
+	return r
+}
+
+// WithCostAggregation sets the corresponding parameter name and returns the struct.
+func (r *GetEstimatedCostByOrgOptionalParameters) WithCostAggregation(costAggregation CostAggregationType) *GetEstimatedCostByOrgOptionalParameters {
+	r.CostAggregation = &costAggregation
 	return r
 }
 
@@ -423,6 +430,9 @@ func (a *UsageMeteringApi) GetEstimatedCostByOrg(ctx _context.Context, o ...GetE
 	}
 	if optionalParams.EndDate != nil {
 		localVarQueryParams.Add("end_date", datadog.ParameterToString(*optionalParams.EndDate, ""))
+	}
+	if optionalParams.CostAggregation != nil {
+		localVarQueryParams.Add("cost_aggregation", datadog.ParameterToString(*optionalParams.CostAggregation, ""))
 	}
 	if optionalParams.IncludeConnectedAccounts != nil {
 		localVarQueryParams.Add("include_connected_accounts", datadog.ParameterToString(*optionalParams.IncludeConnectedAccounts, ""))
@@ -1160,6 +1170,83 @@ func (a *UsageMeteringApi) GetUsageApplicationSecurityMonitoring(ctx _context.Co
 			ErrorMessage: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// GetUsageAttributionTypes Get usage attribution types.
+// Get usage attribution types.
+func (a *UsageMeteringApi) GetUsageAttributionTypes(ctx _context.Context) (UsageAttributionTypesResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue UsageAttributionTypesResponse
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetUsageAttributionTypes")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/usage/usage-attribution-types"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
 			var v APIErrorResponse
 			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

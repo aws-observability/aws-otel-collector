@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CreateConnectionRequest
+// CreateConnectionRequest Request body for creating a new data source connection for an entity.
 type CreateConnectionRequest struct {
-	//
+	// The data object containing the resource type and attributes for creating a new connection.
 	Data *CreateConnectionRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

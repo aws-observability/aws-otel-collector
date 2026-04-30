@@ -12,6 +12,8 @@ import (
 
 // SLOListWidgetDefinition Use the SLO List widget to track your SLOs (Service Level Objectives) on dashboards.
 type SLOListWidgetDefinition struct {
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Array of one request object to display in the widget.
 	Requests []SLOListWidgetRequest `json:"requests"`
 	// Title of the widget.
@@ -46,6 +48,34 @@ func NewSLOListWidgetDefinitionWithDefaults() *SLOListWidgetDefinition {
 	var typeVar SLOListWidgetDefinitionType = SLOLISTWIDGETDEFINITIONTYPE_SLO_LIST
 	this.Type = typeVar
 	return &this
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *SLOListWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SLOListWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *SLOListWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *SLOListWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetRequests returns the Requests field value.
@@ -184,6 +214,9 @@ func (o SLOListWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	toSerialize["requests"] = o.Requests
 	if o.Title != nil {
 		toSerialize["title"] = o.Title
@@ -205,11 +238,12 @@ func (o SLOListWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOListWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Requests   *[]SLOListWidgetRequest      `json:"requests"`
-		Title      *string                      `json:"title,omitempty"`
-		TitleAlign *WidgetTextAlign             `json:"title_align,omitempty"`
-		TitleSize  *string                      `json:"title_size,omitempty"`
-		Type       *SLOListWidgetDefinitionType `json:"type"`
+		Description *string                      `json:"description,omitempty"`
+		Requests    *[]SLOListWidgetRequest      `json:"requests"`
+		Title       *string                      `json:"title,omitempty"`
+		TitleAlign  *WidgetTextAlign             `json:"title_align,omitempty"`
+		TitleSize   *string                      `json:"title_size,omitempty"`
+		Type        *SLOListWidgetDefinitionType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -222,12 +256,13 @@ func (o *SLOListWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"requests", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "requests", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Description = all.Description
 	o.Requests = *all.Requests
 	o.Title = all.Title
 	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {

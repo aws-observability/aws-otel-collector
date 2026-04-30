@@ -10,25 +10,25 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DORAFailureRequestAttributes Attributes to create a DORA failure event.
+// DORAFailureRequestAttributes Attributes to create a DORA incident event.
 type DORAFailureRequestAttributes struct {
 	// A list of user-defined tags. The tags must follow the `key:value` pattern. Up to 100 may be added per event.
 	CustomTags datadog.NullableList[string] `json:"custom_tags,omitempty"`
-	// Environment name that was impacted by the failure.
+	// Environment name that was impacted by the incident.
 	Env *string `json:"env,omitempty"`
-	// Unix timestamp when the failure finished. It must be in nanoseconds, milliseconds, or seconds.
+	// Unix timestamp when the incident finished. It must be in nanoseconds, milliseconds, or seconds.
 	FinishedAt *int64 `json:"finished_at,omitempty"`
 	// Git info for DORA Metrics events.
 	Git *DORAGitInfo `json:"git,omitempty"`
-	// Failure ID. Must have at least 16 characters. Required to update a previously sent failure.
+	// Incident ID. Must be 16-128 characters and contain only alphanumeric characters, hyphens, underscores, periods, and colons (a-z, A-Z, 0-9, -, _, ., :).
 	Id *string `json:"id,omitempty"`
-	// Failure name.
+	// Incident name.
 	Name *string `json:"name,omitempty"`
-	// Service names impacted by the failure. If possible, use names registered in the Service Catalog. Required when the team field is not provided.
+	// Service names impacted by the incident. If possible, use names registered in the Service Catalog. Required when the team field is not provided.
 	Services []string `json:"services,omitempty"`
-	// Failure severity.
+	// Incident severity.
 	Severity *string `json:"severity,omitempty"`
-	// Unix timestamp when the failure started. It must be in nanoseconds, milliseconds, or seconds.
+	// Unix timestamp when the incident started. It must be in nanoseconds, milliseconds, or seconds.
 	StartedAt int64 `json:"started_at"`
 	// Name of the team owning the services impacted. If possible, use team handles registered in Datadog. Required when the services field is not provided.
 	Team *string `json:"team,omitempty"`

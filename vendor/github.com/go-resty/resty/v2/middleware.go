@@ -244,7 +244,7 @@ func createHTTPRequest(c *Client, r *Request) (err error) {
 	r.RawRequest.Close = c.closeConnection
 
 	// Add headers into http request
-	r.RawRequest.Header = r.Header
+	r.RawRequest.Header = r.Header.Clone()
 
 	// Add cookies from client instance into http request
 	for _, cookie := range c.Cookies {
@@ -501,6 +501,9 @@ func handleFormData(c *Client, r *Request) {
 }
 
 func handleContentType(c *Client, r *Request) {
+	if r.Body == http.NoBody {
+		return
+	}
 	contentType := r.Header.Get(hdrContentTypeKey)
 	if IsStringEmpty(contentType) {
 		contentType = DetectContentType(r.Body)

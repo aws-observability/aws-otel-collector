@@ -8,15 +8,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesDependenciesItemsLocationsItems
+// ScaRequestDataAttributesDependenciesItemsLocationsItems The source code location where a dependency is declared, including block, name, namespace, and version positions within the file.
 type ScaRequestDataAttributesDependenciesItemsLocationsItems struct {
-	//
+	// A range within a file defined by a start and end position, along with the file name.
 	Block *ScaRequestDataAttributesDependenciesItemsLocationsItemsFilePosition `json:"block,omitempty"`
-	//
+	// A range within a file defined by a start and end position, along with the file name.
 	Name *ScaRequestDataAttributesDependenciesItemsLocationsItemsFilePosition `json:"name,omitempty"`
-	//
+	// A range within a file defined by a start and end position, along with the file name.
 	Namespace *ScaRequestDataAttributesDependenciesItemsLocationsItemsFilePosition `json:"namespace,omitempty"`
-	//
+	// A range within a file defined by a start and end position, along with the file name.
 	Version *ScaRequestDataAttributesDependenciesItemsLocationsItemsFilePosition `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

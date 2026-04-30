@@ -23,6 +23,8 @@ type LogsApi datadog.Service
 // consider use of the Datadog archive capabilities instead of the log list API.
 // See [Datadog Logs Archive documentation][2].**
 //
+// **Note**: This endpoint is enabled by default for logs customers. To disable it, contact [Datadog support](https://docs.datadoghq.com/help/).
+//
 // [1]: /logs/guide/collect-multiple-logs-with-pagination
 // [2]: https://docs.datadoghq.com/logs/archives
 func (a *LogsApi) ListLogs(ctx _context.Context, body LogsListRequest) (LogsListResponse, *_nethttp.Response, error) {

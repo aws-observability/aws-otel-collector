@@ -34,7 +34,7 @@ func (r *CreateHostTagsOptionalParameters) WithSource(source string) *CreateHost
 
 // CreateHostTags Add tags to a host.
 // This endpoint allows you to add new tags to a host,
-// optionally specifying where these tags come from.
+// optionally specifying what source these tags come from. If tags already exist, appends new tags to the tag list. If no source is specified, defaults to "user".
 func (a *TagsApi) CreateHostTags(ctx _context.Context, hostName string, body HostTags, o ...CreateHostTagsOptionalParameters) (HostTags, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -143,8 +143,8 @@ func (r *DeleteHostTagsOptionalParameters) WithSource(source string) *DeleteHost
 }
 
 // DeleteHostTags Remove host tags.
-// This endpoint allows you to remove all user-assigned tags
-// for a single host.
+// This endpoint allows you to remove all tags
+// for a single host. If no source is specified, only deletes from the source "User".
 func (a *TagsApi) DeleteHostTags(ctx _context.Context, hostName string, o ...DeleteHostTagsOptionalParameters) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -239,7 +239,7 @@ func (r *GetHostTagsOptionalParameters) WithSource(source string) *GetHostTagsOp
 	return r
 }
 
-// GetHostTags Get host tags.
+// GetHostTags Get Host Tags.
 // Return the list of tags that apply to a given host.
 func (a *TagsApi) GetHostTags(ctx _context.Context, hostName string, o ...GetHostTagsOptionalParameters) (HostTags, *_nethttp.Response, error) {
 	var (
@@ -345,8 +345,8 @@ func (r *ListHostTagsOptionalParameters) WithSource(source string) *ListHostTags
 	return r
 }
 
-// ListHostTags Get Tags.
-// Return a mapping of tags to hosts for your whole infrastructure.
+// ListHostTags Get All Host Tags.
+// Returns a mapping of tags to hosts. For each tag, the response returns a list of host names that contain this tag. There is a restriction of 10k total host names from the org that can be attached to tags and returned.
 func (a *TagsApi) ListHostTags(ctx _context.Context, o ...ListHostTagsOptionalParameters) (TagToHosts, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet

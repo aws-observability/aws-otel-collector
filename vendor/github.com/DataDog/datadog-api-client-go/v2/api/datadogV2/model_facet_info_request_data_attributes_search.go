@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoRequestDataAttributesSearch
+// FacetInfoRequestDataAttributesSearch Query-based search configuration for filtering the audience context when retrieving facet values.
 type FacetInfoRequestDataAttributesSearch struct {
-	//
+	// The filter expression used to scope the audience from which facet values are retrieved.
 	Query *string `json:"query,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

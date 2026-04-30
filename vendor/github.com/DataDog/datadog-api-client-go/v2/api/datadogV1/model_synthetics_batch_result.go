@@ -28,7 +28,7 @@ type SyntheticsBatchResult struct {
 	TestName *string `json:"test_name,omitempty"`
 	// The public ID of the Synthetic test.
 	TestPublicId *string `json:"test_public_id,omitempty"`
-	// Type of the Synthetic test, either `api` or `browser`.
+	// Type of the Synthetic test.
 	TestType *SyntheticsTestDetailsType `json:"test_type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

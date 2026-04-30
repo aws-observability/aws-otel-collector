@@ -10,8 +10,8 @@ import (
 
 // CreateRuleRequestData Scorecard create rule request data.
 type CreateRuleRequestData struct {
-	// Details of a rule.
-	Attributes *RuleAttributes `json:"attributes,omitempty"`
+	// Attributes for creating or updating a rule. Server-managed fields (created_at, modified_at, custom) are excluded.
+	Attributes *RuleAttributesRequest `json:"attributes,omitempty"`
 	// The JSON:API type for scorecard rules.
 	Type *RuleType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -41,9 +41,9 @@ func NewCreateRuleRequestDataWithDefaults() *CreateRuleRequestData {
 }
 
 // GetAttributes returns the Attributes field value if set, zero value otherwise.
-func (o *CreateRuleRequestData) GetAttributes() RuleAttributes {
+func (o *CreateRuleRequestData) GetAttributes() RuleAttributesRequest {
 	if o == nil || o.Attributes == nil {
-		var ret RuleAttributes
+		var ret RuleAttributesRequest
 		return ret
 	}
 	return *o.Attributes
@@ -51,7 +51,7 @@ func (o *CreateRuleRequestData) GetAttributes() RuleAttributes {
 
 // GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CreateRuleRequestData) GetAttributesOk() (*RuleAttributes, bool) {
+func (o *CreateRuleRequestData) GetAttributesOk() (*RuleAttributesRequest, bool) {
 	if o == nil || o.Attributes == nil {
 		return nil, false
 	}
@@ -63,8 +63,8 @@ func (o *CreateRuleRequestData) HasAttributes() bool {
 	return o != nil && o.Attributes != nil
 }
 
-// SetAttributes gets a reference to the given RuleAttributes and assigns it to the Attributes field.
-func (o *CreateRuleRequestData) SetAttributes(v RuleAttributes) {
+// SetAttributes gets a reference to the given RuleAttributesRequest and assigns it to the Attributes field.
+func (o *CreateRuleRequestData) SetAttributes(v RuleAttributesRequest) {
 	o.Attributes = &v
 }
 
@@ -118,8 +118,8 @@ func (o CreateRuleRequestData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CreateRuleRequestData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Attributes *RuleAttributes `json:"attributes,omitempty"`
-		Type       *RuleType       `json:"type,omitempty"`
+		Attributes *RuleAttributesRequest `json:"attributes,omitempty"`
+		Type       *RuleType              `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

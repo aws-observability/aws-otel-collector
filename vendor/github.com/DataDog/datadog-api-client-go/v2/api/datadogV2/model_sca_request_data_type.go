@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataType
+// ScaRequestDataType The type identifier for SCA dependency analysis requests.
 type ScaRequestDataType string
 
 // List of ScaRequestDataType.

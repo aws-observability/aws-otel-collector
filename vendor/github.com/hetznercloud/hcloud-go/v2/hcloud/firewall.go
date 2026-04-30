@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil"
@@ -19,6 +20,13 @@ type Firewall struct {
 	Created   time.Time
 	Rules     []FirewallRule
 	AppliedTo []FirewallResource
+}
+
+func (o *Firewall) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
 }
 
 // FirewallRule represents a Firewall's rules.
@@ -91,7 +99,7 @@ type FirewallResourceLabelSelector struct {
 // FirewallClient is a client for the Firewalls API.
 type FirewallClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*Firewall]
 }
 
 // GetByID retrieves a Firewall by its ID. If the Firewall does not exist, nil is returned.

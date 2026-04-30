@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil"
@@ -34,6 +35,13 @@ type PrimaryIP struct {
 	Datacenter *Datacenter
 }
 
+func (o *PrimaryIP) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
+}
+
 // PrimaryIPProtection represents the protection level of a Primary IP.
 type PrimaryIPProtection struct {
 	Delete bool
@@ -48,11 +56,11 @@ type PrimaryIPDNSPTR struct {
 
 // changeDNSPtr changes or resets the reverse DNS pointer for a IP address.
 // Pass a nil ptr to reset the reverse DNS pointer to its default value.
-func (p *PrimaryIP) changeDNSPtr(ctx context.Context, client *Client, ip net.IP, ptr *string) (*Action, *Response, error) {
+func (o *PrimaryIP) changeDNSPtr(ctx context.Context, client *Client, ip net.IP, ptr *string) (*Action, *Response, error) {
 	const opPath = "/primary_ips/%d/actions/change_dns_ptr"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, p.ID)
+	reqPath := fmt.Sprintf(opPath, o.ID)
 
 	reqBody := schema.PrimaryIPActionChangeDNSPtrRequest{
 		IP:     ip.String(),
@@ -69,8 +77,8 @@ func (p *PrimaryIP) changeDNSPtr(ctx context.Context, client *Client, ip net.IP,
 
 // GetDNSPtrForIP searches for the dns assigned to the given IP address.
 // It returns an error if there is no dns set for the given IP address.
-func (p *PrimaryIP) GetDNSPtrForIP(ip net.IP) (string, error) {
-	dns, ok := p.DNSPtr[ip.String()]
+func (o *PrimaryIP) GetDNSPtrForIP(ip net.IP) (string, error) {
+	dns, ok := o.DNSPtr[ip.String()]
 	if !ok {
 		return "", DNSNotFoundError{ip}
 	}
@@ -154,7 +162,7 @@ type PrimaryIPChangeProtectionResult = schema.PrimaryIPActionChangeProtectionRes
 // PrimaryIPClient is a client for the Primary IP API.
 type PrimaryIPClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*PrimaryIP]
 }
 
 // GetByID retrieves a Primary IP by its ID. If the Primary IP does not exist, nil is returned.

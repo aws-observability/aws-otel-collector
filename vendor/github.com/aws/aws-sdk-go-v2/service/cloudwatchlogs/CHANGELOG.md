@@ -1,3 +1,60 @@
+# v1.71.0 (2026-04-27)
+
+* **Feature**: Adds support for selecting all logs sources and types in a single association.
+
+# v1.70.0 (2026-04-24)
+
+* **Feature**: Adding nextToken and maxItems to the GetQueryResults API.
+
+# v1.69.1 (2026-04-17)
+
+* **Dependency Update**: Bump smithy-go to 1.25.0 to support endpointBdd trait
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.0 (2026-04-16)
+
+* **Feature**: Endpoint update for CloudWatch Logs Streaming APIs.
+
+# v1.68.0 (2026-04-03)
+
+* **Feature**: Added queryDuration, bytesScanned, and userIdentity fields to the QueryInfo response object returned by DescribeQueries. Customers can now view detailed query cost information including who ran the query, how long it took, and the volume of data scanned.
+
+# v1.67.0 (2026-04-02)
+
+* **Feature**: We are pleased to announce that our logs transformation csv processor now has a destination field, allowing you to specify under which parent node parsed columns be placed under.
+
+# v1.66.0 (2026-03-30)
+
+* **Feature**: Adds Lookup Tables to CloudWatch Logs for log enrichment using CSV key-value data with KMS encryption support.
+
+# v1.65.0 (2026-03-26)
+
+* **Feature**: This release adds parameter support to saved queries in CloudWatch Logs Insights. Define reusable query templates with named placeholders, invoke them using start query. Available in Console, CLI and SDK
+* **Bug Fix**: Fix a bug where a recorded clock skew could persist on the client even if the client and server clock ended up realigning.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.2 (2026-03-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.1 (2026-03-13)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.0 (2026-03-03)
+
+* **Feature**: CloudWatch Logs updates- Added support for the PutBearerTokenAuthentication API to enable or disable bearer token authentication on a log group. For more information, see CloudWatch Logs API documentation.
+* **Dependency Update**: Bump minimum Go version to 1.24
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.2 (2026-02-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.1 (2026-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.63.0 (2025-12-15)
 
 * **Feature**: This release allows you to import your historical CloudTrail Lake data into CloudWatch with a few steps, enabling you to easily consolidate operational, security, and compliance data in one place.

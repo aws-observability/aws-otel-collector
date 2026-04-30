@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineThrottleProcessor The `throttle` processor limits the number of events that pass through over a given time window.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineThrottleProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// Optional list of fields used to group events before the threshold has been reached.
 	GroupBy []string `json:"group_by,omitempty"`
@@ -54,6 +58,34 @@ func NewObservabilityPipelineThrottleProcessorWithDefaults() *ObservabilityPipel
 	var typeVar ObservabilityPipelineThrottleProcessorType = OBSERVABILITYPIPELINETHROTTLEPROCESSORTYPE_THROTTLE
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineThrottleProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineThrottleProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineThrottleProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineThrottleProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -228,6 +260,9 @@ func (o ObservabilityPipelineThrottleProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	if o.GroupBy != nil {
 		toSerialize["group_by"] = o.GroupBy
@@ -247,13 +282,14 @@ func (o ObservabilityPipelineThrottleProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineThrottleProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled   *bool                                       `json:"enabled"`
-		GroupBy   []string                                    `json:"group_by,omitempty"`
-		Id        *string                                     `json:"id"`
-		Include   *string                                     `json:"include"`
-		Threshold *int64                                      `json:"threshold"`
-		Type      *ObservabilityPipelineThrottleProcessorType `json:"type"`
-		Window    *float64                                    `json:"window"`
+		DisplayName *string                                     `json:"display_name,omitempty"`
+		Enabled     *bool                                       `json:"enabled"`
+		GroupBy     []string                                    `json:"group_by,omitempty"`
+		Id          *string                                     `json:"id"`
+		Include     *string                                     `json:"include"`
+		Threshold   *int64                                      `json:"threshold"`
+		Type        *ObservabilityPipelineThrottleProcessorType `json:"type"`
+		Window      *float64                                    `json:"window"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -278,12 +314,13 @@ func (o *ObservabilityPipelineThrottleProcessor) UnmarshalJSON(bytes []byte) (er
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "group_by", "id", "include", "threshold", "type", "window"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "group_by", "id", "include", "threshold", "type", "window"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.GroupBy = all.GroupBy
 	o.Id = *all.Id

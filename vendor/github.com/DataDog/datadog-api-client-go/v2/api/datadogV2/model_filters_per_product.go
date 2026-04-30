@@ -18,7 +18,7 @@ type FiltersPerProduct struct {
 	// per telemetry type.
 	Filters []string `json:"filters"`
 	// Name of the product the dataset is for. Possible values are 'apm', 'rum',
-	// 'metrics', 'logs', 'error_tracking', and 'cloud_cost'.
+	// 'metrics', 'logs', 'error_tracking', 'cloud_cost', and 'sd_repoinfo'.
 	Product string `json:"product"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

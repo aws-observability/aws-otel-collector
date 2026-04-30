@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ObservabilityPipelineGcpAuth GCP credentials used to authenticate with Google Cloud Storage.
+// ObservabilityPipelineGcpAuth Google Cloud credentials used to authenticate with Google Cloud Storage.
 type ObservabilityPipelineGcpAuth struct {
-	// Path to the GCP service account key file.
+	// Path to the Google Cloud service account key file.
 	CredentialsFile string `json:"credentials_file"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

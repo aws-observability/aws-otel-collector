@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryResponseDataAttributes
+// QueryResponseDataAttributes Attributes of the query response, containing the matched records and total count.
 type QueryResponseDataAttributes struct {
-	//
+	// The list of matching records returned by the query, each as a map of attribute names to values.
 	Hits []map[string]interface{} `json:"hits,omitempty"`
-	//
+	// Total number of records matching the query, regardless of the limit applied.
 	Total *int64 `json:"total,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

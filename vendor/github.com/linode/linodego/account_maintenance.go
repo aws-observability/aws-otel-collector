@@ -15,7 +15,6 @@ type AccountMaintenance struct {
 	Status string  `json:"status"`
 	Type   string  `json:"type"`
 
-	// NOTE: MaintenancePolicySet can only be used with v4beta.
 	MaintenancePolicySet string `json:"maintenance_policy_set"`
 
 	Description  string     `json:"description"`

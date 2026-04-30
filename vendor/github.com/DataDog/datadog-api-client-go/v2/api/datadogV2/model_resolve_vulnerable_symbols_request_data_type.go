@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsRequestDataType
+// ResolveVulnerableSymbolsRequestDataType The type identifier for requests to resolve vulnerable symbols.
 type ResolveVulnerableSymbolsRequestDataType string
 
 // List of ResolveVulnerableSymbolsRequestDataType.

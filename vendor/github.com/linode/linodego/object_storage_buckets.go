@@ -147,6 +147,7 @@ func (c *Client) CreateObjectStorageBucket(ctx context.Context, opts ObjectStora
 }
 
 // GetObjectStorageBucketAccess gets the current access config for a bucket
+//
 // Deprecated: use GetObjectStorageBucketAccessV2 for new implementations
 func (c *Client) GetObjectStorageBucketAccess(ctx context.Context, clusterOrRegionID, label string) (*ObjectStorageBucketAccess, error) {
 	e := formatAPIPath("object-storage/buckets/%s/%s/access", clusterOrRegionID, label)

@@ -8,25 +8,25 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecretRuleDataAttributes
+// SecretRuleDataAttributes The attributes of a secret detection rule, including its pattern, priority, and validation configuration.
 type SecretRuleDataAttributes struct {
-	//
+	// A list of keywords that are included by default when scanning for secrets matching this rule.
 	DefaultIncludedKeywords []string `json:"default_included_keywords,omitempty"`
-	//
+	// A detailed explanation of what type of secret this rule detects.
 	Description *string `json:"description,omitempty"`
-	//
+	// The license under which this secret rule is distributed.
 	License *string `json:"license,omitempty"`
-	//
+	// Configuration for validating whether a detected secret is active by making an HTTP request and inspecting the response.
 	MatchValidation *SecretRuleDataAttributesMatchValidation `json:"match_validation,omitempty"`
-	//
+	// The unique name of the secret detection rule.
 	Name *string `json:"name,omitempty"`
-	//
+	// The regular expression pattern used to identify potential secrets in source code or configuration.
 	Pattern *string `json:"pattern,omitempty"`
-	//
+	// The priority level of this rule, used to rank findings when multiple rules match.
 	Priority *string `json:"priority,omitempty"`
-	//
+	// The identifier of the corresponding Sensitive Data Scanner rule, if one exists.
 	SdsId *string `json:"sds_id,omitempty"`
-	//
+	// A list of validator identifiers used to further confirm a detected secret is genuine.
 	Validators []string `json:"validators,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

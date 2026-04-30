@@ -26,6 +26,8 @@ type TemplateProperties struct {
 	StorageSize *float32 `json:"storageSize"`
 	// The description of the template.
 	Category *string `json:"category"`
+	// List of GPUs assigned to the template
+	Gpus *[]GpuTemplate `json:"gpus,omitempty"`
 }
 
 // NewTemplateProperties instantiates a new TemplateProperties object
@@ -242,6 +244,44 @@ func (o *TemplateProperties) HasCategory() bool {
 	return false
 }
 
+// GetGpus returns the Gpus field value
+// If the value is explicit nil, nil is returned
+func (o *TemplateProperties) GetGpus() *[]GpuTemplate {
+	if o == nil {
+		return nil
+	}
+
+	return o.Gpus
+
+}
+
+// GetGpusOk returns a tuple with the Gpus field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TemplateProperties) GetGpusOk() (*[]GpuTemplate, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Gpus, true
+}
+
+// SetGpus sets field value
+func (o *TemplateProperties) SetGpus(v []GpuTemplate) {
+
+	o.Gpus = &v
+
+}
+
+// HasGpus returns a boolean if a field has been set.
+func (o *TemplateProperties) HasGpus() bool {
+	if o != nil && o.Gpus != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o TemplateProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -262,6 +302,10 @@ func (o TemplateProperties) MarshalJSON() ([]byte, error) {
 
 	if o.Category != nil {
 		toSerialize["category"] = o.Category
+	}
+
+	if o.Gpus != nil {
+		toSerialize["gpus"] = o.Gpus
 	}
 
 	return json.Marshal(toSerialize)

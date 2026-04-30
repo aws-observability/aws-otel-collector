@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// IFrameWidgetDefinition The iframe widget allows you to embed a portion of any other web page on your dashboard. Only available on FREE layout dashboards.
+// IFrameWidgetDefinition The iframe widget allows you to embed a portion of any other web page on your dashboard.
 type IFrameWidgetDefinition struct {
 	// Type of the iframe widget.
 	Type IFrameWidgetDefinitionType `json:"type"`

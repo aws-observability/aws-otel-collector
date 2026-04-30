@@ -14,7 +14,7 @@ import (
 type BatchUpsertRowsRequestData struct {
 	// Attributes containing row data values for row creation or update operations.
 	Attributes *BatchUpsertRowsRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// The primary key value that uniquely identifies the row to create or update.
 	Id string `json:"id"`
 	// Row resource type.
 	Type TableRowResourceDataType `json:"type"`

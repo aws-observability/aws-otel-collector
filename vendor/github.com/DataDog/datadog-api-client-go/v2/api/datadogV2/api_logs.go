@@ -254,7 +254,7 @@ func (a *LogsApi) ListLogsWithPagination(ctx _context.Context, o ...ListLogsOpti
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()
@@ -497,7 +497,7 @@ func (a *LogsApi) ListLogsGetWithPagination(ctx _context.Context, o ...ListLogsG
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()

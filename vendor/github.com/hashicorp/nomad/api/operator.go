@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: MPL-2.0
 
 package api
@@ -318,6 +318,9 @@ type License struct {
 	// The time at which the license ceases to function and can
 	// no longer be used in any capacity
 	TerminationTime time.Time
+
+	// NonProduction shows whether a license is for nonproduction deployments
+	NonProduction bool
 
 	// The product the license is valid for
 	Product string

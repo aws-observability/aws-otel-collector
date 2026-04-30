@@ -16,6 +16,8 @@ type ScatterPlotWidgetDefinition struct {
 	ColorByGroups []string `json:"color_by_groups,omitempty"`
 	// List of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Widget definition.
 	Requests ScatterPlotWidgetDefinitionRequests `json:"requests"`
 	// Time setting for the widget.
@@ -112,6 +114,34 @@ func (o *ScatterPlotWidgetDefinition) HasCustomLinks() bool {
 // SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
 func (o *ScatterPlotWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *ScatterPlotWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ScatterPlotWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *ScatterPlotWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *ScatterPlotWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetRequests returns the Requests field value.
@@ -340,6 +370,9 @@ func (o ScatterPlotWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	toSerialize["requests"] = o.Requests
 	if o.Time != nil {
 		toSerialize["time"] = o.Time
@@ -372,6 +405,7 @@ func (o *ScatterPlotWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		ColorByGroups []string                             `json:"color_by_groups,omitempty"`
 		CustomLinks   []WidgetCustomLink                   `json:"custom_links,omitempty"`
+		Description   *string                              `json:"description,omitempty"`
 		Requests      *ScatterPlotWidgetDefinitionRequests `json:"requests"`
 		Time          *WidgetTime                          `json:"time,omitempty"`
 		Title         *string                              `json:"title,omitempty"`
@@ -392,7 +426,7 @@ func (o *ScatterPlotWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"color_by_groups", "custom_links", "requests", "time", "title", "title_align", "title_size", "type", "xaxis", "yaxis"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"color_by_groups", "custom_links", "description", "requests", "time", "title", "title_align", "title_size", "type", "xaxis", "yaxis"})
 	} else {
 		return err
 	}
@@ -400,6 +434,7 @@ func (o *ScatterPlotWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	hasInvalidField := false
 	o.ColorByGroups = all.ColorByGroups
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	if all.Requests.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

@@ -99,6 +99,10 @@ func SchemaFromDatacenter(d *Datacenter) schema.Datacenter {
 	return c.SchemaFromDatacenter(d)
 }
 
+func schemaFromDatacenterServerTypes(dst DatacenterServerTypes) schema.DatacenterServerTypes {
+	return c.schemaFromDatacenterServerTypes(dst)
+}
+
 // ServerFromSchema converts a schema.Server to a Server.
 func ServerFromSchema(s schema.Server) *Server {
 	return c.ServerFromSchema(s)

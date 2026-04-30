@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsRawSchemaData
+// EntityResponseDataRelationshipsRawSchemaData Raw schema relationship data containing the raw schema resource identifier and type.
 type EntityResponseDataRelationshipsRawSchemaData struct {
-	//
+	// Raw schema unique identifier.
 	Id string `json:"id"`
 	// Raw schema resource type.
 	Type EntityResponseDataRelationshipsRawSchemaDataType `json:"type"`

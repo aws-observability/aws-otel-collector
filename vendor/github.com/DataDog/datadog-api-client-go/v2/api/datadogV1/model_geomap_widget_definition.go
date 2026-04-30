@@ -14,6 +14,8 @@ import (
 type GeomapWidgetDefinition struct {
 	// A list of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Array of request objects to display in the widget. May include an optional request for the region layer and/or an optional request for the points layer. Region layer requests must contain a `group-by` tag whose value is a country ISO code.
 	// See the [Request JSON schema documentation](https://docs.datadoghq.com/dashboards/graphing_json/request_json)
 	// for information about building the `REQUEST_SCHEMA`.
@@ -86,6 +88,34 @@ func (o *GeomapWidgetDefinition) HasCustomLinks() bool {
 // SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
 func (o *GeomapWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *GeomapWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GeomapWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *GeomapWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *GeomapWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetRequests returns the Requests field value.
@@ -301,6 +331,9 @@ func (o GeomapWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	toSerialize["requests"] = o.Requests
 	toSerialize["style"] = o.Style
 	if o.Time != nil {
@@ -328,6 +361,7 @@ func (o GeomapWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *GeomapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CustomLinks []WidgetCustomLink           `json:"custom_links,omitempty"`
+		Description *string                      `json:"description,omitempty"`
 		Requests    *[]GeomapWidgetRequest       `json:"requests"`
 		Style       *GeomapWidgetDefinitionStyle `json:"style"`
 		Time        *WidgetTime                  `json:"time,omitempty"`
@@ -354,13 +388,14 @@ func (o *GeomapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "requests", "style", "time", "title", "title_align", "title_size", "type", "view"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "requests", "style", "time", "title", "title_align", "title_size", "type", "view"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	o.Requests = *all.Requests
 	if all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

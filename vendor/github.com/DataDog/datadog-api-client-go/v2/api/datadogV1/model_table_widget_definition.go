@@ -10,10 +10,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TableWidgetDefinition The table visualization is available on timeboards and screenboards. It displays columns of metrics grouped by tag key.
+// TableWidgetDefinition The table visualization is available on dashboards. It displays columns of metrics grouped by tag key.
 type TableWidgetDefinition struct {
 	// List of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Controls the display of the search bar.
 	HasSearchBar *TableWidgetHasSearchBar `json:"has_search_bar,omitempty"`
 	// Widget definition.
@@ -80,6 +82,34 @@ func (o *TableWidgetDefinition) HasCustomLinks() bool {
 // SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
 func (o *TableWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *TableWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TableWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *TableWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *TableWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetHasSearchBar returns the HasSearchBar field value if set, zero value otherwise.
@@ -277,6 +307,9 @@ func (o TableWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.HasSearchBar != nil {
 		toSerialize["has_search_bar"] = o.HasSearchBar
 	}
@@ -305,6 +338,7 @@ func (o TableWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *TableWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CustomLinks  []WidgetCustomLink         `json:"custom_links,omitempty"`
+		Description  *string                    `json:"description,omitempty"`
 		HasSearchBar *TableWidgetHasSearchBar   `json:"has_search_bar,omitempty"`
 		Requests     *[]TableWidgetRequest      `json:"requests"`
 		Time         *WidgetTime                `json:"time,omitempty"`
@@ -324,13 +358,14 @@ func (o *TableWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "has_search_bar", "requests", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "has_search_bar", "requests", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	if all.HasSearchBar != nil && !all.HasSearchBar.IsValid() {
 		hasInvalidField = true
 	} else {

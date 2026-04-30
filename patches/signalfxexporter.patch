@@ -1,8 +1,8 @@
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
-index eb25adee7..6c0a20eef 100644
+index 45be5c586..07406d341 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
-@@ -142,10 +142,6 @@ type Config struct {
+@@ -148,10 +148,6 @@ type Config struct {
  	// Whether to drop histogram bucket metrics dispatched to Splunk Observability.
  	// Default value is set to false.
  	DropHistogramBuckets bool `mapstructure:"drop_histogram_buckets"`
@@ -216,10 +216,10 @@ index 0c097c9ec..34273174f 100644
 -	return s.getReader(body)
 -}
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
-index 86199ec6e..63f916aab 100644
+index 90f38a3a4..03cf7fa4b 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
-@@ -82,7 +82,6 @@ func newSignalFxExporter(
+@@ -85,7 +85,6 @@ func newSignalFxExporter(
  		config.IncludeMetrics,
  		config.NonAlphanumericDimensionChars,
  		config.DropHistogramBuckets,
@@ -227,14 +227,14 @@ index 86199ec6e..63f916aab 100644
  	)
  	if err != nil {
  		return nil, fmt.Errorf("failed to create metric converter: %w", err)
-@@ -123,7 +122,6 @@ func (se *signalfxExporter) start(ctx context.Context, host component.Host) (err
+@@ -126,7 +125,6 @@ func (se *signalfxExporter) start(ctx context.Context, host component.Host) (err
  		logger:                 se.logger,
  		accessTokenPassthrough: se.config.AccessTokenPassthrough,
  		converter:              se.converter,
 -		sendOTLPHistograms:     se.config.SendOTLPHistograms,
  	}
  
- 	apiTLSCfg, err := se.config.APITLSs.LoadTLSConfig(ctx)
+ 	if err := se.startDimensionClient(ctx); err != nil {
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/histogram_utils.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/histogram_utils.go
 deleted file mode 100644
 index ab4151cdf..000000000
@@ -384,10 +384,10 @@ index ab4151cdf..000000000
 -	return dest, metricCount
 -}
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
-index 92e4eeea4..d3f5d6f16 100644
+index 6dbfcaed6..85759ff36 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
-@@ -36,7 +36,6 @@ type MetricsConverter struct {
+@@ -35,7 +35,6 @@ type MetricsConverter struct {
  	datapointValidator   *datapointValidator
  	translator           *signalfx.FromTranslator
  	dropHistogramBuckets bool
@@ -395,7 +395,7 @@ index 92e4eeea4..d3f5d6f16 100644
  }
  
  // NewMetricsConverter creates a MetricsConverter from the passed in logger and
-@@ -49,7 +48,6 @@ func NewMetricsConverter(
+@@ -48,7 +47,6 @@ func NewMetricsConverter(
  	includes []dpfilters.MetricFilter,
  	nonAlphanumericDimChars string,
  	dropHistogramBuckets bool,
@@ -403,7 +403,7 @@ index 92e4eeea4..d3f5d6f16 100644
  ) (*MetricsConverter, error) {
  	fs, err := dpfilters.NewFilterSet(excludes, includes)
  	if err != nil {
-@@ -62,7 +60,6 @@ func NewMetricsConverter(
+@@ -61,7 +59,6 @@ func NewMetricsConverter(
  		datapointValidator:   newDatapointValidator(logger, nonAlphanumericDimChars),
  		translator:           &signalfx.FromTranslator{},
  		dropHistogramBuckets: dropHistogramBuckets,
@@ -411,7 +411,17 @@ index 92e4eeea4..d3f5d6f16 100644
  	}, nil
  }
  
-@@ -88,7 +85,7 @@ func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.Data
+@@ -71,8 +68,7 @@ func (c *MetricsConverter) Start() {
+ 	}
+ }
+ 
+-// MetricsToSignalFxV2 converts the passed in MetricsData to SFx datapoints
+-// and if processHistograms is set, histogram metrics are not converted to SFx format.
++// MetricsToSignalFxV2 converts the passed in MetricsData to SFx datapoints.
+ // It returns those datapoints and the number of time series that had to be
+ // dropped because of errors or warnings.
+ func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.DataPoint {
+@@ -87,7 +83,7 @@ func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.Data
  			var initialDps []*sfxpb.DataPoint
  			for k := 0; k < ilm.Metrics().Len(); k++ {
  				currentMetric := ilm.Metrics().At(k)

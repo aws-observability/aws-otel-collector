@@ -11,6 +11,7 @@ import (
 // ObservabilityPipelineOcsfMapperProcessorMappingMapping - Defines a single mapping rule for transforming logs into the OCSF schema.
 type ObservabilityPipelineOcsfMapperProcessorMappingMapping struct {
 	ObservabilityPipelineOcsfMappingLibrary *ObservabilityPipelineOcsfMappingLibrary
+	ObservabilityPipelineOcsfMappingCustom  *ObservabilityPipelineOcsfMappingCustom
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -19,6 +20,11 @@ type ObservabilityPipelineOcsfMapperProcessorMappingMapping struct {
 // ObservabilityPipelineOcsfMappingLibraryAsObservabilityPipelineOcsfMapperProcessorMappingMapping is a convenience function that returns ObservabilityPipelineOcsfMappingLibrary wrapped in ObservabilityPipelineOcsfMapperProcessorMappingMapping.
 func ObservabilityPipelineOcsfMappingLibraryAsObservabilityPipelineOcsfMapperProcessorMappingMapping(v *ObservabilityPipelineOcsfMappingLibrary) ObservabilityPipelineOcsfMapperProcessorMappingMapping {
 	return ObservabilityPipelineOcsfMapperProcessorMappingMapping{ObservabilityPipelineOcsfMappingLibrary: v}
+}
+
+// ObservabilityPipelineOcsfMappingCustomAsObservabilityPipelineOcsfMapperProcessorMappingMapping is a convenience function that returns ObservabilityPipelineOcsfMappingCustom wrapped in ObservabilityPipelineOcsfMapperProcessorMappingMapping.
+func ObservabilityPipelineOcsfMappingCustomAsObservabilityPipelineOcsfMapperProcessorMappingMapping(v *ObservabilityPipelineOcsfMappingCustom) ObservabilityPipelineOcsfMapperProcessorMappingMapping {
+	return ObservabilityPipelineOcsfMapperProcessorMappingMapping{ObservabilityPipelineOcsfMappingCustom: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -42,9 +48,27 @@ func (obj *ObservabilityPipelineOcsfMapperProcessorMappingMapping) UnmarshalJSON
 		obj.ObservabilityPipelineOcsfMappingLibrary = nil
 	}
 
+	// try to unmarshal data into ObservabilityPipelineOcsfMappingCustom
+	err = datadog.Unmarshal(data, &obj.ObservabilityPipelineOcsfMappingCustom)
+	if err == nil {
+		if obj.ObservabilityPipelineOcsfMappingCustom != nil && obj.ObservabilityPipelineOcsfMappingCustom.UnparsedObject == nil {
+			jsonObservabilityPipelineOcsfMappingCustom, _ := datadog.Marshal(obj.ObservabilityPipelineOcsfMappingCustom)
+			if string(jsonObservabilityPipelineOcsfMappingCustom) == "{}" { // empty struct
+				obj.ObservabilityPipelineOcsfMappingCustom = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.ObservabilityPipelineOcsfMappingCustom = nil
+		}
+	} else {
+		obj.ObservabilityPipelineOcsfMappingCustom = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.ObservabilityPipelineOcsfMappingLibrary = nil
+		obj.ObservabilityPipelineOcsfMappingCustom = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -54,6 +78,10 @@ func (obj *ObservabilityPipelineOcsfMapperProcessorMappingMapping) UnmarshalJSON
 func (obj ObservabilityPipelineOcsfMapperProcessorMappingMapping) MarshalJSON() ([]byte, error) {
 	if obj.ObservabilityPipelineOcsfMappingLibrary != nil {
 		return datadog.Marshal(&obj.ObservabilityPipelineOcsfMappingLibrary)
+	}
+
+	if obj.ObservabilityPipelineOcsfMappingCustom != nil {
+		return datadog.Marshal(&obj.ObservabilityPipelineOcsfMappingCustom)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -66,6 +94,10 @@ func (obj ObservabilityPipelineOcsfMapperProcessorMappingMapping) MarshalJSON() 
 func (obj *ObservabilityPipelineOcsfMapperProcessorMappingMapping) GetActualInstance() interface{} {
 	if obj.ObservabilityPipelineOcsfMappingLibrary != nil {
 		return obj.ObservabilityPipelineOcsfMappingLibrary
+	}
+
+	if obj.ObservabilityPipelineOcsfMappingCustom != nil {
+		return obj.ObservabilityPipelineOcsfMappingCustom
 	}
 
 	// all schemas are nil

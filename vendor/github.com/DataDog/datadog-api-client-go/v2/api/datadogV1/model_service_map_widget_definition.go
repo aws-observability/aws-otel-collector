@@ -14,6 +14,8 @@ import (
 type ServiceMapWidgetDefinition struct {
 	// List of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Your environment and primary tag (or * if enabled for your account).
 	Filters []string `json:"filters"`
 	// The ID of the service you want to map.
@@ -79,6 +81,34 @@ func (o *ServiceMapWidgetDefinition) HasCustomLinks() bool {
 // SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
 func (o *ServiceMapWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *ServiceMapWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceMapWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *ServiceMapWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *ServiceMapWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetFilters returns the Filters field value.
@@ -243,6 +273,9 @@ func (o ServiceMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	toSerialize["filters"] = o.Filters
 	toSerialize["service"] = o.Service
 	if o.Title != nil {
@@ -266,6 +299,7 @@ func (o ServiceMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *ServiceMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CustomLinks []WidgetCustomLink              `json:"custom_links,omitempty"`
+		Description *string                         `json:"description,omitempty"`
 		Filters     *[]string                       `json:"filters"`
 		Service     *string                         `json:"service"`
 		Title       *string                         `json:"title,omitempty"`
@@ -287,13 +321,14 @@ func (o *ServiceMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "filters", "service", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "filters", "service", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	o.Filters = *all.Filters
 	o.Service = *all.Service
 	o.Title = all.Title

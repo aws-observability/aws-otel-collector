@@ -18,6 +18,8 @@ type MonitorFormulaAndFunctionEventQueryDefinitionCompute struct {
 	Interval *int64 `json:"interval,omitempty"`
 	// Measurable attribute to compute.
 	Metric *string `json:"metric,omitempty"`
+	// The name assigned to this aggregation, when multiple aggregations are defined for a query.
+	Name *string `json:"name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -120,6 +122,34 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) SetMetric(v strin
 	o.Metric = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) GetName() string {
+	if o == nil || o.Name == nil {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) GetNameOk() (*string, bool) {
+	if o == nil || o.Name == nil {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) HasName() bool {
+	return o != nil && o.Name != nil
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) SetName(v string) {
+	o.Name = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o MonitorFormulaAndFunctionEventQueryDefinitionCompute) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -132,6 +162,9 @@ func (o MonitorFormulaAndFunctionEventQueryDefinitionCompute) MarshalJSON() ([]b
 	}
 	if o.Metric != nil {
 		toSerialize["metric"] = o.Metric
+	}
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -146,6 +179,7 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(byt
 		Aggregation *MonitorFormulaAndFunctionEventAggregation `json:"aggregation"`
 		Interval    *int64                                     `json:"interval,omitempty"`
 		Metric      *string                                    `json:"metric,omitempty"`
+		Name        *string                                    `json:"name,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -155,7 +189,7 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(byt
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "interval", "metric"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "interval", "metric", "name"})
 	} else {
 		return err
 	}
@@ -168,6 +202,7 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(byt
 	}
 	o.Interval = all.Interval
 	o.Metric = all.Metric
+	o.Name = all.Name
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

@@ -30,6 +30,9 @@ type SensitiveDataScannerRuleAttributes struct {
 	Pattern *string `json:"pattern,omitempty"`
 	// Integer from 1 (high) to 5 (low) indicating rule issue severity.
 	Priority *int64 `json:"priority,omitempty"`
+	// Object describing the suppressions for a rule. There are three types of suppressions, `starts_with`, `ends_with`, and `exact_match`.
+	// Suppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.
+	Suppressions *SensitiveDataScannerSuppressions `json:"suppressions,omitempty"`
 	// List of tags.
 	Tags []string `json:"tags,omitempty"`
 	// Object describing how the scanned event will be replaced.
@@ -280,6 +283,34 @@ func (o *SensitiveDataScannerRuleAttributes) SetPriority(v int64) {
 	o.Priority = &v
 }
 
+// GetSuppressions returns the Suppressions field value if set, zero value otherwise.
+func (o *SensitiveDataScannerRuleAttributes) GetSuppressions() SensitiveDataScannerSuppressions {
+	if o == nil || o.Suppressions == nil {
+		var ret SensitiveDataScannerSuppressions
+		return ret
+	}
+	return *o.Suppressions
+}
+
+// GetSuppressionsOk returns a tuple with the Suppressions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SensitiveDataScannerRuleAttributes) GetSuppressionsOk() (*SensitiveDataScannerSuppressions, bool) {
+	if o == nil || o.Suppressions == nil {
+		return nil, false
+	}
+	return o.Suppressions, true
+}
+
+// HasSuppressions returns a boolean if a field has been set.
+func (o *SensitiveDataScannerRuleAttributes) HasSuppressions() bool {
+	return o != nil && o.Suppressions != nil
+}
+
+// SetSuppressions gets a reference to the given SensitiveDataScannerSuppressions and assigns it to the Suppressions field.
+func (o *SensitiveDataScannerRuleAttributes) SetSuppressions(v SensitiveDataScannerSuppressions) {
+	o.Suppressions = &v
+}
+
 // GetTags returns the Tags field value if set, zero value otherwise.
 func (o *SensitiveDataScannerRuleAttributes) GetTags() []string {
 	if o == nil || o.Tags == nil {
@@ -366,6 +397,9 @@ func (o SensitiveDataScannerRuleAttributes) MarshalJSON() ([]byte, error) {
 	if o.Priority != nil {
 		toSerialize["priority"] = o.Priority
 	}
+	if o.Suppressions != nil {
+		toSerialize["suppressions"] = o.Suppressions
+	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
@@ -390,6 +424,7 @@ func (o *SensitiveDataScannerRuleAttributes) UnmarshalJSON(bytes []byte) (err er
 		Namespaces                   []string                                          `json:"namespaces,omitempty"`
 		Pattern                      *string                                           `json:"pattern,omitempty"`
 		Priority                     *int64                                            `json:"priority,omitempty"`
+		Suppressions                 *SensitiveDataScannerSuppressions                 `json:"suppressions,omitempty"`
 		Tags                         []string                                          `json:"tags,omitempty"`
 		TextReplacement              *SensitiveDataScannerTextReplacement              `json:"text_replacement,omitempty"`
 	}{}
@@ -398,7 +433,7 @@ func (o *SensitiveDataScannerRuleAttributes) UnmarshalJSON(bytes []byte) (err er
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "excluded_namespaces", "included_keyword_configuration", "is_enabled", "name", "namespaces", "pattern", "priority", "tags", "text_replacement"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "excluded_namespaces", "included_keyword_configuration", "is_enabled", "name", "namespaces", "pattern", "priority", "suppressions", "tags", "text_replacement"})
 	} else {
 		return err
 	}
@@ -415,6 +450,10 @@ func (o *SensitiveDataScannerRuleAttributes) UnmarshalJSON(bytes []byte) (err er
 	o.Namespaces = all.Namespaces
 	o.Pattern = all.Pattern
 	o.Priority = all.Priority
+	if all.Suppressions != nil && all.Suppressions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Suppressions = all.Suppressions
 	o.Tags = all.Tags
 	if all.TextReplacement != nil && all.TextReplacement.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

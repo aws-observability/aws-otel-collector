@@ -16,7 +16,8 @@ type UsageBillableSummaryHour struct {
 	AccountName *string `json:"account_name,omitempty"`
 	// The account public ID.
 	AccountPublicId *string `json:"account_public_id,omitempty"`
-	// The billing plan.
+	// The billing plan (metadata). (Deprecated from June 2026)
+	// Deprecated
 	BillingPlan *string `json:"billing_plan,omitempty"`
 	// Shows the last date of usage.
 	EndDate *time.Time `json:"end_date,omitempty"`
@@ -113,6 +114,7 @@ func (o *UsageBillableSummaryHour) SetAccountPublicId(v string) {
 }
 
 // GetBillingPlan returns the BillingPlan field value if set, zero value otherwise.
+// Deprecated
 func (o *UsageBillableSummaryHour) GetBillingPlan() string {
 	if o == nil || o.BillingPlan == nil {
 		var ret string
@@ -123,6 +125,7 @@ func (o *UsageBillableSummaryHour) GetBillingPlan() string {
 
 // GetBillingPlanOk returns a tuple with the BillingPlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *UsageBillableSummaryHour) GetBillingPlanOk() (*string, bool) {
 	if o == nil || o.BillingPlan == nil {
 		return nil, false
@@ -136,6 +139,7 @@ func (o *UsageBillableSummaryHour) HasBillingPlan() bool {
 }
 
 // SetBillingPlan gets a reference to the given string and assigns it to the BillingPlan field.
+// Deprecated
 func (o *UsageBillableSummaryHour) SetBillingPlan(v string) {
 	o.BillingPlan = &v
 }

@@ -12,7 +12,7 @@ import (
 
 // FindingCaseResponseArray List of case responses.
 type FindingCaseResponseArray struct {
-	//
+	// Array of case response data objects.
 	Data []FindingCaseResponseData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

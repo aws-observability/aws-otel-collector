@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponse
+// GetMultipleRulesetsResponse The response payload for the get-multiple-rulesets endpoint, containing the requested rulesets and their rules.
 type GetMultipleRulesetsResponse struct {
-	//
+	// The primary data object in the get-multiple-rulesets response, containing the response attributes and resource type.
 	Data *GetMultipleRulesetsResponseData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

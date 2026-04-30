@@ -1,4 +1,4 @@
-// Copyright 2021 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -93,7 +93,7 @@ func NewHTTPResourceClient(conf *HTTPResourceClientConfig, protocolVersion Proto
 		return nil, errors.New("only the v3 protocol is supported")
 	}
 
-	if len(conf.Server) == 0 {
+	if conf.Server == "" {
 		return nil, errors.New("empty xDS server")
 	}
 
@@ -132,7 +132,7 @@ func makeXDSResourceHTTPEndpointURL(protocolVersion ProtocolVersion, serverURL *
 		return nil, errors.New("empty xDS server URL")
 	}
 
-	if len(serverURL.Scheme) == 0 || len(serverURL.Host) == 0 {
+	if serverURL.Scheme == "" || serverURL.Host == "" {
 		return nil, errors.New("invalid xDS server URL")
 	}
 

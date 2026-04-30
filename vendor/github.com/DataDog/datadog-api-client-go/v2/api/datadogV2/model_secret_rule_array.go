@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecretRuleArray
+// SecretRuleArray A collection of secret detection rules returned by the list endpoint.
 type SecretRuleArray struct {
-	//
+	// The list of secret detection rules.
 	Data []SecretRuleData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

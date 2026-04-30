@@ -10,6 +10,8 @@ import (
 
 // SecurityMonitoringRuleOptions Options.
 type SecurityMonitoringRuleOptions struct {
+	// Options on anomaly detection method.
+	AnomalyDetectionOptions *SecurityMonitoringRuleAnomalyDetectionOptions `json:"anomalyDetectionOptions,omitempty"`
 	// Options for cloud_configuration rules.
 	// Fields `resourceType` and `regoRule` are mandatory when managing custom `cloud_configuration` rules.
 	ComplianceRuleOptions *CloudConfigurationComplianceRuleOptions `json:"complianceRuleOptions,omitempty"`
@@ -58,6 +60,34 @@ func NewSecurityMonitoringRuleOptions() *SecurityMonitoringRuleOptions {
 func NewSecurityMonitoringRuleOptionsWithDefaults() *SecurityMonitoringRuleOptions {
 	this := SecurityMonitoringRuleOptions{}
 	return &this
+}
+
+// GetAnomalyDetectionOptions returns the AnomalyDetectionOptions field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleOptions) GetAnomalyDetectionOptions() SecurityMonitoringRuleAnomalyDetectionOptions {
+	if o == nil || o.AnomalyDetectionOptions == nil {
+		var ret SecurityMonitoringRuleAnomalyDetectionOptions
+		return ret
+	}
+	return *o.AnomalyDetectionOptions
+}
+
+// GetAnomalyDetectionOptionsOk returns a tuple with the AnomalyDetectionOptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleOptions) GetAnomalyDetectionOptionsOk() (*SecurityMonitoringRuleAnomalyDetectionOptions, bool) {
+	if o == nil || o.AnomalyDetectionOptions == nil {
+		return nil, false
+	}
+	return o.AnomalyDetectionOptions, true
+}
+
+// HasAnomalyDetectionOptions returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleOptions) HasAnomalyDetectionOptions() bool {
+	return o != nil && o.AnomalyDetectionOptions != nil
+}
+
+// SetAnomalyDetectionOptions gets a reference to the given SecurityMonitoringRuleAnomalyDetectionOptions and assigns it to the AnomalyDetectionOptions field.
+func (o *SecurityMonitoringRuleOptions) SetAnomalyDetectionOptions(v SecurityMonitoringRuleAnomalyDetectionOptions) {
+	o.AnomalyDetectionOptions = &v
 }
 
 // GetComplianceRuleOptions returns the ComplianceRuleOptions field value if set, zero value otherwise.
@@ -374,6 +404,9 @@ func (o SecurityMonitoringRuleOptions) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AnomalyDetectionOptions != nil {
+		toSerialize["anomalyDetectionOptions"] = o.AnomalyDetectionOptions
+	}
 	if o.ComplianceRuleOptions != nil {
 		toSerialize["complianceRuleOptions"] = o.ComplianceRuleOptions
 	}
@@ -417,6 +450,7 @@ func (o SecurityMonitoringRuleOptions) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		AnomalyDetectionOptions       *SecurityMonitoringRuleAnomalyDetectionOptions  `json:"anomalyDetectionOptions,omitempty"`
 		ComplianceRuleOptions         *CloudConfigurationComplianceRuleOptions        `json:"complianceRuleOptions,omitempty"`
 		DecreaseCriticalityBasedOnEnv *bool                                           `json:"decreaseCriticalityBasedOnEnv,omitempty"`
 		DetectionMethod               *SecurityMonitoringRuleDetectionMethod          `json:"detectionMethod,omitempty"`
@@ -434,12 +468,16 @@ func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"complianceRuleOptions", "decreaseCriticalityBasedOnEnv", "detectionMethod", "evaluationWindow", "hardcodedEvaluatorType", "impossibleTravelOptions", "keepAlive", "maxSignalDuration", "newValueOptions", "sequenceDetectionOptions", "thirdPartyRuleOptions"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"anomalyDetectionOptions", "complianceRuleOptions", "decreaseCriticalityBasedOnEnv", "detectionMethod", "evaluationWindow", "hardcodedEvaluatorType", "impossibleTravelOptions", "keepAlive", "maxSignalDuration", "newValueOptions", "sequenceDetectionOptions", "thirdPartyRuleOptions"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	if all.AnomalyDetectionOptions != nil && all.AnomalyDetectionOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.AnomalyDetectionOptions = all.AnomalyDetectionOptions
 	if all.ComplianceRuleOptions != nil && all.ComplianceRuleOptions.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

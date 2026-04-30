@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MetricsTimeseriesQuery An individual timeseries metrics query.
+// MetricsTimeseriesQuery A query against Datadog custom metrics or Cloud Cost data sources.
 type MetricsTimeseriesQuery struct {
 	// A data source that is powered by the Metrics platform.
 	DataSource MetricsDataSource `json:"data_source"`

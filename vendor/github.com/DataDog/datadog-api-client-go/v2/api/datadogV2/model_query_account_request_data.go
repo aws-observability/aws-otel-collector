@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryAccountRequestData
+// QueryAccountRequestData The data object containing the resource type and attributes for querying accounts.
 type QueryAccountRequestData struct {
-	//
+	// Attributes for filtering and shaping the account query results.
 	Attributes *QueryAccountRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the query account request resource.
 	Id *string `json:"id,omitempty"`
 	// Query account request resource type.
 	Type QueryAccountRequestDataType `json:"type"`

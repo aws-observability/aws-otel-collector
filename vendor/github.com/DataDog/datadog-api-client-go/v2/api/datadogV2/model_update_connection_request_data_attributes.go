@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateConnectionRequestDataAttributes
+// UpdateConnectionRequestDataAttributes Attributes specifying the field modifications to apply to an existing connection.
 type UpdateConnectionRequestDataAttributes struct {
-	//
+	// New fields to add to the connection from the data source.
 	FieldsToAdd []CreateConnectionRequestDataAttributesFieldsItems `json:"fields_to_add,omitempty"`
-	//
+	// Identifiers of existing fields to remove from the connection.
 	FieldsToDelete []string `json:"fields_to_delete,omitempty"`
-	//
+	// Existing fields with updated metadata to apply to the connection.
 	FieldsToUpdate []UpdateConnectionRequestDataAttributesFieldsToUpdateItems `json:"fields_to_update,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

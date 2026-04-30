@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseData
+// GetMultipleRulesetsResponseData The primary data object in the get-multiple-rulesets response, containing the response attributes and resource type.
 type GetMultipleRulesetsResponseData struct {
-	//
+	// The attributes of the get-multiple-rulesets response, containing the list of requested rulesets.
 	Attributes *GetMultipleRulesetsResponseDataAttributes `json:"attributes,omitempty"`
-	//
+	// The unique identifier of the get-multiple-rulesets response resource.
 	Id *string `json:"id,omitempty"`
 	// Get multiple rulesets response resource type.
 	Type GetMultipleRulesetsResponseDataType `json:"type"`

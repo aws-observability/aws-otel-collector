@@ -29,6 +29,9 @@ type FlakyTestAttributes struct {
 	FlakyCategory datadog.NullableString `json:"flaky_category,omitempty"`
 	// The current state of the flaky test.
 	FlakyState *FlakyTestAttributesFlakyState `json:"flaky_state,omitempty"`
+	// Chronological history of status changes for this flaky test, ordered from most recent to oldest.
+	// Includes state transitions like new -> quarantined -> fixed, along with the associated commit SHA when available.
+	History []FlakyTestHistory `json:"history,omitempty"`
 	// The branch name where the test exhibited flakiness for the last time.
 	LastFlakedBranch *string `json:"last_flaked_branch,omitempty"`
 	// The commit SHA where the test exhibited flakiness for the last time.
@@ -312,6 +315,34 @@ func (o *FlakyTestAttributes) HasFlakyState() bool {
 // SetFlakyState gets a reference to the given FlakyTestAttributesFlakyState and assigns it to the FlakyState field.
 func (o *FlakyTestAttributes) SetFlakyState(v FlakyTestAttributesFlakyState) {
 	o.FlakyState = &v
+}
+
+// GetHistory returns the History field value if set, zero value otherwise.
+func (o *FlakyTestAttributes) GetHistory() []FlakyTestHistory {
+	if o == nil || o.History == nil {
+		var ret []FlakyTestHistory
+		return ret
+	}
+	return o.History
+}
+
+// GetHistoryOk returns a tuple with the History field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FlakyTestAttributes) GetHistoryOk() (*[]FlakyTestHistory, bool) {
+	if o == nil || o.History == nil {
+		return nil, false
+	}
+	return &o.History, true
+}
+
+// HasHistory returns a boolean if a field has been set.
+func (o *FlakyTestAttributes) HasHistory() bool {
+	return o != nil && o.History != nil
+}
+
+// SetHistory gets a reference to the given []FlakyTestHistory and assigns it to the History field.
+func (o *FlakyTestAttributes) SetHistory(v []FlakyTestHistory) {
+	o.History = v
 }
 
 // GetLastFlakedBranch returns the LastFlakedBranch field value if set, zero value otherwise.
@@ -635,6 +666,9 @@ func (o FlakyTestAttributes) MarshalJSON() ([]byte, error) {
 	if o.FlakyState != nil {
 		toSerialize["flaky_state"] = o.FlakyState
 	}
+	if o.History != nil {
+		toSerialize["history"] = o.History
+	}
 	if o.LastFlakedBranch != nil {
 		toSerialize["last_flaked_branch"] = o.LastFlakedBranch
 	}
@@ -683,6 +717,7 @@ func (o *FlakyTestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		FirstFlakedTs     *int64                         `json:"first_flaked_ts,omitempty"`
 		FlakyCategory     datadog.NullableString         `json:"flaky_category,omitempty"`
 		FlakyState        *FlakyTestAttributesFlakyState `json:"flaky_state,omitempty"`
+		History           []FlakyTestHistory             `json:"history,omitempty"`
 		LastFlakedBranch  *string                        `json:"last_flaked_branch,omitempty"`
 		LastFlakedSha     *string                        `json:"last_flaked_sha,omitempty"`
 		LastFlakedTs      *int64                         `json:"last_flaked_ts,omitempty"`
@@ -699,7 +734,7 @@ func (o *FlakyTestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attempt_to_fix_id", "codeowners", "envs", "first_flaked_branch", "first_flaked_sha", "first_flaked_ts", "flaky_category", "flaky_state", "last_flaked_branch", "last_flaked_sha", "last_flaked_ts", "module", "name", "pipeline_stats", "services", "suite", "test_run_metadata", "test_stats"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"attempt_to_fix_id", "codeowners", "envs", "first_flaked_branch", "first_flaked_sha", "first_flaked_ts", "flaky_category", "flaky_state", "history", "last_flaked_branch", "last_flaked_sha", "last_flaked_ts", "module", "name", "pipeline_stats", "services", "suite", "test_run_metadata", "test_stats"})
 	} else {
 		return err
 	}
@@ -717,6 +752,7 @@ func (o *FlakyTestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.FlakyState = all.FlakyState
 	}
+	o.History = all.History
 	o.LastFlakedBranch = all.LastFlakedBranch
 	o.LastFlakedSha = all.LastFlakedSha
 	o.LastFlakedTs = all.LastFlakedTs

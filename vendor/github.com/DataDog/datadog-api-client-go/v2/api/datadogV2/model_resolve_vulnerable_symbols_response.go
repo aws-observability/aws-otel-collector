@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsResponse
+// ResolveVulnerableSymbolsResponse The top-level response object returned when resolving vulnerable symbols for a set of packages.
 type ResolveVulnerableSymbolsResponse struct {
-	//
+	// The data object in a response for resolving vulnerable symbols, containing the result attributes and response type.
 	Data *ResolveVulnerableSymbolsResponseData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -12,7 +12,7 @@ import (
 
 // ChangeEventCustomAttributesChangedResource A uniquely identified resource.
 type ChangeEventCustomAttributesChangedResource struct {
-	// The name of the resource that was changed. Limited to 128 characters.
+	// The name of the resource that was changed. Limited to 128 characters. Must contain at least one non-whitespace character.
 	Name string `json:"name"`
 	// The type of the resource that was changed.
 	Type ChangeEventCustomAttributesChangedResourceType `json:"type"`

@@ -41,7 +41,7 @@ type PrimaryIPDNSPTR struct {
 type PrimaryIPCreateRequest struct {
 	Name         string             `json:"name"`
 	Type         string             `json:"type"`
-	AssigneeType string             `json:"assignee_type"`
+	AssigneeType string             `json:"assignee_type,omitempty"`
 	AssigneeID   *int64             `json:"assignee_id,omitempty"`
 	Labels       *map[string]string `json:"labels,omitempty"`
 	AutoDelete   *bool              `json:"auto_delete,omitempty"`

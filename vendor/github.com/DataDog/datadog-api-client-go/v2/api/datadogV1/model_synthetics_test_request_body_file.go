@@ -14,6 +14,8 @@ type SyntheticsTestRequestBodyFile struct {
 	BucketKey *string `json:"bucketKey,omitempty"`
 	// Content of the file.
 	Content *string `json:"content,omitempty"`
+	// Encoding of the file content. The only supported value is `base64`, indicating the `content` field contains base64-encoded data.
+	Encoding *string `json:"encoding,omitempty"`
 	// Name of the file.
 	Name *string `json:"name,omitempty"`
 	// Original name of the file.
@@ -98,6 +100,34 @@ func (o *SyntheticsTestRequestBodyFile) HasContent() bool {
 // SetContent gets a reference to the given string and assigns it to the Content field.
 func (o *SyntheticsTestRequestBodyFile) SetContent(v string) {
 	o.Content = &v
+}
+
+// GetEncoding returns the Encoding field value if set, zero value otherwise.
+func (o *SyntheticsTestRequestBodyFile) GetEncoding() string {
+	if o == nil || o.Encoding == nil {
+		var ret string
+		return ret
+	}
+	return *o.Encoding
+}
+
+// GetEncodingOk returns a tuple with the Encoding field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestRequestBodyFile) GetEncodingOk() (*string, bool) {
+	if o == nil || o.Encoding == nil {
+		return nil, false
+	}
+	return o.Encoding, true
+}
+
+// HasEncoding returns a boolean if a field has been set.
+func (o *SyntheticsTestRequestBodyFile) HasEncoding() bool {
+	return o != nil && o.Encoding != nil
+}
+
+// SetEncoding gets a reference to the given string and assigns it to the Encoding field.
+func (o *SyntheticsTestRequestBodyFile) SetEncoding(v string) {
+	o.Encoding = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -224,6 +254,9 @@ func (o SyntheticsTestRequestBodyFile) MarshalJSON() ([]byte, error) {
 	if o.Content != nil {
 		toSerialize["content"] = o.Content
 	}
+	if o.Encoding != nil {
+		toSerialize["encoding"] = o.Encoding
+	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
@@ -248,6 +281,7 @@ func (o *SyntheticsTestRequestBodyFile) UnmarshalJSON(bytes []byte) (err error) 
 	all := struct {
 		BucketKey        *string `json:"bucketKey,omitempty"`
 		Content          *string `json:"content,omitempty"`
+		Encoding         *string `json:"encoding,omitempty"`
 		Name             *string `json:"name,omitempty"`
 		OriginalFileName *string `json:"originalFileName,omitempty"`
 		Size             *int64  `json:"size,omitempty"`
@@ -258,12 +292,13 @@ func (o *SyntheticsTestRequestBodyFile) UnmarshalJSON(bytes []byte) (err error) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"bucketKey", "content", "name", "originalFileName", "size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"bucketKey", "content", "encoding", "name", "originalFileName", "size", "type"})
 	} else {
 		return err
 	}
 	o.BucketKey = all.BucketKey
 	o.Content = all.Content
+	o.Encoding = all.Encoding
 	o.Name = all.Name
 	o.OriginalFileName = all.OriginalFileName
 	o.Size = all.Size

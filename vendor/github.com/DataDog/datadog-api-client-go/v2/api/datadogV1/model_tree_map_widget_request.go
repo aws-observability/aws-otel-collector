@@ -12,7 +12,8 @@ import (
 type TreeMapWidgetRequest struct {
 	// List of formulas that operate on queries.
 	Formulas []WidgetFormula `json:"formulas,omitempty"`
-	// The widget metrics query.
+	// The widget metrics query. Deprecated - Use `queries` and `formulas` instead.
+	// Deprecated
 	Q *string `json:"q,omitempty"`
 	// List of queries that can be returned directly or used in formulas.
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
@@ -69,6 +70,7 @@ func (o *TreeMapWidgetRequest) SetFormulas(v []WidgetFormula) {
 }
 
 // GetQ returns the Q field value if set, zero value otherwise.
+// Deprecated
 func (o *TreeMapWidgetRequest) GetQ() string {
 	if o == nil || o.Q == nil {
 		var ret string
@@ -79,6 +81,7 @@ func (o *TreeMapWidgetRequest) GetQ() string {
 
 // GetQOk returns a tuple with the Q field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *TreeMapWidgetRequest) GetQOk() (*string, bool) {
 	if o == nil || o.Q == nil {
 		return nil, false
@@ -92,6 +95,7 @@ func (o *TreeMapWidgetRequest) HasQ() bool {
 }
 
 // SetQ gets a reference to the given string and assigns it to the Q field.
+// Deprecated
 func (o *TreeMapWidgetRequest) SetQ(v string) {
 	o.Q = &v
 }

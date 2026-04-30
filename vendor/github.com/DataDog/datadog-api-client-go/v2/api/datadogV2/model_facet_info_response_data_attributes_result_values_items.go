@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoResponseDataAttributesResultValuesItems
+// FacetInfoResponseDataAttributesResultValuesItems A single facet value with its occurrence count in the dataset.
 type FacetInfoResponseDataAttributesResultValuesItems struct {
-	//
+	// The number of records that have this facet value.
 	Count *int64 `json:"count,omitempty"`
-	//
+	// The facet value (for example, a browser name or country code).
 	Value *string `json:"value,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

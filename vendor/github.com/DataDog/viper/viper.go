@@ -32,7 +32,7 @@ import (
 	"strings"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
+	yaml "go.yaml.in/yaml/v2"
 
 	"github.com/fsnotify/fsnotify"
 	mapstructure "github.com/go-viper/mapstructure/v2"

@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TagToHosts In this object, the key is the tag, the value is a list of host names that are reporting that tag.
+// TagToHosts In this object, the key is the tag, and the value is a list of host names that are reporting that tag.
 type TagToHosts struct {
-	// A list of tags to apply to the host.
+	// A mapping of tags to host names
 	Tags map[string][]string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

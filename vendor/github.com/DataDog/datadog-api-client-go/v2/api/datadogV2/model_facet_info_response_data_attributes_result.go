@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoResponseDataAttributesResult
+// FacetInfoResponseDataAttributesResult The facet query result containing discrete value counts or a numeric range for the requested facet.
 type FacetInfoResponseDataAttributesResult struct {
-	//
+	// The numeric range of a facet attribute, representing the minimum and maximum observed values.
 	Range *FacetInfoResponseDataAttributesResultRange `json:"range,omitempty"`
-	//
+	// List of discrete facet values with their occurrence counts.
 	Values []FacetInfoResponseDataAttributesResultValuesItems `json:"values,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FleetAgentAttributesTagsItems
+// FleetAgentAttributesTagsItems A key-value pair representing a tag associated with a Datadog Agent.
 type FleetAgentAttributesTagsItems struct {
-	//
+	// The tag key.
 	Key *string `json:"key,omitempty"`
-	//
+	// The tag value.
 	Value *string `json:"value,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

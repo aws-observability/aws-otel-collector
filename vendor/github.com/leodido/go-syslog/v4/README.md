@@ -12,6 +12,8 @@ To wrap up, this package provides:
 
 - an [RFC5424-compliant parser and builder](/rfc5424)
 - an [RFC3164-compliant parser](/rfc3164) - ie., BSD-syslog messages
+- an [auto-detect parser](/auto) that determines RFC 3164 vs RFC 5424 format per-message
+- an [RFC3195 parser](/rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195) (RAW and COOKED profiles)
 - a parser that works on streams for syslog with [octet counting](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1) framing technique, see [octetcounting](/octetcounting)
 - a parser that works on streams for syslog with [non-transparent](https://tools.ietf.org/html/rfc6587#section-3.4.2) framing technique, see [nontransparent](/nontransparent)
 
@@ -25,6 +27,8 @@ For example:
 
 ## Installation
 
+Requires **Go 1.22** or later.
+
 ```
 go get github.com/leodido/go-syslog/v4
 ```
@@ -36,6 +40,8 @@ go get github.com/leodido/go-syslog/v4
 The [docs](docs/) directory contains `.dot` files representing the finite-state machines (FSMs) implementing the syslog parsers and transports.
 
 ## Usage
+
+[![Build with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/leodido/go-syslog)
 
 Suppose you want to parse a given sequence of bytes as a RFC5424 message.
 
@@ -85,7 +91,7 @@ Let's look at an example.
 
 ```go
 i := []byte("<1>1 A - - - - - -")
-p := NewParser(WithBestEffort())
+p := rfc5424.NewParser(rfc5424.WithBestEffort())
 m, e := p.Parse(i)
 ```
 
@@ -161,6 +167,29 @@ str, _ := msg.String()
 // <191>1 - - - - - -
 ```
 
+### Auto-detect
+
+Suppose you don't know whether incoming messages are RFC 5424 or RFC 3164. The [auto](/auto) package figures it out per-message.
+
+```go
+m := auto.NewMachine()
+msg, err := m.Parse(input)
+fmt.Println(auto.DetectFormat(msg)) // "rfc5424" or "rfc3164"
+```
+
+You can pass format-specific options to each inner parser:
+
+```go
+m := auto.NewMachine(
+    auto.WithRFC3164Options(rfc3164.WithYear(rfc3164.Year{YYYY: 2025})),
+    auto.WithRFC5424Options(rfc5424.WithCompliantMsg()),
+)
+```
+
+It also works with the stream parsers via `NewParserAuto` - see [octet counting](#octet-counting) and [non-transparent](#non-transparent) below.
+
+Performance-wise, auto-detect peeks at a few bytes after the PRI to pick the format - no allocations, no copying. It's as fast as calling the right parser yourself.
+
 ## Message transfer
 
 Excluding encapsulating one message for packet in packet protocols there are two ways to transfer syslog messages over streams.
@@ -179,6 +208,18 @@ The [octecounting package](./octetcounting) parses messages stream following suc
 
 To quickly understand how to use it please have a look at the [example file](./octetcounting/example_test.go).
 
+If you have mixed RFC 5424 and RFC 3164 messages in the same stream, use `NewParserAuto`:
+
+```go
+p := octetcounting.NewParserAuto(
+    syslog.WithListener(func(r *syslog.Result) {
+        fmt.Println(auto.DetectFormat(r.Message))
+    }),
+    syslog.WithBestEffort(),
+)
+p.Parse(reader)
+```
+
 ### Non transparent
 
 The [RFC6587](https://tools.ietf.org/html/rfc6587#section-3.4.2) also describes the **non-transparent framing** transport of syslog messages.
@@ -189,11 +230,36 @@ The [nontransparent package](./nontransparent) parses message stream following s
 
 To quickly understand how to use it please have a look at the [example file](./nontransparent/example_test.go).
 
+Same as octet counting, use `NewParserAuto` for mixed-format streams:
+
+```go
+p := nontransparent.NewParserAuto(
+    syslog.WithListener(func(r *syslog.Result) {
+        fmt.Println(auto.DetectFormat(r.Message))
+    }),
+    syslog.WithBestEffort(),
+)
+p.Parse(reader)
+```
+
 Things we do not support:
 
 - trailers other than `LF` or `NUL`
 - trailers which length is greater than 1 byte
 - trailer change on a frame-by-frame basis
+
+### RFC 3195 (BEEP)
+
+[RFC 3195](https://datatracker.ietf.org/doc/html/rfc3195) defines syslog transport over the [BEEP](https://datatracker.ietf.org/doc/html/rfc3080) protocol. It specifies two profiles:
+
+- **RAW** (§4.2): syslog messages are carried as CRLF-terminated payloads in BEEP ANS frames. The inner messages can be either RFC 5424 or RFC 3164 format.
+- **COOKED** (§4.3): syslog data is encoded as XML `<entry>` elements with attributes for facility, severity, timestamp, tag, and device identity.
+
+The [rfc3195 package](./rfc3195) provides parsers for both profiles. It implements BEEP frame scanning (MSG, RPY, ERR, ANS, NUL, SEQ frames) and extracts syslog messages from the frame payloads.
+
+This is a parsing-only implementation - it does not handle BEEP session management, channel negotiation, or TLS. Feed it a stream of BEEP frames and it will emit parsed syslog messages.
+
+To quickly understand how to use it please have a look at the [example file](./rfc3195/example_test.go).
 
 ## Performances
 

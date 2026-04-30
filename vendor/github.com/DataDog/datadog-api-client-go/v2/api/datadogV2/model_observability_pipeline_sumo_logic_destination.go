@@ -11,9 +11,15 @@ import (
 )
 
 // ObservabilityPipelineSumoLogicDestination The `sumo_logic` destination forwards logs to Sumo Logic.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineSumoLogicDestination struct {
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// The output encoding format.
 	Encoding *ObservabilityPipelineSumoLogicDestinationEncoding `json:"encoding,omitempty"`
+	// Name of the environment variable or secret that holds the Sumo Logic HTTP endpoint URL.
+	EndpointUrlKey *string `json:"endpoint_url_key,omitempty"`
 	// A list of custom headers to include in the request to Sumo Logic.
 	HeaderCustomFields []ObservabilityPipelineSumoLogicDestinationHeaderCustomFieldsItem `json:"header_custom_fields,omitempty"`
 	// Optional override for the host name header.
@@ -55,6 +61,34 @@ func NewObservabilityPipelineSumoLogicDestinationWithDefaults() *ObservabilityPi
 	return &this
 }
 
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSumoLogicDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSumoLogicDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSumoLogicDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineSumoLogicDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
+}
+
 // GetEncoding returns the Encoding field value if set, zero value otherwise.
 func (o *ObservabilityPipelineSumoLogicDestination) GetEncoding() ObservabilityPipelineSumoLogicDestinationEncoding {
 	if o == nil || o.Encoding == nil {
@@ -81,6 +115,34 @@ func (o *ObservabilityPipelineSumoLogicDestination) HasEncoding() bool {
 // SetEncoding gets a reference to the given ObservabilityPipelineSumoLogicDestinationEncoding and assigns it to the Encoding field.
 func (o *ObservabilityPipelineSumoLogicDestination) SetEncoding(v ObservabilityPipelineSumoLogicDestinationEncoding) {
 	o.Encoding = &v
+}
+
+// GetEndpointUrlKey returns the EndpointUrlKey field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSumoLogicDestination) GetEndpointUrlKey() string {
+	if o == nil || o.EndpointUrlKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.EndpointUrlKey
+}
+
+// GetEndpointUrlKeyOk returns a tuple with the EndpointUrlKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSumoLogicDestination) GetEndpointUrlKeyOk() (*string, bool) {
+	if o == nil || o.EndpointUrlKey == nil {
+		return nil, false
+	}
+	return o.EndpointUrlKey, true
+}
+
+// HasEndpointUrlKey returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSumoLogicDestination) HasEndpointUrlKey() bool {
+	return o != nil && o.EndpointUrlKey != nil
+}
+
+// SetEndpointUrlKey gets a reference to the given string and assigns it to the EndpointUrlKey field.
+func (o *ObservabilityPipelineSumoLogicDestination) SetEndpointUrlKey(v string) {
+	o.EndpointUrlKey = &v
 }
 
 // GetHeaderCustomFields returns the HeaderCustomFields field value if set, zero value otherwise.
@@ -270,8 +332,14 @@ func (o ObservabilityPipelineSumoLogicDestination) MarshalJSON() ([]byte, error)
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	if o.Encoding != nil {
 		toSerialize["encoding"] = o.Encoding
+	}
+	if o.EndpointUrlKey != nil {
+		toSerialize["endpoint_url_key"] = o.EndpointUrlKey
 	}
 	if o.HeaderCustomFields != nil {
 		toSerialize["header_custom_fields"] = o.HeaderCustomFields
@@ -298,7 +366,9 @@ func (o ObservabilityPipelineSumoLogicDestination) MarshalJSON() ([]byte, error)
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineSumoLogicDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Buffer               *ObservabilityPipelineBufferOptions                               `json:"buffer,omitempty"`
 		Encoding             *ObservabilityPipelineSumoLogicDestinationEncoding                `json:"encoding,omitempty"`
+		EndpointUrlKey       *string                                                           `json:"endpoint_url_key,omitempty"`
 		HeaderCustomFields   []ObservabilityPipelineSumoLogicDestinationHeaderCustomFieldsItem `json:"header_custom_fields,omitempty"`
 		HeaderHostName       *string                                                           `json:"header_host_name,omitempty"`
 		HeaderSourceCategory *string                                                           `json:"header_source_category,omitempty"`
@@ -321,17 +391,19 @@ func (o *ObservabilityPipelineSumoLogicDestination) UnmarshalJSON(bytes []byte) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"encoding", "header_custom_fields", "header_host_name", "header_source_category", "header_source_name", "id", "inputs", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"buffer", "encoding", "endpoint_url_key", "header_custom_fields", "header_host_name", "header_source_category", "header_source_name", "id", "inputs", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Buffer = all.Buffer
 	if all.Encoding != nil && !all.Encoding.IsValid() {
 		hasInvalidField = true
 	} else {
 		o.Encoding = all.Encoding
 	}
+	o.EndpointUrlKey = all.EndpointUrlKey
 	o.HeaderCustomFields = all.HeaderCustomFields
 	o.HeaderHostName = all.HeaderHostName
 	o.HeaderSourceCategory = all.HeaderSourceCategory

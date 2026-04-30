@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ProjectRelationships Project relationships
+// ProjectRelationships Project relationships.
 type ProjectRelationships struct {
 	// Relationship between a team and a team link
 	MemberTeam *RelationshipToTeamLinks `json:"member_team,omitempty"`

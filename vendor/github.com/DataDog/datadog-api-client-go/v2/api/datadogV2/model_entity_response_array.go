@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseArray
+// EntityResponseArray Response object containing an array of entity data items.
 type EntityResponseArray struct {
-	//
+	// Array of entity response data items.
 	Data []PreviewEntityResponseData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

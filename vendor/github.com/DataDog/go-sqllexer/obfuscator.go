@@ -104,7 +104,7 @@ func (o *Obfuscator) Obfuscate(input string, lexerOpts ...lexerOption) string {
 		}
 	}
 
-	return strings.TrimSpace(obfuscatedSQL.String())
+	return strings.Clone(strings.TrimSpace(obfuscatedSQL.String()))
 }
 
 func (o *Obfuscator) ObfuscateTokenValue(token *Token, lastValueToken *LastValueToken, lexerOpts ...lexerOption) {

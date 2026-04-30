@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineFluentdSource The `fluentd` source ingests logs from a Fluentd-compatible service.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineFluentdSource struct {
-	// The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).
+	// Name of the environment variable or secret that holds the listen address for the Fluent receiver.
+	AddressKey *string `json:"address_key,omitempty"`
+	// The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the `input` to downstream components).
 	Id string `json:"id"`
 	// Configuration for enabling TLS encryption between the pipeline component and external services.
 	Tls *ObservabilityPipelineTls `json:"tls,omitempty"`
@@ -42,6 +46,34 @@ func NewObservabilityPipelineFluentdSourceWithDefaults() *ObservabilityPipelineF
 	var typeVar ObservabilityPipelineFluentdSourceType = OBSERVABILITYPIPELINEFLUENTDSOURCETYPE_FLUENTD
 	this.Type = typeVar
 	return &this
+}
+
+// GetAddressKey returns the AddressKey field value if set, zero value otherwise.
+func (o *ObservabilityPipelineFluentdSource) GetAddressKey() string {
+	if o == nil || o.AddressKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.AddressKey
+}
+
+// GetAddressKeyOk returns a tuple with the AddressKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineFluentdSource) GetAddressKeyOk() (*string, bool) {
+	if o == nil || o.AddressKey == nil {
+		return nil, false
+	}
+	return o.AddressKey, true
+}
+
+// HasAddressKey returns a boolean if a field has been set.
+func (o *ObservabilityPipelineFluentdSource) HasAddressKey() bool {
+	return o != nil && o.AddressKey != nil
+}
+
+// SetAddressKey gets a reference to the given string and assigns it to the AddressKey field.
+func (o *ObservabilityPipelineFluentdSource) SetAddressKey(v string) {
+	o.AddressKey = &v
 }
 
 // GetId returns the Id field value.
@@ -124,6 +156,9 @@ func (o ObservabilityPipelineFluentdSource) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AddressKey != nil {
+		toSerialize["address_key"] = o.AddressKey
+	}
 	toSerialize["id"] = o.Id
 	if o.Tls != nil {
 		toSerialize["tls"] = o.Tls
@@ -139,9 +174,10 @@ func (o ObservabilityPipelineFluentdSource) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineFluentdSource) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string                                 `json:"id"`
-		Tls  *ObservabilityPipelineTls               `json:"tls,omitempty"`
-		Type *ObservabilityPipelineFluentdSourceType `json:"type"`
+		AddressKey *string                                 `json:"address_key,omitempty"`
+		Id         *string                                 `json:"id"`
+		Tls        *ObservabilityPipelineTls               `json:"tls,omitempty"`
+		Type       *ObservabilityPipelineFluentdSourceType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -154,12 +190,13 @@ func (o *ObservabilityPipelineFluentdSource) UnmarshalJSON(bytes []byte) (err er
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "tls", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"address_key", "id", "tls", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AddressKey = all.AddressKey
 	o.Id = *all.Id
 	if all.Tls != nil && all.Tls.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

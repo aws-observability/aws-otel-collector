@@ -16,8 +16,9 @@ type ObservabilityPipelineEnrichmentTableFileKeyItems struct {
 	Column string `json:"column"`
 	// Defines how to compare key fields for enrichment table lookups.
 	Comparison ObservabilityPipelineEnrichmentTableFileKeyItemsComparison `json:"comparison"`
-	// The `items` `field`.
-	Field string `json:"field"`
+	// Specifies the source of the key value used for enrichment table lookups.
+	// Can be a plain field path string or an object specifying `event`, `vrl`, or `secret`.
+	Field ObservabilityPipelineEnrichmentTableFileKeyItemField `json:"field"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -27,7 +28,7 @@ type ObservabilityPipelineEnrichmentTableFileKeyItems struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineEnrichmentTableFileKeyItems(column string, comparison ObservabilityPipelineEnrichmentTableFileKeyItemsComparison, field string) *ObservabilityPipelineEnrichmentTableFileKeyItems {
+func NewObservabilityPipelineEnrichmentTableFileKeyItems(column string, comparison ObservabilityPipelineEnrichmentTableFileKeyItemsComparison, field ObservabilityPipelineEnrichmentTableFileKeyItemField) *ObservabilityPipelineEnrichmentTableFileKeyItems {
 	this := ObservabilityPipelineEnrichmentTableFileKeyItems{}
 	this.Column = column
 	this.Comparison = comparison
@@ -90,9 +91,9 @@ func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) SetComparison(v Obser
 }
 
 // GetField returns the Field field value.
-func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) GetField() string {
+func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) GetField() ObservabilityPipelineEnrichmentTableFileKeyItemField {
 	if o == nil {
-		var ret string
+		var ret ObservabilityPipelineEnrichmentTableFileKeyItemField
 		return ret
 	}
 	return o.Field
@@ -100,7 +101,7 @@ func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) GetField() string {
 
 // GetFieldOk returns a tuple with the Field field value
 // and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) GetFieldOk() (*string, bool) {
+func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) GetFieldOk() (*ObservabilityPipelineEnrichmentTableFileKeyItemField, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -108,7 +109,7 @@ func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) GetFieldOk() (*string
 }
 
 // SetField sets field value.
-func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) SetField(v string) {
+func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) SetField(v ObservabilityPipelineEnrichmentTableFileKeyItemField) {
 	o.Field = v
 }
 
@@ -133,7 +134,7 @@ func (o *ObservabilityPipelineEnrichmentTableFileKeyItems) UnmarshalJSON(bytes [
 	all := struct {
 		Column     *string                                                     `json:"column"`
 		Comparison *ObservabilityPipelineEnrichmentTableFileKeyItemsComparison `json:"comparison"`
-		Field      *string                                                     `json:"field"`
+		Field      *ObservabilityPipelineEnrichmentTableFileKeyItemField       `json:"field"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

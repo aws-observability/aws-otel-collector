@@ -31,6 +31,8 @@ type RuleAttributes struct {
 	Name *string `json:"name,omitempty"`
 	// Owner of the rule.
 	Owner *string `json:"owner,omitempty"`
+	// A query to filter which entities this rule applies to.
+	ScopeQuery *string `json:"scope_query,omitempty"`
 	// The scorecard name to which this rule must belong.
 	ScorecardName *string `json:"scorecard_name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -310,6 +312,34 @@ func (o *RuleAttributes) SetOwner(v string) {
 	o.Owner = &v
 }
 
+// GetScopeQuery returns the ScopeQuery field value if set, zero value otherwise.
+func (o *RuleAttributes) GetScopeQuery() string {
+	if o == nil || o.ScopeQuery == nil {
+		var ret string
+		return ret
+	}
+	return *o.ScopeQuery
+}
+
+// GetScopeQueryOk returns a tuple with the ScopeQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RuleAttributes) GetScopeQueryOk() (*string, bool) {
+	if o == nil || o.ScopeQuery == nil {
+		return nil, false
+	}
+	return o.ScopeQuery, true
+}
+
+// HasScopeQuery returns a boolean if a field has been set.
+func (o *RuleAttributes) HasScopeQuery() bool {
+	return o != nil && o.ScopeQuery != nil
+}
+
+// SetScopeQuery gets a reference to the given string and assigns it to the ScopeQuery field.
+func (o *RuleAttributes) SetScopeQuery(v string) {
+	o.ScopeQuery = &v
+}
+
 // GetScorecardName returns the ScorecardName field value if set, zero value otherwise.
 func (o *RuleAttributes) GetScorecardName() string {
 	if o == nil || o.ScorecardName == nil {
@@ -379,6 +409,9 @@ func (o RuleAttributes) MarshalJSON() ([]byte, error) {
 	if o.Owner != nil {
 		toSerialize["owner"] = o.Owner
 	}
+	if o.ScopeQuery != nil {
+		toSerialize["scope_query"] = o.ScopeQuery
+	}
 	if o.ScorecardName != nil {
 		toSerialize["scorecard_name"] = o.ScorecardName
 	}
@@ -401,6 +434,7 @@ func (o *RuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		ModifiedAt    *time.Time `json:"modified_at,omitempty"`
 		Name          *string    `json:"name,omitempty"`
 		Owner         *string    `json:"owner,omitempty"`
+		ScopeQuery    *string    `json:"scope_query,omitempty"`
 		ScorecardName *string    `json:"scorecard_name,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -408,7 +442,7 @@ func (o *RuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "custom", "description", "enabled", "level", "modified_at", "name", "owner", "scorecard_name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "custom", "description", "enabled", "level", "modified_at", "name", "owner", "scope_query", "scorecard_name"})
 	} else {
 		return err
 	}
@@ -421,6 +455,7 @@ func (o *RuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.ModifiedAt = all.ModifiedAt
 	o.Name = all.Name
 	o.Owner = all.Owner
+	o.ScopeQuery = all.ScopeQuery
 	o.ScorecardName = all.ScorecardName
 
 	if len(additionalProperties) > 0 {

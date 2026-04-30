@@ -272,6 +272,7 @@ func (a *MetricsApi) DeleteBulkTagsMetricsConfiguration(ctx _context.Context, bo
 // DeleteTagConfiguration Delete a tag configuration.
 // Deletes a metric's tag configuration. Can only be used with application
 // keys from users with the `Manage Tags for Metrics` permission.
+// Note: This operation is irreversible.
 func (a *MetricsApi) DeleteTagConfiguration(ctx _context.Context, metricName string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -826,16 +827,17 @@ func (a *MetricsApi) ListTagConfigurationByName(ctx _context.Context, metricName
 
 // ListTagConfigurationsOptionalParameters holds optional parameters for ListTagConfigurations.
 type ListTagConfigurationsOptionalParameters struct {
-	FilterConfigured         *bool
-	FilterTagsConfigured     *string
-	FilterMetricType         *MetricTagConfigurationMetricTypeCategory
-	FilterIncludePercentiles *bool
-	FilterQueried            *bool
-	FilterTags               *string
-	FilterRelatedAssets      *bool
-	WindowSeconds            *int64
-	PageSize                 *int32
-	PageCursor               *string
+	FilterConfigured           *bool
+	FilterTagsConfigured       *string
+	FilterMetricType           *MetricTagConfigurationMetricTypeCategory
+	FilterIncludePercentiles   *bool
+	FilterQueried              *bool
+	FilterQueriedWindowSeconds *int64
+	FilterTags                 *string
+	FilterRelatedAssets        *bool
+	WindowSeconds              *int64
+	PageSize                   *int32
+	PageCursor                 *string
 }
 
 // NewListTagConfigurationsOptionalParameters creates an empty struct for parameters.
@@ -874,6 +876,12 @@ func (r *ListTagConfigurationsOptionalParameters) WithFilterQueried(filterQuerie
 	return r
 }
 
+// WithFilterQueriedWindowSeconds sets the corresponding parameter name and returns the struct.
+func (r *ListTagConfigurationsOptionalParameters) WithFilterQueriedWindowSeconds(filterQueriedWindowSeconds int64) *ListTagConfigurationsOptionalParameters {
+	r.FilterQueriedWindowSeconds = &filterQueriedWindowSeconds
+	return r
+}
+
 // WithFilterTags sets the corresponding parameter name and returns the struct.
 func (r *ListTagConfigurationsOptionalParameters) WithFilterTags(filterTags string) *ListTagConfigurationsOptionalParameters {
 	r.FilterTags = &filterTags
@@ -905,10 +913,7 @@ func (r *ListTagConfigurationsOptionalParameters) WithPageCursor(pageCursor stri
 }
 
 // ListTagConfigurations Get a list of metrics.
-// Returns all metrics that can be configured in the Metrics Summary page or with Metrics without Limits™ (matching additional filters if specified).
-// Optionally, paginate by using the `page[cursor]` and/or `page[size]` query parameters.
-// To fetch the first page, pass in a query parameter with either a valid `page[size]` or an empty cursor like `page[cursor]=`. To fetch the next page, pass in the `next_cursor` value from the response as the new `page[cursor]` value.
-// Once the `meta.pagination.next_cursor` value is null, all pages have been retrieved.
+// Get a list of actively reporting metrics for your organization. Pagination is optional using the `page[cursor]` and `page[size]` query parameters.
 func (a *MetricsApi) ListTagConfigurations(ctx _context.Context, o ...ListTagConfigurationsOptionalParameters) (MetricsAndMetricTagConfigurationsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -948,6 +953,9 @@ func (a *MetricsApi) ListTagConfigurations(ctx _context.Context, o ...ListTagCon
 	}
 	if optionalParams.FilterQueried != nil {
 		localVarQueryParams.Add("filter[queried]", datadog.ParameterToString(*optionalParams.FilterQueried, ""))
+	}
+	if optionalParams.FilterQueriedWindowSeconds != nil {
+		localVarQueryParams.Add("filter[queried][window][seconds]", datadog.ParameterToString(*optionalParams.FilterQueriedWindowSeconds, ""))
 	}
 	if optionalParams.FilterTags != nil {
 		localVarQueryParams.Add("filter[tags]", datadog.ParameterToString(*optionalParams.FilterTags, ""))
@@ -1057,7 +1065,7 @@ func (a *MetricsApi) ListTagConfigurationsWithPagination(ctx _context.Context, o
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()
@@ -1080,14 +1088,75 @@ func (a *MetricsApi) ListTagConfigurationsWithPagination(ctx _context.Context, o
 	return items, cancel
 }
 
+// ListTagsByMetricNameOptionalParameters holds optional parameters for ListTagsByMetricName.
+type ListTagsByMetricNameOptionalParameters struct {
+	WindowSeconds          *int64
+	FilterTags             *string
+	FilterMatch            *string
+	FilterIncludeTagValues *bool
+	FilterAllowPartial     *bool
+	PageLimit              *int32
+}
+
+// NewListTagsByMetricNameOptionalParameters creates an empty struct for parameters.
+func NewListTagsByMetricNameOptionalParameters() *ListTagsByMetricNameOptionalParameters {
+	this := ListTagsByMetricNameOptionalParameters{}
+	return &this
+}
+
+// WithWindowSeconds sets the corresponding parameter name and returns the struct.
+func (r *ListTagsByMetricNameOptionalParameters) WithWindowSeconds(windowSeconds int64) *ListTagsByMetricNameOptionalParameters {
+	r.WindowSeconds = &windowSeconds
+	return r
+}
+
+// WithFilterTags sets the corresponding parameter name and returns the struct.
+func (r *ListTagsByMetricNameOptionalParameters) WithFilterTags(filterTags string) *ListTagsByMetricNameOptionalParameters {
+	r.FilterTags = &filterTags
+	return r
+}
+
+// WithFilterMatch sets the corresponding parameter name and returns the struct.
+func (r *ListTagsByMetricNameOptionalParameters) WithFilterMatch(filterMatch string) *ListTagsByMetricNameOptionalParameters {
+	r.FilterMatch = &filterMatch
+	return r
+}
+
+// WithFilterIncludeTagValues sets the corresponding parameter name and returns the struct.
+func (r *ListTagsByMetricNameOptionalParameters) WithFilterIncludeTagValues(filterIncludeTagValues bool) *ListTagsByMetricNameOptionalParameters {
+	r.FilterIncludeTagValues = &filterIncludeTagValues
+	return r
+}
+
+// WithFilterAllowPartial sets the corresponding parameter name and returns the struct.
+func (r *ListTagsByMetricNameOptionalParameters) WithFilterAllowPartial(filterAllowPartial bool) *ListTagsByMetricNameOptionalParameters {
+	r.FilterAllowPartial = &filterAllowPartial
+	return r
+}
+
+// WithPageLimit sets the corresponding parameter name and returns the struct.
+func (r *ListTagsByMetricNameOptionalParameters) WithPageLimit(pageLimit int32) *ListTagsByMetricNameOptionalParameters {
+	r.PageLimit = &pageLimit
+	return r
+}
+
 // ListTagsByMetricName List tags by metric name.
-// View indexed tag key-value pairs for a given metric name over the previous hour.
-func (a *MetricsApi) ListTagsByMetricName(ctx _context.Context, metricName string) (MetricAllTagsResponse, *_nethttp.Response, error) {
+// View indexed and ingested tags for a given metric name.
+// Results are filtered by the `window[seconds]` parameter, which defaults to 14400 (4 hours).
+func (a *MetricsApi) ListTagsByMetricName(ctx _context.Context, metricName string, o ...ListTagsByMetricNameOptionalParameters) (MetricAllTagsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
 		localVarPostBody    interface{}
 		localVarReturnValue MetricAllTagsResponse
+		optionalParams      ListTagsByMetricNameOptionalParameters
 	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListTagsByMetricNameOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MetricsApi.ListTagsByMetricName")
 	if err != nil {
@@ -1100,6 +1169,24 @@ func (a *MetricsApi) ListTagsByMetricName(ctx _context.Context, metricName strin
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
+	if optionalParams.WindowSeconds != nil {
+		localVarQueryParams.Add("window[seconds]", datadog.ParameterToString(*optionalParams.WindowSeconds, ""))
+	}
+	if optionalParams.FilterTags != nil {
+		localVarQueryParams.Add("filter[tags]", datadog.ParameterToString(*optionalParams.FilterTags, ""))
+	}
+	if optionalParams.FilterMatch != nil {
+		localVarQueryParams.Add("filter[match]", datadog.ParameterToString(*optionalParams.FilterMatch, ""))
+	}
+	if optionalParams.FilterIncludeTagValues != nil {
+		localVarQueryParams.Add("filter[include_tag_values]", datadog.ParameterToString(*optionalParams.FilterIncludeTagValues, ""))
+	}
+	if optionalParams.FilterAllowPartial != nil {
+		localVarQueryParams.Add("filter[allow_partial]", datadog.ParameterToString(*optionalParams.FilterAllowPartial, ""))
+	}
+	if optionalParams.PageLimit != nil {
+		localVarQueryParams.Add("page[limit]", datadog.ParameterToString(*optionalParams.PageLimit, ""))
+	}
 	localVarHeaderParams["Accept"] = "application/json"
 
 	if a.Client.Cfg.DelegatedTokenConfig != nil {

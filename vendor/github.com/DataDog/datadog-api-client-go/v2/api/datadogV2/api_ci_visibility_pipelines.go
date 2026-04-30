@@ -367,7 +367,7 @@ func (a *CIVisibilityPipelinesApi) ListCIAppPipelineEventsWithPagination(ctx _co
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()
@@ -541,7 +541,7 @@ func (a *CIVisibilityPipelinesApi) SearchCIAppPipelineEventsWithPagination(ctx _
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()

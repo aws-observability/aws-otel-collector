@@ -12,6 +12,8 @@ import (
 
 // RecommendationAttributes Attributes of the SPA Recommendation resource. Contains recommendations for both driver and executor components.
 type RecommendationAttributes struct {
+	// The confidence level of the recommendation, expressed as a value between 0.0 (low confidence) and 1.0 (high confidence).
+	ConfidenceLevel *float64 `json:"confidence_level,omitempty"`
 	// Resource recommendation for a single Spark component (driver or executor). Contains estimation data used to patch Spark job specs.
 	Driver ComponentRecommendation `json:"driver"`
 	// Resource recommendation for a single Spark component (driver or executor). Contains estimation data used to patch Spark job specs.
@@ -38,6 +40,34 @@ func NewRecommendationAttributes(driver ComponentRecommendation, executor Compon
 func NewRecommendationAttributesWithDefaults() *RecommendationAttributes {
 	this := RecommendationAttributes{}
 	return &this
+}
+
+// GetConfidenceLevel returns the ConfidenceLevel field value if set, zero value otherwise.
+func (o *RecommendationAttributes) GetConfidenceLevel() float64 {
+	if o == nil || o.ConfidenceLevel == nil {
+		var ret float64
+		return ret
+	}
+	return *o.ConfidenceLevel
+}
+
+// GetConfidenceLevelOk returns a tuple with the ConfidenceLevel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RecommendationAttributes) GetConfidenceLevelOk() (*float64, bool) {
+	if o == nil || o.ConfidenceLevel == nil {
+		return nil, false
+	}
+	return o.ConfidenceLevel, true
+}
+
+// HasConfidenceLevel returns a boolean if a field has been set.
+func (o *RecommendationAttributes) HasConfidenceLevel() bool {
+	return o != nil && o.ConfidenceLevel != nil
+}
+
+// SetConfidenceLevel gets a reference to the given float64 and assigns it to the ConfidenceLevel field.
+func (o *RecommendationAttributes) SetConfidenceLevel(v float64) {
+	o.ConfidenceLevel = &v
 }
 
 // GetDriver returns the Driver field value.
@@ -92,6 +122,9 @@ func (o RecommendationAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ConfidenceLevel != nil {
+		toSerialize["confidence_level"] = o.ConfidenceLevel
+	}
 	toSerialize["driver"] = o.Driver
 	toSerialize["executor"] = o.Executor
 
@@ -104,8 +137,9 @@ func (o RecommendationAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *RecommendationAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Driver   *ComponentRecommendation `json:"driver"`
-		Executor *ComponentRecommendation `json:"executor"`
+		ConfidenceLevel *float64                 `json:"confidence_level,omitempty"`
+		Driver          *ComponentRecommendation `json:"driver"`
+		Executor        *ComponentRecommendation `json:"executor"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -118,12 +152,13 @@ func (o *RecommendationAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"driver", "executor"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"confidence_level", "driver", "executor"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.ConfidenceLevel = all.ConfidenceLevel
 	if all.Driver.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

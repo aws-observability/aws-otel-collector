@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DORAListFailuresRequestAttributes Attributes to get a list of failures.
+// DORAListFailuresRequestAttributes Attributes to get a list of incidents.
 type DORAListFailuresRequestAttributes struct {
 	// Minimum timestamp for requested events.
 	From *time.Time `json:"from,omitempty"`

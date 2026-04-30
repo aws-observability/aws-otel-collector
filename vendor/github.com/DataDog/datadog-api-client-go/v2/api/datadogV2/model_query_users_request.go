@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryUsersRequest
+// QueryUsersRequest Request body for querying users with optional filtering, column selection, and sorting.
 type QueryUsersRequest struct {
-	//
+	// The data object containing the resource type and attributes for querying users.
 	Data *QueryUsersRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
