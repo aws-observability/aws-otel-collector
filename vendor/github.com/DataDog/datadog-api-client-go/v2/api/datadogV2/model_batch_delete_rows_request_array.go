@@ -12,8 +12,8 @@ import (
 
 // BatchDeleteRowsRequestArray The request body for deleting multiple rows from a reference table.
 type BatchDeleteRowsRequestArray struct {
-	//
-	Data []BatchDeleteRowsRequestData `json:"data"`
+	// List of row resources to delete from the reference table.
+	Data []TableRowResourceIdentifier `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,7 +23,7 @@ type BatchDeleteRowsRequestArray struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewBatchDeleteRowsRequestArray(data []BatchDeleteRowsRequestData) *BatchDeleteRowsRequestArray {
+func NewBatchDeleteRowsRequestArray(data []TableRowResourceIdentifier) *BatchDeleteRowsRequestArray {
 	this := BatchDeleteRowsRequestArray{}
 	this.Data = data
 	return &this
@@ -38,9 +38,9 @@ func NewBatchDeleteRowsRequestArrayWithDefaults() *BatchDeleteRowsRequestArray {
 }
 
 // GetData returns the Data field value.
-func (o *BatchDeleteRowsRequestArray) GetData() []BatchDeleteRowsRequestData {
+func (o *BatchDeleteRowsRequestArray) GetData() []TableRowResourceIdentifier {
 	if o == nil {
-		var ret []BatchDeleteRowsRequestData
+		var ret []TableRowResourceIdentifier
 		return ret
 	}
 	return o.Data
@@ -48,7 +48,7 @@ func (o *BatchDeleteRowsRequestArray) GetData() []BatchDeleteRowsRequestData {
 
 // GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
-func (o *BatchDeleteRowsRequestArray) GetDataOk() (*[]BatchDeleteRowsRequestData, bool) {
+func (o *BatchDeleteRowsRequestArray) GetDataOk() (*[]TableRowResourceIdentifier, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -56,7 +56,7 @@ func (o *BatchDeleteRowsRequestArray) GetDataOk() (*[]BatchDeleteRowsRequestData
 }
 
 // SetData sets field value.
-func (o *BatchDeleteRowsRequestArray) SetData(v []BatchDeleteRowsRequestData) {
+func (o *BatchDeleteRowsRequestArray) SetData(v []TableRowResourceIdentifier) {
 	o.Data = v
 }
 
@@ -77,7 +77,7 @@ func (o BatchDeleteRowsRequestArray) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *BatchDeleteRowsRequestArray) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data *[]BatchDeleteRowsRequestData `json:"data"`
+		Data *[]TableRowResourceIdentifier `json:"data"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

@@ -30,6 +30,8 @@ type DatacenterProperties struct {
 	SecAuthProtection *bool `json:"secAuthProtection,omitempty"`
 	// Array of features and CPU families available in a location
 	CpuArchitecture *[]CpuArchitectureProperties `json:"cpuArchitecture,omitempty"`
+	// The types of GPU cards that are available in the location where the data center is provisioned.
+	GpuArchitecture *[]GpuArchitectureProperties `json:"gpuArchitecture,omitempty"`
 	// This value is either 'null' or contains an automatically-assigned /56 IPv6 CIDR block if IPv6 is enabled on this virtual data center. It can neither be changed nor removed.
 	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetIpv6CidrBlockNil`
 	Ipv6CidrBlock *string `json:"ipv6CidrBlock,omitempty"`
@@ -323,6 +325,44 @@ func (o *DatacenterProperties) HasCpuArchitecture() bool {
 	return false
 }
 
+// GetGpuArchitecture returns the GpuArchitecture field value
+// If the value is explicit nil, nil is returned
+func (o *DatacenterProperties) GetGpuArchitecture() *[]GpuArchitectureProperties {
+	if o == nil {
+		return nil
+	}
+
+	return o.GpuArchitecture
+
+}
+
+// GetGpuArchitectureOk returns a tuple with the GpuArchitecture field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DatacenterProperties) GetGpuArchitectureOk() (*[]GpuArchitectureProperties, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.GpuArchitecture, true
+}
+
+// SetGpuArchitecture sets field value
+func (o *DatacenterProperties) SetGpuArchitecture(v []GpuArchitectureProperties) {
+
+	o.GpuArchitecture = &v
+
+}
+
+// HasGpuArchitecture returns a boolean if a field has been set.
+func (o *DatacenterProperties) HasGpuArchitecture() bool {
+	if o != nil && o.GpuArchitecture != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetIpv6CidrBlock returns the Ipv6CidrBlock field value
 // If the value is explicit nil, nil is returned
 func (o *DatacenterProperties) GetIpv6CidrBlock() *string {
@@ -432,6 +472,10 @@ func (o DatacenterProperties) MarshalJSON() ([]byte, error) {
 
 	if o.CpuArchitecture != nil {
 		toSerialize["cpuArchitecture"] = o.CpuArchitecture
+	}
+
+	if o.GpuArchitecture != nil {
+		toSerialize["gpuArchitecture"] = o.GpuArchitecture
 	}
 
 	if o.Ipv6CidrBlock == &Nilstring {

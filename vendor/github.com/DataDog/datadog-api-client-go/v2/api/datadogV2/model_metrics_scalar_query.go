@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MetricsScalarQuery An individual scalar metrics query.
+// MetricsScalarQuery A query against Datadog custom metrics or Cloud Cost data sources.
 type MetricsScalarQuery struct {
 	// The type of aggregation that can be performed on metrics-based queries.
 	Aggregator MetricsAggregator `json:"aggregator"`

@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineCustomProcessor The `custom_processor` processor transforms events using [Vector Remap Language (VRL)](https://vector.dev/docs/reference/vrl/) scripts with advanced filtering capabilities.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineCustomProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// The unique identifier for this processor.
 	Id string `json:"id"`
@@ -51,6 +55,34 @@ func NewObservabilityPipelineCustomProcessorWithDefaults() *ObservabilityPipelin
 	var typeVar ObservabilityPipelineCustomProcessorType = OBSERVABILITYPIPELINECUSTOMPROCESSORTYPE_CUSTOM_PROCESSOR
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineCustomProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineCustomProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineCustomProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineCustomProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -174,6 +206,9 @@ func (o ObservabilityPipelineCustomProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
@@ -189,11 +224,12 @@ func (o ObservabilityPipelineCustomProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineCustomProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled *bool                                        `json:"enabled"`
-		Id      *string                                      `json:"id"`
-		Include *string                                      `json:"include"`
-		Remaps  *[]ObservabilityPipelineCustomProcessorRemap `json:"remaps"`
-		Type    *ObservabilityPipelineCustomProcessorType    `json:"type"`
+		DisplayName *string                                      `json:"display_name,omitempty"`
+		Enabled     *bool                                        `json:"enabled"`
+		Id          *string                                      `json:"id"`
+		Include     *string                                      `json:"include"`
+		Remaps      *[]ObservabilityPipelineCustomProcessorRemap `json:"remaps"`
+		Type        *ObservabilityPipelineCustomProcessorType    `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -215,12 +251,13 @@ func (o *ObservabilityPipelineCustomProcessor) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "id", "include", "remaps", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "id", "include", "remaps", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include

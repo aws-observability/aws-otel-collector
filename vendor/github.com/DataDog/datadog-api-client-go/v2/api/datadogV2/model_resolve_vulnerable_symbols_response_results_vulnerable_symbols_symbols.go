@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsResponseResultsVulnerableSymbolsSymbols
+// ResolveVulnerableSymbolsResponseResultsVulnerableSymbolsSymbols A symbol identified as vulnerable within a dependency, including its name, type, and value.
 type ResolveVulnerableSymbolsResponseResultsVulnerableSymbolsSymbols struct {
-	//
+	// The name of the vulnerable symbol.
 	Name *string `json:"name,omitempty"`
-	//
+	// The type classification of the vulnerable symbol (e.g., function, class, variable).
 	Type *string `json:"type,omitempty"`
-	//
+	// The value or identifier associated with the vulnerable symbol.
 	Value *string `json:"value,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

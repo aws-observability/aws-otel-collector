@@ -12,8 +12,12 @@ import (
 
 // ObservabilityPipelineGenerateMetricsProcessor The `generate_datadog_metrics` processor creates custom metrics from logs and sends them to Datadog.
 // Metrics can be counters, gauges, or distributions and optionally grouped by log fields.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineGenerateMetricsProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// The unique identifier for this component. Used to reference this component in other parts of the pipeline.
 	Id string `json:"id"`
@@ -48,6 +52,34 @@ func NewObservabilityPipelineGenerateMetricsProcessorWithDefaults() *Observabili
 	var typeVar ObservabilityPipelineGenerateMetricsProcessorType = OBSERVABILITYPIPELINEGENERATEMETRICSPROCESSORTYPE_GENERATE_DATADOG_METRICS
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineGenerateMetricsProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineGenerateMetricsProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineGenerateMetricsProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineGenerateMetricsProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -181,6 +213,9 @@ func (o ObservabilityPipelineGenerateMetricsProcessor) MarshalJSON() ([]byte, er
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	if o.Include != nil {
@@ -200,11 +235,12 @@ func (o ObservabilityPipelineGenerateMetricsProcessor) MarshalJSON() ([]byte, er
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineGenerateMetricsProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled *bool                                              `json:"enabled"`
-		Id      *string                                            `json:"id"`
-		Include *string                                            `json:"include,omitempty"`
-		Metrics []ObservabilityPipelineGeneratedMetric             `json:"metrics,omitempty"`
-		Type    *ObservabilityPipelineGenerateMetricsProcessorType `json:"type"`
+		DisplayName *string                                            `json:"display_name,omitempty"`
+		Enabled     *bool                                              `json:"enabled"`
+		Id          *string                                            `json:"id"`
+		Include     *string                                            `json:"include,omitempty"`
+		Metrics     []ObservabilityPipelineGeneratedMetric             `json:"metrics,omitempty"`
+		Type        *ObservabilityPipelineGenerateMetricsProcessorType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -220,12 +256,13 @@ func (o *ObservabilityPipelineGenerateMetricsProcessor) UnmarshalJSON(bytes []by
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "id", "include", "metrics", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "id", "include", "metrics", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = all.Include

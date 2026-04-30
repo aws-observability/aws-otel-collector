@@ -18,7 +18,8 @@ type AWSLambdaForwarderConfig struct {
 	LogSourceConfig *AWSLambdaForwarderConfigLogSourceConfig `json:"log_source_config,omitempty"`
 	// List of service IDs set to enable automatic log collection.
 	// Discover the list of available services with the
-	// [Get list of AWS log ready services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services)
+	// [Get list of AWS log ready
+	// services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services)
 	// endpoint.
 	Sources []string `json:"sources,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct

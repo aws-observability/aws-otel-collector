@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ProjectCreateRequest Project create request
+// ProjectCreateRequest Project create request.
 type ProjectCreateRequest struct {
-	// Project create
+	// Project create.
 	Data ProjectCreate `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

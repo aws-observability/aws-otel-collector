@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsRequestData
+// ResolveVulnerableSymbolsRequestData The data object in a request to resolve vulnerable symbols, containing the package PURLs and request type.
 type ResolveVulnerableSymbolsRequestData struct {
-	//
+	// The attributes of a request to resolve vulnerable symbols, containing the list of package PURLs to check.
 	Attributes *ResolveVulnerableSymbolsRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// An optional identifier for this request data object.
 	Id *string `json:"id,omitempty"`
-	//
+	// The type identifier for requests to resolve vulnerable symbols.
 	Type ResolveVulnerableSymbolsRequestDataType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

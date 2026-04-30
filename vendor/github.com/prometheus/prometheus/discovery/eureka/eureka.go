@@ -1,4 +1,4 @@
-// Copyright 2020 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,7 +16,6 @@ package eureka
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"net"
 	"net/http"
 	"net/url"
@@ -88,7 +87,7 @@ func (*SDConfig) Name() string { return "eureka" }
 
 // NewDiscoverer returns a Discoverer for the Config.
 func (c *SDConfig) NewDiscoverer(opts discovery.DiscovererOptions) (discovery.Discoverer, error) {
-	return NewDiscovery(c, opts.Logger, opts.Metrics)
+	return NewDiscovery(c, opts)
 }
 
 // SetDirectory joins any relative file paths with dir.
@@ -104,14 +103,14 @@ func (c *SDConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	if err != nil {
 		return err
 	}
-	if len(c.Server) == 0 {
+	if c.Server == "" {
 		return errors.New("eureka_sd: empty or null eureka server")
 	}
 	url, err := url.Parse(c.Server)
 	if err != nil {
 		return err
 	}
-	if len(url.Scheme) == 0 || len(url.Host) == 0 {
+	if url.Scheme == "" || url.Host == "" {
 		return errors.New("eureka_sd: invalid eureka server URL")
 	}
 	return c.HTTPClientConfig.Validate()
@@ -125,8 +124,8 @@ type Discovery struct {
 }
 
 // NewDiscovery creates a new Eureka discovery for the given role.
-func NewDiscovery(conf *SDConfig, logger *slog.Logger, metrics discovery.DiscovererMetrics) (*Discovery, error) {
-	m, ok := metrics.(*eurekaMetrics)
+func NewDiscovery(conf *SDConfig, opts discovery.DiscovererOptions) (*Discovery, error) {
+	m, ok := opts.Metrics.(*eurekaMetrics)
 	if !ok {
 		return nil, errors.New("invalid discovery metrics type")
 	}
@@ -142,8 +141,9 @@ func NewDiscovery(conf *SDConfig, logger *slog.Logger, metrics discovery.Discove
 	}
 	d.Discovery = refresh.NewDiscovery(
 		refresh.Options{
-			Logger:              logger,
+			Logger:              opts.Logger,
 			Mech:                "eureka",
+			SetName:             opts.SetName,
 			Interval:            time.Duration(conf.RefreshInterval),
 			RefreshF:            d.refresh,
 			MetricsInstantiator: m.refreshMetrics,

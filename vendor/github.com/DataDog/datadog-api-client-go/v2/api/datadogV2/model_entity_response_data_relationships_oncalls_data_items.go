@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsOncallsDataItems
+// EntityResponseDataRelationshipsOncallsDataItems Oncall relationship data item containing the oncall resource identifier and type.
 type EntityResponseDataRelationshipsOncallsDataItems struct {
-	//
+	// Oncall resource unique identifier.
 	Id string `json:"id"`
 	// Oncall resource type.
 	Type EntityResponseDataRelationshipsOncallsDataItemsType `json:"type"`

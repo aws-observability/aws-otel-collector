@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryAccountRequestDataAttributesSort
+// QueryAccountRequestDataAttributesSort Sorting configuration specifying the field and direction for ordering query results.
 type QueryAccountRequestDataAttributesSort struct {
-	//
+	// The attribute field name to sort results by.
 	Field *string `json:"field,omitempty"`
-	//
+	// The sort direction, either ascending or descending.
 	Order *string `json:"order,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

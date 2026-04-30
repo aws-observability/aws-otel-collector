@@ -12,7 +12,7 @@ import (
 
 // FleetAgentVersion Represents an available Datadog Agent version.
 type FleetAgentVersion struct {
-	//
+	// Attributes of an available Datadog Agent version.
 	Attributes *FleetAgentVersionAttributes `json:"attributes,omitempty"`
 	// Unique identifier for the Agent version (same as version).
 	Id string `json:"id"`

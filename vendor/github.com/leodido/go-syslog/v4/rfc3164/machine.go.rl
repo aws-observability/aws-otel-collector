@@ -158,6 +158,7 @@ pri = ('<' prival >mark %from(set_prival) $err(err_prival) '>') @err(err_pri);
 time = hhmmss (timesecfrac? when { m.secfrac });
 
 timestamp = (datemmm sp datemday sp time) >mark %set_timestamp @err(err_timestamp);
+timestamp_lenient = (datemmm sp datemday_lenient sp time) >mark %set_timestamp @err(err_timestamp);
 
 rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
 
@@ -190,22 +191,29 @@ ciscoextras = msgcount? <: sequence? <: ciscoHostname?;
 # note > should be {1,32} but Unifi thinks it can be up to 48 characters
 tag = (print -- [ :\[]){1,48} >mark %set_tag @err(err_tag);
 
-visible = print | 0x80..0xFF;
+# note > we accept HTAB (0x09) in message content even though RFC 3164 technically restricts MSG to VCHAR (%d33-126) and SP (%d32).
+# note > this deviation is necessary for interoperability with common syslog implementations that use tabs as field delimiters (e.g., Snare).
+visible = print | 0x09 | 0x80..0xFF;
+
+# note > when newline mode is enabled (WithEmbeddedNewlines), we also accept LF (0x0A) and CR (0x0D) inside the message body.
+# note > this is needed for octet-counting framing (RFC 5425) where the message length is known upfront,
+# note > so embedded newlines are unambiguous and must be preserved.
+visible_or_nl = visible | ( 0x0A | 0x0D ) when { m.newline };
 
 # The first not alphanumeric character starts the content (usually containing a PID) part of the message part
-contentval = (print -- [ \[\]])* >mark %set_content @err(err_content);
+contentval = ((visible_or_nl -- [\[\]])*) >mark %set_content @err(err_content);
 
 content = '[' contentval ']' @err(err_contentstart); # todo(leodido) > support ':' and ' ' too. Also they have to match?
 
-mex = visible+ >mark %set_message;
+mex = visible_or_nl+ >mark %set_message;
 
 msg = (tag content? ':' sp)? mex;
 
-fail := (any - [\n\r])* @err{ fgoto main; };
+fail := ((any when { m.newline }) | (any - [\n\r]) when { !m.newline })* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* ciscoextras ciscostar (timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
+main := pri sp* ciscoextras ciscostar ((timestamp_lenient when { m.lenientDay }) | timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
 
 }%%
 
@@ -224,6 +232,8 @@ type machine struct {
 	msgcount      bool
 	sequence      bool
 	ciscoHostname bool
+	lenientDay    bool
+	newline       bool
 	loc           *time.Location
 	timezone      *time.Location
 }
@@ -298,6 +308,21 @@ func (m *machine) WithSequenceNumber() {
 // `<189>269614: hostname1: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`
 func (m *machine) WithCiscoHostname() {
     m.ciscoHostname = true
+}
+
+// WithLenientDay enables acceptance of 0-prefixed single-digit days in timestamps (e.g., "Feb 05").
+// By default the parser only accepts RFC 3164 compliant timestamps where single-digit days
+// are space-padded (e.g., "Feb  5").
+func (m *machine) WithLenientDay() {
+    m.lenientDay = true
+}
+
+// WithEmbeddedNewlines enables acceptance of newline characters (LF, CR) inside the MSG field.
+// By default the parser treats newlines as message terminators per RFC 3164.
+// Enable this when using octet-counting framing (RFC 5425) where message boundaries
+// are determined by the length prefix, making embedded newlines unambiguous.
+func (m *machine) WithEmbeddedNewlines() {
+    m.newline = true
 }
 
 // Err returns the error that occurred on the last call to Parse.

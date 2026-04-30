@@ -205,7 +205,7 @@ func (a *ProcessesApi) ListProcessesWithPagination(ctx _context.Context, o ...Li
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()

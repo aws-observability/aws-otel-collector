@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineAddEnvVarsProcessor The `add_env_vars` processor adds environment variable values to log events.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineAddEnvVarsProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// The unique identifier for this component. Used to reference this processor in the pipeline.
 	Id string `json:"id"`
@@ -49,6 +53,34 @@ func NewObservabilityPipelineAddEnvVarsProcessorWithDefaults() *ObservabilityPip
 	var typeVar ObservabilityPipelineAddEnvVarsProcessorType = OBSERVABILITYPIPELINEADDENVVARSPROCESSORTYPE_ADD_ENV_VARS
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -172,6 +204,9 @@ func (o ObservabilityPipelineAddEnvVarsProcessor) MarshalJSON() ([]byte, error) 
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
@@ -187,11 +222,12 @@ func (o ObservabilityPipelineAddEnvVarsProcessor) MarshalJSON() ([]byte, error) 
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineAddEnvVarsProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled   *bool                                               `json:"enabled"`
-		Id        *string                                             `json:"id"`
-		Include   *string                                             `json:"include"`
-		Type      *ObservabilityPipelineAddEnvVarsProcessorType       `json:"type"`
-		Variables *[]ObservabilityPipelineAddEnvVarsProcessorVariable `json:"variables"`
+		DisplayName *string                                             `json:"display_name,omitempty"`
+		Enabled     *bool                                               `json:"enabled"`
+		Id          *string                                             `json:"id"`
+		Include     *string                                             `json:"include"`
+		Type        *ObservabilityPipelineAddEnvVarsProcessorType       `json:"type"`
+		Variables   *[]ObservabilityPipelineAddEnvVarsProcessorVariable `json:"variables"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -213,12 +249,13 @@ func (o *ObservabilityPipelineAddEnvVarsProcessor) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "id", "include", "type", "variables"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "id", "include", "type", "variables"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include

@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesVulnerabilitiesItems
+// ScaRequestDataAttributesVulnerabilitiesItems A vulnerability entry from the Software Bill of Materials (SBOM), describing a known security issue and the components it affects.
 type ScaRequestDataAttributesVulnerabilitiesItems struct {
-	//
+	// The list of components affected by this vulnerability.
 	Affects []ScaRequestDataAttributesVulnerabilitiesItemsAffectsItems `json:"affects,omitempty"`
-	//
+	// The unique BOM reference identifier for this vulnerability entry.
 	BomRef *string `json:"bom_ref,omitempty"`
-	//
+	// The vulnerability identifier (e.g., CVE ID or similar).
 	Id *string `json:"id,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

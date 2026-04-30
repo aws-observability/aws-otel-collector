@@ -52,7 +52,7 @@ const (
 	RequestStatusFailed  = "FAILED"
 	RequestStatusDone    = "DONE"
 
-	Version = "6.3.4"
+	Version = "6.3.6"
 )
 
 // Constants for APIs
@@ -80,6 +80,8 @@ type APIClient struct {
 	FirewallRulesApi *FirewallRulesApiService
 
 	FlowLogsApi *FlowLogsApiService
+
+	GraphicsProcessingUnitCardsApi *GraphicsProcessingUnitCardsApiService
 
 	IPBlocksApi *IPBlocksApiService
 
@@ -152,6 +154,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.DataCentersApi = (*DataCentersApiService)(&c.common)
 	c.FirewallRulesApi = (*FirewallRulesApiService)(&c.common)
 	c.FlowLogsApi = (*FlowLogsApiService)(&c.common)
+	c.GraphicsProcessingUnitCardsApi = (*GraphicsProcessingUnitCardsApiService)(&c.common)
 	c.IPBlocksApi = (*IPBlocksApiService)(&c.common)
 	c.ImagesApi = (*ImagesApiService)(&c.common)
 	c.KubernetesApi = (*KubernetesApiService)(&c.common)

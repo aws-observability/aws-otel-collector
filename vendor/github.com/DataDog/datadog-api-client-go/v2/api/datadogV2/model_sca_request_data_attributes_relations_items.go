@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesRelationsItems
+// ScaRequestDataAttributesRelationsItems A dependency relation describing which other components a given component depends on.
 type ScaRequestDataAttributesRelationsItems struct {
-	//
+	// The list of BOM references that this component directly depends on.
 	DependsOn []string `json:"depends_on,omitempty"`
-	//
+	// The BOM reference of the component that has dependencies.
 	Ref *string `json:"ref,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

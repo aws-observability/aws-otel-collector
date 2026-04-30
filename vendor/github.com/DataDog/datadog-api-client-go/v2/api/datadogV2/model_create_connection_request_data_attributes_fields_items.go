@@ -10,19 +10,19 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CreateConnectionRequestDataAttributesFieldsItems
+// CreateConnectionRequestDataAttributesFieldsItems Definition of a custom attribute field to import from a data source connection.
 type CreateConnectionRequestDataAttributesFieldsItems struct {
-	//
+	// Human-readable explanation of what the field represents.
 	Description *string `json:"description,omitempty"`
-	//
+	// The human-readable label for the field shown in the UI.
 	DisplayName *string `json:"display_name,omitempty"`
-	//
+	// List of group labels used to categorize the field.
 	Groups []string `json:"groups,omitempty"`
-	//
+	// The unique identifier for the field within the connection.
 	Id string `json:"id"`
-	//
+	// The name of the column or attribute in the source data system that maps to this field.
 	SourceName string `json:"source_name"`
-	//
+	// The data type of the field (for example, string or number).
 	Type string `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

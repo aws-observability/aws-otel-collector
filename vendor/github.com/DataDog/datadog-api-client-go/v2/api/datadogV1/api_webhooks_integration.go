@@ -176,7 +176,7 @@ func (a *WebhooksIntegrationApi) CreateWebhooksIntegrationCustomVariable(ctx _co
 }
 
 // DeleteWebhooksIntegration Delete a webhook.
-// Deletes the endpoint with the name `<WEBHOOK NAME>`.
+// Deletes the endpoint with the name `<WEBHOOK NAME>`. This action cannot be undone.
 func (a *WebhooksIntegrationApi) DeleteWebhooksIntegration(ctx _context.Context, webhookName string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete

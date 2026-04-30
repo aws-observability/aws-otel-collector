@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineParseJSONProcessor The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineParseJSONProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// The name of the log field that contains a JSON string.
 	Field string `json:"field"`
@@ -49,6 +53,34 @@ func NewObservabilityPipelineParseJSONProcessorWithDefaults() *ObservabilityPipe
 	var typeVar ObservabilityPipelineParseJSONProcessorType = OBSERVABILITYPIPELINEPARSEJSONPROCESSORTYPE_PARSE_JSON
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineParseJSONProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineParseJSONProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineParseJSONProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineParseJSONProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -172,6 +204,9 @@ func (o ObservabilityPipelineParseJSONProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["field"] = o.Field
 	toSerialize["id"] = o.Id
@@ -187,11 +222,12 @@ func (o ObservabilityPipelineParseJSONProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineParseJSONProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled *bool                                        `json:"enabled"`
-		Field   *string                                      `json:"field"`
-		Id      *string                                      `json:"id"`
-		Include *string                                      `json:"include"`
-		Type    *ObservabilityPipelineParseJSONProcessorType `json:"type"`
+		DisplayName *string                                      `json:"display_name,omitempty"`
+		Enabled     *bool                                        `json:"enabled"`
+		Field       *string                                      `json:"field"`
+		Id          *string                                      `json:"id"`
+		Include     *string                                      `json:"include"`
+		Type        *ObservabilityPipelineParseJSONProcessorType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -213,12 +249,13 @@ func (o *ObservabilityPipelineParseJSONProcessor) UnmarshalJSON(bytes []byte) (e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "field", "id", "include", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "field", "id", "include", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.Field = *all.Field
 	o.Id = *all.Id

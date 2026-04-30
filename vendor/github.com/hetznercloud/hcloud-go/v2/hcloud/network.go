@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil"
@@ -56,6 +57,13 @@ type Network struct {
 	ExposeRoutesToVSwitch bool
 }
 
+func (o *Network) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
+}
+
 // NetworkSubnet represents a subnet of a network in the Hetzner Cloud.
 type NetworkSubnet struct {
 	Type        NetworkSubnetType
@@ -79,7 +87,7 @@ type NetworkProtection struct {
 // NetworkClient is a client for the network API.
 type NetworkClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*Network]
 }
 
 // GetByID retrieves a network by its ID. If the network does not exist, nil is returned.

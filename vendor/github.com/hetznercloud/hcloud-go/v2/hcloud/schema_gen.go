@@ -84,6 +84,7 @@ You can find a documentation of goverter here: https://goverter.jmattheis.de/
 // goverter:extend int64SlicePtrFromCertificatePtrSlice
 // goverter:extend stringSlicePtrFromStringSlice
 // goverter:extend locationFromServerTypeLocationSchema
+// goverter:extend schemaPtrFromDatacenterServerTypes
 type converter interface {
 
 	// goverter:map Error.Code ErrorCode
@@ -135,6 +136,8 @@ type converter interface {
 	DatacenterFromSchema(schema.Datacenter) *Datacenter
 
 	SchemaFromDatacenter(*Datacenter) schema.Datacenter
+
+	schemaFromDatacenterServerTypes(DatacenterServerTypes) schema.DatacenterServerTypes
 
 	ServerFromSchema(schema.Server) *Server
 
@@ -1123,4 +1126,13 @@ func mapStorageBoxIntPtrToWeekdayPtr(i *int) *time.Weekday {
 	}
 
 	return Ptr(time.Weekday(*i))
+}
+
+// hcloud.DatacenterServerTypes is not nullable but *schema.DatacenterServerTypes is.
+// We treat the zero value as nil.
+func schemaPtrFromDatacenterServerTypes(dst DatacenterServerTypes) *schema.DatacenterServerTypes {
+	if dst.Available == nil && dst.AvailableForMigration == nil && dst.Supported == nil {
+		return nil
+	}
+	return Ptr(schemaFromDatacenterServerTypes(dst))
 }

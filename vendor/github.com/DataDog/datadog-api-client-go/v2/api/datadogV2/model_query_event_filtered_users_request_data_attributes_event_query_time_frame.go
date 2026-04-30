@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryEventFilteredUsersRequestDataAttributesEventQueryTimeFrame
+// QueryEventFilteredUsersRequestDataAttributesEventQueryTimeFrame The time window defining the start and end of the event query period as Unix timestamps.
 type QueryEventFilteredUsersRequestDataAttributesEventQueryTimeFrame struct {
-	//
+	// End of the time frame as a Unix timestamp in seconds.
 	End *int64 `json:"end,omitempty"`
-	//
+	// Start of the time frame as a Unix timestamp in seconds.
 	Start *int64 `json:"start,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

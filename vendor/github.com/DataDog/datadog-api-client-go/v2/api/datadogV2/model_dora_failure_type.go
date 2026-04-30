@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DORAFailureType JSON:API type for DORA failure events.
+// DORAFailureType JSON:API type for DORA incident events.
 type DORAFailureType string
 
 // List of DORAFailureType.

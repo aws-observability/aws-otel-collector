@@ -11,6 +11,7 @@ import (
 
 // Topology represents a CPU Topology.
 type Topology struct {
+	Cells   int `json:"cells"`
 	Sockets int `json:"sockets"`
 	Cores   int `json:"cores"`
 	Threads int `json:"threads"`
@@ -194,7 +195,7 @@ func (r *Hypervisor) UnmarshalJSON(b []byte) error {
 	case float64:
 		r.HypervisorVersion = int(t)
 	default:
-		return fmt.Errorf("Hypervisor version has unexpected type: %T", t)
+		return fmt.Errorf("HypervisorVersion has unexpected type: %T", t)
 	}
 
 	// free_disk_gb doesn't exist after api version 2.87
@@ -205,7 +206,7 @@ func (r *Hypervisor) UnmarshalJSON(b []byte) error {
 		case float64:
 			r.FreeDiskGB = int(t)
 		default:
-			return fmt.Errorf("Free disk GB has unexpected type: %T", t)
+			return fmt.Errorf("FreeDiskGB has unexpected type: %T", t)
 		}
 	}
 
@@ -217,7 +218,7 @@ func (r *Hypervisor) UnmarshalJSON(b []byte) error {
 		case float64:
 			r.LocalGB = int(t)
 		default:
-			return fmt.Errorf("Local GB has unexpected type: %T", t)
+			return fmt.Errorf("LocalGB has unexpected type: %T", t)
 		}
 	}
 

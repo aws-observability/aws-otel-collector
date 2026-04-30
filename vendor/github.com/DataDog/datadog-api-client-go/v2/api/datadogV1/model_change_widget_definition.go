@@ -14,6 +14,8 @@ import (
 type ChangeWidgetDefinition struct {
 	// List of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Array of one request object to display in the widget.
 	//
 	// See the dedicated [Request JSON schema documentation](https://docs.datadoghq.com/dashboards/graphing_json/request_json)
@@ -81,6 +83,34 @@ func (o *ChangeWidgetDefinition) HasCustomLinks() bool {
 // SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
 func (o *ChangeWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *ChangeWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChangeWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *ChangeWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *ChangeWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetRequests returns the Requests field value.
@@ -250,6 +280,9 @@ func (o ChangeWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	toSerialize["requests"] = o.Requests
 	if o.Time != nil {
 		toSerialize["time"] = o.Time
@@ -275,6 +308,7 @@ func (o ChangeWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *ChangeWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CustomLinks []WidgetCustomLink          `json:"custom_links,omitempty"`
+		Description *string                     `json:"description,omitempty"`
 		Requests    *[]ChangeWidgetRequest      `json:"requests"`
 		Time        *WidgetTime                 `json:"time,omitempty"`
 		Title       *string                     `json:"title,omitempty"`
@@ -293,13 +327,14 @@ func (o *ChangeWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "requests", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "requests", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	o.Requests = *all.Requests
 	o.Time = all.Time
 	o.Title = all.Title

@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FleetAgentVersionAttributes
+// FleetAgentVersionAttributes Attributes of an available Datadog Agent version.
 type FleetAgentVersionAttributes struct {
 	// The Agent version string.
 	Version *string `json:"version,omitempty"`

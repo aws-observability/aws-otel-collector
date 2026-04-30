@@ -35,9 +35,6 @@ type CreateSnapshotProperties struct {
 func NewCreateSnapshotProperties() *CreateSnapshotProperties {
 	this := CreateSnapshotProperties{}
 
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
-
 	return &this
 }
 
@@ -46,8 +43,6 @@ func NewCreateSnapshotProperties() *CreateSnapshotProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewCreateSnapshotPropertiesWithDefaults() *CreateSnapshotProperties {
 	this := CreateSnapshotProperties{}
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
 	return &this
 }
 

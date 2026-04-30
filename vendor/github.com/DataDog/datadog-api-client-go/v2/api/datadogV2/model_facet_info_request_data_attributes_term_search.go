@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoRequestDataAttributesTermSearch
+// FacetInfoRequestDataAttributesTermSearch Term-level search configuration for filtering facet values by an exact or partial term match.
 type FacetInfoRequestDataAttributesTermSearch struct {
-	//
+	// The term string to match against facet values.
 	Value *string `json:"value,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

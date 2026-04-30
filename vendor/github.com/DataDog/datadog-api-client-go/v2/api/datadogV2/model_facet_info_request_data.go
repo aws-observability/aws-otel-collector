@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoRequestData
+// FacetInfoRequestData The data object containing the resource type and attributes for the facet info request.
 type FacetInfoRequestData struct {
-	//
+	// Attributes for the facet info request, specifying which facet to query and optional filters to apply.
 	Attributes *FacetInfoRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the facet info request resource.
 	Id *string `json:"id,omitempty"`
 	// Users facet info request resource type.
 	Type FacetInfoRequestDataType `json:"type"`

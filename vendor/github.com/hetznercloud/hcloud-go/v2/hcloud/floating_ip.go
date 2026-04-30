@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil"
@@ -28,11 +29,18 @@ type FloatingIP struct {
 	Name         string
 }
 
+func (o *FloatingIP) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
+}
+
 // DNSPtrForIP returns the reverse DNS pointer of the IP address.
 //
 // Deprecated: Use GetDNSPtrForIP instead.
-func (f *FloatingIP) DNSPtrForIP(ip net.IP) string {
-	return f.DNSPtr[ip.String()]
+func (o *FloatingIP) DNSPtrForIP(ip net.IP) string {
+	return o.DNSPtr[ip.String()]
 }
 
 // FloatingIPProtection represents the protection level of a Floating IP.
@@ -51,11 +59,11 @@ const (
 
 // changeDNSPtr changes or resets the reverse DNS pointer for an IP address.
 // Pass a nil ptr to reset the reverse DNS pointer to its default value.
-func (f *FloatingIP) changeDNSPtr(ctx context.Context, client *Client, ip net.IP, ptr *string) (*Action, *Response, error) {
+func (o *FloatingIP) changeDNSPtr(ctx context.Context, client *Client, ip net.IP, ptr *string) (*Action, *Response, error) {
 	const opPath = "/floating_ips/%d/actions/change_dns_ptr"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, f.ID)
+	reqPath := fmt.Sprintf(opPath, o.ID)
 
 	reqBody := schema.FloatingIPActionChangeDNSPtrRequest{
 		IP:     ip.String(),
@@ -72,8 +80,8 @@ func (f *FloatingIP) changeDNSPtr(ctx context.Context, client *Client, ip net.IP
 
 // GetDNSPtrForIP searches for the dns assigned to the given IP address.
 // It returns an error if there is no dns set for the given IP address.
-func (f *FloatingIP) GetDNSPtrForIP(ip net.IP) (string, error) {
-	dns, ok := f.DNSPtr[ip.String()]
+func (o *FloatingIP) GetDNSPtrForIP(ip net.IP) (string, error) {
+	dns, ok := o.DNSPtr[ip.String()]
 	if !ok {
 		return "", DNSNotFoundError{ip}
 	}
@@ -84,7 +92,7 @@ func (f *FloatingIP) GetDNSPtrForIP(ip net.IP) (string, error) {
 // FloatingIPClient is a client for the Floating IP API.
 type FloatingIPClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*FloatingIP]
 }
 
 // GetByID retrieves a Floating IP by its ID. If the Floating IP does not exist,

@@ -105,7 +105,7 @@ func testWithSampledData(
 ) {
 	var resourceSpec testbed.ResourceSpec
 	sender := correctnesstests.ConstructTraceSender(t, "otlp")
-	receiver := correctnesstests.ConstructReceiver(t, "otlp")
+	receiver := correctnesstests.ConstructReceiver(t, "otlp_grpc")
 
 	spanCustomizer := WithSampledSpanCustomizer(customizer)
 	dataProvider := NewSamplingDataProvider(spanCustomizer)

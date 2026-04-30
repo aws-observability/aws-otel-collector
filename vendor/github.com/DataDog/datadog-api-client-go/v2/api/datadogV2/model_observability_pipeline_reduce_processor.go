@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineReduceProcessor The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineReduceProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// A list of fields used to group log events for merging.
 	GroupBy []string `json:"group_by"`
@@ -52,6 +56,34 @@ func NewObservabilityPipelineReduceProcessorWithDefaults() *ObservabilityPipelin
 	var typeVar ObservabilityPipelineReduceProcessorType = OBSERVABILITYPIPELINEREDUCEPROCESSORTYPE_REDUCE
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineReduceProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineReduceProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineReduceProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineReduceProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -198,6 +230,9 @@ func (o ObservabilityPipelineReduceProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["group_by"] = o.GroupBy
 	toSerialize["id"] = o.Id
@@ -214,6 +249,7 @@ func (o ObservabilityPipelineReduceProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineReduceProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		DisplayName     *string                                              `json:"display_name,omitempty"`
 		Enabled         *bool                                                `json:"enabled"`
 		GroupBy         *[]string                                            `json:"group_by"`
 		Id              *string                                              `json:"id"`
@@ -244,12 +280,13 @@ func (o *ObservabilityPipelineReduceProcessor) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "group_by", "id", "include", "merge_strategies", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "group_by", "id", "include", "merge_strategies", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.GroupBy = *all.GroupBy
 	o.Id = *all.Id

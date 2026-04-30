@@ -14,7 +14,10 @@ import (
 type TimeseriesWidgetDefinition struct {
 	// List of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
-	// List of widget events.
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
+	// List of widget events. Deprecated - Use `overlay` request type instead.
+	// Deprecated
 	Events []WidgetEvent `json:"events,omitempty"`
 	// Columns displayed in the legend.
 	LegendColumns []TimeseriesWidgetLegendColumn `json:"legend_columns,omitempty"`
@@ -96,7 +99,36 @@ func (o *TimeseriesWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
 }
 
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *TimeseriesWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TimeseriesWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *TimeseriesWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *TimeseriesWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
+}
+
 // GetEvents returns the Events field value if set, zero value otherwise.
+// Deprecated
 func (o *TimeseriesWidgetDefinition) GetEvents() []WidgetEvent {
 	if o == nil || o.Events == nil {
 		var ret []WidgetEvent
@@ -107,6 +139,7 @@ func (o *TimeseriesWidgetDefinition) GetEvents() []WidgetEvent {
 
 // GetEventsOk returns a tuple with the Events field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *TimeseriesWidgetDefinition) GetEventsOk() (*[]WidgetEvent, bool) {
 	if o == nil || o.Events == nil {
 		return nil, false
@@ -120,6 +153,7 @@ func (o *TimeseriesWidgetDefinition) HasEvents() bool {
 }
 
 // SetEvents gets a reference to the given []WidgetEvent and assigns it to the Events field.
+// Deprecated
 func (o *TimeseriesWidgetDefinition) SetEvents(v []WidgetEvent) {
 	o.Events = v
 }
@@ -487,6 +521,9 @@ func (o TimeseriesWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Events != nil {
 		toSerialize["events"] = o.Events
 	}
@@ -536,6 +573,7 @@ func (o TimeseriesWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *TimeseriesWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CustomLinks   []WidgetCustomLink              `json:"custom_links,omitempty"`
+		Description   *string                         `json:"description,omitempty"`
 		Events        []WidgetEvent                   `json:"events,omitempty"`
 		LegendColumns []TimeseriesWidgetLegendColumn  `json:"legend_columns,omitempty"`
 		LegendLayout  *TimeseriesWidgetLegendLayout   `json:"legend_layout,omitempty"`
@@ -562,13 +600,14 @@ func (o *TimeseriesWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "events", "legend_columns", "legend_layout", "legend_size", "markers", "requests", "right_yaxis", "show_legend", "time", "title", "title_align", "title_size", "type", "yaxis"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "events", "legend_columns", "legend_layout", "legend_size", "markers", "requests", "right_yaxis", "show_legend", "time", "title", "title_align", "title_size", "type", "yaxis"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	o.Events = all.Events
 	o.LegendColumns = all.LegendColumns
 	if all.LegendLayout != nil && !all.LegendLayout.IsValid() {

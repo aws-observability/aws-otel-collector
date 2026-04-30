@@ -17,11 +17,13 @@ type OrgConnectionTypeEnum string
 const (
 	ORGCONNECTIONTYPEENUM_LOGS    OrgConnectionTypeEnum = "logs"
 	ORGCONNECTIONTYPEENUM_METRICS OrgConnectionTypeEnum = "metrics"
+	ORGCONNECTIONTYPEENUM_AUDIT   OrgConnectionTypeEnum = "audit"
 )
 
 var allowedOrgConnectionTypeEnumEnumValues = []OrgConnectionTypeEnum{
 	ORGCONNECTIONTYPEENUM_LOGS,
 	ORGCONNECTIONTYPEENUM_METRICS,
+	ORGCONNECTIONTYPEENUM_AUDIT,
 }
 
 // GetAllowedValues reeturns the list of possible values.

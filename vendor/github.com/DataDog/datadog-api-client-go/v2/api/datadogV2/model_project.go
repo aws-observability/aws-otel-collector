@@ -10,15 +10,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// Project A Project
+// Project A Project.
 type Project struct {
-	// Project attributes
+	// Project attributes.
 	Attributes ProjectAttributes `json:"attributes"`
-	// The Project's identifier
+	// The Project's identifier.
 	Id string `json:"id"`
-	// Project relationships
+	// Project relationships.
 	Relationships *ProjectRelationships `json:"relationships,omitempty"`
-	// Project resource type
+	// Project resource type.
 	Type ProjectResourceType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

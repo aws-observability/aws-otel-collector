@@ -8,29 +8,29 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesDependenciesItems
+// ScaRequestDataAttributesDependenciesItems A dependency found in the repository, including its identity, location, and reachability metadata.
 type ScaRequestDataAttributesDependenciesItems struct {
-	//
+	// A list of patterns or identifiers that should be excluded from analysis for this dependency.
 	Exclusions []string `json:"exclusions,omitempty"`
-	//
+	// The group or organization namespace of the dependency (e.g., Maven group ID).
 	Group *string `json:"group,omitempty"`
-	//
+	// Indicates whether this is a development-only dependency not used in production.
 	IsDev *bool `json:"is_dev,omitempty"`
-	//
+	// Indicates whether this is a direct dependency (as opposed to a transitive one).
 	IsDirect *bool `json:"is_direct,omitempty"`
-	//
+	// The programming language ecosystem of this dependency (e.g., java, python, javascript).
 	Language *string `json:"language,omitempty"`
-	//
+	// The list of source file locations where this dependency is declared.
 	Locations []ScaRequestDataAttributesDependenciesItemsLocationsItems `json:"locations,omitempty"`
-	//
+	// The name of the dependency package.
 	Name *string `json:"name,omitempty"`
-	//
+	// The package manager responsible for this dependency (e.g., maven, pip, npm).
 	PackageManager *string `json:"package_manager,omitempty"`
-	//
+	// The Package URL (PURL) uniquely identifying this dependency.
 	Purl *string `json:"purl,omitempty"`
-	//
+	// Properties describing symbols from this dependency that are reachable in the application code.
 	ReachableSymbolProperties []ScaRequestDataAttributesDependenciesItemsReachableSymbolPropertiesItems `json:"reachable_symbol_properties,omitempty"`
-	//
+	// The version of the dependency.
 	Version *string `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

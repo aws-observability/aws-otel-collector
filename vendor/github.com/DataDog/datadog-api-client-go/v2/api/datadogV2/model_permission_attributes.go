@@ -24,6 +24,8 @@ type PermissionAttributes struct {
 	GroupName *string `json:"group_name,omitempty"`
 	// Name of the permission.
 	Name *string `json:"name,omitempty"`
+	// List of alias names for the permission.
+	NameAliases []string `json:"name_aliases,omitempty"`
 	// Whether or not the permission is restricted.
 	Restricted *bool `json:"restricted,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -216,6 +218,34 @@ func (o *PermissionAttributes) SetName(v string) {
 	o.Name = &v
 }
 
+// GetNameAliases returns the NameAliases field value if set, zero value otherwise.
+func (o *PermissionAttributes) GetNameAliases() []string {
+	if o == nil || o.NameAliases == nil {
+		var ret []string
+		return ret
+	}
+	return o.NameAliases
+}
+
+// GetNameAliasesOk returns a tuple with the NameAliases field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PermissionAttributes) GetNameAliasesOk() (*[]string, bool) {
+	if o == nil || o.NameAliases == nil {
+		return nil, false
+	}
+	return &o.NameAliases, true
+}
+
+// HasNameAliases returns a boolean if a field has been set.
+func (o *PermissionAttributes) HasNameAliases() bool {
+	return o != nil && o.NameAliases != nil
+}
+
+// SetNameAliases gets a reference to the given []string and assigns it to the NameAliases field.
+func (o *PermissionAttributes) SetNameAliases(v []string) {
+	o.NameAliases = v
+}
+
 // GetRestricted returns the Restricted field value if set, zero value otherwise.
 func (o *PermissionAttributes) GetRestricted() bool {
 	if o == nil || o.Restricted == nil {
@@ -272,6 +302,9 @@ func (o PermissionAttributes) MarshalJSON() ([]byte, error) {
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.NameAliases != nil {
+		toSerialize["name_aliases"] = o.NameAliases
+	}
 	if o.Restricted != nil {
 		toSerialize["restricted"] = o.Restricted
 	}
@@ -291,6 +324,7 @@ func (o *PermissionAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		DisplayType *string    `json:"display_type,omitempty"`
 		GroupName   *string    `json:"group_name,omitempty"`
 		Name        *string    `json:"name,omitempty"`
+		NameAliases []string   `json:"name_aliases,omitempty"`
 		Restricted  *bool      `json:"restricted,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -298,7 +332,7 @@ func (o *PermissionAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created", "description", "display_name", "display_type", "group_name", "name", "restricted"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"created", "description", "display_name", "display_type", "group_name", "name", "name_aliases", "restricted"})
 	} else {
 		return err
 	}
@@ -308,6 +342,7 @@ func (o *PermissionAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.DisplayType = all.DisplayType
 	o.GroupName = all.GroupName
 	o.Name = all.Name
+	o.NameAliases = all.NameAliases
 	o.Restricted = all.Restricted
 
 	if len(additionalProperties) > 0 {

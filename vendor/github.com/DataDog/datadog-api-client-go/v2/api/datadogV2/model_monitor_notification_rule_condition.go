@@ -10,11 +10,14 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonitorNotificationRuleCondition Conditions for `conditional_recipients`.
+// MonitorNotificationRuleCondition A conditional recipient rule composed of a `scope` (the matching condition) and
+// `recipients` (who to notify when it matches).
 type MonitorNotificationRuleCondition struct {
 	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'. Cannot be used with `conditional_recipients`.
 	Recipients []string `json:"recipients"`
-	// The scope to which the monitor applied.
+	// Defines the condition under which the recipients are notified. Supported formats:
+	// - Monitor status condition using `transition_type:<status>`, for example `transition_type:is_alert`.
+	// - A single tag key:value pair, for example `env:prod`.
 	Scope string `json:"scope"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

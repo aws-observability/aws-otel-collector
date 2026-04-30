@@ -79,8 +79,10 @@ type Instance struct {
 	// Note: Linode interfaces may not currently be available to all users.
 	InterfaceGeneration InterfaceGeneration `json:"interface_generation"`
 
-	// NOTE: MaintenancePolicy can only be used with v4beta.
 	MaintenancePolicy string `json:"maintenance_policy"`
+
+	// NOTE: Locks can only be used with v4beta.
+	Locks []LockType `json:"locks"`
 }
 
 // InstanceSpec represents a linode spec
@@ -110,7 +112,7 @@ type InstanceBackup struct {
 	Schedule       struct {
 		Day    string `json:"day,omitempty"`
 		Window string `json:"window,omitempty"`
-	} `json:"schedule,omitempty"`
+	} `json:"schedule"`
 }
 
 type InstanceDiskEncryption string
@@ -132,8 +134,9 @@ type InstanceTransfer struct {
 	Quota int `json:"quota"`
 }
 
-// MonthlyInstanceTransferStats pool stats for a Linode Instance network transfer statistics for a specific month
 // Deprecated: use MonthlyInstanceTransferStatsV2 for new implementations
+//
+// MonthlyInstanceTransferStats pool stats for a Linode Instance network transfer statistics for a specific month
 type MonthlyInstanceTransferStats struct {
 	// The amount of inbound public network traffic received by this Linode, in bytes, for a specific year/month.
 	BytesIn int `json:"bytes_in"`
@@ -222,7 +225,6 @@ type InstanceCreateOptions struct {
 
 	IPv4 []string `json:"ipv4,omitempty"`
 
-	// NOTE: MaintenancePolicy can only be used with v4beta.
 	MaintenancePolicy *string `json:"maintenance_policy,omitempty"`
 }
 
@@ -244,7 +246,6 @@ type InstanceUpdateOptions struct {
 	// Deprecated: group is a deprecated property denoting a group label for the Linode.
 	Group *string `json:"group,omitempty"`
 
-	// NOTE: MaintenancePolicy can only be used with v4beta.
 	MaintenancePolicy *string `json:"maintenance_policy,omitempty"`
 }
 

@@ -10,6 +10,10 @@ import (
 
 // CustomCostListResponseMeta Meta for the response from the List Custom Costs endpoints.
 type CustomCostListResponseMeta struct {
+	// Number of Custom Costs files per status.
+	CountByStatus map[string]int64 `json:"count_by_status,omitempty"`
+	// List of available providers.
+	Providers []string `json:"providers,omitempty"`
 	// Number of Custom Costs files returned by the List Custom Costs endpoint
 	TotalFilteredCount *int64 `json:"total_filtered_count,omitempty"`
 	// Version of Custom Costs file
@@ -34,6 +38,62 @@ func NewCustomCostListResponseMeta() *CustomCostListResponseMeta {
 func NewCustomCostListResponseMetaWithDefaults() *CustomCostListResponseMeta {
 	this := CustomCostListResponseMeta{}
 	return &this
+}
+
+// GetCountByStatus returns the CountByStatus field value if set, zero value otherwise.
+func (o *CustomCostListResponseMeta) GetCountByStatus() map[string]int64 {
+	if o == nil || o.CountByStatus == nil {
+		var ret map[string]int64
+		return ret
+	}
+	return o.CountByStatus
+}
+
+// GetCountByStatusOk returns a tuple with the CountByStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CustomCostListResponseMeta) GetCountByStatusOk() (*map[string]int64, bool) {
+	if o == nil || o.CountByStatus == nil {
+		return nil, false
+	}
+	return &o.CountByStatus, true
+}
+
+// HasCountByStatus returns a boolean if a field has been set.
+func (o *CustomCostListResponseMeta) HasCountByStatus() bool {
+	return o != nil && o.CountByStatus != nil
+}
+
+// SetCountByStatus gets a reference to the given map[string]int64 and assigns it to the CountByStatus field.
+func (o *CustomCostListResponseMeta) SetCountByStatus(v map[string]int64) {
+	o.CountByStatus = v
+}
+
+// GetProviders returns the Providers field value if set, zero value otherwise.
+func (o *CustomCostListResponseMeta) GetProviders() []string {
+	if o == nil || o.Providers == nil {
+		var ret []string
+		return ret
+	}
+	return o.Providers
+}
+
+// GetProvidersOk returns a tuple with the Providers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CustomCostListResponseMeta) GetProvidersOk() (*[]string, bool) {
+	if o == nil || o.Providers == nil {
+		return nil, false
+	}
+	return &o.Providers, true
+}
+
+// HasProviders returns a boolean if a field has been set.
+func (o *CustomCostListResponseMeta) HasProviders() bool {
+	return o != nil && o.Providers != nil
+}
+
+// SetProviders gets a reference to the given []string and assigns it to the Providers field.
+func (o *CustomCostListResponseMeta) SetProviders(v []string) {
+	o.Providers = v
 }
 
 // GetTotalFilteredCount returns the TotalFilteredCount field value if set, zero value otherwise.
@@ -98,6 +158,12 @@ func (o CustomCostListResponseMeta) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CountByStatus != nil {
+		toSerialize["count_by_status"] = o.CountByStatus
+	}
+	if o.Providers != nil {
+		toSerialize["providers"] = o.Providers
+	}
 	if o.TotalFilteredCount != nil {
 		toSerialize["total_filtered_count"] = o.TotalFilteredCount
 	}
@@ -114,18 +180,22 @@ func (o CustomCostListResponseMeta) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CustomCostListResponseMeta) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		TotalFilteredCount *int64  `json:"total_filtered_count,omitempty"`
-		Version            *string `json:"version,omitempty"`
+		CountByStatus      map[string]int64 `json:"count_by_status,omitempty"`
+		Providers          []string         `json:"providers,omitempty"`
+		TotalFilteredCount *int64           `json:"total_filtered_count,omitempty"`
+		Version            *string          `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"total_filtered_count", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"count_by_status", "providers", "total_filtered_count", "version"})
 	} else {
 		return err
 	}
+	o.CountByStatus = all.CountByStatus
+	o.Providers = all.Providers
 	o.TotalFilteredCount = all.TotalFilteredCount
 	o.Version = all.Version
 

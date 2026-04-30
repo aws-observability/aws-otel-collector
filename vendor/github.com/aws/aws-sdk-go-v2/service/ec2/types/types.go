@@ -859,6 +859,10 @@ type AuthorizationRule struct {
 // Describes Availability Zones, Local Zones, and Wavelength Zones.
 type AvailabilityZone struct {
 
+	// The geography information for the Availability Zone or Local Zone. The
+	// geography is returned as a list.
+	Geography []AvailabilityZoneGeography
+
 	// The long name of the Availability Zone group, Local Zone group, or Wavelength
 	// Zone group.
 	GroupLongName *string
@@ -899,6 +903,10 @@ type AvailabilityZone struct {
 	// The state of the Availability Zone, Local Zone, or Wavelength Zone. The
 	// possible values are available , unavailable , and constrained .
 	State AvailabilityZoneState
+
+	// The sub-geography information for the Availability Zone or Local Zone. The
+	// sub-geography is returned as a list.
+	SubGeography []AvailabilityZoneSubGeography
 
 	// The ID of the Availability Zone, Local Zone, or Wavelength Zone.
 	ZoneId *string
@@ -954,11 +962,29 @@ type AvailabilityZoneAddress struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the geography information for an Availability Zone or Local Zone.
+type AvailabilityZoneGeography struct {
+
+	// The name of the geography, for example, United States of America .
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes a message about an Availability Zone, Local Zone, or Wavelength Zone.
 type AvailabilityZoneMessage struct {
 
 	// The message about the Availability Zone, Local Zone, or Wavelength Zone.
 	Message *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the sub-geography information for an Availability Zone or Local Zone.
+type AvailabilityZoneSubGeography struct {
+
+	// The name of the sub-geography, for example, Oregon.
+	Name *string
 
 	noSmithyDocumentSerde
 }
@@ -1337,6 +1363,10 @@ type CancelSpotFleetRequestsSuccessItem struct {
 // Information about instance capacity usage for a Capacity Reservation.
 type CapacityAllocation struct {
 
+	// Additional metadata associated with the capacity allocation. Each entry
+	// contains a key-value pair providing context about the allocation.
+	AllocationMetadata []CapacityAllocationMetadataEntry
+
 	// The usage type. used indicates that the instance capacity is in use by
 	// instances that are running in the Capacity Reservation.
 	AllocationType AllocationType
@@ -1344,6 +1374,18 @@ type CapacityAllocation struct {
 	// The amount of instance capacity associated with the usage. For example a value
 	// of 4 indicates that instance capacity for 4 instances is currently in use.
 	Count *int32
+
+	noSmithyDocumentSerde
+}
+
+// A key-value pair that provides additional metadata about a capacity allocation.
+type CapacityAllocationMetadataEntry struct {
+
+	// The key of the metadata entry.
+	Key *string
+
+	// The value of the metadata entry.
+	Value *string
 
 	noSmithyDocumentSerde
 }
@@ -1452,6 +1494,9 @@ type CapacityBlockExtension struct {
 	// The total price to be paid up front.
 	UpfrontFee *string
 
+	// The type of zone where the Capacity Block extension is located.
+	ZoneType *string
+
 	noSmithyDocumentSerde
 }
 
@@ -1505,6 +1550,9 @@ type CapacityBlockExtensionOffering struct {
 	// The total price of the Capacity Block extension offering, to be paid up front.
 	UpfrontFee *string
 
+	// The type of zone where the Capacity Block extension offering is available.
+	ZoneType *string
+
 	noSmithyDocumentSerde
 }
 
@@ -1553,6 +1601,9 @@ type CapacityBlockOffering struct {
 
 	// The total price to be paid up front.
 	UpfrontFee *string
+
+	// The type of zone where the Capacity Block offering is available.
+	ZoneType *string
 
 	noSmithyDocumentSerde
 }
@@ -1655,6 +1706,11 @@ type CapacityManagerDimension struct {
 	//  The Amazon Web Services account ID that owns the capacity resource.
 	AccountId *string
 
+	//  The name of the Amazon Web Services account that owns the capacity resource.
+	// This dimension is only available when Organizations access is enabled for
+	// Capacity Manager.
+	AccountName *string
+
 	//  The unique identifier of the Availability Zone where the capacity resource is
 	// located.
 	AvailabilityZoneId *string
@@ -1713,10 +1769,56 @@ type CapacityManagerDimension struct {
 	//  The Amazon Web Services Region where the capacity resource is located.
 	ResourceRegion *string
 
+	//  The tags associated with the capacity resource, represented as key-value
+	// pairs. Only tags that have been activated for monitoring via
+	// UpdateCapacityManagerMonitoredTagKeys are included.
+	Tags []CapacityManagerTagDimension
+
 	//  The tenancy of the EC2 instances associated with this capacity dimension.
 	// Valid values are 'default' for shared tenancy, 'dedicated' for dedicated
 	// instances, or 'host' for dedicated hosts.
 	Tenancy CapacityTenancy
+
+	noSmithyDocumentSerde
+}
+
+//	Describes a tag key that is being monitored by Capacity Manager, including its
+//
+// activation status and the earliest available data point.
+type CapacityManagerMonitoredTagKey struct {
+
+	//  Indicates whether this tag key is provided by Capacity Manager by default,
+	// rather than being user-activated.
+	CapacityManagerProvided *bool
+
+	//  The earliest timestamp from which tag data is available for queries, in UTC
+	// ISO 8601 format.
+	EarliestDatapointTimestamp *time.Time
+
+	//  The current status of the monitored tag key. Valid values are activating ,
+	// activated , deactivating , and suspended .
+	Status CapacityManagerMonitoredTagKeyStatus
+
+	//  A message providing additional details about the current status of the
+	// monitored tag key.
+	StatusMessage *string
+
+	//  The tag key being monitored.
+	TagKey *string
+
+	noSmithyDocumentSerde
+}
+
+//	A key-value pair representing a tag associated with a capacity resource in
+//
+// Capacity Manager.
+type CapacityManagerTagDimension struct {
+
+	//  The tag key.
+	Key *string
+
+	//  The tag value.
+	Value *string
 
 	noSmithyDocumentSerde
 }
@@ -2794,6 +2896,9 @@ type ClientVpnEndpoint struct {
 	// IPv4 and IPv6 addressing.
 	TrafficIpAddressType TrafficIpAddressType
 
+	// The Transit Gateway configuration for the Client VPN endpoint.
+	TransitGatewayConfiguration *TransitGatewayConfigurationDescribeEndpointStructure
+
 	// The transport protocol used by the Client VPN endpoint.
 	TransportProtocol TransportProtocol
 
@@ -2838,6 +2943,10 @@ type ClientVpnEndpointStatus struct {
 	//
 	//   - deleted - The Client VPN endpoint has been deleted. The Client VPN endpoint
 	//   cannot accept connections.
+	//
+	//   - pending - The Client VPN endpoint has been created with a Transit Gateway
+	//   configuration and is waiting for the Transit Gateway attachment to be accepted.
+	//   The Client VPN endpoint cannot accept connections.
 	Code ClientVpnEndpointStatusCode
 
 	// A message about the status of the Client VPN endpoint.
@@ -2869,6 +2978,10 @@ type ClientVpnRoute struct {
 
 	// The ID of the subnet through which traffic is routed.
 	TargetSubnet *string
+
+	// The ID of the Transit Gateway attachment, if the route targets a Transit
+	// Gateway.
+	TransitGatewayAttachmentId *string
 
 	// The route type.
 	Type *string
@@ -3219,6 +3332,9 @@ type CpuOptions struct {
 	// The number of CPU cores for the instance.
 	CoreCount *int32
 
+	// Indicates whether the instance is enabled for nested virtualization.
+	NestedVirtualization NestedVirtualizationSpecification
+
 	// The number of threads per CPU core.
 	ThreadsPerCore *int32
 
@@ -3238,6 +3354,12 @@ type CpuOptionsRequest struct {
 
 	// The number of CPU cores for the instance.
 	CoreCount *int32
+
+	// Indicates whether to enable the instance for nested virtualization. Nested
+	// virtualization is supported only on 8th generation Intel-based instance types
+	// (c8i, m8i, r8i, and their flex variants). When nested virtualization is enabled,
+	// Virtual Secure Mode (VSM) is automatically disabled for the instance.
+	NestedVirtualization NestedVirtualizationSpecification
 
 	// The number of threads per CPU core. To disable multithreading for the instance,
 	// specify a value of 1 . Otherwise, specify the default value of 2 .
@@ -3296,8 +3418,8 @@ type CreateFleetError struct {
 	// template.
 	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse
 
-	// Indicates if the instance that could not be launched was a Spot Instance or
-	// On-Demand Instance.
+	// Indicates if the instance that could not be launched was a Spot, On-Demand,
+	// Capacity Block, or Interruptible Capacity Reservation instance.
 	Lifecycle InstanceLifecycle
 
 	noSmithyDocumentSerde
@@ -3317,8 +3439,8 @@ type CreateFleetInstance struct {
 	// template.
 	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse
 
-	// Indicates if the instance that was launched is a Spot Instance or On-Demand
-	// Instance.
+	// Indicates if the instance that was launched is a Spot, On-Demand, Capacity
+	// Block, or Interruptible Capacity Reservation instance.
 	Lifecycle InstanceLifecycle
 
 	// The value is windows for Windows instances in an EC2 Fleet. Otherwise, the
@@ -3781,6 +3903,26 @@ type DeclarativePoliciesReport struct {
 	noSmithyDocumentSerde
 }
 
+// Indicates default conntrack information for the instance type. For more
+// information, see [Connection tracking timeouts]in the Amazon EC2 User Guide.
+//
+// [Connection tracking timeouts]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#connection-tracking-timeouts
+type DefaultConnectionTrackingConfiguration struct {
+
+	// Default timeout (in seconds) for idle TCP connections in an established state.
+	DefaultTcpEstablishedTimeout *int32
+
+	// Default timeout (in seconds) for idle UDP flows classified as streams which
+	// have seen more than one request-response transaction.
+	DefaultUdpStreamTimeout *int32
+
+	// Default timeout (in seconds) for idle UDP flows that have seen traffic only in
+	// a single direction or a single request-response transaction.
+	DefaultUdpTimeout *int32
+
+	noSmithyDocumentSerde
+}
+
 // Describes an EC2 Fleet error.
 type DeleteFleetError struct {
 
@@ -4043,8 +4185,8 @@ type DescribeFleetError struct {
 	// template.
 	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse
 
-	// Indicates if the instance that could not be launched was a Spot Instance or
-	// On-Demand Instance.
+	// Indicates if the instance that could not be launched was a Spot, On-Demand,
+	// Capacity Block, or Interruptible Capacity Reservation instance.
 	Lifecycle InstanceLifecycle
 
 	noSmithyDocumentSerde
@@ -4064,8 +4206,8 @@ type DescribeFleetsInstances struct {
 	// template.
 	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse
 
-	// Indicates if the instance that was launched is a Spot Instance or On-Demand
-	// Instance.
+	// Indicates if the instance that was launched is a Spot, On-Demand, Capacity
+	// Block, or Interruptible Capacity Reservation instance.
 	Lifecycle InstanceLifecycle
 
 	// The value is windows for Windows instances in an EC2 Fleet. Otherwise, the
@@ -4527,6 +4669,10 @@ type EbsBlockDevice struct {
 	// [Preserving Amazon EBS volumes on instance termination]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html#preserving-volumes-on-termination
 	DeleteOnTermination *bool
 
+	// The index of the EBS card. Some instance types support multiple EBS cards. The
+	// default EBS card index is 0.
+	EbsCardIndex *int32
+
 	// Indicates whether the encryption state of an EBS volume is changed while being
 	// restored from a backing snapshot. The effect of setting the encryption state to
 	// true depends on the volume origin (new or from a snapshot), starting encryption
@@ -4709,6 +4855,33 @@ type EbsBlockDeviceResponse struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the performance characteristics of an EBS card on the instance type.
+type EbsCardInfo struct {
+
+	// The baseline bandwidth performance for the EBS card, in Mbps.
+	BaselineBandwidthInMbps *int32
+
+	// The baseline IOPS performance for the EBS card.
+	BaselineIops *int32
+
+	// The baseline throughput performance for the EBS card, in MBps.
+	BaselineThroughputInMBps *float64
+
+	// The index of the EBS card.
+	EbsCardIndex *int32
+
+	// The maximum bandwidth performance for the EBS card, in Mbps.
+	MaximumBandwidthInMbps *int32
+
+	// The maximum IOPS performance for the EBS card.
+	MaximumIops *int32
+
+	// The maximum throughput performance for the EBS card, in MBps.
+	MaximumThroughputInMBps *float64
+
+	noSmithyDocumentSerde
+}
+
 // Describes the Amazon EBS features supported by the instance type.
 type EbsInfo struct {
 
@@ -4717,6 +4890,9 @@ type EbsInfo struct {
 	//
 	// [Amazon EBS volume limits for Amazon EC2 instances]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html
 	AttachmentLimitType AttachmentLimitType
+
+	// Describes the EBS cards available for the instance type.
+	EbsCards []EbsCardInfo
 
 	// Describes the optimized EBS performance for the instance type.
 	EbsOptimizedInfo *EbsOptimizedInfo
@@ -4736,6 +4912,9 @@ type EbsInfo struct {
 	// [Amazon EBS volume limits for Amazon EC2 instances]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html
 	MaximumEbsAttachments *int32
 
+	// Indicates the number of EBS cards supported by the instance type.
+	MaximumEbsCards *int32
+
 	// Indicates whether non-volatile memory express (NVMe) is supported.
 	NvmeSupport EbsNvmeSupport
 
@@ -4754,6 +4933,10 @@ type EbsInstanceBlockDevice struct {
 
 	// Indicates whether the volume is deleted on instance termination.
 	DeleteOnTermination *bool
+
+	// The index of the EBS card. Some instance types support multiple EBS cards. The
+	// default EBS card index is 0.
+	EbsCardIndex *int32
 
 	// The service provider that manages the EBS volume.
 	Operator *OperatorResponse
@@ -6059,6 +6242,10 @@ type FleetData struct {
 	// [EC2 Fleet health checks]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html#ec2-fleet-health-checks
 	ReplaceUnhealthyInstances *bool
 
+	// Defines EC2 Fleet preferences for utilizing reserved capacity when
+	// DefaultTargetCapacityType is set to reserved-capacity .
+	ReservedCapacityOptions *ReservedCapacityOptions
+
 	// The configuration of Spot Instances in an EC2 Fleet.
 	SpotOptions *SpotOptions
 
@@ -6866,6 +7053,13 @@ type GpuDeviceInfo struct {
 	// The number of GPUs for the instance type.
 	Count *int32
 
+	// The size of each GPU as a fraction of a full GPU, between 0 (excluded) and 1
+	// (included).
+	GpuPartitionSize *float64
+
+	// Total number of GPU devices of this type.
+	LogicalGpuCount *int32
+
 	// The manufacturer of the GPU accelerator.
 	Manufacturer *string
 
@@ -6874,6 +7068,9 @@ type GpuDeviceInfo struct {
 
 	// The name of the GPU accelerator.
 	Name *string
+
+	// A list of workload types this GPU supports.
+	Workloads []string
 
 	noSmithyDocumentSerde
 }
@@ -8330,6 +8527,9 @@ type Instance struct {
 	// instance store volume.
 	RootDeviceType DeviceType
 
+	// The secondary interfaces for the instance.
+	SecondaryInterfaces []InstanceSecondaryInterface
+
 	// The security groups for the instance.
 	SecurityGroups []GroupIdentifier
 
@@ -8854,10 +9054,15 @@ type InstanceMetadataDefaultsResponse struct {
 	//   must use IMDSv2.
 	HttpTokens HttpTokensState
 
+	// Indicates whether to enforce the requirement of IMDSv2 on an instance at the
+	// time of launch. When enforcement is enabled, the instance can't launch unless
+	// IMDSv2 ( HttpTokens ) is set to required .
+	HttpTokensEnforced HttpTokensEnforcedState
+
 	// Indicates whether access to instance tags from the instance metadata is enabled
-	// or disabled. For more information, see [Work with instance tags using the instance metadata]in the Amazon EC2 User Guide.
+	// or disabled. For more information, see [View tags for your EC2 instances using instance metadata]in the Amazon EC2 User Guide.
 	//
-	// [Work with instance tags using the instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS
+	// [View tags for your EC2 instances using instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html
 	InstanceMetadataTags InstanceMetadataTagsState
 
 	// The entity that manages the IMDS default settings. Possible values include:
@@ -8920,11 +9125,11 @@ type InstanceMetadataOptionsRequest struct {
 
 	// Set to enabled to allow access to instance tags from the instance metadata. Set
 	// to disabled to turn off access to instance tags from the instance metadata. For
-	// more information, see [Work with instance tags using the instance metadata].
+	// more information, see [View tags for your EC2 instances using instance metadata].
 	//
 	// Default: disabled
 	//
-	// [Work with instance tags using the instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS
+	// [View tags for your EC2 instances using instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html
 	InstanceMetadataTags InstanceMetadataTagsState
 
 	noSmithyDocumentSerde
@@ -8960,9 +9165,9 @@ type InstanceMetadataOptionsResponse struct {
 	HttpTokens HttpTokensState
 
 	// Indicates whether access to instance tags from the instance metadata is enabled
-	// or disabled. For more information, see [Work with instance tags using the instance metadata].
+	// or disabled. For more information, see [View tags for your EC2 instances using instance metadata].
 	//
-	// [Work with instance tags using the instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS
+	// [View tags for your EC2 instances using instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html
 	InstanceMetadataTags InstanceMetadataTagsState
 
 	// The state of the metadata option changes.
@@ -10120,6 +10325,120 @@ type InstanceRequirementsWithMetadataRequest struct {
 	noSmithyDocumentSerde
 }
 
+// Describes a secondary interface attached to an instance.
+type InstanceSecondaryInterface struct {
+
+	// The attachment information for the secondary interface.
+	Attachment *InstanceSecondaryInterfaceAttachment
+
+	// The type of secondary interface.
+	InterfaceType SecondaryInterfaceType
+
+	// The MAC address of the secondary interface.
+	MacAddress *string
+
+	// The Amazon Web Services account ID of the owner of the secondary interface.
+	OwnerId *string
+
+	// The private IPv4 addresses associated with the secondary interface.
+	PrivateIpAddresses []InstanceSecondaryInterfacePrivateIpAddress
+
+	// The ID of the secondary interface.
+	SecondaryInterfaceId *string
+
+	// The ID of the secondary network.
+	SecondaryNetworkId *string
+
+	// The ID of the secondary subnet.
+	SecondarySubnetId *string
+
+	// Indicates whether source/destination checking is enabled.
+	SourceDestCheck *bool
+
+	// The status of the secondary interface.
+	Status SecondaryInterfaceStatus
+
+	noSmithyDocumentSerde
+}
+
+// Describes the attachment of a secondary interface to an instance.
+type InstanceSecondaryInterfaceAttachment struct {
+
+	// The timestamp when the attachment was created.
+	AttachTime *time.Time
+
+	// The ID of the attachment.
+	AttachmentId *string
+
+	// Indicates whether the secondary interface is deleted when the instance is
+	// terminated.
+	//
+	// The only supported value for this field is true .
+	DeleteOnTermination *bool
+
+	// The device index of the secondary interface.
+	DeviceIndex *int32
+
+	// The index of the network card.
+	NetworkCardIndex *int32
+
+	// The attachment state.
+	Status AttachmentStatus
+
+	noSmithyDocumentSerde
+}
+
+// Describes a private IPv4 address for a secondary interface.
+type InstanceSecondaryInterfacePrivateIpAddress struct {
+
+	// The private IPv4 address.
+	PrivateIpAddress *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a private IPv4 address for a secondary interface request.
+type InstanceSecondaryInterfacePrivateIpAddressRequest struct {
+
+	// The private IPv4 address.
+	//
+	// This member is required.
+	PrivateIpAddress *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a secondary interface specification for launching an instance.
+type InstanceSecondaryInterfaceSpecificationRequest struct {
+
+	// Indicates whether the secondary interface is deleted when the instance is
+	// terminated.
+	//
+	// The only supported value for this field is true .
+	DeleteOnTermination *bool
+
+	// The device index for the secondary interface attachment.
+	DeviceIndex *int32
+
+	// The type of secondary interface.
+	InterfaceType SecondaryInterfaceType
+
+	// The index of the network card. The network card must support secondary
+	// interfaces.
+	NetworkCardIndex *int32
+
+	// The number of private IPv4 addresses to assign to the secondary interface.
+	PrivateIpAddressCount *int32
+
+	// The private IPv4 addresses to assign to the secondary interface.
+	PrivateIpAddresses []InstanceSecondaryInterfacePrivateIpAddressRequest
+
+	// The ID of the secondary subnet.
+	SecondarySubnetId *string
+
+	noSmithyDocumentSerde
+}
+
 // The instance details to specify which volumes should be snapshotted.
 type InstanceSpecification struct {
 
@@ -11131,7 +11450,10 @@ type IpamPolicyDocument struct {
 // The Amazon Web Services Organizations target for an IPAM policy.
 type IpamPolicyOrganizationTarget struct {
 
-	// The ID of a Amazon Web Services Organizations target for an IPAM policy.
+	// The ID of the Amazon Web Services Organizations target.
+	//
+	// A target can be an individual Amazon Web Services account or an entity within
+	// an Amazon Web Services Organization to which an IPAM policy can be applied.
 	OrganizationTargetId *string
 
 	noSmithyDocumentSerde
@@ -12721,6 +13043,9 @@ type LaunchTemplateCpuOptions struct {
 	// The number of CPU cores for the instance.
 	CoreCount *int32
 
+	// Indicates whether the instance is enabled for nested virtualization.
+	NestedVirtualization NestedVirtualizationSpecification
+
 	// The number of threads per CPU core.
 	ThreadsPerCore *int32
 
@@ -12741,6 +13066,12 @@ type LaunchTemplateCpuOptionsRequest struct {
 	// The number of CPU cores for the instance.
 	CoreCount *int32
 
+	// Indicates whether to enable the instance for nested virtualization. Nested
+	// virtualization is supported only on 8th generation Intel-based instance types
+	// (c8i, m8i, r8i, and their flex variants). When nested virtualization is enabled,
+	// Virtual Secure Mode (VSM) is automatically disabled for the instance.
+	NestedVirtualization NestedVirtualizationSpecification
+
 	// The number of threads per CPU core. To disable multithreading for the instance,
 	// specify a value of 1 . Otherwise, specify the default value of 2 .
 	ThreadsPerCore *int32
@@ -12753,6 +13084,10 @@ type LaunchTemplateEbsBlockDevice struct {
 
 	// Indicates whether the EBS volume is deleted on instance termination.
 	DeleteOnTermination *bool
+
+	// The index of the EBS card. Some instance types support multiple EBS cards. The
+	// default EBS card index is 0.
+	EbsCardIndex *int32
 
 	// Indicates whether the EBS volume is encrypted.
 	Encrypted *bool
@@ -12789,6 +13124,10 @@ type LaunchTemplateEbsBlockDeviceRequest struct {
 
 	// Indicates whether the EBS volume is deleted on instance termination.
 	DeleteOnTermination *bool
+
+	// The index of the EBS card. Some instance types support multiple EBS cards. The
+	// default EBS card index is 0.
+	EbsCardIndex *int32
 
 	// Indicates whether the EBS volume is encrypted. Encrypted volumes can only be
 	// attached to instances that support Amazon EBS encryption. If you are creating a
@@ -13400,6 +13739,70 @@ type LaunchTemplateInstanceNetworkInterfaceSpecificationRequest struct {
 
 	// The ID of the subnet for the network interface.
 	SubnetId *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a secondary interface specification in a launch template.
+type LaunchTemplateInstanceSecondaryInterfaceSpecification struct {
+
+	// Indicates whether the secondary interface is deleted when the instance is
+	// terminated.
+	//
+	// The only supported value for this field is true .
+	DeleteOnTermination *bool
+
+	// The device index for the secondary interface attachment.
+	DeviceIndex *int32
+
+	// The type of secondary interface.
+	InterfaceType SecondaryInterfaceType
+
+	// The index of the network card.
+	NetworkCardIndex *int32
+
+	// The number of private IPv4 addresses to assign to the secondary interface.
+	//
+	// If you specify privateIpAddressCount you cannot specify privateIpAddresses
+	PrivateIpAddressCount *int32
+
+	// The private IPv4 addresses to assign to the secondary interface.
+	//
+	// If you specify privateIpAddresses you cannot specify privateIpAddressCount
+	PrivateIpAddresses []SecondaryInterfacePrivateIpAddressSpecification
+
+	// The ID of the secondary subnet.
+	SecondarySubnetId *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a secondary interface specification for a launch template request.
+type LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest struct {
+
+	// Indicates whether the secondary interface is deleted when the instance is
+	// terminated.
+	//
+	// The only supported value for this field is true .
+	DeleteOnTermination *bool
+
+	// The device index for the secondary interface attachment.
+	DeviceIndex *int32
+
+	// The type of secondary interface.
+	InterfaceType SecondaryInterfaceType
+
+	// The index of the network card.
+	NetworkCardIndex *int32
+
+	// The number of private IPv4 addresses to assign to the secondary interface.
+	PrivateIpAddressCount *int32
+
+	// The private IPv4 addresses to assign to the secondary interface.
+	PrivateIpAddresses []SecondaryInterfacePrivateIpAddressSpecificationRequest
+
+	// The ID of the secondary subnet.
+	SecondarySubnetId *string
 
 	noSmithyDocumentSerde
 }
@@ -14368,6 +14771,18 @@ type ManagedPrefixList struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the managed resource visibility settings for the account.
+type ManagedResourceVisibilitySettings struct {
+
+	// The default visibility setting for managed resources. A value of hidden
+	// indicates that managed resources are not included in Describe operation
+	// responses by default. A value of visible indicates that managed resources are
+	// included by default.
+	DefaultVisibility ManagedResourceDefaultVisibility
+
+	noSmithyDocumentSerde
+}
+
 // Describes the media accelerators for the instance type.
 type MediaAcceleratorInfo struct {
 
@@ -15305,6 +15720,11 @@ type NetworkBandwidthGbpsRequest struct {
 // Describes the network card support of the instance type.
 type NetworkCardInfo struct {
 
+	// The number of additional network interfaces that can be attached to an instance
+	// when using flexible Elastic Network Adapter (ENA) queues. This number is in
+	// addition to the base number specified by maximumNetworkInterfaces .
+	AdditionalFlexibleNetworkInterfaces *int32
+
 	// The baseline network performance of the network card, in Gbps.
 	BaselineBandwidthInGbps *float64
 
@@ -15339,6 +15759,9 @@ type NetworkInfo struct {
 	// type, if supported.
 	BandwidthWeightings []BandwidthWeightingType
 
+	// Indicates conntrack information for the instance type
+	ConnectionTrackingConfiguration *DefaultConnectionTrackingConfiguration
+
 	// The index of the default network card, starting at 0.
 	DefaultNetworkCardIndex *int32
 
@@ -15367,6 +15790,9 @@ type NetworkInfo struct {
 	// The maximum number of IPv4 addresses per network interface.
 	Ipv4AddressesPerInterface *int32
 
+	// The maximum number of IPv4 addresses per secondary interface.
+	Ipv4AddressesPerSecondaryInterface *int32
+
 	// The maximum number of IPv6 addresses per network interface.
 	Ipv6AddressesPerInterface *int32
 
@@ -15380,11 +15806,18 @@ type NetworkInfo struct {
 	// The maximum number of network interfaces for the instance type.
 	MaximumNetworkInterfaces *int32
 
+	// The maximum number of secondary interfaces for the instance type.
+	MaximumSecondaryNetworkInterfaces *int32
+
 	// Describes the network cards for the instance type.
 	NetworkCards []NetworkCardInfo
 
 	// The network performance.
 	NetworkPerformance *string
+
+	// Indicates whether secondary interface attachments from secondary network are
+	// supported.
+	SecondaryNetworkSupported *bool
 
 	noSmithyDocumentSerde
 }
@@ -16116,6 +16549,10 @@ type OperatorRequest struct {
 // describes the service provider that manages it.
 type OperatorResponse struct {
 
+	// If true , the resource is hidden by default based on the managed resource
+	// visibility settings for the account.
+	HiddenByDefault *bool
+
 	// If true , the resource is managed by a service provider.
 	Managed *bool
 
@@ -16735,6 +17172,9 @@ type PlacementGroup struct {
 	// Reserved for future use.
 	LinkedGroupId *string
 
+	// The service provider that manages the Placement Group.
+	Operator *OperatorResponse
+
 	// The number of partitions. Valid only if strategy is set to partition .
 	PartitionCount *int32
 
@@ -17266,6 +17706,9 @@ type Region struct {
 	// The Region service endpoint.
 	Endpoint *string
 
+	// The geography information for the Region. The geography is returned as a list.
+	Geography []RegionGeography
+
 	// The Region opt-in status. The possible values are opt-in-not-required , opted-in
 	// , and not-opted-in .
 	OptInStatus *string
@@ -17289,6 +17732,15 @@ type RegionalSummary struct {
 
 	// The Amazon Web Services Region.
 	RegionName *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the geography information for a Region.
+type RegionGeography struct {
+
+	// The name of the geography, for example, United States of America .
+	Name *string
 
 	noSmithyDocumentSerde
 }
@@ -17743,6 +18195,9 @@ type RequestLaunchTemplateData struct {
 	// [User provided kernels]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html
 	RamDiskId *string
 
+	// The secondary interfaces to associate with instances launched from the template.
+	SecondaryInterfaces []LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest
+
 	// The IDs of the security groups.
 	//
 	// If you specify a network interface, you must specify any security groups as
@@ -17927,6 +18382,37 @@ type ReservationValue struct {
 
 	// The remaining upfront cost of the reservation.
 	RemainingUpfrontValue *string
+
+	noSmithyDocumentSerde
+}
+
+// Defines EC2 Fleet preferences for utilizing reserved capacity when
+// DefaultTargetCapacityType is set to reserved-capacity .
+type ReservedCapacityOptions struct {
+
+	// The types of Capacity Reservations used for fulfilling the EC2 Fleet request.
+	ReservationTypes []FleetReservationType
+
+	noSmithyDocumentSerde
+}
+
+// Defines EC2 Fleet preferences for utilizing reserved capacity when
+// DefaultTargetCapacityType is set to reserved-capacity .
+//
+// This configuration can only be used if the EC2 Fleet is of type instant .
+//
+// When you specify ReservedCapacityOptions , you must also set
+// DefaultTargetCapacityType to reserved-capacity in the
+// TargetCapacitySpecification .
+//
+// For more information about Interruptible Capacity Reservations, see [Launch instances into an Interruptible Capacity Reservation] in the
+// Amazon EC2 User Guide.
+//
+// [Launch instances into an Interruptible Capacity Reservation]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-launch-instances-interruptible-cr-walkthrough.html
+type ReservedCapacityOptionsRequest struct {
+
+	// The types of Capacity Reservations to use for fulfilling the EC2 Fleet request.
+	ReservationTypes []FleetReservationType
 
 	noSmithyDocumentSerde
 }
@@ -18427,6 +18913,9 @@ type ResponseLaunchTemplateData struct {
 
 	// The ID of the RAM disk, if applicable.
 	RamDiskId *string
+
+	// The secondary interfaces associated with the launch template.
+	SecondaryInterfaces []LaunchTemplateInstanceSecondaryInterfaceSpecification
 
 	// The security group IDs.
 	SecurityGroupIds []string
@@ -19433,6 +19922,223 @@ type ScheduledInstancesPrivateIpAddressConfig struct {
 
 	// The IPv4 address.
 	PrivateIpAddress *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a secondary interface.
+type SecondaryInterface struct {
+
+	// The attachment information for the secondary interface.
+	Attachment *SecondaryInterfaceAttachment
+
+	// The Availability Zone of the secondary interface.
+	AvailabilityZone *string
+
+	// The ID of the Availability Zone of the secondary interface.
+	AvailabilityZoneId *string
+
+	// The MAC address of the secondary interface.
+	MacAddress *string
+
+	// The ID of the Amazon Web Services account that owns the secondary interface.
+	OwnerId *string
+
+	// The private IPv4 addresses associated with the secondary interface.
+	PrivateIpv4Addresses []SecondaryInterfaceIpv4Address
+
+	// The Amazon Resource Name (ARN) of the secondary interface.
+	SecondaryInterfaceArn *string
+
+	// The ID of the secondary interface.
+	SecondaryInterfaceId *string
+
+	// The type of secondary interface.
+	SecondaryInterfaceType SecondaryInterfaceType
+
+	// The ID of the secondary network.
+	SecondaryNetworkId *string
+
+	// The type of the secondary network.
+	SecondaryNetworkType SecondaryNetworkType
+
+	// The ID of the secondary subnet.
+	SecondarySubnetId *string
+
+	// Indicates whether source/destination checking is enabled.
+	SourceDestCheck *bool
+
+	// The status of the secondary interface.
+	Status SecondaryInterfaceStatus
+
+	// The tags assigned to the secondary interface.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
+// Describes the attachment of a secondary interface to an instance.
+type SecondaryInterfaceAttachment struct {
+
+	// The timestamp when the attachment was created.
+	AttachTime *time.Time
+
+	// The ID of the attachment.
+	AttachmentId *string
+
+	// Indicates whether the secondary interface is deleted when the instance is
+	// terminated.
+	//
+	// The only supported value for this field is true .
+	DeleteOnTermination *bool
+
+	// The device index of the secondary interface.
+	DeviceIndex *int32
+
+	// The ID of the instance to which the secondary interface is attached.
+	InstanceId *string
+
+	// The Amazon Web Services account ID of the owner of the instance.
+	InstanceOwnerId *string
+
+	// The index of the network card.
+	NetworkCardIndex *int32
+
+	// The attachment state.
+	Status AttachmentStatus
+
+	noSmithyDocumentSerde
+}
+
+// Describes a private IPv4 address for a secondary interface.
+type SecondaryInterfaceIpv4Address struct {
+
+	// The private IPv4 address.
+	PrivateIpAddress *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a private IPv4 address specification for a secondary interface.
+type SecondaryInterfacePrivateIpAddressSpecification struct {
+
+	// The private IPv4 address.
+	PrivateIpAddress *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a private IPv4 address specification for a secondary interface
+// request.
+type SecondaryInterfacePrivateIpAddressSpecificationRequest struct {
+
+	// The private IPv4 address.
+	PrivateIpAddress *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a secondary network.
+type SecondaryNetwork struct {
+
+	// Information about the IPv4 CIDR blocks associated with the secondary network.
+	Ipv4CidrBlockAssociations []SecondaryNetworkIpv4CidrBlockAssociation
+
+	// The ID of the Amazon Web Services account that owns the secondary network.
+	OwnerId *string
+
+	// The Amazon Resource Name (ARN) of the secondary network.
+	SecondaryNetworkArn *string
+
+	// The ID of the secondary network.
+	SecondaryNetworkId *string
+
+	// The state of the secondary network.
+	State SecondaryNetworkState
+
+	// The reason for the current state of the secondary network.
+	StateReason *string
+
+	// The tags assigned to the secondary network.
+	Tags []Tag
+
+	// The type of the secondary network.
+	Type SecondaryNetworkType
+
+	noSmithyDocumentSerde
+}
+
+// Describes an IPv4 CIDR block associated with a secondary network.
+type SecondaryNetworkIpv4CidrBlockAssociation struct {
+
+	// The association ID for the IPv4 CIDR block.
+	AssociationId *string
+
+	// The IPv4 CIDR block.
+	CidrBlock *string
+
+	// The state of the CIDR block association.
+	State SecondaryNetworkCidrBlockAssociationState
+
+	// The reason for the current state of the CIDR block association.
+	StateReason *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a secondary subnet.
+type SecondarySubnet struct {
+
+	// The Availability Zone of the secondary subnet.
+	AvailabilityZone *string
+
+	// The ID of the Availability Zone of the secondary subnet.
+	AvailabilityZoneId *string
+
+	// Information about the IPv4 CIDR blocks associated with the secondary subnet.
+	Ipv4CidrBlockAssociations []SecondarySubnetIpv4CidrBlockAssociation
+
+	// The ID of the Amazon Web Services account that owns the secondary subnet.
+	OwnerId *string
+
+	// The ID of the secondary network.
+	SecondaryNetworkId *string
+
+	// The type of the secondary network.
+	SecondaryNetworkType SecondaryNetworkType
+
+	// The Amazon Resource Name (ARN) of the secondary subnet.
+	SecondarySubnetArn *string
+
+	// The ID of the secondary subnet.
+	SecondarySubnetId *string
+
+	// The state of the secondary subnet.
+	State SecondarySubnetState
+
+	// The reason for the current state of the secondary subnet.
+	StateReason *string
+
+	// The tags assigned to the secondary subnet.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
+// Describes an IPv4 CIDR block associated with a secondary subnet.
+type SecondarySubnetIpv4CidrBlockAssociation struct {
+
+	// The association ID for the IPv4 CIDR block.
+	AssociationId *string
+
+	// The IPv4 CIDR block.
+	CidrBlock *string
+
+	// The state of the CIDR block association.
+	State SecondarySubnetCidrBlockAssociationState
+
+	// The reason for the current state of the CIDR block association.
+	StateReason *string
 
 	noSmithyDocumentSerde
 }
@@ -21845,6 +22551,14 @@ type TargetNetwork struct {
 	// The ID of the association.
 	AssociationId *string
 
+	// The Availability Zone IDs for the target network association, if the Client VPN
+	// endpoint uses a Transit Gateway.
+	AvailabilityZoneIds []string
+
+	// The Availability Zone names for the target network association, if the Client
+	// VPN endpoint uses a Transit Gateway.
+	AvailabilityZones []string
+
 	// The ID of the Client VPN endpoint with which the target network is associated.
 	ClientVpnEndpointId *string
 
@@ -22238,6 +22952,67 @@ type TransitGatewayAttachmentPropagation struct {
 
 	// The ID of the propagation route table.
 	TransitGatewayRouteTableId *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a Transit Gateway attachment for a Client VPN endpoint.
+type TransitGatewayClientVpnAttachment struct {
+
+	// The ID of the Client VPN endpoint.
+	ClientVpnEndpointId *string
+
+	// The ID of the Amazon Web Services account that owns the Client VPN endpoint.
+	ClientVpnOwnerId *string
+
+	// The date and time the Transit Gateway attachment was created.
+	CreationTime *string
+
+	// The state of the Transit Gateway attachment.
+	State TransitGatewayAttachmentStatusType
+
+	// The ID of the Transit Gateway attachment.
+	TransitGatewayAttachmentId *string
+
+	// The ID of the Transit Gateway.
+	TransitGatewayId *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the Transit Gateway configuration for a Client VPN endpoint.
+type TransitGatewayConfigurationDescribeEndpointStructure struct {
+
+	// The Availability Zone IDs for the Transit Gateway association.
+	AvailabilityZoneIds []string
+
+	// The Availability Zone names for the Transit Gateway association.
+	AvailabilityZones []string
+
+	// The ID of the Transit Gateway attachment.
+	TransitGatewayAttachmentId *string
+
+	// The ID of the Transit Gateway.
+	TransitGatewayId *string
+
+	noSmithyDocumentSerde
+}
+
+// The Transit Gateway configuration for a Client VPN endpoint.
+type TransitGatewayConfigurationInputStructure struct {
+
+	// The Availability Zone IDs for the Transit Gateway association. You can specify
+	// up to the maximum number of Availability Zones supported by the Transit Gateway.
+	// You cannot specify both AvailabilityZones and AvailabilityZoneIds .
+	AvailabilityZoneIds []string
+
+	// The Availability Zone names for the Transit Gateway association. You can
+	// specify up to the maximum number of Availability Zones supported by the Transit
+	// Gateway. You cannot specify both AvailabilityZones and AvailabilityZoneIds .
+	AvailabilityZones []string
+
+	// The ID of the Transit Gateway to associate with the Client VPN endpoint.
+	TransitGatewayId *string
 
 	noSmithyDocumentSerde
 }
@@ -24199,6 +24974,10 @@ type VolumeAttachment struct {
 	// parameter returns null .
 	Device *string
 
+	// The index of the EBS card. Some instance types support multiple EBS cards. The
+	// default EBS card index is 0.
+	EbsCardIndex *int32
+
 	// The ID of the instance.
 	//
 	// If the volume is attached to an Amazon Web Services-managed resource, this
@@ -24240,6 +25019,10 @@ type VolumeModification struct {
 
 	// The current modification state.
 	ModificationState VolumeModificationState
+
+	// Describes whether the resource is managed by a service provider and, if so,
+	// describes the service provider that manages it.
+	Operator *OperatorResponse
 
 	// The original IOPS rate of the volume.
 	OriginalIops *int32
@@ -24458,6 +25241,9 @@ type VolumeStatusItem struct {
 	//
 	// [Initialize Amazon EBS volumes]: https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html
 	InitializationStatusDetails *InitializationStatusDetails
+
+	// The service provider that manages the resource.
+	Operator *OperatorResponse
 
 	// The Amazon Resource Name (ARN) of the Outpost.
 	OutpostArn *string

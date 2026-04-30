@@ -11,57 +11,57 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItems
+// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItems A static analysis rule within a ruleset, including its definition, metadata, and associated test cases.
 type GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItems struct {
-	//
+	// The list of configurable arguments accepted by this rule.
 	Arguments []GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsArgumentsItems `json:"arguments,omitempty"`
-	//
+	// The category classifying the type of issue this rule detects (e.g., security, style, performance).
 	Category *string `json:"category,omitempty"`
-	//
+	// A checksum of the rule definition used to detect changes.
 	Checksum *string `json:"checksum,omitempty"`
-	//
+	// The rule implementation code used by the static analysis engine.
 	Code *string `json:"code,omitempty"`
-	//
+	// The date and time when the rule was created.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
-	//
+	// The identifier of the user or system that created the rule.
 	CreatedBy *string `json:"created_by,omitempty"`
-	//
+	// The CVE identifier associated with the vulnerability this rule detects, if applicable.
 	Cve *string `json:"cve,omitempty"`
-	//
+	// The CWE identifier associated with the weakness category this rule detects, if applicable.
 	Cwe *string `json:"cwe,omitempty"`
-	//
+	// The resource identifier and type for a static analysis rule.
 	Data GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsData `json:"data"`
-	//
+	// A detailed explanation of what the rule detects and why it matters.
 	Description *string `json:"description,omitempty"`
-	//
+	// A URL pointing to additional documentation for this rule.
 	DocumentationUrl *string `json:"documentation_url,omitempty"`
-	//
+	// The code entity type (e.g., function, class, variable) that this rule inspects.
 	EntityChecked *string `json:"entity_checked,omitempty"`
-	//
+	// Indicates whether the rule is publicly published and available to all users.
 	IsPublished *bool `json:"is_published,omitempty"`
-	//
+	// Indicates whether the rule is in testing mode and not yet promoted to production.
 	IsTesting *bool `json:"is_testing,omitempty"`
-	//
+	// The programming language this rule applies to.
 	Language *string `json:"language,omitempty"`
-	//
+	// The date and time when the rule was last modified.
 	LastUpdatedAt *time.Time `json:"last_updated_at,omitempty"`
-	//
+	// The identifier of the user or system that last updated the rule.
 	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
-	//
+	// The unique name identifying this rule within its ruleset.
 	Name *string `json:"name,omitempty"`
-	//
+	// A regular expression pattern used by the rule for pattern-based detection.
 	Regex *string `json:"regex,omitempty"`
-	//
+	// The severity level of findings produced by this rule (e.g., ERROR, WARNING, NOTICE).
 	Severity *string `json:"severity,omitempty"`
-	//
+	// A brief summary of what the rule detects, suitable for display in listings.
 	ShortDescription *string `json:"short_description,omitempty"`
-	//
+	// Indicates whether an AI-generated fix suggestion should be offered for findings from this rule.
 	ShouldUseAiFix *bool `json:"should_use_ai_fix,omitempty"`
-	//
+	// The list of test cases used to validate the rule's behavior.
 	Tests []GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsTestsItems `json:"tests,omitempty"`
-	//
+	// The Tree-sitter query expression used by the rule to match code patterns in the AST.
 	TreeSitterQuery *string `json:"tree_sitter_query,omitempty"`
-	//
+	// The rule type indicating the detection mechanism used (e.g., tree_sitter, regex).
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

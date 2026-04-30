@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ServiceListData
+// ServiceListData A single data item in the service list response.
 type ServiceListData struct {
-	//
+	// Attributes of a service list entry, containing metadata and a list of service names.
 	Attributes *ServiceListDataAttributes `json:"attributes,omitempty"`
-	//
+	// The unique identifier of the service.
 	Id *string `json:"id,omitempty"`
 	// Services list resource type.
 	Type ServiceListDataType `json:"type"`

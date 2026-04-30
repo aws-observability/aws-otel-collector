@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ProjectRelationship Relationship to project
+// ProjectRelationship Relationship to project.
 type ProjectRelationship struct {
-	// Relationship to project object
+	// Relationship to project object.
 	Data ProjectRelationshipData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

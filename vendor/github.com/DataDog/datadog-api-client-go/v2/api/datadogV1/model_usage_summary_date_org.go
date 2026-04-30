@@ -59,6 +59,38 @@ type UsageSummaryDateOrg struct {
 	// Shows the sum of all browser RUM units over all hours in the current date for the given org (To be deprecated on October 1st, 2024).
 	// Deprecated
 	BrowserRumUnitsSum *int64 `json:"browser_rum_units_sum,omitempty"`
+	// Shows the last value of Anthropic cloud spend monitored over all hours in the current date for the given org.
+	CcmAnthropicSpendLast *int64 `json:"ccm_anthropic_spend_last,omitempty"`
+	// Shows the last value of AWS cloud spend monitored over all hours in the current date for the given org.
+	CcmAwsSpendLast *int64 `json:"ccm_aws_spend_last,omitempty"`
+	// Shows the last value of Azure cloud spend monitored over all hours in the current date for the given org.
+	CcmAzureSpendLast *int64 `json:"ccm_azure_spend_last,omitempty"`
+	// Shows the last value of Confluent cloud spend monitored over all hours in the current date for the given org.
+	CcmConfluentSpendLast *int64 `json:"ccm_confluent_spend_last,omitempty"`
+	// Shows the last value of Databricks cloud spend monitored over all hours in the current date for the given org.
+	CcmDatabricksSpendLast *int64 `json:"ccm_databricks_spend_last,omitempty"`
+	// Shows the last value of Elastic cloud spend monitored over all hours in the current date for the given org.
+	CcmElasticSpendLast *int64 `json:"ccm_elastic_spend_last,omitempty"`
+	// Shows the last value of Fastly cloud spend monitored over all hours in the current date for the given org.
+	CcmFastlySpendLast *int64 `json:"ccm_fastly_spend_last,omitempty"`
+	// Shows the last value of GCP cloud spend monitored over all hours in the current date for the given org.
+	CcmGcpSpendLast *int64 `json:"ccm_gcp_spend_last,omitempty"`
+	// Shows the last value of GitHub cloud spend monitored over all hours in the current date for the given org.
+	CcmGithubSpendLast *int64 `json:"ccm_github_spend_last,omitempty"`
+	// Shows the last value of MongoDB cloud spend monitored over all hours in the current date for the given org.
+	CcmMongodbSpendLast *int64 `json:"ccm_mongodb_spend_last,omitempty"`
+	// Shows the last value of OCI cloud spend monitored over all hours in the current date for the given org.
+	CcmOciSpendLast *int64 `json:"ccm_oci_spend_last,omitempty"`
+	// Shows the last value of OpenAI cloud spend monitored over all hours in the current date for the given org.
+	CcmOpenaiSpendLast *int64 `json:"ccm_openai_spend_last,omitempty"`
+	// Shows the last value of Snowflake cloud spend monitored over all hours in the current date for the given org.
+	CcmSnowflakeSpendLast *int64 `json:"ccm_snowflake_spend_last,omitempty"`
+	// Shows the last value of the amount of cloud spend monitored for Enterprise over all hours in the current date for the given org.
+	CcmSpendMonitoredEntLast *int64 `json:"ccm_spend_monitored_ent_last,omitempty"`
+	// Shows the last value of the amount of cloud spend monitored for Pro over all hours in the current date for the given org.
+	CcmSpendMonitoredProLast *int64 `json:"ccm_spend_monitored_pro_last,omitempty"`
+	// Shows the last value of Twilio cloud spend monitored over all hours in the current date for the given org.
+	CcmTwilioSpendLast *int64 `json:"ccm_twilio_spend_last,omitempty"`
 	// Shows the sum of all CI pipeline indexed spans over all hours in the current date for the given org.
 	CiPipelineIndexedSpansSum *int64 `json:"ci_pipeline_indexed_spans_sum,omitempty"`
 	// Shows the sum of all CI test indexed spans over all hours in the current date for the given org.
@@ -111,8 +143,12 @@ type UsageSummaryDateOrg struct {
 	CsmHostEnterpriseCwsHostCountTop99p *int64 `json:"csm_host_enterprise_cws_host_count_top99p,omitempty"`
 	// Shows the 99th percentile of all Cloud Security Management Enterprise GCP hosts over all hours in the current date for the given org.
 	CsmHostEnterpriseGcpHostCountTop99p *int64 `json:"csm_host_enterprise_gcp_host_count_top99p,omitempty"`
+	// Shows the 99th percentile of all Cloud Security Management Enterprise OCI hosts over all hours in the current date for the given org.
+	CsmHostEnterpriseOciHostCountTop99p *int64 `json:"csm_host_enterprise_oci_host_count_top99p,omitempty"`
 	// Shows the 99th percentile of all Cloud Security Management Enterprise hosts over all hours in the current date for the given org.
 	CsmHostEnterpriseTotalHostCountTop99p *int64 `json:"csm_host_enterprise_total_host_count_top99p,omitempty"`
+	// Shows the 99th percentile of all Cloud Security Management Pro OCI hosts over all hours in the current date for the given org.
+	CsmHostProOciHostCountTop99p *int64 `json:"csm_host_pro_oci_host_count_top99p,omitempty"`
 	// Shows the 99th percentile of all Cloud Security Management Pro Azure app services hosts over all hours in the current date for the given org.
 	CspmAasHostTop99p *int64 `json:"cspm_aas_host_top99p,omitempty"`
 	// Shows the 99th percentile of all Cloud Security Management Pro AWS hosts over all hours in the current date for the given org.
@@ -228,6 +264,8 @@ type UsageSummaryDateOrg struct {
 	// Shows the sum of all log events indexed over all hours in the current date for the given org (To be deprecated on October 1st, 2024).
 	// Deprecated
 	IndexedEventsCountSum *int64 `json:"indexed_events_count_sum,omitempty"`
+	// Shows the 99th percentile of all Edge Devices Monitoring devices over all hours in the current date for the given org.
+	InfraEdgeMonitoringDevicesTop99p *int64 `json:"infra_edge_monitoring_devices_top99p,omitempty"`
 	// Shows the 99th percentile of all distinct infrastructure hosts over all hours in the current date for the given org.
 	InfraHostTop99p *int64 `json:"infra_host_top99p,omitempty"`
 	// Shows the sum of all log bytes ingested over all hours in the current date for the given org.
@@ -273,6 +311,8 @@ type UsageSummaryDateOrg struct {
 	NetflowIndexedEventsCountSum *int64 `json:"netflow_indexed_events_count_sum,omitempty"`
 	// Shows the 99th percentile of all Network Device Monitoring wireless devices over all hours in the current date for the given org.
 	NetworkDeviceWirelessTop99p *int64 `json:"network_device_wireless_top99p,omitempty"`
+	// Shows the sum of all Network Path scheduled tests over all hours in the current date for the given org.
+	NetworkPathSum *int64 `json:"network_path_sum,omitempty"`
 	// Shows the 99th percentile of all distinct Cloud Network Monitoring hosts (formerly known as Network hosts) over all hours in the current date for the given org.
 	NpmHostTop99p *int64 `json:"npm_host_top99p,omitempty"`
 	// Sum of all observability pipelines bytes processed over all hours in the current date for the given org.
@@ -1132,6 +1172,454 @@ func (o *UsageSummaryDateOrg) SetBrowserRumUnitsSum(v int64) {
 	o.BrowserRumUnitsSum = &v
 }
 
+// GetCcmAnthropicSpendLast returns the CcmAnthropicSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmAnthropicSpendLast() int64 {
+	if o == nil || o.CcmAnthropicSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmAnthropicSpendLast
+}
+
+// GetCcmAnthropicSpendLastOk returns a tuple with the CcmAnthropicSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmAnthropicSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmAnthropicSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmAnthropicSpendLast, true
+}
+
+// HasCcmAnthropicSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmAnthropicSpendLast() bool {
+	return o != nil && o.CcmAnthropicSpendLast != nil
+}
+
+// SetCcmAnthropicSpendLast gets a reference to the given int64 and assigns it to the CcmAnthropicSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmAnthropicSpendLast(v int64) {
+	o.CcmAnthropicSpendLast = &v
+}
+
+// GetCcmAwsSpendLast returns the CcmAwsSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmAwsSpendLast() int64 {
+	if o == nil || o.CcmAwsSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmAwsSpendLast
+}
+
+// GetCcmAwsSpendLastOk returns a tuple with the CcmAwsSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmAwsSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmAwsSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmAwsSpendLast, true
+}
+
+// HasCcmAwsSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmAwsSpendLast() bool {
+	return o != nil && o.CcmAwsSpendLast != nil
+}
+
+// SetCcmAwsSpendLast gets a reference to the given int64 and assigns it to the CcmAwsSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmAwsSpendLast(v int64) {
+	o.CcmAwsSpendLast = &v
+}
+
+// GetCcmAzureSpendLast returns the CcmAzureSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmAzureSpendLast() int64 {
+	if o == nil || o.CcmAzureSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmAzureSpendLast
+}
+
+// GetCcmAzureSpendLastOk returns a tuple with the CcmAzureSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmAzureSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmAzureSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmAzureSpendLast, true
+}
+
+// HasCcmAzureSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmAzureSpendLast() bool {
+	return o != nil && o.CcmAzureSpendLast != nil
+}
+
+// SetCcmAzureSpendLast gets a reference to the given int64 and assigns it to the CcmAzureSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmAzureSpendLast(v int64) {
+	o.CcmAzureSpendLast = &v
+}
+
+// GetCcmConfluentSpendLast returns the CcmConfluentSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmConfluentSpendLast() int64 {
+	if o == nil || o.CcmConfluentSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmConfluentSpendLast
+}
+
+// GetCcmConfluentSpendLastOk returns a tuple with the CcmConfluentSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmConfluentSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmConfluentSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmConfluentSpendLast, true
+}
+
+// HasCcmConfluentSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmConfluentSpendLast() bool {
+	return o != nil && o.CcmConfluentSpendLast != nil
+}
+
+// SetCcmConfluentSpendLast gets a reference to the given int64 and assigns it to the CcmConfluentSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmConfluentSpendLast(v int64) {
+	o.CcmConfluentSpendLast = &v
+}
+
+// GetCcmDatabricksSpendLast returns the CcmDatabricksSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmDatabricksSpendLast() int64 {
+	if o == nil || o.CcmDatabricksSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmDatabricksSpendLast
+}
+
+// GetCcmDatabricksSpendLastOk returns a tuple with the CcmDatabricksSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmDatabricksSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmDatabricksSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmDatabricksSpendLast, true
+}
+
+// HasCcmDatabricksSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmDatabricksSpendLast() bool {
+	return o != nil && o.CcmDatabricksSpendLast != nil
+}
+
+// SetCcmDatabricksSpendLast gets a reference to the given int64 and assigns it to the CcmDatabricksSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmDatabricksSpendLast(v int64) {
+	o.CcmDatabricksSpendLast = &v
+}
+
+// GetCcmElasticSpendLast returns the CcmElasticSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmElasticSpendLast() int64 {
+	if o == nil || o.CcmElasticSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmElasticSpendLast
+}
+
+// GetCcmElasticSpendLastOk returns a tuple with the CcmElasticSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmElasticSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmElasticSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmElasticSpendLast, true
+}
+
+// HasCcmElasticSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmElasticSpendLast() bool {
+	return o != nil && o.CcmElasticSpendLast != nil
+}
+
+// SetCcmElasticSpendLast gets a reference to the given int64 and assigns it to the CcmElasticSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmElasticSpendLast(v int64) {
+	o.CcmElasticSpendLast = &v
+}
+
+// GetCcmFastlySpendLast returns the CcmFastlySpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmFastlySpendLast() int64 {
+	if o == nil || o.CcmFastlySpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmFastlySpendLast
+}
+
+// GetCcmFastlySpendLastOk returns a tuple with the CcmFastlySpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmFastlySpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmFastlySpendLast == nil {
+		return nil, false
+	}
+	return o.CcmFastlySpendLast, true
+}
+
+// HasCcmFastlySpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmFastlySpendLast() bool {
+	return o != nil && o.CcmFastlySpendLast != nil
+}
+
+// SetCcmFastlySpendLast gets a reference to the given int64 and assigns it to the CcmFastlySpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmFastlySpendLast(v int64) {
+	o.CcmFastlySpendLast = &v
+}
+
+// GetCcmGcpSpendLast returns the CcmGcpSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmGcpSpendLast() int64 {
+	if o == nil || o.CcmGcpSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmGcpSpendLast
+}
+
+// GetCcmGcpSpendLastOk returns a tuple with the CcmGcpSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmGcpSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmGcpSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmGcpSpendLast, true
+}
+
+// HasCcmGcpSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmGcpSpendLast() bool {
+	return o != nil && o.CcmGcpSpendLast != nil
+}
+
+// SetCcmGcpSpendLast gets a reference to the given int64 and assigns it to the CcmGcpSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmGcpSpendLast(v int64) {
+	o.CcmGcpSpendLast = &v
+}
+
+// GetCcmGithubSpendLast returns the CcmGithubSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmGithubSpendLast() int64 {
+	if o == nil || o.CcmGithubSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmGithubSpendLast
+}
+
+// GetCcmGithubSpendLastOk returns a tuple with the CcmGithubSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmGithubSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmGithubSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmGithubSpendLast, true
+}
+
+// HasCcmGithubSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmGithubSpendLast() bool {
+	return o != nil && o.CcmGithubSpendLast != nil
+}
+
+// SetCcmGithubSpendLast gets a reference to the given int64 and assigns it to the CcmGithubSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmGithubSpendLast(v int64) {
+	o.CcmGithubSpendLast = &v
+}
+
+// GetCcmMongodbSpendLast returns the CcmMongodbSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmMongodbSpendLast() int64 {
+	if o == nil || o.CcmMongodbSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmMongodbSpendLast
+}
+
+// GetCcmMongodbSpendLastOk returns a tuple with the CcmMongodbSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmMongodbSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmMongodbSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmMongodbSpendLast, true
+}
+
+// HasCcmMongodbSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmMongodbSpendLast() bool {
+	return o != nil && o.CcmMongodbSpendLast != nil
+}
+
+// SetCcmMongodbSpendLast gets a reference to the given int64 and assigns it to the CcmMongodbSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmMongodbSpendLast(v int64) {
+	o.CcmMongodbSpendLast = &v
+}
+
+// GetCcmOciSpendLast returns the CcmOciSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmOciSpendLast() int64 {
+	if o == nil || o.CcmOciSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmOciSpendLast
+}
+
+// GetCcmOciSpendLastOk returns a tuple with the CcmOciSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmOciSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmOciSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmOciSpendLast, true
+}
+
+// HasCcmOciSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmOciSpendLast() bool {
+	return o != nil && o.CcmOciSpendLast != nil
+}
+
+// SetCcmOciSpendLast gets a reference to the given int64 and assigns it to the CcmOciSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmOciSpendLast(v int64) {
+	o.CcmOciSpendLast = &v
+}
+
+// GetCcmOpenaiSpendLast returns the CcmOpenaiSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmOpenaiSpendLast() int64 {
+	if o == nil || o.CcmOpenaiSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmOpenaiSpendLast
+}
+
+// GetCcmOpenaiSpendLastOk returns a tuple with the CcmOpenaiSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmOpenaiSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmOpenaiSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmOpenaiSpendLast, true
+}
+
+// HasCcmOpenaiSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmOpenaiSpendLast() bool {
+	return o != nil && o.CcmOpenaiSpendLast != nil
+}
+
+// SetCcmOpenaiSpendLast gets a reference to the given int64 and assigns it to the CcmOpenaiSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmOpenaiSpendLast(v int64) {
+	o.CcmOpenaiSpendLast = &v
+}
+
+// GetCcmSnowflakeSpendLast returns the CcmSnowflakeSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmSnowflakeSpendLast() int64 {
+	if o == nil || o.CcmSnowflakeSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmSnowflakeSpendLast
+}
+
+// GetCcmSnowflakeSpendLastOk returns a tuple with the CcmSnowflakeSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmSnowflakeSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmSnowflakeSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmSnowflakeSpendLast, true
+}
+
+// HasCcmSnowflakeSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmSnowflakeSpendLast() bool {
+	return o != nil && o.CcmSnowflakeSpendLast != nil
+}
+
+// SetCcmSnowflakeSpendLast gets a reference to the given int64 and assigns it to the CcmSnowflakeSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmSnowflakeSpendLast(v int64) {
+	o.CcmSnowflakeSpendLast = &v
+}
+
+// GetCcmSpendMonitoredEntLast returns the CcmSpendMonitoredEntLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmSpendMonitoredEntLast() int64 {
+	if o == nil || o.CcmSpendMonitoredEntLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmSpendMonitoredEntLast
+}
+
+// GetCcmSpendMonitoredEntLastOk returns a tuple with the CcmSpendMonitoredEntLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmSpendMonitoredEntLastOk() (*int64, bool) {
+	if o == nil || o.CcmSpendMonitoredEntLast == nil {
+		return nil, false
+	}
+	return o.CcmSpendMonitoredEntLast, true
+}
+
+// HasCcmSpendMonitoredEntLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmSpendMonitoredEntLast() bool {
+	return o != nil && o.CcmSpendMonitoredEntLast != nil
+}
+
+// SetCcmSpendMonitoredEntLast gets a reference to the given int64 and assigns it to the CcmSpendMonitoredEntLast field.
+func (o *UsageSummaryDateOrg) SetCcmSpendMonitoredEntLast(v int64) {
+	o.CcmSpendMonitoredEntLast = &v
+}
+
+// GetCcmSpendMonitoredProLast returns the CcmSpendMonitoredProLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmSpendMonitoredProLast() int64 {
+	if o == nil || o.CcmSpendMonitoredProLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmSpendMonitoredProLast
+}
+
+// GetCcmSpendMonitoredProLastOk returns a tuple with the CcmSpendMonitoredProLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmSpendMonitoredProLastOk() (*int64, bool) {
+	if o == nil || o.CcmSpendMonitoredProLast == nil {
+		return nil, false
+	}
+	return o.CcmSpendMonitoredProLast, true
+}
+
+// HasCcmSpendMonitoredProLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmSpendMonitoredProLast() bool {
+	return o != nil && o.CcmSpendMonitoredProLast != nil
+}
+
+// SetCcmSpendMonitoredProLast gets a reference to the given int64 and assigns it to the CcmSpendMonitoredProLast field.
+func (o *UsageSummaryDateOrg) SetCcmSpendMonitoredProLast(v int64) {
+	o.CcmSpendMonitoredProLast = &v
+}
+
+// GetCcmTwilioSpendLast returns the CcmTwilioSpendLast field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCcmTwilioSpendLast() int64 {
+	if o == nil || o.CcmTwilioSpendLast == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CcmTwilioSpendLast
+}
+
+// GetCcmTwilioSpendLastOk returns a tuple with the CcmTwilioSpendLast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCcmTwilioSpendLastOk() (*int64, bool) {
+	if o == nil || o.CcmTwilioSpendLast == nil {
+		return nil, false
+	}
+	return o.CcmTwilioSpendLast, true
+}
+
+// HasCcmTwilioSpendLast returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCcmTwilioSpendLast() bool {
+	return o != nil && o.CcmTwilioSpendLast != nil
+}
+
+// SetCcmTwilioSpendLast gets a reference to the given int64 and assigns it to the CcmTwilioSpendLast field.
+func (o *UsageSummaryDateOrg) SetCcmTwilioSpendLast(v int64) {
+	o.CcmTwilioSpendLast = &v
+}
+
 // GetCiPipelineIndexedSpansSum returns the CiPipelineIndexedSpansSum field value if set, zero value otherwise.
 func (o *UsageSummaryDateOrg) GetCiPipelineIndexedSpansSum() int64 {
 	if o == nil || o.CiPipelineIndexedSpansSum == nil {
@@ -1860,6 +2348,34 @@ func (o *UsageSummaryDateOrg) SetCsmHostEnterpriseGcpHostCountTop99p(v int64) {
 	o.CsmHostEnterpriseGcpHostCountTop99p = &v
 }
 
+// GetCsmHostEnterpriseOciHostCountTop99p returns the CsmHostEnterpriseOciHostCountTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCsmHostEnterpriseOciHostCountTop99p() int64 {
+	if o == nil || o.CsmHostEnterpriseOciHostCountTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CsmHostEnterpriseOciHostCountTop99p
+}
+
+// GetCsmHostEnterpriseOciHostCountTop99pOk returns a tuple with the CsmHostEnterpriseOciHostCountTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCsmHostEnterpriseOciHostCountTop99pOk() (*int64, bool) {
+	if o == nil || o.CsmHostEnterpriseOciHostCountTop99p == nil {
+		return nil, false
+	}
+	return o.CsmHostEnterpriseOciHostCountTop99p, true
+}
+
+// HasCsmHostEnterpriseOciHostCountTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCsmHostEnterpriseOciHostCountTop99p() bool {
+	return o != nil && o.CsmHostEnterpriseOciHostCountTop99p != nil
+}
+
+// SetCsmHostEnterpriseOciHostCountTop99p gets a reference to the given int64 and assigns it to the CsmHostEnterpriseOciHostCountTop99p field.
+func (o *UsageSummaryDateOrg) SetCsmHostEnterpriseOciHostCountTop99p(v int64) {
+	o.CsmHostEnterpriseOciHostCountTop99p = &v
+}
+
 // GetCsmHostEnterpriseTotalHostCountTop99p returns the CsmHostEnterpriseTotalHostCountTop99p field value if set, zero value otherwise.
 func (o *UsageSummaryDateOrg) GetCsmHostEnterpriseTotalHostCountTop99p() int64 {
 	if o == nil || o.CsmHostEnterpriseTotalHostCountTop99p == nil {
@@ -1886,6 +2402,34 @@ func (o *UsageSummaryDateOrg) HasCsmHostEnterpriseTotalHostCountTop99p() bool {
 // SetCsmHostEnterpriseTotalHostCountTop99p gets a reference to the given int64 and assigns it to the CsmHostEnterpriseTotalHostCountTop99p field.
 func (o *UsageSummaryDateOrg) SetCsmHostEnterpriseTotalHostCountTop99p(v int64) {
 	o.CsmHostEnterpriseTotalHostCountTop99p = &v
+}
+
+// GetCsmHostProOciHostCountTop99p returns the CsmHostProOciHostCountTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCsmHostProOciHostCountTop99p() int64 {
+	if o == nil || o.CsmHostProOciHostCountTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CsmHostProOciHostCountTop99p
+}
+
+// GetCsmHostProOciHostCountTop99pOk returns a tuple with the CsmHostProOciHostCountTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCsmHostProOciHostCountTop99pOk() (*int64, bool) {
+	if o == nil || o.CsmHostProOciHostCountTop99p == nil {
+		return nil, false
+	}
+	return o.CsmHostProOciHostCountTop99p, true
+}
+
+// HasCsmHostProOciHostCountTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCsmHostProOciHostCountTop99p() bool {
+	return o != nil && o.CsmHostProOciHostCountTop99p != nil
+}
+
+// SetCsmHostProOciHostCountTop99p gets a reference to the given int64 and assigns it to the CsmHostProOciHostCountTop99p field.
+func (o *UsageSummaryDateOrg) SetCsmHostProOciHostCountTop99p(v int64) {
+	o.CsmHostProOciHostCountTop99p = &v
 }
 
 // GetCspmAasHostTop99p returns the CspmAasHostTop99p field value if set, zero value otherwise.
@@ -3487,6 +4031,34 @@ func (o *UsageSummaryDateOrg) SetIndexedEventsCountSum(v int64) {
 	o.IndexedEventsCountSum = &v
 }
 
+// GetInfraEdgeMonitoringDevicesTop99p returns the InfraEdgeMonitoringDevicesTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetInfraEdgeMonitoringDevicesTop99p() int64 {
+	if o == nil || o.InfraEdgeMonitoringDevicesTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.InfraEdgeMonitoringDevicesTop99p
+}
+
+// GetInfraEdgeMonitoringDevicesTop99pOk returns a tuple with the InfraEdgeMonitoringDevicesTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetInfraEdgeMonitoringDevicesTop99pOk() (*int64, bool) {
+	if o == nil || o.InfraEdgeMonitoringDevicesTop99p == nil {
+		return nil, false
+	}
+	return o.InfraEdgeMonitoringDevicesTop99p, true
+}
+
+// HasInfraEdgeMonitoringDevicesTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasInfraEdgeMonitoringDevicesTop99p() bool {
+	return o != nil && o.InfraEdgeMonitoringDevicesTop99p != nil
+}
+
+// SetInfraEdgeMonitoringDevicesTop99p gets a reference to the given int64 and assigns it to the InfraEdgeMonitoringDevicesTop99p field.
+func (o *UsageSummaryDateOrg) SetInfraEdgeMonitoringDevicesTop99p(v int64) {
+	o.InfraEdgeMonitoringDevicesTop99p = &v
+}
+
 // GetInfraHostTop99p returns the InfraHostTop99p field value if set, zero value otherwise.
 func (o *UsageSummaryDateOrg) GetInfraHostTop99p() int64 {
 	if o == nil || o.InfraHostTop99p == nil {
@@ -4016,6 +4588,34 @@ func (o *UsageSummaryDateOrg) HasNetworkDeviceWirelessTop99p() bool {
 // SetNetworkDeviceWirelessTop99p gets a reference to the given int64 and assigns it to the NetworkDeviceWirelessTop99p field.
 func (o *UsageSummaryDateOrg) SetNetworkDeviceWirelessTop99p(v int64) {
 	o.NetworkDeviceWirelessTop99p = &v
+}
+
+// GetNetworkPathSum returns the NetworkPathSum field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetNetworkPathSum() int64 {
+	if o == nil || o.NetworkPathSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.NetworkPathSum
+}
+
+// GetNetworkPathSumOk returns a tuple with the NetworkPathSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetNetworkPathSumOk() (*int64, bool) {
+	if o == nil || o.NetworkPathSum == nil {
+		return nil, false
+	}
+	return o.NetworkPathSum, true
+}
+
+// HasNetworkPathSum returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasNetworkPathSum() bool {
+	return o != nil && o.NetworkPathSum != nil
+}
+
+// SetNetworkPathSum gets a reference to the given int64 and assigns it to the NetworkPathSum field.
+func (o *UsageSummaryDateOrg) SetNetworkPathSum(v int64) {
+	o.NetworkPathSum = &v
 }
 
 // GetNpmHostTop99p returns the NpmHostTop99p field value if set, zero value otherwise.
@@ -6647,6 +7247,54 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	if o.BrowserRumUnitsSum != nil {
 		toSerialize["browser_rum_units_sum"] = o.BrowserRumUnitsSum
 	}
+	if o.CcmAnthropicSpendLast != nil {
+		toSerialize["ccm_anthropic_spend_last"] = o.CcmAnthropicSpendLast
+	}
+	if o.CcmAwsSpendLast != nil {
+		toSerialize["ccm_aws_spend_last"] = o.CcmAwsSpendLast
+	}
+	if o.CcmAzureSpendLast != nil {
+		toSerialize["ccm_azure_spend_last"] = o.CcmAzureSpendLast
+	}
+	if o.CcmConfluentSpendLast != nil {
+		toSerialize["ccm_confluent_spend_last"] = o.CcmConfluentSpendLast
+	}
+	if o.CcmDatabricksSpendLast != nil {
+		toSerialize["ccm_databricks_spend_last"] = o.CcmDatabricksSpendLast
+	}
+	if o.CcmElasticSpendLast != nil {
+		toSerialize["ccm_elastic_spend_last"] = o.CcmElasticSpendLast
+	}
+	if o.CcmFastlySpendLast != nil {
+		toSerialize["ccm_fastly_spend_last"] = o.CcmFastlySpendLast
+	}
+	if o.CcmGcpSpendLast != nil {
+		toSerialize["ccm_gcp_spend_last"] = o.CcmGcpSpendLast
+	}
+	if o.CcmGithubSpendLast != nil {
+		toSerialize["ccm_github_spend_last"] = o.CcmGithubSpendLast
+	}
+	if o.CcmMongodbSpendLast != nil {
+		toSerialize["ccm_mongodb_spend_last"] = o.CcmMongodbSpendLast
+	}
+	if o.CcmOciSpendLast != nil {
+		toSerialize["ccm_oci_spend_last"] = o.CcmOciSpendLast
+	}
+	if o.CcmOpenaiSpendLast != nil {
+		toSerialize["ccm_openai_spend_last"] = o.CcmOpenaiSpendLast
+	}
+	if o.CcmSnowflakeSpendLast != nil {
+		toSerialize["ccm_snowflake_spend_last"] = o.CcmSnowflakeSpendLast
+	}
+	if o.CcmSpendMonitoredEntLast != nil {
+		toSerialize["ccm_spend_monitored_ent_last"] = o.CcmSpendMonitoredEntLast
+	}
+	if o.CcmSpendMonitoredProLast != nil {
+		toSerialize["ccm_spend_monitored_pro_last"] = o.CcmSpendMonitoredProLast
+	}
+	if o.CcmTwilioSpendLast != nil {
+		toSerialize["ccm_twilio_spend_last"] = o.CcmTwilioSpendLast
+	}
 	if o.CiPipelineIndexedSpansSum != nil {
 		toSerialize["ci_pipeline_indexed_spans_sum"] = o.CiPipelineIndexedSpansSum
 	}
@@ -6725,8 +7373,14 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	if o.CsmHostEnterpriseGcpHostCountTop99p != nil {
 		toSerialize["csm_host_enterprise_gcp_host_count_top99p"] = o.CsmHostEnterpriseGcpHostCountTop99p
 	}
+	if o.CsmHostEnterpriseOciHostCountTop99p != nil {
+		toSerialize["csm_host_enterprise_oci_host_count_top99p"] = o.CsmHostEnterpriseOciHostCountTop99p
+	}
 	if o.CsmHostEnterpriseTotalHostCountTop99p != nil {
 		toSerialize["csm_host_enterprise_total_host_count_top99p"] = o.CsmHostEnterpriseTotalHostCountTop99p
+	}
+	if o.CsmHostProOciHostCountTop99p != nil {
+		toSerialize["csm_host_pro_oci_host_count_top99p"] = o.CsmHostProOciHostCountTop99p
 	}
 	if o.CspmAasHostTop99p != nil {
 		toSerialize["cspm_aas_host_top99p"] = o.CspmAasHostTop99p
@@ -6899,6 +7553,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	if o.IndexedEventsCountSum != nil {
 		toSerialize["indexed_events_count_sum"] = o.IndexedEventsCountSum
 	}
+	if o.InfraEdgeMonitoringDevicesTop99p != nil {
+		toSerialize["infra_edge_monitoring_devices_top99p"] = o.InfraEdgeMonitoringDevicesTop99p
+	}
 	if o.InfraHostTop99p != nil {
 		toSerialize["infra_host_top99p"] = o.InfraHostTop99p
 	}
@@ -6952,6 +7609,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	}
 	if o.NetworkDeviceWirelessTop99p != nil {
 		toSerialize["network_device_wireless_top99p"] = o.NetworkDeviceWirelessTop99p
+	}
+	if o.NetworkPathSum != nil {
+		toSerialize["network_path_sum"] = o.NetworkPathSum
 	}
 	if o.NpmHostTop99p != nil {
 		toSerialize["npm_host_top99p"] = o.NpmHostTop99p
@@ -7259,6 +7919,22 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 		BrowserRumLiteSessionCountSum                                 *int64  `json:"browser_rum_lite_session_count_sum,omitempty"`
 		BrowserRumReplaySessionCountSum                               *int64  `json:"browser_rum_replay_session_count_sum,omitempty"`
 		BrowserRumUnitsSum                                            *int64  `json:"browser_rum_units_sum,omitempty"`
+		CcmAnthropicSpendLast                                         *int64  `json:"ccm_anthropic_spend_last,omitempty"`
+		CcmAwsSpendLast                                               *int64  `json:"ccm_aws_spend_last,omitempty"`
+		CcmAzureSpendLast                                             *int64  `json:"ccm_azure_spend_last,omitempty"`
+		CcmConfluentSpendLast                                         *int64  `json:"ccm_confluent_spend_last,omitempty"`
+		CcmDatabricksSpendLast                                        *int64  `json:"ccm_databricks_spend_last,omitempty"`
+		CcmElasticSpendLast                                           *int64  `json:"ccm_elastic_spend_last,omitempty"`
+		CcmFastlySpendLast                                            *int64  `json:"ccm_fastly_spend_last,omitempty"`
+		CcmGcpSpendLast                                               *int64  `json:"ccm_gcp_spend_last,omitempty"`
+		CcmGithubSpendLast                                            *int64  `json:"ccm_github_spend_last,omitempty"`
+		CcmMongodbSpendLast                                           *int64  `json:"ccm_mongodb_spend_last,omitempty"`
+		CcmOciSpendLast                                               *int64  `json:"ccm_oci_spend_last,omitempty"`
+		CcmOpenaiSpendLast                                            *int64  `json:"ccm_openai_spend_last,omitempty"`
+		CcmSnowflakeSpendLast                                         *int64  `json:"ccm_snowflake_spend_last,omitempty"`
+		CcmSpendMonitoredEntLast                                      *int64  `json:"ccm_spend_monitored_ent_last,omitempty"`
+		CcmSpendMonitoredProLast                                      *int64  `json:"ccm_spend_monitored_pro_last,omitempty"`
+		CcmTwilioSpendLast                                            *int64  `json:"ccm_twilio_spend_last,omitempty"`
 		CiPipelineIndexedSpansSum                                     *int64  `json:"ci_pipeline_indexed_spans_sum,omitempty"`
 		CiTestIndexedSpansSum                                         *int64  `json:"ci_test_indexed_spans_sum,omitempty"`
 		CiVisibilityItrCommittersHwm                                  *int64  `json:"ci_visibility_itr_committers_hwm,omitempty"`
@@ -7285,7 +7961,9 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 		CsmHostEnterpriseComplianceHostCountTop99p                    *int64  `json:"csm_host_enterprise_compliance_host_count_top99p,omitempty"`
 		CsmHostEnterpriseCwsHostCountTop99p                           *int64  `json:"csm_host_enterprise_cws_host_count_top99p,omitempty"`
 		CsmHostEnterpriseGcpHostCountTop99p                           *int64  `json:"csm_host_enterprise_gcp_host_count_top99p,omitempty"`
+		CsmHostEnterpriseOciHostCountTop99p                           *int64  `json:"csm_host_enterprise_oci_host_count_top99p,omitempty"`
 		CsmHostEnterpriseTotalHostCountTop99p                         *int64  `json:"csm_host_enterprise_total_host_count_top99p,omitempty"`
+		CsmHostProOciHostCountTop99p                                  *int64  `json:"csm_host_pro_oci_host_count_top99p,omitempty"`
 		CspmAasHostTop99p                                             *int64  `json:"cspm_aas_host_top99p,omitempty"`
 		CspmAwsHostTop99p                                             *int64  `json:"cspm_aws_host_top99p,omitempty"`
 		CspmAzureHostTop99p                                           *int64  `json:"cspm_azure_host_top99p,omitempty"`
@@ -7343,6 +8021,7 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 		IncidentManagementMonthlyActiveUsersHwm                       *int64  `json:"incident_management_monthly_active_users_hwm,omitempty"`
 		IncidentManagementSeatsHwm                                    *int64  `json:"incident_management_seats_hwm,omitempty"`
 		IndexedEventsCountSum                                         *int64  `json:"indexed_events_count_sum,omitempty"`
+		InfraEdgeMonitoringDevicesTop99p                              *int64  `json:"infra_edge_monitoring_devices_top99p,omitempty"`
 		InfraHostTop99p                                               *int64  `json:"infra_host_top99p,omitempty"`
 		IngestedEventsBytesSum                                        *int64  `json:"ingested_events_bytes_sum,omitempty"`
 		IotDeviceAggSum                                               *int64  `json:"iot_device_agg_sum,omitempty"`
@@ -7361,6 +8040,7 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 		NdmNetflowEventsSum                                           *int64  `json:"ndm_netflow_events_sum,omitempty"`
 		NetflowIndexedEventsCountSum                                  *int64  `json:"netflow_indexed_events_count_sum,omitempty"`
 		NetworkDeviceWirelessTop99p                                   *int64  `json:"network_device_wireless_top99p,omitempty"`
+		NetworkPathSum                                                *int64  `json:"network_path_sum,omitempty"`
 		NpmHostTop99p                                                 *int64  `json:"npm_host_top99p,omitempty"`
 		ObservabilityPipelinesBytesProcessedSum                       *int64  `json:"observability_pipelines_bytes_processed_sum,omitempty"`
 		OciHostSum                                                    *int64  `json:"oci_host_sum,omitempty"`
@@ -7458,7 +8138,7 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_name", "account_public_id", "agent_host_top99p", "apm_azure_app_service_host_top99p", "apm_devsecops_host_top99p", "apm_enterprise_standalone_hosts_top99p", "apm_fargate_count_avg", "apm_host_top99p", "apm_pro_standalone_hosts_top99p", "appsec_fargate_count_avg", "asm_serverless_sum", "audit_logs_lines_indexed_sum", "audit_trail_enabled_hwm", "avg_profiled_fargate_tasks", "aws_host_top99p", "aws_lambda_func_count", "aws_lambda_invocations_sum", "azure_app_service_top99p", "billable_ingested_bytes_sum", "bits_ai_investigations_sum", "browser_rum_lite_session_count_sum", "browser_rum_replay_session_count_sum", "browser_rum_units_sum", "ci_pipeline_indexed_spans_sum", "ci_test_indexed_spans_sum", "ci_visibility_itr_committers_hwm", "ci_visibility_pipeline_committers_hwm", "ci_visibility_test_committers_hwm", "cloud_cost_management_aws_host_count_avg", "cloud_cost_management_azure_host_count_avg", "cloud_cost_management_gcp_host_count_avg", "cloud_cost_management_host_count_avg", "cloud_cost_management_oci_host_count_avg", "cloud_siem_events_sum", "code_analysis_sa_committers_hwm", "code_analysis_sca_committers_hwm", "code_security_host_top99p", "container_avg", "container_excl_agent_avg", "container_hwm", "csm_container_enterprise_compliance_count_sum", "csm_container_enterprise_cws_count_sum", "csm_container_enterprise_total_count_sum", "csm_host_enterprise_aas_host_count_top99p", "csm_host_enterprise_aws_host_count_top99p", "csm_host_enterprise_azure_host_count_top99p", "csm_host_enterprise_compliance_host_count_top99p", "csm_host_enterprise_cws_host_count_top99p", "csm_host_enterprise_gcp_host_count_top99p", "csm_host_enterprise_total_host_count_top99p", "cspm_aas_host_top99p", "cspm_aws_host_top99p", "cspm_azure_host_top99p", "cspm_container_avg", "cspm_container_hwm", "cspm_gcp_host_top99p", "cspm_host_top99p", "custom_historical_ts_avg", "custom_live_ts_avg", "custom_ts_avg", "cws_container_count_avg", "cws_fargate_task_avg", "cws_host_top99p", "data_jobs_monitoring_host_hr_sum", "dbm_host_top99p_sum", "dbm_queries_avg_sum", "eph_infra_host_agent_sum", "eph_infra_host_alibaba_sum", "eph_infra_host_aws_sum", "eph_infra_host_azure_sum", "eph_infra_host_ent_sum", "eph_infra_host_gcp_sum", "eph_infra_host_heroku_sum", "eph_infra_host_only_aas_sum", "eph_infra_host_only_vsphere_sum", "eph_infra_host_opentelemetry_apm_sum", "eph_infra_host_opentelemetry_sum", "eph_infra_host_pro_sum", "eph_infra_host_proplus_sum", "eph_infra_host_proxmox_sum", "error_tracking_apm_error_events_sum", "error_tracking_error_events_sum", "error_tracking_events_sum", "error_tracking_rum_error_events_sum", "event_management_correlation_correlated_events_sum", "event_management_correlation_correlated_related_events_sum", "event_management_correlation_sum", "fargate_container_profiler_profiling_fargate_avg", "fargate_container_profiler_profiling_fargate_eks_avg", "fargate_tasks_count_avg", "fargate_tasks_count_hwm", "flex_logs_compute_large_avg", "flex_logs_compute_medium_avg", "flex_logs_compute_small_avg", "flex_logs_compute_xlarge_avg", "flex_logs_compute_xsmall_avg", "flex_logs_starter_avg", "flex_logs_starter_storage_index_avg", "flex_logs_starter_storage_retention_adjustment_avg", "flex_stored_logs_avg", "forwarding_events_bytes_sum", "gcp_host_top99p", "heroku_host_top99p", "id", "incident_management_monthly_active_users_hwm", "incident_management_seats_hwm", "indexed_events_count_sum", "infra_host_top99p", "ingested_events_bytes_sum", "iot_device_agg_sum", "iot_device_top99p_sum", "llm_observability_min_spend_sum", "llm_observability_sum", "mobile_rum_lite_session_count_sum", "mobile_rum_session_count_android_sum", "mobile_rum_session_count_flutter_sum", "mobile_rum_session_count_ios_sum", "mobile_rum_session_count_reactnative_sum", "mobile_rum_session_count_roku_sum", "mobile_rum_session_count_sum", "mobile_rum_units_sum", "name", "ndm_netflow_events_sum", "netflow_indexed_events_count_sum", "network_device_wireless_top99p", "npm_host_top99p", "observability_pipelines_bytes_processed_sum", "oci_host_sum", "oci_host_top99p", "on_call_seat_hwm", "online_archive_events_count_sum", "opentelemetry_apm_host_top99p", "opentelemetry_host_top99p", "product_analytics_sum", "profiling_aas_count_top99p", "profiling_host_top99p", "proxmox_host_sum", "proxmox_host_top99p", "public_id", "published_app_hwm", "region", "rum_browser_and_mobile_session_count", "rum_browser_legacy_session_count_sum", "rum_browser_lite_session_count_sum", "rum_browser_replay_session_count_sum", "rum_indexed_sessions_sum", "rum_ingested_sessions_sum", "rum_lite_session_count_sum", "rum_mobile_legacy_session_count_android_sum", "rum_mobile_legacy_session_count_flutter_sum", "rum_mobile_legacy_session_count_ios_sum", "rum_mobile_legacy_session_count_reactnative_sum", "rum_mobile_legacy_session_count_roku_sum", "rum_mobile_lite_session_count_android_sum", "rum_mobile_lite_session_count_flutter_sum", "rum_mobile_lite_session_count_ios_sum", "rum_mobile_lite_session_count_kotlinmultiplatform_sum", "rum_mobile_lite_session_count_reactnative_sum", "rum_mobile_lite_session_count_roku_sum", "rum_mobile_lite_session_count_unity_sum", "rum_mobile_replay_session_count_android_sum", "rum_mobile_replay_session_count_ios_sum", "rum_mobile_replay_session_count_kotlinmultiplatform_sum", "rum_mobile_replay_session_count_reactnative_sum", "rum_replay_session_count_sum", "rum_session_count_sum", "rum_session_replay_add_on_sum", "rum_total_session_count_sum", "rum_units_sum", "sca_fargate_count_avg", "sca_fargate_count_hwm", "sds_apm_scanned_bytes_sum", "sds_events_scanned_bytes_sum", "sds_logs_scanned_bytes_sum", "sds_rum_scanned_bytes_sum", "sds_total_scanned_bytes_sum", "serverless_apps_apm_apm_azure_appservice_instances_avg", "serverless_apps_apm_apm_azure_azurefunction_instances_avg", "serverless_apps_apm_apm_azure_containerapp_instances_avg", "serverless_apps_apm_apm_fargate_ecs_tasks_avg", "serverless_apps_apm_apm_gcp_cloudfunction_instances_avg", "serverless_apps_apm_apm_gcp_cloudrun_instances_avg", "serverless_apps_apm_avg", "serverless_apps_apm_excl_fargate_apm_azure_appservice_instances_avg", "serverless_apps_apm_excl_fargate_apm_azure_azurefunction_instances_avg", "serverless_apps_apm_excl_fargate_apm_azure_containerapp_instances_avg", "serverless_apps_apm_excl_fargate_apm_gcp_cloudfunction_instances_avg", "serverless_apps_apm_excl_fargate_apm_gcp_cloudrun_instances_avg", "serverless_apps_apm_excl_fargate_avg", "serverless_apps_azure_container_app_instances_avg", "serverless_apps_azure_count_avg", "serverless_apps_azure_function_app_instances_avg", "serverless_apps_azure_web_app_instances_avg", "serverless_apps_ecs_avg", "serverless_apps_eks_avg", "serverless_apps_excl_fargate_avg", "serverless_apps_excl_fargate_azure_container_app_instances_avg", "serverless_apps_excl_fargate_azure_function_app_instances_avg", "serverless_apps_excl_fargate_azure_web_app_instances_avg", "serverless_apps_excl_fargate_google_cloud_functions_instances_avg", "serverless_apps_excl_fargate_google_cloud_run_instances_avg", "serverless_apps_google_cloud_functions_instances_avg", "serverless_apps_google_cloud_run_instances_avg", "serverless_apps_google_count_avg", "serverless_apps_total_count_avg", "siem_analyzed_logs_add_on_count_sum", "synthetics_browser_check_calls_count_sum", "synthetics_check_calls_count_sum", "synthetics_mobile_test_runs_sum", "synthetics_parallel_testing_max_slots_hwm", "trace_search_indexed_events_count_sum", "twol_ingested_events_bytes_sum", "universal_service_monitoring_host_top99p", "vsphere_host_top99p", "vuln_management_host_count_top99p", "workflow_executions_usage_sum"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_name", "account_public_id", "agent_host_top99p", "apm_azure_app_service_host_top99p", "apm_devsecops_host_top99p", "apm_enterprise_standalone_hosts_top99p", "apm_fargate_count_avg", "apm_host_top99p", "apm_pro_standalone_hosts_top99p", "appsec_fargate_count_avg", "asm_serverless_sum", "audit_logs_lines_indexed_sum", "audit_trail_enabled_hwm", "avg_profiled_fargate_tasks", "aws_host_top99p", "aws_lambda_func_count", "aws_lambda_invocations_sum", "azure_app_service_top99p", "billable_ingested_bytes_sum", "bits_ai_investigations_sum", "browser_rum_lite_session_count_sum", "browser_rum_replay_session_count_sum", "browser_rum_units_sum", "ccm_anthropic_spend_last", "ccm_aws_spend_last", "ccm_azure_spend_last", "ccm_confluent_spend_last", "ccm_databricks_spend_last", "ccm_elastic_spend_last", "ccm_fastly_spend_last", "ccm_gcp_spend_last", "ccm_github_spend_last", "ccm_mongodb_spend_last", "ccm_oci_spend_last", "ccm_openai_spend_last", "ccm_snowflake_spend_last", "ccm_spend_monitored_ent_last", "ccm_spend_monitored_pro_last", "ccm_twilio_spend_last", "ci_pipeline_indexed_spans_sum", "ci_test_indexed_spans_sum", "ci_visibility_itr_committers_hwm", "ci_visibility_pipeline_committers_hwm", "ci_visibility_test_committers_hwm", "cloud_cost_management_aws_host_count_avg", "cloud_cost_management_azure_host_count_avg", "cloud_cost_management_gcp_host_count_avg", "cloud_cost_management_host_count_avg", "cloud_cost_management_oci_host_count_avg", "cloud_siem_events_sum", "code_analysis_sa_committers_hwm", "code_analysis_sca_committers_hwm", "code_security_host_top99p", "container_avg", "container_excl_agent_avg", "container_hwm", "csm_container_enterprise_compliance_count_sum", "csm_container_enterprise_cws_count_sum", "csm_container_enterprise_total_count_sum", "csm_host_enterprise_aas_host_count_top99p", "csm_host_enterprise_aws_host_count_top99p", "csm_host_enterprise_azure_host_count_top99p", "csm_host_enterprise_compliance_host_count_top99p", "csm_host_enterprise_cws_host_count_top99p", "csm_host_enterprise_gcp_host_count_top99p", "csm_host_enterprise_oci_host_count_top99p", "csm_host_enterprise_total_host_count_top99p", "csm_host_pro_oci_host_count_top99p", "cspm_aas_host_top99p", "cspm_aws_host_top99p", "cspm_azure_host_top99p", "cspm_container_avg", "cspm_container_hwm", "cspm_gcp_host_top99p", "cspm_host_top99p", "custom_historical_ts_avg", "custom_live_ts_avg", "custom_ts_avg", "cws_container_count_avg", "cws_fargate_task_avg", "cws_host_top99p", "data_jobs_monitoring_host_hr_sum", "dbm_host_top99p_sum", "dbm_queries_avg_sum", "eph_infra_host_agent_sum", "eph_infra_host_alibaba_sum", "eph_infra_host_aws_sum", "eph_infra_host_azure_sum", "eph_infra_host_ent_sum", "eph_infra_host_gcp_sum", "eph_infra_host_heroku_sum", "eph_infra_host_only_aas_sum", "eph_infra_host_only_vsphere_sum", "eph_infra_host_opentelemetry_apm_sum", "eph_infra_host_opentelemetry_sum", "eph_infra_host_pro_sum", "eph_infra_host_proplus_sum", "eph_infra_host_proxmox_sum", "error_tracking_apm_error_events_sum", "error_tracking_error_events_sum", "error_tracking_events_sum", "error_tracking_rum_error_events_sum", "event_management_correlation_correlated_events_sum", "event_management_correlation_correlated_related_events_sum", "event_management_correlation_sum", "fargate_container_profiler_profiling_fargate_avg", "fargate_container_profiler_profiling_fargate_eks_avg", "fargate_tasks_count_avg", "fargate_tasks_count_hwm", "flex_logs_compute_large_avg", "flex_logs_compute_medium_avg", "flex_logs_compute_small_avg", "flex_logs_compute_xlarge_avg", "flex_logs_compute_xsmall_avg", "flex_logs_starter_avg", "flex_logs_starter_storage_index_avg", "flex_logs_starter_storage_retention_adjustment_avg", "flex_stored_logs_avg", "forwarding_events_bytes_sum", "gcp_host_top99p", "heroku_host_top99p", "id", "incident_management_monthly_active_users_hwm", "incident_management_seats_hwm", "indexed_events_count_sum", "infra_edge_monitoring_devices_top99p", "infra_host_top99p", "ingested_events_bytes_sum", "iot_device_agg_sum", "iot_device_top99p_sum", "llm_observability_min_spend_sum", "llm_observability_sum", "mobile_rum_lite_session_count_sum", "mobile_rum_session_count_android_sum", "mobile_rum_session_count_flutter_sum", "mobile_rum_session_count_ios_sum", "mobile_rum_session_count_reactnative_sum", "mobile_rum_session_count_roku_sum", "mobile_rum_session_count_sum", "mobile_rum_units_sum", "name", "ndm_netflow_events_sum", "netflow_indexed_events_count_sum", "network_device_wireless_top99p", "network_path_sum", "npm_host_top99p", "observability_pipelines_bytes_processed_sum", "oci_host_sum", "oci_host_top99p", "on_call_seat_hwm", "online_archive_events_count_sum", "opentelemetry_apm_host_top99p", "opentelemetry_host_top99p", "product_analytics_sum", "profiling_aas_count_top99p", "profiling_host_top99p", "proxmox_host_sum", "proxmox_host_top99p", "public_id", "published_app_hwm", "region", "rum_browser_and_mobile_session_count", "rum_browser_legacy_session_count_sum", "rum_browser_lite_session_count_sum", "rum_browser_replay_session_count_sum", "rum_indexed_sessions_sum", "rum_ingested_sessions_sum", "rum_lite_session_count_sum", "rum_mobile_legacy_session_count_android_sum", "rum_mobile_legacy_session_count_flutter_sum", "rum_mobile_legacy_session_count_ios_sum", "rum_mobile_legacy_session_count_reactnative_sum", "rum_mobile_legacy_session_count_roku_sum", "rum_mobile_lite_session_count_android_sum", "rum_mobile_lite_session_count_flutter_sum", "rum_mobile_lite_session_count_ios_sum", "rum_mobile_lite_session_count_kotlinmultiplatform_sum", "rum_mobile_lite_session_count_reactnative_sum", "rum_mobile_lite_session_count_roku_sum", "rum_mobile_lite_session_count_unity_sum", "rum_mobile_replay_session_count_android_sum", "rum_mobile_replay_session_count_ios_sum", "rum_mobile_replay_session_count_kotlinmultiplatform_sum", "rum_mobile_replay_session_count_reactnative_sum", "rum_replay_session_count_sum", "rum_session_count_sum", "rum_session_replay_add_on_sum", "rum_total_session_count_sum", "rum_units_sum", "sca_fargate_count_avg", "sca_fargate_count_hwm", "sds_apm_scanned_bytes_sum", "sds_events_scanned_bytes_sum", "sds_logs_scanned_bytes_sum", "sds_rum_scanned_bytes_sum", "sds_total_scanned_bytes_sum", "serverless_apps_apm_apm_azure_appservice_instances_avg", "serverless_apps_apm_apm_azure_azurefunction_instances_avg", "serverless_apps_apm_apm_azure_containerapp_instances_avg", "serverless_apps_apm_apm_fargate_ecs_tasks_avg", "serverless_apps_apm_apm_gcp_cloudfunction_instances_avg", "serverless_apps_apm_apm_gcp_cloudrun_instances_avg", "serverless_apps_apm_avg", "serverless_apps_apm_excl_fargate_apm_azure_appservice_instances_avg", "serverless_apps_apm_excl_fargate_apm_azure_azurefunction_instances_avg", "serverless_apps_apm_excl_fargate_apm_azure_containerapp_instances_avg", "serverless_apps_apm_excl_fargate_apm_gcp_cloudfunction_instances_avg", "serverless_apps_apm_excl_fargate_apm_gcp_cloudrun_instances_avg", "serverless_apps_apm_excl_fargate_avg", "serverless_apps_azure_container_app_instances_avg", "serverless_apps_azure_count_avg", "serverless_apps_azure_function_app_instances_avg", "serverless_apps_azure_web_app_instances_avg", "serverless_apps_ecs_avg", "serverless_apps_eks_avg", "serverless_apps_excl_fargate_avg", "serverless_apps_excl_fargate_azure_container_app_instances_avg", "serverless_apps_excl_fargate_azure_function_app_instances_avg", "serverless_apps_excl_fargate_azure_web_app_instances_avg", "serverless_apps_excl_fargate_google_cloud_functions_instances_avg", "serverless_apps_excl_fargate_google_cloud_run_instances_avg", "serverless_apps_google_cloud_functions_instances_avg", "serverless_apps_google_cloud_run_instances_avg", "serverless_apps_google_count_avg", "serverless_apps_total_count_avg", "siem_analyzed_logs_add_on_count_sum", "synthetics_browser_check_calls_count_sum", "synthetics_check_calls_count_sum", "synthetics_mobile_test_runs_sum", "synthetics_parallel_testing_max_slots_hwm", "trace_search_indexed_events_count_sum", "twol_ingested_events_bytes_sum", "universal_service_monitoring_host_top99p", "vsphere_host_top99p", "vuln_management_host_count_top99p", "workflow_executions_usage_sum"})
 	} else {
 		return err
 	}
@@ -7485,6 +8165,22 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	o.BrowserRumLiteSessionCountSum = all.BrowserRumLiteSessionCountSum
 	o.BrowserRumReplaySessionCountSum = all.BrowserRumReplaySessionCountSum
 	o.BrowserRumUnitsSum = all.BrowserRumUnitsSum
+	o.CcmAnthropicSpendLast = all.CcmAnthropicSpendLast
+	o.CcmAwsSpendLast = all.CcmAwsSpendLast
+	o.CcmAzureSpendLast = all.CcmAzureSpendLast
+	o.CcmConfluentSpendLast = all.CcmConfluentSpendLast
+	o.CcmDatabricksSpendLast = all.CcmDatabricksSpendLast
+	o.CcmElasticSpendLast = all.CcmElasticSpendLast
+	o.CcmFastlySpendLast = all.CcmFastlySpendLast
+	o.CcmGcpSpendLast = all.CcmGcpSpendLast
+	o.CcmGithubSpendLast = all.CcmGithubSpendLast
+	o.CcmMongodbSpendLast = all.CcmMongodbSpendLast
+	o.CcmOciSpendLast = all.CcmOciSpendLast
+	o.CcmOpenaiSpendLast = all.CcmOpenaiSpendLast
+	o.CcmSnowflakeSpendLast = all.CcmSnowflakeSpendLast
+	o.CcmSpendMonitoredEntLast = all.CcmSpendMonitoredEntLast
+	o.CcmSpendMonitoredProLast = all.CcmSpendMonitoredProLast
+	o.CcmTwilioSpendLast = all.CcmTwilioSpendLast
 	o.CiPipelineIndexedSpansSum = all.CiPipelineIndexedSpansSum
 	o.CiTestIndexedSpansSum = all.CiTestIndexedSpansSum
 	o.CiVisibilityItrCommittersHwm = all.CiVisibilityItrCommittersHwm
@@ -7511,7 +8207,9 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	o.CsmHostEnterpriseComplianceHostCountTop99p = all.CsmHostEnterpriseComplianceHostCountTop99p
 	o.CsmHostEnterpriseCwsHostCountTop99p = all.CsmHostEnterpriseCwsHostCountTop99p
 	o.CsmHostEnterpriseGcpHostCountTop99p = all.CsmHostEnterpriseGcpHostCountTop99p
+	o.CsmHostEnterpriseOciHostCountTop99p = all.CsmHostEnterpriseOciHostCountTop99p
 	o.CsmHostEnterpriseTotalHostCountTop99p = all.CsmHostEnterpriseTotalHostCountTop99p
+	o.CsmHostProOciHostCountTop99p = all.CsmHostProOciHostCountTop99p
 	o.CspmAasHostTop99p = all.CspmAasHostTop99p
 	o.CspmAwsHostTop99p = all.CspmAwsHostTop99p
 	o.CspmAzureHostTop99p = all.CspmAzureHostTop99p
@@ -7569,6 +8267,7 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	o.IncidentManagementMonthlyActiveUsersHwm = all.IncidentManagementMonthlyActiveUsersHwm
 	o.IncidentManagementSeatsHwm = all.IncidentManagementSeatsHwm
 	o.IndexedEventsCountSum = all.IndexedEventsCountSum
+	o.InfraEdgeMonitoringDevicesTop99p = all.InfraEdgeMonitoringDevicesTop99p
 	o.InfraHostTop99p = all.InfraHostTop99p
 	o.IngestedEventsBytesSum = all.IngestedEventsBytesSum
 	o.IotDeviceAggSum = all.IotDeviceAggSum
@@ -7587,6 +8286,7 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	o.NdmNetflowEventsSum = all.NdmNetflowEventsSum
 	o.NetflowIndexedEventsCountSum = all.NetflowIndexedEventsCountSum
 	o.NetworkDeviceWirelessTop99p = all.NetworkDeviceWirelessTop99p
+	o.NetworkPathSum = all.NetworkPathSum
 	o.NpmHostTop99p = all.NpmHostTop99p
 	o.ObservabilityPipelinesBytesProcessedSum = all.ObservabilityPipelinesBytesProcessedSum
 	o.OciHostSum = all.OciHostSum

@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CreateConnectionRequestData
+// CreateConnectionRequestData The data object containing the resource type and attributes for creating a new connection.
 type CreateConnectionRequestData struct {
-	//
+	// Attributes defining the data source connection, including join configuration and custom fields.
 	Attributes *CreateConnectionRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the new connection resource.
 	Id *string `json:"id,omitempty"`
 	// Connection id resource type.
 	Type UpdateConnectionRequestDataType `json:"type"`

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil"
@@ -25,6 +26,13 @@ type Volume struct {
 	Created     time.Time
 }
 
+func (o *Volume) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
+}
+
 const (
 	VolumeFormatExt4 = "ext4"
 	VolumeFormatXFS  = "xfs"
@@ -38,7 +46,7 @@ type VolumeProtection struct {
 // VolumeClient is a client for the volume API.
 type VolumeClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*Volume]
 }
 
 // VolumeStatus specifies a volume's status.

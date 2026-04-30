@@ -7,11 +7,15 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IssuesSearchRequestDataAttributes Object describing a search issue request.
 type IssuesSearchRequestDataAttributes struct {
+	// Filter issues by assignee IDs. Multiple values are combined with OR logic.
+	AssigneeIds []uuid.UUID `json:"assignee_ids,omitempty"`
 	// Start date (inclusive) of the query in milliseconds since the Unix epoch.
 	From int64 `json:"from"`
 	// The attribute to sort the search results by.
@@ -20,6 +24,8 @@ type IssuesSearchRequestDataAttributes struct {
 	Persona *IssuesSearchRequestDataAttributesPersona `json:"persona,omitempty"`
 	// Search query following the event search syntax.
 	Query string `json:"query"`
+	// Filter issues by team IDs. Multiple values are combined with OR logic.
+	TeamIds []uuid.UUID `json:"team_ids,omitempty"`
 	// End date (exclusive) of the query in milliseconds since the Unix epoch.
 	To int64 `json:"to"`
 	// Track of the events to query. Either track(s) or persona(s) must be specified.
@@ -47,6 +53,34 @@ func NewIssuesSearchRequestDataAttributes(from int64, query string, to int64) *I
 func NewIssuesSearchRequestDataAttributesWithDefaults() *IssuesSearchRequestDataAttributes {
 	this := IssuesSearchRequestDataAttributes{}
 	return &this
+}
+
+// GetAssigneeIds returns the AssigneeIds field value if set, zero value otherwise.
+func (o *IssuesSearchRequestDataAttributes) GetAssigneeIds() []uuid.UUID {
+	if o == nil || o.AssigneeIds == nil {
+		var ret []uuid.UUID
+		return ret
+	}
+	return o.AssigneeIds
+}
+
+// GetAssigneeIdsOk returns a tuple with the AssigneeIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssuesSearchRequestDataAttributes) GetAssigneeIdsOk() (*[]uuid.UUID, bool) {
+	if o == nil || o.AssigneeIds == nil {
+		return nil, false
+	}
+	return &o.AssigneeIds, true
+}
+
+// HasAssigneeIds returns a boolean if a field has been set.
+func (o *IssuesSearchRequestDataAttributes) HasAssigneeIds() bool {
+	return o != nil && o.AssigneeIds != nil
+}
+
+// SetAssigneeIds gets a reference to the given []uuid.UUID and assigns it to the AssigneeIds field.
+func (o *IssuesSearchRequestDataAttributes) SetAssigneeIds(v []uuid.UUID) {
+	o.AssigneeIds = v
 }
 
 // GetFrom returns the From field value.
@@ -151,6 +185,34 @@ func (o *IssuesSearchRequestDataAttributes) SetQuery(v string) {
 	o.Query = v
 }
 
+// GetTeamIds returns the TeamIds field value if set, zero value otherwise.
+func (o *IssuesSearchRequestDataAttributes) GetTeamIds() []uuid.UUID {
+	if o == nil || o.TeamIds == nil {
+		var ret []uuid.UUID
+		return ret
+	}
+	return o.TeamIds
+}
+
+// GetTeamIdsOk returns a tuple with the TeamIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssuesSearchRequestDataAttributes) GetTeamIdsOk() (*[]uuid.UUID, bool) {
+	if o == nil || o.TeamIds == nil {
+		return nil, false
+	}
+	return &o.TeamIds, true
+}
+
+// HasTeamIds returns a boolean if a field has been set.
+func (o *IssuesSearchRequestDataAttributes) HasTeamIds() bool {
+	return o != nil && o.TeamIds != nil
+}
+
+// SetTeamIds gets a reference to the given []uuid.UUID and assigns it to the TeamIds field.
+func (o *IssuesSearchRequestDataAttributes) SetTeamIds(v []uuid.UUID) {
+	o.TeamIds = v
+}
+
 // GetTo returns the To field value.
 func (o *IssuesSearchRequestDataAttributes) GetTo() int64 {
 	if o == nil {
@@ -208,6 +270,9 @@ func (o IssuesSearchRequestDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AssigneeIds != nil {
+		toSerialize["assignee_ids"] = o.AssigneeIds
+	}
 	toSerialize["from"] = o.From
 	if o.OrderBy != nil {
 		toSerialize["order_by"] = o.OrderBy
@@ -216,6 +281,9 @@ func (o IssuesSearchRequestDataAttributes) MarshalJSON() ([]byte, error) {
 		toSerialize["persona"] = o.Persona
 	}
 	toSerialize["query"] = o.Query
+	if o.TeamIds != nil {
+		toSerialize["team_ids"] = o.TeamIds
+	}
 	toSerialize["to"] = o.To
 	if o.Track != nil {
 		toSerialize["track"] = o.Track
@@ -230,12 +298,14 @@ func (o IssuesSearchRequestDataAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *IssuesSearchRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		From    *int64                                    `json:"from"`
-		OrderBy *IssuesSearchRequestDataAttributesOrderBy `json:"order_by,omitempty"`
-		Persona *IssuesSearchRequestDataAttributesPersona `json:"persona,omitempty"`
-		Query   *string                                   `json:"query"`
-		To      *int64                                    `json:"to"`
-		Track   *IssuesSearchRequestDataAttributesTrack   `json:"track,omitempty"`
+		AssigneeIds []uuid.UUID                               `json:"assignee_ids,omitempty"`
+		From        *int64                                    `json:"from"`
+		OrderBy     *IssuesSearchRequestDataAttributesOrderBy `json:"order_by,omitempty"`
+		Persona     *IssuesSearchRequestDataAttributesPersona `json:"persona,omitempty"`
+		Query       *string                                   `json:"query"`
+		TeamIds     []uuid.UUID                               `json:"team_ids,omitempty"`
+		To          *int64                                    `json:"to"`
+		Track       *IssuesSearchRequestDataAttributesTrack   `json:"track,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -251,12 +321,13 @@ func (o *IssuesSearchRequestDataAttributes) UnmarshalJSON(bytes []byte) (err err
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"from", "order_by", "persona", "query", "to", "track"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"assignee_ids", "from", "order_by", "persona", "query", "team_ids", "to", "track"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AssigneeIds = all.AssigneeIds
 	o.From = *all.From
 	if all.OrderBy != nil && !all.OrderBy.IsValid() {
 		hasInvalidField = true
@@ -269,6 +340,7 @@ func (o *IssuesSearchRequestDataAttributes) UnmarshalJSON(bytes []byte) (err err
 		o.Persona = all.Persona
 	}
 	o.Query = *all.Query
+	o.TeamIds = all.TeamIds
 	o.To = *all.To
 	if all.Track != nil && !all.Track.IsValid() {
 		hasInvalidField = true

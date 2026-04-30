@@ -14,6 +14,10 @@ import (
 type TeamSyncAttributes struct {
 	// How often the sync process should be run. Defaults to `once` when not provided.
 	Frequency *TeamSyncAttributesFrequency `json:"frequency,omitempty"`
+	// Specifies which teams or organizations to sync. When
+	// provided, synchronization is limited to the specified
+	// items and their subtrees.
+	SelectionState []TeamSyncSelectionStateItem `json:"selection_state,omitempty"`
 	// The external source platform for team synchronization. Only "github" is supported.
 	Source TeamSyncAttributesSource `json:"source"`
 	// Whether to sync members from the external team to the Datadog team. Defaults to `false` when not provided.
@@ -32,6 +36,8 @@ type TeamSyncAttributes struct {
 func NewTeamSyncAttributes(source TeamSyncAttributesSource, typeVar TeamSyncAttributesType) *TeamSyncAttributes {
 	this := TeamSyncAttributes{}
 	this.Source = source
+	var syncMembership bool = false
+	this.SyncMembership = &syncMembership
 	this.Type = typeVar
 	return &this
 }
@@ -41,6 +47,8 @@ func NewTeamSyncAttributes(source TeamSyncAttributesSource, typeVar TeamSyncAttr
 // but it doesn't guarantee that properties required by API are set.
 func NewTeamSyncAttributesWithDefaults() *TeamSyncAttributes {
 	this := TeamSyncAttributes{}
+	var syncMembership bool = false
+	this.SyncMembership = &syncMembership
 	return &this
 }
 
@@ -70,6 +78,34 @@ func (o *TeamSyncAttributes) HasFrequency() bool {
 // SetFrequency gets a reference to the given TeamSyncAttributesFrequency and assigns it to the Frequency field.
 func (o *TeamSyncAttributes) SetFrequency(v TeamSyncAttributesFrequency) {
 	o.Frequency = &v
+}
+
+// GetSelectionState returns the SelectionState field value if set, zero value otherwise.
+func (o *TeamSyncAttributes) GetSelectionState() []TeamSyncSelectionStateItem {
+	if o == nil || o.SelectionState == nil {
+		var ret []TeamSyncSelectionStateItem
+		return ret
+	}
+	return o.SelectionState
+}
+
+// GetSelectionStateOk returns a tuple with the SelectionState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TeamSyncAttributes) GetSelectionStateOk() (*[]TeamSyncSelectionStateItem, bool) {
+	if o == nil || o.SelectionState == nil {
+		return nil, false
+	}
+	return &o.SelectionState, true
+}
+
+// HasSelectionState returns a boolean if a field has been set.
+func (o *TeamSyncAttributes) HasSelectionState() bool {
+	return o != nil && o.SelectionState != nil
+}
+
+// SetSelectionState gets a reference to the given []TeamSyncSelectionStateItem and assigns it to the SelectionState field.
+func (o *TeamSyncAttributes) SetSelectionState(v []TeamSyncSelectionStateItem) {
+	o.SelectionState = v
 }
 
 // GetSource returns the Source field value.
@@ -155,6 +191,9 @@ func (o TeamSyncAttributes) MarshalJSON() ([]byte, error) {
 	if o.Frequency != nil {
 		toSerialize["frequency"] = o.Frequency
 	}
+	if o.SelectionState != nil {
+		toSerialize["selection_state"] = o.SelectionState
+	}
 	toSerialize["source"] = o.Source
 	if o.SyncMembership != nil {
 		toSerialize["sync_membership"] = o.SyncMembership
@@ -171,6 +210,7 @@ func (o TeamSyncAttributes) MarshalJSON() ([]byte, error) {
 func (o *TeamSyncAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Frequency      *TeamSyncAttributesFrequency `json:"frequency,omitempty"`
+		SelectionState []TeamSyncSelectionStateItem `json:"selection_state,omitempty"`
 		Source         *TeamSyncAttributesSource    `json:"source"`
 		SyncMembership *bool                        `json:"sync_membership,omitempty"`
 		Type           *TeamSyncAttributesType      `json:"type"`
@@ -186,7 +226,7 @@ func (o *TeamSyncAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"frequency", "source", "sync_membership", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"frequency", "selection_state", "source", "sync_membership", "type"})
 	} else {
 		return err
 	}
@@ -197,6 +237,7 @@ func (o *TeamSyncAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Frequency = all.Frequency
 	}
+	o.SelectionState = all.SelectionState
 	if !all.Source.IsValid() {
 		hasInvalidField = true
 	} else {

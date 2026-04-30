@@ -10,6 +10,7 @@ import (
 
 // SplitGraphSourceWidgetDefinition - The original widget we are splitting on.
 type SplitGraphSourceWidgetDefinition struct {
+	BarChartWidgetDefinition    *BarChartWidgetDefinition
 	ChangeWidgetDefinition      *ChangeWidgetDefinition
 	GeomapWidgetDefinition      *GeomapWidgetDefinition
 	QueryValueWidgetDefinition  *QueryValueWidgetDefinition
@@ -22,6 +23,11 @@ type SplitGraphSourceWidgetDefinition struct {
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
+}
+
+// BarChartWidgetDefinitionAsSplitGraphSourceWidgetDefinition is a convenience function that returns BarChartWidgetDefinition wrapped in SplitGraphSourceWidgetDefinition.
+func BarChartWidgetDefinitionAsSplitGraphSourceWidgetDefinition(v *BarChartWidgetDefinition) SplitGraphSourceWidgetDefinition {
+	return SplitGraphSourceWidgetDefinition{BarChartWidgetDefinition: v}
 }
 
 // ChangeWidgetDefinitionAsSplitGraphSourceWidgetDefinition is a convenience function that returns ChangeWidgetDefinition wrapped in SplitGraphSourceWidgetDefinition.
@@ -73,6 +79,23 @@ func TreeMapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(v *TreeMapWidgetD
 func (obj *SplitGraphSourceWidgetDefinition) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// try to unmarshal data into BarChartWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.BarChartWidgetDefinition)
+	if err == nil {
+		if obj.BarChartWidgetDefinition != nil && obj.BarChartWidgetDefinition.UnparsedObject == nil {
+			jsonBarChartWidgetDefinition, _ := datadog.Marshal(obj.BarChartWidgetDefinition)
+			if string(jsonBarChartWidgetDefinition) == "{}" { // empty struct
+				obj.BarChartWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.BarChartWidgetDefinition = nil
+		}
+	} else {
+		obj.BarChartWidgetDefinition = nil
+	}
+
 	// try to unmarshal data into ChangeWidgetDefinition
 	err = datadog.Unmarshal(data, &obj.ChangeWidgetDefinition)
 	if err == nil {
@@ -228,6 +251,7 @@ func (obj *SplitGraphSourceWidgetDefinition) UnmarshalJSON(data []byte) error {
 
 	if match != 1 { // more than 1 match
 		// reset to nil
+		obj.BarChartWidgetDefinition = nil
 		obj.ChangeWidgetDefinition = nil
 		obj.GeomapWidgetDefinition = nil
 		obj.QueryValueWidgetDefinition = nil
@@ -244,6 +268,10 @@ func (obj *SplitGraphSourceWidgetDefinition) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj SplitGraphSourceWidgetDefinition) MarshalJSON() ([]byte, error) {
+	if obj.BarChartWidgetDefinition != nil {
+		return datadog.Marshal(&obj.BarChartWidgetDefinition)
+	}
+
 	if obj.ChangeWidgetDefinition != nil {
 		return datadog.Marshal(&obj.ChangeWidgetDefinition)
 	}
@@ -288,6 +316,10 @@ func (obj SplitGraphSourceWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // GetActualInstance returns the actual instance.
 func (obj *SplitGraphSourceWidgetDefinition) GetActualInstance() interface{} {
+	if obj.BarChartWidgetDefinition != nil {
+		return obj.BarChartWidgetDefinition
+	}
+
 	if obj.ChangeWidgetDefinition != nil {
 		return obj.ChangeWidgetDefinition
 	}

@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListConnectionsResponseDataAttributesConnectionsItemsJoin
+// ListConnectionsResponseDataAttributesConnectionsItemsJoin The join configuration describing how the data source is linked to the entity.
 type ListConnectionsResponseDataAttributesConnectionsItemsJoin struct {
-	//
+	// The entity attribute used as the join key to link records from the data source.
 	Attribute *string `json:"attribute,omitempty"`
-	//
+	// The type of join key used (for example, email or user_id).
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

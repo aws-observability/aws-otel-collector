@@ -1,5 +1,61 @@
 # Change Log
 
+## [1.178.0] - 2026-03-16
+
+- #969 - @d-honeybadger - add support for DOKS SSO toggles
+- #968 - @Rachana888 - Add DI get GPUModelConfig
+- #967 - @Rachana888 - Add DI sizes/pricing
+- #966 - @Rachana888 - add DI token management operations (CreateToken, ListTokens, RevokeToken)
+- #964 - @Rachana888 - Add List operation for Dedicated Inference Accelerators
+- #963 - @Rachana888 - Add List operation for Dedicated Inference
+- #962 - @Rachana888 - Add Dedicated Inference Delete operation
+- #961 - @Rachana888 - Add Dedicated Inference Update operation
+- #958 - @Rachana888 - Add Dedicated Inference Create and Get operations
+
+## [1.177.0] - 2026-03-11
+
+- #959 - @blesswinsamuel - Add ListEvents, CancelEvent, and GetEventLogs APIs for App Platform
+- #960 - @ZachEddy - apps: Add secure_header.remove_header to app spec definition
+
+## [1.176.0] - 2026-02-26
+
+- #953 - @kamleshsahu - Add dbaas metrics client
+
+## [1.175.0] - 2026-02-12
+
+- #952 - @bentranter - security: add cspm scanning functionality for public preview
+- #951 - @v-amanjain-afk - Add performance tier in nfs model
+
+## [1.174.0] - 2026-02-09
+
+- #946 - @blesswinsamuel - apps: Update app spec to support InactivitySleep configuration
+- #949 - @lprasanth-nadiminti - Add DOSettings with ServiceCnames support for database clusters
+- #945 - @v-amanjain-afk - switch performance tier of nfs share
+- #947 - @ZachEddy - apps: Add secure header app spec field to godo
+
+## [1.173.0] - 2026-01-22
+
+- #942 - @anup-deka - Fix data type
+- #941 - @v-amanjain-afk - removed deprecated region from nfs api
+
+## [1.172.0] - 2026-01-13
+
+- #932 - @fumblehool - APPS-12654: Add CancelJobInvocation API
+- #939 - @anup-deka - Rebranding GenAI to Gradient AI
+- #914 - @brianteeman - Typo cannnot/cannot
+
+## [1.171.0] - 2025-12-17
+
+- #936 - @dillonledoux - Add fields to AgentCreateRequest for Gradient Agents
+
+## [1.170.0] - 2025-12-09
+
+- #933 - @do-joe - Nfs struct exposes Host and MountPath
+
+## [1.169.0] - 2025-11-13
+
+- #928 - @do-joe - Fix GetLogsink API Response Parsing to Match Actual API Behavior
+
 ## [1.168.0] - 2025-11-06
 
 - #926 - @niket-dujari - added provision for attach and detach share

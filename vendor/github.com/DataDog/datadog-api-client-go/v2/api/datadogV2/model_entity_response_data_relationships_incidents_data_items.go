@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsIncidentsDataItems
+// EntityResponseDataRelationshipsIncidentsDataItems Incident relationship data item containing the incident resource identifier and type.
 type EntityResponseDataRelationshipsIncidentsDataItems struct {
-	//
+	// Incident resource unique identifier.
 	Id string `json:"id"`
 	// Incident resource type.
 	Type EntityResponseDataRelationshipsIncidentsDataItemsType `json:"type"`

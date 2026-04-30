@@ -12,6 +12,8 @@ import (
 
 // EventTimelineWidgetDefinition The event timeline is a widget version of the timeline that appears at the top of the Event Stream view. Only available on FREE layout dashboards.
 type EventTimelineWidgetDefinition struct {
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Query to filter the event timeline with.
 	Query string `json:"query"`
 	// The execution method for multi-value filters. Can be either and or or.
@@ -50,6 +52,34 @@ func NewEventTimelineWidgetDefinitionWithDefaults() *EventTimelineWidgetDefiniti
 	var typeVar EventTimelineWidgetDefinitionType = EVENTTIMELINEWIDGETDEFINITIONTYPE_EVENT_TIMELINE
 	this.Type = typeVar
 	return &this
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *EventTimelineWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EventTimelineWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *EventTimelineWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *EventTimelineWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetQuery returns the Query field value.
@@ -244,6 +274,9 @@ func (o EventTimelineWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	toSerialize["query"] = o.Query
 	if o.TagsExecution != nil {
 		toSerialize["tags_execution"] = o.TagsExecution
@@ -271,6 +304,7 @@ func (o EventTimelineWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *EventTimelineWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Description   *string                            `json:"description,omitempty"`
 		Query         *string                            `json:"query"`
 		TagsExecution *string                            `json:"tags_execution,omitempty"`
 		Time          *WidgetTime                        `json:"time,omitempty"`
@@ -290,12 +324,13 @@ func (o *EventTimelineWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"query", "tags_execution", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "query", "tags_execution", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Description = all.Description
 	o.Query = *all.Query
 	o.TagsExecution = all.TagsExecution
 	o.Time = all.Time

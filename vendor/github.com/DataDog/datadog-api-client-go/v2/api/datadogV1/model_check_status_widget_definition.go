@@ -14,6 +14,8 @@ import (
 type CheckStatusWidgetDefinition struct {
 	// Name of the check to use in the widget.
 	Check string `json:"check"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Group reporting a single check.
 	Group *string `json:"group,omitempty"`
 	// List of tag prefixes to group by in the case of a cluster check.
@@ -80,6 +82,34 @@ func (o *CheckStatusWidgetDefinition) GetCheckOk() (*string, bool) {
 // SetCheck sets field value.
 func (o *CheckStatusWidgetDefinition) SetCheck(v string) {
 	o.Check = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *CheckStatusWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CheckStatusWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *CheckStatusWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *CheckStatusWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise.
@@ -331,6 +361,9 @@ func (o CheckStatusWidgetDefinition) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["check"] = o.Check
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Group != nil {
 		toSerialize["group"] = o.Group
 	}
@@ -364,16 +397,17 @@ func (o CheckStatusWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CheckStatusWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Check      *string                          `json:"check"`
-		Group      *string                          `json:"group,omitempty"`
-		GroupBy    []string                         `json:"group_by,omitempty"`
-		Grouping   *WidgetGrouping                  `json:"grouping"`
-		Tags       []string                         `json:"tags,omitempty"`
-		Time       *WidgetTime                      `json:"time,omitempty"`
-		Title      *string                          `json:"title,omitempty"`
-		TitleAlign *WidgetTextAlign                 `json:"title_align,omitempty"`
-		TitleSize  *string                          `json:"title_size,omitempty"`
-		Type       *CheckStatusWidgetDefinitionType `json:"type"`
+		Check       *string                          `json:"check"`
+		Description *string                          `json:"description,omitempty"`
+		Group       *string                          `json:"group,omitempty"`
+		GroupBy     []string                         `json:"group_by,omitempty"`
+		Grouping    *WidgetGrouping                  `json:"grouping"`
+		Tags        []string                         `json:"tags,omitempty"`
+		Time        *WidgetTime                      `json:"time,omitempty"`
+		Title       *string                          `json:"title,omitempty"`
+		TitleAlign  *WidgetTextAlign                 `json:"title_align,omitempty"`
+		TitleSize   *string                          `json:"title_size,omitempty"`
+		Type        *CheckStatusWidgetDefinitionType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -389,13 +423,14 @@ func (o *CheckStatusWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"check", "group", "group_by", "grouping", "tags", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"check", "description", "group", "group_by", "grouping", "tags", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Check = *all.Check
+	o.Description = all.Description
 	o.Group = all.Group
 	o.GroupBy = all.GroupBy
 	if !all.Grouping.IsValid() {

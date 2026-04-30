@@ -24,6 +24,8 @@ type LocationProperties struct {
 	ImageAliases *[]string `json:"imageAliases,omitempty"`
 	// A list of available CPU types and related resources available in the location.
 	CpuArchitecture *[]CpuArchitectureProperties `json:"cpuArchitecture,omitempty"`
+	// The types of GPU cards that are available in the location.
+	GpuArchitecture *[]GpuArchitectureProperties `json:"gpuArchitecture,omitempty"`
 }
 
 // NewLocationProperties instantiates a new LocationProperties object
@@ -196,6 +198,44 @@ func (o *LocationProperties) HasCpuArchitecture() bool {
 	return false
 }
 
+// GetGpuArchitecture returns the GpuArchitecture field value
+// If the value is explicit nil, nil is returned
+func (o *LocationProperties) GetGpuArchitecture() *[]GpuArchitectureProperties {
+	if o == nil {
+		return nil
+	}
+
+	return o.GpuArchitecture
+
+}
+
+// GetGpuArchitectureOk returns a tuple with the GpuArchitecture field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LocationProperties) GetGpuArchitectureOk() (*[]GpuArchitectureProperties, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.GpuArchitecture, true
+}
+
+// SetGpuArchitecture sets field value
+func (o *LocationProperties) SetGpuArchitecture(v []GpuArchitectureProperties) {
+
+	o.GpuArchitecture = &v
+
+}
+
+// HasGpuArchitecture returns a boolean if a field has been set.
+func (o *LocationProperties) HasGpuArchitecture() bool {
+	if o != nil && o.GpuArchitecture != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o LocationProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -212,6 +252,10 @@ func (o LocationProperties) MarshalJSON() ([]byte, error) {
 
 	if o.CpuArchitecture != nil {
 		toSerialize["cpuArchitecture"] = o.CpuArchitecture
+	}
+
+	if o.GpuArchitecture != nil {
+		toSerialize["gpuArchitecture"] = o.GpuArchitecture
 	}
 
 	return json.Marshal(toSerialize)

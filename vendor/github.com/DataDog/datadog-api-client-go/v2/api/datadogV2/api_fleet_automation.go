@@ -811,6 +811,154 @@ func (a *FleetAutomationApi) GetFleetSchedule(ctx _context.Context, id string) (
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListFleetAgentTracersOptionalParameters holds optional parameters for ListFleetAgentTracers.
+type ListFleetAgentTracersOptionalParameters struct {
+	PageNumber     *int64
+	PageSize       *int64
+	SortAttribute  *string
+	SortDescending *bool
+}
+
+// NewListFleetAgentTracersOptionalParameters creates an empty struct for parameters.
+func NewListFleetAgentTracersOptionalParameters() *ListFleetAgentTracersOptionalParameters {
+	this := ListFleetAgentTracersOptionalParameters{}
+	return &this
+}
+
+// WithPageNumber sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentTracersOptionalParameters) WithPageNumber(pageNumber int64) *ListFleetAgentTracersOptionalParameters {
+	r.PageNumber = &pageNumber
+	return r
+}
+
+// WithPageSize sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentTracersOptionalParameters) WithPageSize(pageSize int64) *ListFleetAgentTracersOptionalParameters {
+	r.PageSize = &pageSize
+	return r
+}
+
+// WithSortAttribute sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentTracersOptionalParameters) WithSortAttribute(sortAttribute string) *ListFleetAgentTracersOptionalParameters {
+	r.SortAttribute = &sortAttribute
+	return r
+}
+
+// WithSortDescending sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentTracersOptionalParameters) WithSortDescending(sortDescending bool) *ListFleetAgentTracersOptionalParameters {
+	r.SortDescending = &sortDescending
+	return r
+}
+
+// ListFleetAgentTracers List tracers for a specific agent.
+// Retrieve a paginated list of tracers for a specific agent.
+//
+// This endpoint returns tracers associated with a given agent key, identified by the
+// agent's hostname. Use this to discover telemetry-derived service names for a particular host.
+func (a *FleetAutomationApi) ListFleetAgentTracers(ctx _context.Context, agentKey string, o ...ListFleetAgentTracersOptionalParameters) (FleetTracersResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue FleetTracersResponse
+		optionalParams      ListFleetAgentTracersOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListFleetAgentTracersOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	operationId := "v2.ListFleetAgentTracers"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.FleetAutomationApi.ListFleetAgentTracers")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/unstable/fleet/agents/{agent_key}/tracers"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_key}", _neturl.PathEscape(datadog.ParameterToString(agentKey, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.PageNumber != nil {
+		localVarQueryParams.Add("page_number", datadog.ParameterToString(*optionalParams.PageNumber, ""))
+	}
+	if optionalParams.PageSize != nil {
+		localVarQueryParams.Add("page_size", datadog.ParameterToString(*optionalParams.PageSize, ""))
+	}
+	if optionalParams.SortAttribute != nil {
+		localVarQueryParams.Add("sort_attribute", datadog.ParameterToString(*optionalParams.SortAttribute, ""))
+	}
+	if optionalParams.SortDescending != nil {
+		localVarQueryParams.Add("sort_descending", datadog.ParameterToString(*optionalParams.SortDescending, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // ListFleetAgentVersions List all available Agent versions.
 // Retrieve a list of all available Datadog Agent versions.
 //
@@ -1067,6 +1215,174 @@ func (a *FleetAutomationApi) ListFleetAgents(ctx _context.Context, o ...ListFlee
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListFleetClustersOptionalParameters holds optional parameters for ListFleetClusters.
+type ListFleetClustersOptionalParameters struct {
+	PageNumber     *int64
+	PageSize       *int64
+	SortAttribute  *string
+	SortDescending *bool
+	Filter         *string
+	Tags           *string
+}
+
+// NewListFleetClustersOptionalParameters creates an empty struct for parameters.
+func NewListFleetClustersOptionalParameters() *ListFleetClustersOptionalParameters {
+	this := ListFleetClustersOptionalParameters{}
+	return &this
+}
+
+// WithPageNumber sets the corresponding parameter name and returns the struct.
+func (r *ListFleetClustersOptionalParameters) WithPageNumber(pageNumber int64) *ListFleetClustersOptionalParameters {
+	r.PageNumber = &pageNumber
+	return r
+}
+
+// WithPageSize sets the corresponding parameter name and returns the struct.
+func (r *ListFleetClustersOptionalParameters) WithPageSize(pageSize int64) *ListFleetClustersOptionalParameters {
+	r.PageSize = &pageSize
+	return r
+}
+
+// WithSortAttribute sets the corresponding parameter name and returns the struct.
+func (r *ListFleetClustersOptionalParameters) WithSortAttribute(sortAttribute string) *ListFleetClustersOptionalParameters {
+	r.SortAttribute = &sortAttribute
+	return r
+}
+
+// WithSortDescending sets the corresponding parameter name and returns the struct.
+func (r *ListFleetClustersOptionalParameters) WithSortDescending(sortDescending bool) *ListFleetClustersOptionalParameters {
+	r.SortDescending = &sortDescending
+	return r
+}
+
+// WithFilter sets the corresponding parameter name and returns the struct.
+func (r *ListFleetClustersOptionalParameters) WithFilter(filter string) *ListFleetClustersOptionalParameters {
+	r.Filter = &filter
+	return r
+}
+
+// WithTags sets the corresponding parameter name and returns the struct.
+func (r *ListFleetClustersOptionalParameters) WithTags(tags string) *ListFleetClustersOptionalParameters {
+	r.Tags = &tags
+	return r
+}
+
+// ListFleetClusters List all fleet clusters.
+// Retrieve a paginated list of Kubernetes clusters in the fleet.
+//
+// This endpoint returns clusters with metadata including node counts, agent versions,
+// enabled products, and associated services. Use the `page_number` and `page_size`
+// query parameters to paginate through results.
+func (a *FleetAutomationApi) ListFleetClusters(ctx _context.Context, o ...ListFleetClustersOptionalParameters) (FleetClustersResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue FleetClustersResponse
+		optionalParams      ListFleetClustersOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListFleetClustersOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	operationId := "v2.ListFleetClusters"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.FleetAutomationApi.ListFleetClusters")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/unstable/fleet/clusters"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.PageNumber != nil {
+		localVarQueryParams.Add("page_number", datadog.ParameterToString(*optionalParams.PageNumber, ""))
+	}
+	if optionalParams.PageSize != nil {
+		localVarQueryParams.Add("page_size", datadog.ParameterToString(*optionalParams.PageSize, ""))
+	}
+	if optionalParams.SortAttribute != nil {
+		localVarQueryParams.Add("sort_attribute", datadog.ParameterToString(*optionalParams.SortAttribute, ""))
+	}
+	if optionalParams.SortDescending != nil {
+		localVarQueryParams.Add("sort_descending", datadog.ParameterToString(*optionalParams.SortDescending, ""))
+	}
+	if optionalParams.Filter != nil {
+		localVarQueryParams.Add("filter", datadog.ParameterToString(*optionalParams.Filter, ""))
+	}
+	if optionalParams.Tags != nil {
+		localVarQueryParams.Add("tags", datadog.ParameterToString(*optionalParams.Tags, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // ListFleetDeploymentsOptionalParameters holds optional parameters for ListFleetDeployments.
 type ListFleetDeploymentsOptionalParameters struct {
 	PageSize   *int64
@@ -1192,6 +1508,98 @@ func (a *FleetAutomationApi) ListFleetDeployments(ctx _context.Context, o ...Lis
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListFleetInstrumentedPods List instrumented pods for a cluster.
+// Retrieve the list of pods targeted for Single Step Instrumentation (SSI) injection
+// in a specific Kubernetes cluster.
+//
+// This endpoint returns pod groups organized by owner reference (deployment, statefulset, etc.)
+// with their injection annotations and applied targets. Use the clusters list endpoint
+// to discover available cluster names.
+func (a *FleetAutomationApi) ListFleetInstrumentedPods(ctx _context.Context, clusterName string) (FleetInstrumentedPodsResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue FleetInstrumentedPodsResponse
+	)
+
+	operationId := "v2.ListFleetInstrumentedPods"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.FleetAutomationApi.ListFleetInstrumentedPods")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/unstable/fleet/clusters/{cluster_name}/instrumented_pods"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{cluster_name}", _neturl.PathEscape(datadog.ParameterToString(clusterName, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // ListFleetSchedules List all schedules.
 // Retrieve a list of all schedules for automated fleet deployments.
 //
@@ -1260,6 +1668,165 @@ func (a *FleetAutomationApi) ListFleetSchedules(ctx _context.Context) (FleetSche
 			ErrorMessage: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ListFleetTracersOptionalParameters holds optional parameters for ListFleetTracers.
+type ListFleetTracersOptionalParameters struct {
+	PageNumber     *int64
+	PageSize       *int64
+	SortAttribute  *string
+	SortDescending *bool
+	Filter         *string
+}
+
+// NewListFleetTracersOptionalParameters creates an empty struct for parameters.
+func NewListFleetTracersOptionalParameters() *ListFleetTracersOptionalParameters {
+	this := ListFleetTracersOptionalParameters{}
+	return &this
+}
+
+// WithPageNumber sets the corresponding parameter name and returns the struct.
+func (r *ListFleetTracersOptionalParameters) WithPageNumber(pageNumber int64) *ListFleetTracersOptionalParameters {
+	r.PageNumber = &pageNumber
+	return r
+}
+
+// WithPageSize sets the corresponding parameter name and returns the struct.
+func (r *ListFleetTracersOptionalParameters) WithPageSize(pageSize int64) *ListFleetTracersOptionalParameters {
+	r.PageSize = &pageSize
+	return r
+}
+
+// WithSortAttribute sets the corresponding parameter name and returns the struct.
+func (r *ListFleetTracersOptionalParameters) WithSortAttribute(sortAttribute string) *ListFleetTracersOptionalParameters {
+	r.SortAttribute = &sortAttribute
+	return r
+}
+
+// WithSortDescending sets the corresponding parameter name and returns the struct.
+func (r *ListFleetTracersOptionalParameters) WithSortDescending(sortDescending bool) *ListFleetTracersOptionalParameters {
+	r.SortDescending = &sortDescending
+	return r
+}
+
+// WithFilter sets the corresponding parameter name and returns the struct.
+func (r *ListFleetTracersOptionalParameters) WithFilter(filter string) *ListFleetTracersOptionalParameters {
+	r.Filter = &filter
+	return r
+}
+
+// ListFleetTracers List all fleet tracers.
+// Retrieve a paginated list of all fleet tracers.
+//
+// This endpoint returns telemetry-derived service names from the SDK telemetry pipeline.
+// These names may differ from span-derived names in APM and are useful for querying
+// service library configurations.
+// Use the `page_number` and `page_size` query parameters to paginate through results.
+func (a *FleetAutomationApi) ListFleetTracers(ctx _context.Context, o ...ListFleetTracersOptionalParameters) (FleetTracersResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue FleetTracersResponse
+		optionalParams      ListFleetTracersOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListFleetTracersOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	operationId := "v2.ListFleetTracers"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.FleetAutomationApi.ListFleetTracers")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/unstable/fleet/tracers"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.PageNumber != nil {
+		localVarQueryParams.Add("page_number", datadog.ParameterToString(*optionalParams.PageNumber, ""))
+	}
+	if optionalParams.PageSize != nil {
+		localVarQueryParams.Add("page_size", datadog.ParameterToString(*optionalParams.PageSize, ""))
+	}
+	if optionalParams.SortAttribute != nil {
+		localVarQueryParams.Add("sort_attribute", datadog.ParameterToString(*optionalParams.SortAttribute, ""))
+	}
+	if optionalParams.SortDescending != nil {
+		localVarQueryParams.Add("sort_descending", datadog.ParameterToString(*optionalParams.SortDescending, ""))
+	}
+	if optionalParams.Filter != nil {
+		localVarQueryParams.Add("filter", datadog.ParameterToString(*optionalParams.Filter, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
 			var v APIErrorResponse
 			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

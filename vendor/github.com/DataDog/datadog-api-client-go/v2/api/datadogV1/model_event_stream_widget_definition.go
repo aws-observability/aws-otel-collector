@@ -13,6 +13,8 @@ import (
 // EventStreamWidgetDefinition The event stream is a widget version of the stream of events
 // on the Event Stream view. Only available on FREE layout dashboards.
 type EventStreamWidgetDefinition struct {
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Size to use to display an event.
 	EventSize *WidgetEventSize `json:"event_size,omitempty"`
 	// Query to filter the event stream with.
@@ -53,6 +55,34 @@ func NewEventStreamWidgetDefinitionWithDefaults() *EventStreamWidgetDefinition {
 	var typeVar EventStreamWidgetDefinitionType = EVENTSTREAMWIDGETDEFINITIONTYPE_EVENT_STREAM
 	this.Type = typeVar
 	return &this
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *EventStreamWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EventStreamWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *EventStreamWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *EventStreamWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetEventSize returns the EventSize field value if set, zero value otherwise.
@@ -275,6 +305,9 @@ func (o EventStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.EventSize != nil {
 		toSerialize["event_size"] = o.EventSize
 	}
@@ -305,6 +338,7 @@ func (o EventStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *EventStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Description   *string                          `json:"description,omitempty"`
 		EventSize     *WidgetEventSize                 `json:"event_size,omitempty"`
 		Query         *string                          `json:"query"`
 		TagsExecution *string                          `json:"tags_execution,omitempty"`
@@ -325,12 +359,13 @@ func (o *EventStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"event_size", "query", "tags_execution", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "event_size", "query", "tags_execution", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Description = all.Description
 	if all.EventSize != nil && !all.EventSize.IsValid() {
 		hasInvalidField = true
 	} else {

@@ -14,10 +14,15 @@ import (
 type HeatMapWidgetDefinition struct {
 	// List of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
-	// List of widget events.
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
+	// List of widget events. Deprecated - Use `overlay` request type instead.
+	// Deprecated
 	Events []WidgetEvent `json:"events,omitempty"`
 	// Available legend sizes for a widget. Should be one of "0", "2", "4", "8", "16", or "auto".
 	LegendSize *string `json:"legend_size,omitempty"`
+	// List of markers.
+	Markers []WidgetMarker `json:"markers,omitempty"`
 	// List of widget types.
 	Requests []HeatMapWidgetRequest `json:"requests"`
 	// Whether or not to display the legend on this widget.
@@ -32,6 +37,8 @@ type HeatMapWidgetDefinition struct {
 	TitleSize *string `json:"title_size,omitempty"`
 	// Type of the heat map widget.
 	Type HeatMapWidgetDefinitionType `json:"type"`
+	// X Axis controls for the heat map widget.
+	Xaxis *HeatMapWidgetXAxis `json:"xaxis,omitempty"`
 	// Axis controls for the widget.
 	Yaxis *WidgetAxis `json:"yaxis,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -88,7 +95,36 @@ func (o *HeatMapWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
 }
 
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *HeatMapWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HeatMapWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *HeatMapWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *HeatMapWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
+}
+
 // GetEvents returns the Events field value if set, zero value otherwise.
+// Deprecated
 func (o *HeatMapWidgetDefinition) GetEvents() []WidgetEvent {
 	if o == nil || o.Events == nil {
 		var ret []WidgetEvent
@@ -99,6 +135,7 @@ func (o *HeatMapWidgetDefinition) GetEvents() []WidgetEvent {
 
 // GetEventsOk returns a tuple with the Events field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *HeatMapWidgetDefinition) GetEventsOk() (*[]WidgetEvent, bool) {
 	if o == nil || o.Events == nil {
 		return nil, false
@@ -112,6 +149,7 @@ func (o *HeatMapWidgetDefinition) HasEvents() bool {
 }
 
 // SetEvents gets a reference to the given []WidgetEvent and assigns it to the Events field.
+// Deprecated
 func (o *HeatMapWidgetDefinition) SetEvents(v []WidgetEvent) {
 	o.Events = v
 }
@@ -142,6 +180,34 @@ func (o *HeatMapWidgetDefinition) HasLegendSize() bool {
 // SetLegendSize gets a reference to the given string and assigns it to the LegendSize field.
 func (o *HeatMapWidgetDefinition) SetLegendSize(v string) {
 	o.LegendSize = &v
+}
+
+// GetMarkers returns the Markers field value if set, zero value otherwise.
+func (o *HeatMapWidgetDefinition) GetMarkers() []WidgetMarker {
+	if o == nil || o.Markers == nil {
+		var ret []WidgetMarker
+		return ret
+	}
+	return o.Markers
+}
+
+// GetMarkersOk returns a tuple with the Markers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HeatMapWidgetDefinition) GetMarkersOk() (*[]WidgetMarker, bool) {
+	if o == nil || o.Markers == nil {
+		return nil, false
+	}
+	return &o.Markers, true
+}
+
+// HasMarkers returns a boolean if a field has been set.
+func (o *HeatMapWidgetDefinition) HasMarkers() bool {
+	return o != nil && o.Markers != nil
+}
+
+// SetMarkers gets a reference to the given []WidgetMarker and assigns it to the Markers field.
+func (o *HeatMapWidgetDefinition) SetMarkers(v []WidgetMarker) {
+	o.Markers = v
 }
 
 // GetRequests returns the Requests field value.
@@ -330,6 +396,34 @@ func (o *HeatMapWidgetDefinition) SetType(v HeatMapWidgetDefinitionType) {
 	o.Type = v
 }
 
+// GetXaxis returns the Xaxis field value if set, zero value otherwise.
+func (o *HeatMapWidgetDefinition) GetXaxis() HeatMapWidgetXAxis {
+	if o == nil || o.Xaxis == nil {
+		var ret HeatMapWidgetXAxis
+		return ret
+	}
+	return *o.Xaxis
+}
+
+// GetXaxisOk returns a tuple with the Xaxis field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HeatMapWidgetDefinition) GetXaxisOk() (*HeatMapWidgetXAxis, bool) {
+	if o == nil || o.Xaxis == nil {
+		return nil, false
+	}
+	return o.Xaxis, true
+}
+
+// HasXaxis returns a boolean if a field has been set.
+func (o *HeatMapWidgetDefinition) HasXaxis() bool {
+	return o != nil && o.Xaxis != nil
+}
+
+// SetXaxis gets a reference to the given HeatMapWidgetXAxis and assigns it to the Xaxis field.
+func (o *HeatMapWidgetDefinition) SetXaxis(v HeatMapWidgetXAxis) {
+	o.Xaxis = &v
+}
+
 // GetYaxis returns the Yaxis field value if set, zero value otherwise.
 func (o *HeatMapWidgetDefinition) GetYaxis() WidgetAxis {
 	if o == nil || o.Yaxis == nil {
@@ -367,11 +461,17 @@ func (o HeatMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Events != nil {
 		toSerialize["events"] = o.Events
 	}
 	if o.LegendSize != nil {
 		toSerialize["legend_size"] = o.LegendSize
+	}
+	if o.Markers != nil {
+		toSerialize["markers"] = o.Markers
 	}
 	toSerialize["requests"] = o.Requests
 	if o.ShowLegend != nil {
@@ -390,6 +490,9 @@ func (o HeatMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["title_size"] = o.TitleSize
 	}
 	toSerialize["type"] = o.Type
+	if o.Xaxis != nil {
+		toSerialize["xaxis"] = o.Xaxis
+	}
 	if o.Yaxis != nil {
 		toSerialize["yaxis"] = o.Yaxis
 	}
@@ -404,8 +507,10 @@ func (o HeatMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *HeatMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CustomLinks []WidgetCustomLink           `json:"custom_links,omitempty"`
+		Description *string                      `json:"description,omitempty"`
 		Events      []WidgetEvent                `json:"events,omitempty"`
 		LegendSize  *string                      `json:"legend_size,omitempty"`
+		Markers     []WidgetMarker               `json:"markers,omitempty"`
 		Requests    *[]HeatMapWidgetRequest      `json:"requests"`
 		ShowLegend  *bool                        `json:"show_legend,omitempty"`
 		Time        *WidgetTime                  `json:"time,omitempty"`
@@ -413,6 +518,7 @@ func (o *HeatMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		TitleAlign  *WidgetTextAlign             `json:"title_align,omitempty"`
 		TitleSize   *string                      `json:"title_size,omitempty"`
 		Type        *HeatMapWidgetDefinitionType `json:"type"`
+		Xaxis       *HeatMapWidgetXAxis          `json:"xaxis,omitempty"`
 		Yaxis       *WidgetAxis                  `json:"yaxis,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -426,15 +532,17 @@ func (o *HeatMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "events", "legend_size", "requests", "show_legend", "time", "title", "title_align", "title_size", "type", "yaxis"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "events", "legend_size", "markers", "requests", "show_legend", "time", "title", "title_align", "title_size", "type", "xaxis", "yaxis"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	o.Events = all.Events
 	o.LegendSize = all.LegendSize
+	o.Markers = all.Markers
 	o.Requests = *all.Requests
 	o.ShowLegend = all.ShowLegend
 	o.Time = all.Time
@@ -450,6 +558,10 @@ func (o *HeatMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Type = *all.Type
 	}
+	if all.Xaxis != nil && all.Xaxis.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Xaxis = all.Xaxis
 	if all.Yaxis != nil && all.Yaxis.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

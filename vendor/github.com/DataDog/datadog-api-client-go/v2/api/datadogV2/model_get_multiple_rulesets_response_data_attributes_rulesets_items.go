@@ -10,17 +10,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseDataAttributesRulesetsItems
+// GetMultipleRulesetsResponseDataAttributesRulesetsItems A ruleset returned in the response, containing its metadata and associated rules.
 type GetMultipleRulesetsResponseDataAttributesRulesetsItems struct {
-	//
+	// The resource identifier and type for a ruleset.
 	Data GetMultipleRulesetsResponseDataAttributesRulesetsItemsData `json:"data"`
-	//
+	// A detailed description of the ruleset's purpose and the types of issues it targets.
 	Description *string `json:"description,omitempty"`
-	//
+	// The unique name of the ruleset.
 	Name *string `json:"name,omitempty"`
-	//
+	// The list of static analysis rules included in this ruleset.
 	Rules []GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItems `json:"rules,omitempty"`
-	//
+	// A brief summary of the ruleset, suitable for display in listings.
 	ShortDescription *string `json:"short_description,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

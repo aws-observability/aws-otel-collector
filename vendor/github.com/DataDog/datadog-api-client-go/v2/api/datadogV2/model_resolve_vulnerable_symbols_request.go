@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsRequest
+// ResolveVulnerableSymbolsRequest The top-level request object for resolving vulnerable symbols in a set of packages.
 type ResolveVulnerableSymbolsRequest struct {
-	//
+	// The data object in a request to resolve vulnerable symbols, containing the package PURLs and request type.
 	Data *ResolveVulnerableSymbolsRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

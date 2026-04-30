@@ -8,17 +8,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryUsersRequestDataAttributes
+// QueryUsersRequestDataAttributes Attributes for filtering and shaping the user query results.
 type QueryUsersRequestDataAttributes struct {
-	//
+	// Maximum number of user records to return in the response.
 	Limit *int64 `json:"limit,omitempty"`
-	//
+	// Filter expression using user attribute conditions to narrow results.
 	Query *string `json:"query,omitempty"`
-	//
+	// List of user attribute column names to include in the response.
 	SelectColumns []string `json:"select_columns,omitempty"`
-	//
+	// Sorting configuration specifying the field and direction for ordering user query results.
 	Sort *QueryUsersRequestDataAttributesSort `json:"sort,omitempty"`
-	//
+	// Free-text term used for wildcard search across user attribute values.
 	WildcardSearchTerm *string `json:"wildcard_search_term,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

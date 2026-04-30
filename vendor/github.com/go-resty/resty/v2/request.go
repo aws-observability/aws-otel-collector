@@ -1095,7 +1095,8 @@ type SRVRecord struct {
 
 func (r *Request) fmtBodyString(sl int64) (body string) {
 	body = "***** NO CONTENT *****"
-	if !isPayloadSupported(r.Method, r.client.AllowGetMethodPayload) {
+	if !isPayloadSupported(r.Method, r.client.AllowGetMethodPayload) ||
+		r.Body == http.NoBody {
 		return
 	}
 

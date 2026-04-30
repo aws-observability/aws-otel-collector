@@ -12,7 +12,7 @@ import (
 
 // ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptions Controls how partial redaction is applied, including character count and direction.
 type ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptions struct {
-	// The `ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptions` `characters`.
+	// Number of characters to leave visible from the start or end of the matched value; the rest are redacted.
 	Characters int64 `json:"characters"`
 	// Indicates whether to redact characters from the first or last part of the matched value.
 	Direction ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedactOptionsDirection `json:"direction"`

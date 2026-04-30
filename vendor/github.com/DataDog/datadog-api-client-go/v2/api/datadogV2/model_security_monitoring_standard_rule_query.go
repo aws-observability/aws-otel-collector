@@ -14,7 +14,7 @@ type SecurityMonitoringStandardRuleQuery struct {
 	Aggregation *SecurityMonitoringRuleQueryAggregation `json:"aggregation,omitempty"`
 	// Query extension to append to the logs query.
 	CustomQueryExtension *string `json:"customQueryExtension,omitempty"`
-	// Source of events, either logs, audit trail, or Datadog events.
+	// Source of events, either logs, audit trail, security signals, or Datadog events. `app_sec_spans` is deprecated in favor of `spans`.
 	DataSource *SecurityMonitoringStandardDataSource `json:"dataSource,omitempty"`
 	// Field for which the cardinality is measured. Sent as an array.
 	DistinctFields []string `json:"distinctFields,omitempty"`

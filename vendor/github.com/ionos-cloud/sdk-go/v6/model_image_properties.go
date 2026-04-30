@@ -74,8 +74,6 @@ func NewImageProperties(licenceType string) *ImageProperties {
 	var requireLegacyBios bool = true
 	this.RequireLegacyBios = &requireLegacyBios
 	this.LicenceType = &licenceType
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
 
 	return &this
 }
@@ -89,8 +87,6 @@ func NewImagePropertiesWithDefaults() *ImageProperties {
 	this.ExposeSerial = &exposeSerial
 	var requireLegacyBios bool = true
 	this.RequireLegacyBios = &requireLegacyBios
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
 	return &this
 }
 

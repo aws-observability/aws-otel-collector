@@ -12,7 +12,7 @@ import (
 
 // CreateCaseRequestArray List of requests to create cases for security findings.
 type CreateCaseRequestArray struct {
-	//
+	// Array of case creation request data objects.
 	Data []CreateCaseRequestData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

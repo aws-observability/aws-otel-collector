@@ -8,25 +8,25 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributes
+// ScaRequestDataAttributes The attributes of an SCA request, containing dependency graph data, vulnerability information, and repository context.
 type ScaRequestDataAttributes struct {
-	//
+	// Metadata about the commit associated with the SCA scan, including author, committer, and branch information.
 	Commit *ScaRequestDataAttributesCommit `json:"commit,omitempty"`
-	//
+	// The list of dependencies discovered in the repository.
 	Dependencies []ScaRequestDataAttributesDependenciesItems `json:"dependencies,omitempty"`
-	//
+	// The environment context in which the SCA scan was performed (e.g., production, staging).
 	Env *string `json:"env,omitempty"`
-	//
+	// The list of dependency manifest files found in the repository.
 	Files []ScaRequestDataAttributesFilesItems `json:"files,omitempty"`
-	//
+	// The dependency relations describing the inter-component dependency graph.
 	Relations []ScaRequestDataAttributesRelationsItems `json:"relations,omitempty"`
-	//
+	// Information about the source code repository being analyzed.
 	Repository *ScaRequestDataAttributesRepository `json:"repository,omitempty"`
-	//
+	// The name of the service or application being analyzed.
 	Service *string `json:"service,omitempty"`
-	//
+	// A map of key-value tags providing additional metadata for the SCA scan.
 	Tags map[string]string `json:"tags,omitempty"`
-	//
+	// The list of vulnerabilities identified in the dependency graph.
 	Vulnerabilities []ScaRequestDataAttributesVulnerabilitiesItems `json:"vulnerabilities,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -26,9 +26,13 @@ import (
 // With previous-generation instance types, resizing an EBS volume might require
 // detaching and reattaching the volume or stopping and restarting the instance.
 //
-// After modifying a volume, you must wait at least six hours and ensure that the
-// volume is in the in-use or available state before you can modify the same
-// volume. This is sometimes referred to as a cooldown period.
+// After you initiate a volume modification, you must wait for that modification
+// to reach the completed state before you can initiate another modification for
+// the same volume. You can modify a volume up to four times within a rolling
+// 24-hour period, as long as the volume is in the in-use or available state, and
+// all previous modifications for that volume are completed . If you exceed this
+// limit, you get an error message that indicates when you can perform your next
+// modification.
 //
 // [Monitor the progress of volume modifications]: https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html
 // [Amazon EBS Elastic Volumes]: https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html
@@ -174,7 +178,7 @@ func (c *Client) addOperationModifyVolumeMiddlewares(stack *middleware.Stack, op
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -196,9 +200,6 @@ func (c *Client) addOperationModifyVolumeMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {

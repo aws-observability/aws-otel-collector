@@ -8,21 +8,21 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesCommit
+// ScaRequestDataAttributesCommit Metadata about the commit associated with the SCA scan, including author, committer, and branch information.
 type ScaRequestDataAttributesCommit struct {
-	//
+	// The date when the commit was authored.
 	AuthorDate *string `json:"author_date,omitempty"`
-	//
+	// The email address of the commit author.
 	AuthorEmail *string `json:"author_email,omitempty"`
-	//
+	// The full name of the commit author.
 	AuthorName *string `json:"author_name,omitempty"`
-	//
+	// The branch name on which the commit was made.
 	Branch *string `json:"branch,omitempty"`
-	//
+	// The email address of the person who committed the change.
 	CommitterEmail *string `json:"committer_email,omitempty"`
-	//
+	// The full name of the person who committed the change.
 	CommitterName *string `json:"committer_name,omitempty"`
-	//
+	// The SHA hash uniquely identifying the commit.
 	Sha *string `json:"sha,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

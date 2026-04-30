@@ -8,17 +8,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryEventFilteredUsersRequestDataAttributes
+// QueryEventFilteredUsersRequestDataAttributes Attributes for filtering users by both user properties and event platform activity.
 type QueryEventFilteredUsersRequestDataAttributes struct {
-	//
+	// Event platform query used to filter users based on their event activity within a specified time window.
 	EventQuery *QueryEventFilteredUsersRequestDataAttributesEventQuery `json:"event_query,omitempty"`
-	//
+	// Whether to include the total count of matching users in the response.
 	IncludeRowCount *bool `json:"include_row_count,omitempty"`
-	//
+	// Maximum number of user records to return in the response.
 	Limit *int64 `json:"limit,omitempty"`
-	//
+	// Filter expression using user attribute conditions to narrow results.
 	Query *string `json:"query,omitempty"`
-	//
+	// List of user attribute column names to include in the response.
 	SelectColumns []string `json:"select_columns,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

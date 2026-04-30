@@ -13,6 +13,8 @@ import (
 // ListStreamWidgetDefinition The list stream visualization displays a table of recent events in your application that
 // match a search criteria using user-defined columns.
 type ListStreamWidgetDefinition struct {
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Available legend sizes for a widget. Should be one of "0", "2", "4", "8", "16", or "auto".
 	LegendSize *string `json:"legend_size,omitempty"`
 	// Request payload used to query items.
@@ -53,6 +55,34 @@ func NewListStreamWidgetDefinitionWithDefaults() *ListStreamWidgetDefinition {
 	var typeVar ListStreamWidgetDefinitionType = LISTSTREAMWIDGETDEFINITIONTYPE_LIST_STREAM
 	this.Type = typeVar
 	return &this
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *ListStreamWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListStreamWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *ListStreamWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *ListStreamWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetLegendSize returns the LegendSize field value if set, zero value otherwise.
@@ -275,6 +305,9 @@ func (o ListStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.LegendSize != nil {
 		toSerialize["legend_size"] = o.LegendSize
 	}
@@ -305,14 +338,15 @@ func (o ListStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ListStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		LegendSize *string                         `json:"legend_size,omitempty"`
-		Requests   *[]ListStreamWidgetRequest      `json:"requests"`
-		ShowLegend *bool                           `json:"show_legend,omitempty"`
-		Time       *WidgetTime                     `json:"time,omitempty"`
-		Title      *string                         `json:"title,omitempty"`
-		TitleAlign *WidgetTextAlign                `json:"title_align,omitempty"`
-		TitleSize  *string                         `json:"title_size,omitempty"`
-		Type       *ListStreamWidgetDefinitionType `json:"type"`
+		Description *string                         `json:"description,omitempty"`
+		LegendSize  *string                         `json:"legend_size,omitempty"`
+		Requests    *[]ListStreamWidgetRequest      `json:"requests"`
+		ShowLegend  *bool                           `json:"show_legend,omitempty"`
+		Time        *WidgetTime                     `json:"time,omitempty"`
+		Title       *string                         `json:"title,omitempty"`
+		TitleAlign  *WidgetTextAlign                `json:"title_align,omitempty"`
+		TitleSize   *string                         `json:"title_size,omitempty"`
+		Type        *ListStreamWidgetDefinitionType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -325,12 +359,13 @@ func (o *ListStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"legend_size", "requests", "show_legend", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "legend_size", "requests", "show_legend", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Description = all.Description
 	o.LegendSize = all.LegendSize
 	o.Requests = *all.Requests
 	o.ShowLegend = all.ShowLegend

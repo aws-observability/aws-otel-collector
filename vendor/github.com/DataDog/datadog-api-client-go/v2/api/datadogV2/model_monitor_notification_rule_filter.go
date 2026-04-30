@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonitorNotificationRuleFilter - Filter used to associate the notification rule with monitors.
+// MonitorNotificationRuleFilter - Specifies the matching criteria for monitor notifications.
 type MonitorNotificationRuleFilter struct {
 	MonitorNotificationRuleFilterTags  *MonitorNotificationRuleFilterTags
 	MonitorNotificationRuleFilterScope *MonitorNotificationRuleFilterScope

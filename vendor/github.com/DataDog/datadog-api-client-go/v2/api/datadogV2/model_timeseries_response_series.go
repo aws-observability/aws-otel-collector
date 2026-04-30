@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimeseriesResponseSeries
+// TimeseriesResponseSeries A single series in a timeseries query response, containing the query index, unit information, and group tags.
 type TimeseriesResponseSeries struct {
 	// List of tags that apply to a single response value.
 	GroupTags []string `json:"group_tags,omitempty"`

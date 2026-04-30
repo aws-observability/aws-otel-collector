@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ServiceListDataAttributesMetadataItems
+// ServiceListDataAttributesMetadataItems An object containing metadata flags for a service, indicating whether it is traced by APM or monitored through Universal Service Monitoring.
 type ServiceListDataAttributesMetadataItems struct {
-	//
+	// Indicates whether the service is traced by APM.
 	IsTraced *bool `json:"isTraced,omitempty"`
-	//
+	// Indicates whether the service uses Universal Service Monitoring.
 	IsUsm *bool `json:"isUsm,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

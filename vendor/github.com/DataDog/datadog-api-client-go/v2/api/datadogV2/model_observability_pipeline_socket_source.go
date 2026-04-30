@@ -11,10 +11,14 @@ import (
 )
 
 // ObservabilityPipelineSocketSource The `socket` source ingests logs over TCP or UDP.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineSocketSource struct {
+	// Name of the environment variable or secret that holds the listen address for the socket.
+	AddressKey *string `json:"address_key,omitempty"`
 	// Framing method configuration for the socket source.
 	Framing ObservabilityPipelineSocketSourceFraming `json:"framing"`
-	// The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+	// The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the `input` to downstream components).
 	Id string `json:"id"`
 	// Protocol used to receive logs.
 	Mode ObservabilityPipelineSocketSourceMode `json:"mode"`
@@ -48,6 +52,34 @@ func NewObservabilityPipelineSocketSourceWithDefaults() *ObservabilityPipelineSo
 	var typeVar ObservabilityPipelineSocketSourceType = OBSERVABILITYPIPELINESOCKETSOURCETYPE_SOCKET
 	this.Type = typeVar
 	return &this
+}
+
+// GetAddressKey returns the AddressKey field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSocketSource) GetAddressKey() string {
+	if o == nil || o.AddressKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.AddressKey
+}
+
+// GetAddressKeyOk returns a tuple with the AddressKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSocketSource) GetAddressKeyOk() (*string, bool) {
+	if o == nil || o.AddressKey == nil {
+		return nil, false
+	}
+	return o.AddressKey, true
+}
+
+// HasAddressKey returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSocketSource) HasAddressKey() bool {
+	return o != nil && o.AddressKey != nil
+}
+
+// SetAddressKey gets a reference to the given string and assigns it to the AddressKey field.
+func (o *ObservabilityPipelineSocketSource) SetAddressKey(v string) {
+	o.AddressKey = &v
 }
 
 // GetFraming returns the Framing field value.
@@ -176,6 +208,9 @@ func (o ObservabilityPipelineSocketSource) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AddressKey != nil {
+		toSerialize["address_key"] = o.AddressKey
+	}
 	toSerialize["framing"] = o.Framing
 	toSerialize["id"] = o.Id
 	toSerialize["mode"] = o.Mode
@@ -193,11 +228,12 @@ func (o ObservabilityPipelineSocketSource) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineSocketSource) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Framing *ObservabilityPipelineSocketSourceFraming `json:"framing"`
-		Id      *string                                   `json:"id"`
-		Mode    *ObservabilityPipelineSocketSourceMode    `json:"mode"`
-		Tls     *ObservabilityPipelineTls                 `json:"tls,omitempty"`
-		Type    *ObservabilityPipelineSocketSourceType    `json:"type"`
+		AddressKey *string                                   `json:"address_key,omitempty"`
+		Framing    *ObservabilityPipelineSocketSourceFraming `json:"framing"`
+		Id         *string                                   `json:"id"`
+		Mode       *ObservabilityPipelineSocketSourceMode    `json:"mode"`
+		Tls        *ObservabilityPipelineTls                 `json:"tls,omitempty"`
+		Type       *ObservabilityPipelineSocketSourceType    `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -216,12 +252,13 @@ func (o *ObservabilityPipelineSocketSource) UnmarshalJSON(bytes []byte) (err err
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"framing", "id", "mode", "tls", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"address_key", "framing", "id", "mode", "tls", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AddressKey = all.AddressKey
 	o.Framing = *all.Framing
 	o.Id = *all.Id
 	if !all.Mode.IsValid() {

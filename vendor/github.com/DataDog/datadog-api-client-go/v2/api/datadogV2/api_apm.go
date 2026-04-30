@@ -17,7 +17,7 @@ type APMApi datadog.Service
 
 // GetServiceList Get service list.
 
-func (a *APMApi) GetServiceList(ctx _context.Context) (ServiceList, *_nethttp.Response, error) {
+func (a *APMApi) GetServiceList(ctx _context.Context, filterEnv string) (ServiceList, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
 		localVarPostBody    interface{}
@@ -34,6 +34,7 @@ func (a *APMApi) GetServiceList(ctx _context.Context) (ServiceList, *_nethttp.Re
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
+	localVarQueryParams.Add("filter[env]", datadog.ParameterToString(filterEnv, ""))
 	localVarHeaderParams["Accept"] = "application/json"
 
 	if a.Client.Cfg.DelegatedTokenConfig != nil {
