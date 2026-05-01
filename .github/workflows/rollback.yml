@@ -197,8 +197,8 @@ jobs:
       - name: Login to Dockerhub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_OAT_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_OAT_SECRET }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
