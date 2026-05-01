@@ -70,8 +70,8 @@ jobs:
       - name: Login Dockerhub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_OAT_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_OAT_SECRET }}
 
       - name: Download candidate
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ steps.set-input-vars.outputs.sha }}.tar.gz" candidate.tar.gz
@@ -177,8 +177,8 @@ jobs:
         if: steps.release-version-image.outputs.cache-hit != 'true'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_OAT_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_OAT_SECRET }}
 
       - name: Pull image from integration test ECR and Upload to public release ECR and Dockerhub
         if: steps.release-version-image.outputs.cache-hit != 'true'
