@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsResponseResults
+// ResolveVulnerableSymbolsResponseResults The result of resolving vulnerable symbols for a specific package, identified by its PURL.
 type ResolveVulnerableSymbolsResponseResults struct {
-	//
+	// The Package URL (PURL) uniquely identifying the package for which vulnerable symbols are resolved.
 	Purl *string `json:"purl,omitempty"`
-	//
+	// The list of vulnerable symbol groups found in this package, organized by advisory.
 	VulnerableSymbols []ResolveVulnerableSymbolsResponseResultsVulnerableSymbols `json:"vulnerable_symbols,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -15,7 +15,7 @@ type ObservabilityPipelineCustomProcessorRemap struct {
 	// Whether to drop events that caused errors during processing.
 	DropOnError bool `json:"drop_on_error"`
 	// Whether this remap rule is enabled.
-	Enabled bool `json:"enabled"`
+	Enabled *bool `json:"enabled,omitempty"`
 	// A Datadog search query used to filter events for this specific remap rule.
 	Include string `json:"include"`
 	// A descriptive name for this remap rule.
@@ -31,10 +31,9 @@ type ObservabilityPipelineCustomProcessorRemap struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineCustomProcessorRemap(dropOnError bool, enabled bool, include string, name string, source string) *ObservabilityPipelineCustomProcessorRemap {
+func NewObservabilityPipelineCustomProcessorRemap(dropOnError bool, include string, name string, source string) *ObservabilityPipelineCustomProcessorRemap {
 	this := ObservabilityPipelineCustomProcessorRemap{}
 	this.DropOnError = dropOnError
-	this.Enabled = enabled
 	this.Include = include
 	this.Name = name
 	this.Source = source
@@ -72,27 +71,32 @@ func (o *ObservabilityPipelineCustomProcessorRemap) SetDropOnError(v bool) {
 	o.DropOnError = v
 }
 
-// GetEnabled returns the Enabled field value.
+// GetEnabled returns the Enabled field value if set, zero value otherwise.
 func (o *ObservabilityPipelineCustomProcessorRemap) GetEnabled() bool {
-	if o == nil {
+	if o == nil || o.Enabled == nil {
 		var ret bool
 		return ret
 	}
-	return o.Enabled
+	return *o.Enabled
 }
 
-// GetEnabledOk returns a tuple with the Enabled field value
+// GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ObservabilityPipelineCustomProcessorRemap) GetEnabledOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || o.Enabled == nil {
 		return nil, false
 	}
-	return &o.Enabled, true
+	return o.Enabled, true
 }
 
-// SetEnabled sets field value.
+// HasEnabled returns a boolean if a field has been set.
+func (o *ObservabilityPipelineCustomProcessorRemap) HasEnabled() bool {
+	return o != nil && o.Enabled != nil
+}
+
+// SetEnabled gets a reference to the given bool and assigns it to the Enabled field.
 func (o *ObservabilityPipelineCustomProcessorRemap) SetEnabled(v bool) {
-	o.Enabled = v
+	o.Enabled = &v
 }
 
 // GetInclude returns the Include field value.
@@ -171,7 +175,9 @@ func (o ObservabilityPipelineCustomProcessorRemap) MarshalJSON() ([]byte, error)
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["drop_on_error"] = o.DropOnError
-	toSerialize["enabled"] = o.Enabled
+	if o.Enabled != nil {
+		toSerialize["enabled"] = o.Enabled
+	}
 	toSerialize["include"] = o.Include
 	toSerialize["name"] = o.Name
 	toSerialize["source"] = o.Source
@@ -186,7 +192,7 @@ func (o ObservabilityPipelineCustomProcessorRemap) MarshalJSON() ([]byte, error)
 func (o *ObservabilityPipelineCustomProcessorRemap) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		DropOnError *bool   `json:"drop_on_error"`
-		Enabled     *bool   `json:"enabled"`
+		Enabled     *bool   `json:"enabled,omitempty"`
 		Include     *string `json:"include"`
 		Name        *string `json:"name"`
 		Source      *string `json:"source"`
@@ -196,9 +202,6 @@ func (o *ObservabilityPipelineCustomProcessorRemap) UnmarshalJSON(bytes []byte) 
 	}
 	if all.DropOnError == nil {
 		return fmt.Errorf("required field drop_on_error missing")
-	}
-	if all.Enabled == nil {
-		return fmt.Errorf("required field enabled missing")
 	}
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
@@ -216,7 +219,7 @@ func (o *ObservabilityPipelineCustomProcessorRemap) UnmarshalJSON(bytes []byte) 
 		return err
 	}
 	o.DropOnError = *all.DropOnError
-	o.Enabled = *all.Enabled
+	o.Enabled = all.Enabled
 	o.Include = *all.Include
 	o.Name = *all.Name
 	o.Source = *all.Source

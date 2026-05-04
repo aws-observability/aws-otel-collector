@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequest
+// ScaRequest The top-level request object for submitting a Software Composition Analysis (SCA) scan result.
 type ScaRequest struct {
-	//
+	// The data object in an SCA request, containing the dependency graph attributes and request type.
 	Data *ScaRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

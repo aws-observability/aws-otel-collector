@@ -5,8 +5,6 @@ package host
 
 import (
 	"context"
-	"errors"
-	"strconv"
 	"strings"
 
 	"github.com/shirou/gopsutil/v4/internal/common"
@@ -27,97 +25,13 @@ func HostIDWithContext(ctx context.Context) (string, error) {
 	return strings.Split(string(out), "\n")[0], nil
 }
 
-func numProcs(_ context.Context) (uint64, error) {
-	return 0, common.ErrNotImplementedError
-}
-
 func BootTimeWithContext(ctx context.Context) (btime uint64, err error) {
-	ut, err := UptimeWithContext(ctx)
-	if err != nil {
-		return 0, err
-	}
-
-	if ut <= 0 {
-		return 0, errors.New("uptime was not set, so cannot calculate boot time from it")
-	}
-
-	ut *= 60
-	return timeSince(ut), nil
+	return common.BootTimeWithContext(ctx, invoke)
 }
 
-// Parses result from uptime into minutes
-// Some examples of uptime output that this command handles:
-// 11:54AM   up 13 mins,  1 user,  load average: 2.78, 2.62, 1.79
-// 12:41PM   up 1 hr,  1 user,  load average: 2.47, 2.85, 2.83
-// 07:43PM   up 5 hrs,  1 user,  load average: 3.27, 2.91, 2.72
-// 11:18:23  up 83 days, 18:29,  4 users,  load average: 0.16, 0.03, 0.01
-// 08:47PM   up 2 days, 20 hrs, 1 user, load average: 2.47, 2.17, 2.17
-// 01:16AM   up 4 days, 29 mins,  1 user,  load average: 2.29, 2.31, 2.21
+// Uses ps to get the elapsed time for PID 1 in DAYS-HOURS:MINUTES:SECONDS format.
 func UptimeWithContext(ctx context.Context) (uint64, error) {
-	out, err := invoke.CommandWithContext(ctx, "uptime")
-	if err != nil {
-		return 0, err
-	}
-
-	return parseUptime(string(out)), nil
-}
-
-func parseUptime(uptime string) uint64 {
-	ut := strings.Fields(uptime)
-	var days, hours, mins uint64
-	var err error
-
-	switch ut[3] {
-	case "day,", "days,":
-		days, err = strconv.ParseUint(ut[2], 10, 64)
-		if err != nil {
-			return 0
-		}
-
-		// day provided along with a single hour or hours
-		// ie: up 2 days, 20 hrs,
-		if ut[5] == "hr," || ut[5] == "hrs," {
-			hours, err = strconv.ParseUint(ut[4], 10, 64)
-			if err != nil {
-				return 0
-			}
-		}
-
-		// mins provided along with a single min or mins
-		// ie: up 4 days, 29 mins,
-		if ut[5] == "min," || ut[5] == "mins," {
-			mins, err = strconv.ParseUint(ut[4], 10, 64)
-			if err != nil {
-				return 0
-			}
-		}
-
-		// alternatively day provided with hh:mm
-		// ie: up 83 days, 18:29
-		if strings.Contains(ut[4], ":") {
-			hm := strings.Split(ut[4], ":")
-			hours, err = strconv.ParseUint(hm[0], 10, 64)
-			if err != nil {
-				return 0
-			}
-			mins, err = strconv.ParseUint(strings.Trim(hm[1], ","), 10, 64)
-			if err != nil {
-				return 0
-			}
-		}
-	case "hr,", "hrs,":
-		hours, err = strconv.ParseUint(ut[2], 10, 64)
-		if err != nil {
-			return 0
-		}
-	case "min,", "mins,":
-		mins, err = strconv.ParseUint(ut[2], 10, 64)
-		if err != nil {
-			return 0
-		}
-	}
-
-	return (days * 24 * 60) + (hours * 60) + mins
+	return common.UptimeWithContext(ctx, invoke)
 }
 
 // This is a weak implementation due to the limitations on retrieving this data in AIX
@@ -135,20 +49,19 @@ func UsersWithContext(ctx context.Context) ([]UserStat, error) {
 	hf := strings.Fields(lines[1]) // headers
 	for l := 2; l < len(lines); l++ {
 		v := strings.Fields(lines[l]) // values
+		if len(v) == 0 || v[0] == "-" {
+			continue
+		}
 		us := &UserStat{}
 		for i, header := range hf {
-			// We're done in any of these use cases
-			if i >= len(v) || v[0] == "-" {
+			if i >= len(v) {
 				break
 			}
-
-			if t, err := strconv.ParseFloat(v[i], 64); err == nil {
-				switch header {
-				case `User`:
-					us.User = strconv.FormatFloat(t, 'f', 1, 64)
-				case `tty`:
-					us.Terminal = strconv.FormatFloat(t, 'f', 1, 64)
-				}
+			switch header {
+			case "User":
+				us.User = v[i]
+			case "tty":
+				us.Terminal = v[i]
 			}
 		}
 

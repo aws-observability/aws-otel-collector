@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FleetAgentsResponseDataAttributes
+// FleetAgentsResponseDataAttributes Attributes of the fleet agents response containing the list of agents.
 type FleetAgentsResponseDataAttributes struct {
 	// Array of agents matching the query criteria.
 	Agents []FleetAgentAttributes `json:"agents,omitempty"`

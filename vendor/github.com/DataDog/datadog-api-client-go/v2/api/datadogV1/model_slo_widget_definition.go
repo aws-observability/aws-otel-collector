@@ -10,10 +10,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SLOWidgetDefinition Use the SLO and uptime widget to track your SLOs (Service Level Objectives) and uptime on screenboards and timeboards.
+// SLOWidgetDefinition Use the SLO and uptime widget to track your SLOs (Service Level Objectives) and uptime on dashboards.
 type SLOWidgetDefinition struct {
 	// Additional filters applied to the SLO query.
 	AdditionalQueryFilters *string `json:"additional_query_filters,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Defined global time target.
 	GlobalTimeTarget *string `json:"global_time_target,omitempty"`
 	// Defined error budget.
@@ -88,6 +90,34 @@ func (o *SLOWidgetDefinition) HasAdditionalQueryFilters() bool {
 // SetAdditionalQueryFilters gets a reference to the given string and assigns it to the AdditionalQueryFilters field.
 func (o *SLOWidgetDefinition) SetAdditionalQueryFilters(v string) {
 	o.AdditionalQueryFilters = &v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *SLOWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SLOWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *SLOWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *SLOWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetGlobalTimeTarget returns the GlobalTimeTarget field value if set, zero value otherwise.
@@ -369,6 +399,9 @@ func (o SLOWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.AdditionalQueryFilters != nil {
 		toSerialize["additional_query_filters"] = o.AdditionalQueryFilters
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.GlobalTimeTarget != nil {
 		toSerialize["global_time_target"] = o.GlobalTimeTarget
 	}
@@ -406,6 +439,7 @@ func (o SLOWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *SLOWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		AdditionalQueryFilters *string                  `json:"additional_query_filters,omitempty"`
+		Description            *string                  `json:"description,omitempty"`
 		GlobalTimeTarget       *string                  `json:"global_time_target,omitempty"`
 		ShowErrorBudget        *bool                    `json:"show_error_budget,omitempty"`
 		SloId                  *string                  `json:"slo_id,omitempty"`
@@ -428,13 +462,14 @@ func (o *SLOWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "global_time_target", "show_error_budget", "slo_id", "time_windows", "title", "title_align", "title_size", "type", "view_mode", "view_type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "description", "global_time_target", "show_error_budget", "slo_id", "time_windows", "title", "title_align", "title_size", "type", "view_mode", "view_type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.AdditionalQueryFilters = all.AdditionalQueryFilters
+	o.Description = all.Description
 	o.GlobalTimeTarget = all.GlobalTimeTarget
 	o.ShowErrorBudget = all.ShowErrorBudget
 	o.SloId = all.SloId

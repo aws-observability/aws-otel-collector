@@ -75,6 +75,10 @@ type Builder interface {
 }
 
 // SyslogMessage represents a RFC5424 syslog message.
+//
+// A SyslogMessage is not safe for concurrent use by multiple goroutines.
+// Callers that need to build or mutate messages from multiple goroutines
+// should use a separate SyslogMessage per goroutine, or provide their own synchronization.
 type SyslogMessage struct {
 	syslog.Base
 

@@ -11,10 +11,14 @@ import (
 )
 
 // ObservabilityPipelineAmazonOpenSearchDestination The `amazon_opensearch` destination writes logs to Amazon OpenSearch.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineAmazonOpenSearchDestination struct {
 	// Authentication settings for the Amazon OpenSearch destination.
 	// The `strategy` field determines whether basic or AWS-based authentication is used.
 	Auth ObservabilityPipelineAmazonOpenSearchDestinationAuth `json:"auth"`
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// The index to write logs to.
 	BulkIndex *string `json:"bulk_index,omitempty"`
 	// The unique identifier for this component.
@@ -72,6 +76,34 @@ func (o *ObservabilityPipelineAmazonOpenSearchDestination) GetAuthOk() (*Observa
 // SetAuth sets field value.
 func (o *ObservabilityPipelineAmazonOpenSearchDestination) SetAuth(v ObservabilityPipelineAmazonOpenSearchDestinationAuth) {
 	o.Auth = v
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineAmazonOpenSearchDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineAmazonOpenSearchDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineAmazonOpenSearchDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineAmazonOpenSearchDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetBulkIndex returns the BulkIndex field value if set, zero value otherwise.
@@ -178,6 +210,9 @@ func (o ObservabilityPipelineAmazonOpenSearchDestination) MarshalJSON() ([]byte,
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["auth"] = o.Auth
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	if o.BulkIndex != nil {
 		toSerialize["bulk_index"] = o.BulkIndex
 	}
@@ -195,6 +230,7 @@ func (o ObservabilityPipelineAmazonOpenSearchDestination) MarshalJSON() ([]byte,
 func (o *ObservabilityPipelineAmazonOpenSearchDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Auth      *ObservabilityPipelineAmazonOpenSearchDestinationAuth `json:"auth"`
+		Buffer    *ObservabilityPipelineBufferOptions                   `json:"buffer,omitempty"`
 		BulkIndex *string                                               `json:"bulk_index,omitempty"`
 		Id        *string                                               `json:"id"`
 		Inputs    *[]string                                             `json:"inputs"`
@@ -217,7 +253,7 @@ func (o *ObservabilityPipelineAmazonOpenSearchDestination) UnmarshalJSON(bytes [
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"auth", "bulk_index", "id", "inputs", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"auth", "buffer", "bulk_index", "id", "inputs", "type"})
 	} else {
 		return err
 	}
@@ -227,6 +263,7 @@ func (o *ObservabilityPipelineAmazonOpenSearchDestination) UnmarshalJSON(bytes [
 		hasInvalidField = true
 	}
 	o.Auth = *all.Auth
+	o.Buffer = all.Buffer
 	o.BulkIndex = all.BulkIndex
 	o.Id = *all.Id
 	o.Inputs = *all.Inputs

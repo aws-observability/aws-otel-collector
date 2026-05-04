@@ -16,7 +16,7 @@ type MonitorNotificationRuleResponseAttributes struct {
 	ConditionalRecipients *MonitorNotificationRuleConditionalRecipients `json:"conditional_recipients,omitempty"`
 	// Creation time of the monitor notification rule.
 	Created *time.Time `json:"created,omitempty"`
-	// Filter used to associate the notification rule with monitors.
+	// Specifies the matching criteria for monitor notifications.
 	Filter *MonitorNotificationRuleFilter `json:"filter,omitempty"`
 	// Time the monitor notification rule was last modified.
 	Modified *time.Time `json:"modified,omitempty"`

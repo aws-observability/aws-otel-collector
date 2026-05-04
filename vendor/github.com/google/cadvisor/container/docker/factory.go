@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build linux
+
 package docker
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"regexp"
@@ -24,10 +27,12 @@ import (
 	"time"
 
 	"github.com/blang/semver/v4"
-	dockersystem "github.com/docker/docker/api/types/system"
-	"github.com/google/cadvisor/container/containerd"
+	dockersystem "github.com/moby/moby/api/types/system"
+	dclient "github.com/moby/moby/client"
+	"k8s.io/klog/v2"
 
 	"github.com/google/cadvisor/container"
+	"github.com/google/cadvisor/container/containerd"
 	dockerutil "github.com/google/cadvisor/container/docker/utils"
 	"github.com/google/cadvisor/container/libcontainer"
 	"github.com/google/cadvisor/devicemapper"
@@ -36,10 +41,6 @@ import (
 	"github.com/google/cadvisor/machine"
 	"github.com/google/cadvisor/watcher"
 	"github.com/google/cadvisor/zfs"
-
-	docker "github.com/docker/docker/client"
-	"golang.org/x/net/context"
-	"k8s.io/klog/v2"
 )
 
 var ArgDockerEndpoint = flag.String("docker", "unix:///var/run/docker.sock", "docker endpoint")
@@ -110,7 +111,7 @@ type dockerFactory struct {
 	storageDriver StorageDriver
 	storageDir    string
 
-	client           *docker.Client
+	client           *dclient.Client
 	containerdClient containerd.ContainerdClient
 
 	// Information about the mounted cgroup subsystems.
@@ -148,7 +149,7 @@ func (f *dockerFactory) NewContainerHandler(name string, metadataEnvAllowList []
 		dockerMetadataEnvAllowList = metadataEnvAllowList
 	}
 
-	handler, err = newDockerContainerHandler(
+	handler, err = newContainerHandler(
 		client,
 		f.containerdClient,
 		name,
@@ -179,8 +180,8 @@ func (f *dockerFactory) CanHandleAndAccept(name string) (bool, bool, error) {
 	id := dockerutil.ContainerNameToId(name)
 
 	// We assume that if Inspect fails then the container is not known to docker.
-	ctnr, err := f.client.ContainerInspect(context.Background(), id)
-	if err != nil || !ctnr.State.Running {
+	res, err := f.client.ContainerInspect(context.Background(), id, dclient.ContainerInspectOptions{})
+	if err != nil || !res.Container.State.Running {
 		return false, true, fmt.Errorf("error inspecting container: %v", err)
 	}
 
@@ -329,9 +330,10 @@ func Register(factory info.MachineInfoFactory, fsInfo fs.FsInfo, includedMetrics
 	}
 
 	var (
-		thinPoolWatcher *devicemapper.ThinPoolWatcher
-		thinPoolName    string
-		zfsWatcher      *zfs.ZfsWatcher
+		thinPoolWatcher  *devicemapper.ThinPoolWatcher
+		thinPoolName     string
+		zfsWatcher       *zfs.ZfsWatcher
+		containerdClient containerd.ContainerdClient
 	)
 	if includedMetrics.Has(container.DiskUsageMetrics) {
 		if StorageDriver(dockerInfo.Driver) == DevicemapperStorageDriver {
@@ -353,9 +355,11 @@ func Register(factory info.MachineInfoFactory, fsInfo fs.FsInfo, includedMetrics
 		}
 	}
 
-	containerdClient, err := containerd.Client(*containerd.ArgContainerdEndpoint, "moby")
-	if err != nil {
-		return fmt.Errorf("unable to create containerd client: %v", err)
+	if StorageDriver(dockerInfo.Driver) == ContainerdSnapshotterStorageDriver {
+		containerdClient, err = containerd.Client(*containerd.ArgContainerdEndpoint, "moby")
+		if err != nil {
+			return fmt.Errorf("unable to create containerd client: %v", err)
+		}
 	}
 
 	klog.V(1).Infof("Registering Docker factory")

@@ -196,7 +196,7 @@ func (a *ContainerImagesApi) ListContainerImagesWithPagination(ctx _context.Cont
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()

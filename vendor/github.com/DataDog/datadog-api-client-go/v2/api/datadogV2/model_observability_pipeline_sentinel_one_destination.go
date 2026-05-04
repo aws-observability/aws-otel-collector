@@ -11,13 +11,19 @@ import (
 )
 
 // ObservabilityPipelineSentinelOneDestination The `sentinel_one` destination sends logs to SentinelOne.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineSentinelOneDestination struct {
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// The unique identifier for this component.
 	Id string `json:"id"`
 	// A list of component IDs whose output is used as the `input` for this component.
 	Inputs []string `json:"inputs"`
 	// The SentinelOne region to send logs to.
 	Region ObservabilityPipelineSentinelOneDestinationRegion `json:"region"`
+	// Name of the environment variable or secret that holds the SentinelOne API token.
+	TokenKey *string `json:"token_key,omitempty"`
 	// The destination type. The value should always be `sentinel_one`.
 	Type ObservabilityPipelineSentinelOneDestinationType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -46,6 +52,34 @@ func NewObservabilityPipelineSentinelOneDestinationWithDefaults() *Observability
 	var typeVar ObservabilityPipelineSentinelOneDestinationType = OBSERVABILITYPIPELINESENTINELONEDESTINATIONTYPE_SENTINEL_ONE
 	this.Type = typeVar
 	return &this
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSentinelOneDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSentinelOneDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSentinelOneDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineSentinelOneDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetId returns the Id field value.
@@ -117,6 +151,34 @@ func (o *ObservabilityPipelineSentinelOneDestination) SetRegion(v ObservabilityP
 	o.Region = v
 }
 
+// GetTokenKey returns the TokenKey field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSentinelOneDestination) GetTokenKey() string {
+	if o == nil || o.TokenKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.TokenKey
+}
+
+// GetTokenKeyOk returns a tuple with the TokenKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSentinelOneDestination) GetTokenKeyOk() (*string, bool) {
+	if o == nil || o.TokenKey == nil {
+		return nil, false
+	}
+	return o.TokenKey, true
+}
+
+// HasTokenKey returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSentinelOneDestination) HasTokenKey() bool {
+	return o != nil && o.TokenKey != nil
+}
+
+// SetTokenKey gets a reference to the given string and assigns it to the TokenKey field.
+func (o *ObservabilityPipelineSentinelOneDestination) SetTokenKey(v string) {
+	o.TokenKey = &v
+}
+
 // GetType returns the Type field value.
 func (o *ObservabilityPipelineSentinelOneDestination) GetType() ObservabilityPipelineSentinelOneDestinationType {
 	if o == nil {
@@ -146,9 +208,15 @@ func (o ObservabilityPipelineSentinelOneDestination) MarshalJSON() ([]byte, erro
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	toSerialize["id"] = o.Id
 	toSerialize["inputs"] = o.Inputs
 	toSerialize["region"] = o.Region
+	if o.TokenKey != nil {
+		toSerialize["token_key"] = o.TokenKey
+	}
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -160,10 +228,12 @@ func (o ObservabilityPipelineSentinelOneDestination) MarshalJSON() ([]byte, erro
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineSentinelOneDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id     *string                                            `json:"id"`
-		Inputs *[]string                                          `json:"inputs"`
-		Region *ObservabilityPipelineSentinelOneDestinationRegion `json:"region"`
-		Type   *ObservabilityPipelineSentinelOneDestinationType   `json:"type"`
+		Buffer   *ObservabilityPipelineBufferOptions                `json:"buffer,omitempty"`
+		Id       *string                                            `json:"id"`
+		Inputs   *[]string                                          `json:"inputs"`
+		Region   *ObservabilityPipelineSentinelOneDestinationRegion `json:"region"`
+		TokenKey *string                                            `json:"token_key,omitempty"`
+		Type     *ObservabilityPipelineSentinelOneDestinationType   `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -182,12 +252,13 @@ func (o *ObservabilityPipelineSentinelOneDestination) UnmarshalJSON(bytes []byte
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "inputs", "region", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"buffer", "id", "inputs", "region", "token_key", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Buffer = all.Buffer
 	o.Id = *all.Id
 	o.Inputs = *all.Inputs
 	if !all.Region.IsValid() {
@@ -195,6 +266,7 @@ func (o *ObservabilityPipelineSentinelOneDestination) UnmarshalJSON(bytes []byte
 	} else {
 		o.Region = *all.Region
 	}
+	o.TokenKey = all.TokenKey
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

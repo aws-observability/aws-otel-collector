@@ -41,7 +41,7 @@ type FirewallCreateOptions struct {
 	Label   string                 `json:"label,omitempty"`
 	Rules   FirewallRuleSet        `json:"rules"`
 	Tags    []string               `json:"tags,omitempty"`
-	Devices DevicesCreationOptions `json:"devices,omitempty"`
+	Devices DevicesCreationOptions `json:"devices,omitzero"`
 }
 
 // FirewallUpdateOptions is an options struct used when Updating a Firewall

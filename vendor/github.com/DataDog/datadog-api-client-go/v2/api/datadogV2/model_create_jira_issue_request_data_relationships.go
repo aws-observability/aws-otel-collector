@@ -12,8 +12,10 @@ import (
 
 // CreateJiraIssueRequestDataRelationships Relationships of the Jira issue to create.
 type CreateJiraIssueRequestDataRelationships struct {
-	// Case linked to the Jira issue.
-	Case CreateJiraIssueRequestDataRelationshipsCase `json:"case"`
+	// A list of security findings.
+	Findings Findings `json:"findings"`
+	// Case management project.
+	Project CaseManagementProject `json:"project"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,9 +25,10 @@ type CreateJiraIssueRequestDataRelationships struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCreateJiraIssueRequestDataRelationships(caseVar CreateJiraIssueRequestDataRelationshipsCase) *CreateJiraIssueRequestDataRelationships {
+func NewCreateJiraIssueRequestDataRelationships(findings Findings, project CaseManagementProject) *CreateJiraIssueRequestDataRelationships {
 	this := CreateJiraIssueRequestDataRelationships{}
-	this.Case = caseVar
+	this.Findings = findings
+	this.Project = project
 	return &this
 }
 
@@ -37,27 +40,50 @@ func NewCreateJiraIssueRequestDataRelationshipsWithDefaults() *CreateJiraIssueRe
 	return &this
 }
 
-// GetCase returns the Case field value.
-func (o *CreateJiraIssueRequestDataRelationships) GetCase() CreateJiraIssueRequestDataRelationshipsCase {
+// GetFindings returns the Findings field value.
+func (o *CreateJiraIssueRequestDataRelationships) GetFindings() Findings {
 	if o == nil {
-		var ret CreateJiraIssueRequestDataRelationshipsCase
+		var ret Findings
 		return ret
 	}
-	return o.Case
+	return o.Findings
 }
 
-// GetCaseOk returns a tuple with the Case field value
+// GetFindingsOk returns a tuple with the Findings field value
 // and a boolean to check if the value has been set.
-func (o *CreateJiraIssueRequestDataRelationships) GetCaseOk() (*CreateJiraIssueRequestDataRelationshipsCase, bool) {
+func (o *CreateJiraIssueRequestDataRelationships) GetFindingsOk() (*Findings, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Case, true
+	return &o.Findings, true
 }
 
-// SetCase sets field value.
-func (o *CreateJiraIssueRequestDataRelationships) SetCase(v CreateJiraIssueRequestDataRelationshipsCase) {
-	o.Case = v
+// SetFindings sets field value.
+func (o *CreateJiraIssueRequestDataRelationships) SetFindings(v Findings) {
+	o.Findings = v
+}
+
+// GetProject returns the Project field value.
+func (o *CreateJiraIssueRequestDataRelationships) GetProject() CaseManagementProject {
+	if o == nil {
+		var ret CaseManagementProject
+		return ret
+	}
+	return o.Project
+}
+
+// GetProjectOk returns a tuple with the Project field value
+// and a boolean to check if the value has been set.
+func (o *CreateJiraIssueRequestDataRelationships) GetProjectOk() (*CaseManagementProject, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Project, true
+}
+
+// SetProject sets field value.
+func (o *CreateJiraIssueRequestDataRelationships) SetProject(v CaseManagementProject) {
+	o.Project = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -66,7 +92,8 @@ func (o CreateJiraIssueRequestDataRelationships) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	toSerialize["case"] = o.Case
+	toSerialize["findings"] = o.Findings
+	toSerialize["project"] = o.Project
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -77,26 +104,34 @@ func (o CreateJiraIssueRequestDataRelationships) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CreateJiraIssueRequestDataRelationships) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Case *CreateJiraIssueRequestDataRelationshipsCase `json:"case"`
+		Findings *Findings              `json:"findings"`
+		Project  *CaseManagementProject `json:"project"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
-	if all.Case == nil {
-		return fmt.Errorf("required field case missing")
+	if all.Findings == nil {
+		return fmt.Errorf("required field findings missing")
+	}
+	if all.Project == nil {
+		return fmt.Errorf("required field project missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"case"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"findings", "project"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
-	if all.Case.UnparsedObject != nil && o.UnparsedObject == nil {
+	if all.Findings.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
-	o.Case = *all.Case
+	o.Findings = *all.Findings
+	if all.Project.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Project = *all.Project
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

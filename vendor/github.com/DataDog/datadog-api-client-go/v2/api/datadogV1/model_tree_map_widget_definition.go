@@ -17,6 +17,8 @@ type TreeMapWidgetDefinition struct {
 	ColorBy *TreeMapColorBy `json:"color_by,omitempty"`
 	// List of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// (deprecated) The attribute formerly used to group elements in the widget.
 	// Deprecated
 	GroupBy *TreeMapGroupBy `json:"group_by,omitempty"`
@@ -118,6 +120,34 @@ func (o *TreeMapWidgetDefinition) HasCustomLinks() bool {
 // SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
 func (o *TreeMapWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *TreeMapWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TreeMapWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *TreeMapWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *TreeMapWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetGroupBy returns the GroupBy field value if set, zero value otherwise.
@@ -296,6 +326,9 @@ func (o TreeMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.GroupBy != nil {
 		toSerialize["group_by"] = o.GroupBy
 	}
@@ -322,6 +355,7 @@ func (o *TreeMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		ColorBy     *TreeMapColorBy              `json:"color_by,omitempty"`
 		CustomLinks []WidgetCustomLink           `json:"custom_links,omitempty"`
+		Description *string                      `json:"description,omitempty"`
 		GroupBy     *TreeMapGroupBy              `json:"group_by,omitempty"`
 		Requests    *[]TreeMapWidgetRequest      `json:"requests"`
 		SizeBy      *TreeMapSizeBy               `json:"size_by,omitempty"`
@@ -340,7 +374,7 @@ func (o *TreeMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"color_by", "custom_links", "group_by", "requests", "size_by", "time", "title", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"color_by", "custom_links", "description", "group_by", "requests", "size_by", "time", "title", "type"})
 	} else {
 		return err
 	}
@@ -352,6 +386,7 @@ func (o *TreeMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.ColorBy = all.ColorBy
 	}
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	if all.GroupBy != nil && !all.GroupBy.IsValid() {
 		hasInvalidField = true
 	} else {

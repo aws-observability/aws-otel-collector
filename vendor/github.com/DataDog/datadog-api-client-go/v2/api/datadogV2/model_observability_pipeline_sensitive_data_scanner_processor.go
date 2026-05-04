@@ -11,13 +11,17 @@ import (
 )
 
 // ObservabilityPipelineSensitiveDataScannerProcessor The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineSensitiveDataScannerProcessor struct {
-	// The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
+	Enabled bool `json:"enabled"`
+	// The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the `input` to downstream components).
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the `input` for this component.
-	Inputs []string `json:"inputs"`
 	// A list of rules for identifying and acting on sensitive data patterns.
 	Rules []ObservabilityPipelineSensitiveDataScannerProcessorRule `json:"rules"`
 	// The processor type. The value should always be `sensitive_data_scanner`.
@@ -31,11 +35,11 @@ type ObservabilityPipelineSensitiveDataScannerProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineSensitiveDataScannerProcessor(id string, include string, inputs []string, rules []ObservabilityPipelineSensitiveDataScannerProcessorRule, typeVar ObservabilityPipelineSensitiveDataScannerProcessorType) *ObservabilityPipelineSensitiveDataScannerProcessor {
+func NewObservabilityPipelineSensitiveDataScannerProcessor(enabled bool, id string, include string, rules []ObservabilityPipelineSensitiveDataScannerProcessorRule, typeVar ObservabilityPipelineSensitiveDataScannerProcessorType) *ObservabilityPipelineSensitiveDataScannerProcessor {
 	this := ObservabilityPipelineSensitiveDataScannerProcessor{}
+	this.Enabled = enabled
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Rules = rules
 	this.Type = typeVar
 	return &this
@@ -49,6 +53,57 @@ func NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults() *Observ
 	var typeVar ObservabilityPipelineSensitiveDataScannerProcessorType = OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORTYPE_SENSITIVE_DATA_SCANNER
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetId returns the Id field value.
@@ -95,29 +150,6 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetIncludeOk() (*st
 // SetInclude sets field value.
 func (o *ObservabilityPipelineSensitiveDataScannerProcessor) SetInclude(v string) {
 	o.Include = v
-}
-
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineSensitiveDataScannerProcessor) SetInputs(v []string) {
-	o.Inputs = v
 }
 
 // GetRules returns the Rules field value.
@@ -172,9 +204,12 @@ func (o ObservabilityPipelineSensitiveDataScannerProcessor) MarshalJSON() ([]byt
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["rules"] = o.Rules
 	toSerialize["type"] = o.Type
 
@@ -187,23 +222,24 @@ func (o ObservabilityPipelineSensitiveDataScannerProcessor) MarshalJSON() ([]byt
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineSensitiveDataScannerProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id      *string                                                   `json:"id"`
-		Include *string                                                   `json:"include"`
-		Inputs  *[]string                                                 `json:"inputs"`
-		Rules   *[]ObservabilityPipelineSensitiveDataScannerProcessorRule `json:"rules"`
-		Type    *ObservabilityPipelineSensitiveDataScannerProcessorType   `json:"type"`
+		DisplayName *string                                                   `json:"display_name,omitempty"`
+		Enabled     *bool                                                     `json:"enabled"`
+		Id          *string                                                   `json:"id"`
+		Include     *string                                                   `json:"include"`
+		Rules       *[]ObservabilityPipelineSensitiveDataScannerProcessorRule `json:"rules"`
+		Type        *ObservabilityPipelineSensitiveDataScannerProcessorType   `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
 	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
 	}
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
-	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
 	}
 	if all.Rules == nil {
 		return fmt.Errorf("required field rules missing")
@@ -213,15 +249,16 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessor) UnmarshalJSON(bytes
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "include", "inputs", "rules", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "id", "include", "rules", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
+	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	o.Rules = *all.Rules
 	if !all.Type.IsValid() {
 		hasInvalidField = true

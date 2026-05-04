@@ -35,7 +35,6 @@ type AccountSettings struct {
 	InterfacesForNewLinodes InterfacesForNewLinodes `json:"interfaces_for_new_linodes"`
 
 	// The slug of the maintenance policy associated with the account.
-	// NOTE: MaintenancePolicy can only be used with v4beta.
 	MaintenancePolicy string `json:"maintenance_policy"`
 }
 
@@ -52,7 +51,6 @@ type AccountSettingsUpdateOptions struct {
 	InterfacesForNewLinodes *InterfacesForNewLinodes `json:"interfaces_for_new_linodes"`
 
 	// The slug of the maintenance policy to set the account to.
-	// NOTE: MaintenancePolicy can only be used with v4beta.
 	MaintenancePolicy *string `json:"maintenance_policy,omitempty"`
 }
 

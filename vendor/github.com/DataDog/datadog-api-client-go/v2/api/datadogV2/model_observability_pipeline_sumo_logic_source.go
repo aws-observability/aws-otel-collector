@@ -11,8 +11,12 @@ import (
 )
 
 // ObservabilityPipelineSumoLogicSource The `sumo_logic` source receives logs from Sumo Logic collectors.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineSumoLogicSource struct {
-	// The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+	// Name of the environment variable or secret that holds the listen address for the Sumo Logic receiver.
+	AddressKey *string `json:"address_key,omitempty"`
+	// The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the `input` to downstream components).
 	Id string `json:"id"`
 	// The source type. The value should always be `sumo_logic`.
 	Type ObservabilityPipelineSumoLogicSourceType `json:"type"`
@@ -40,6 +44,34 @@ func NewObservabilityPipelineSumoLogicSourceWithDefaults() *ObservabilityPipelin
 	var typeVar ObservabilityPipelineSumoLogicSourceType = OBSERVABILITYPIPELINESUMOLOGICSOURCETYPE_SUMO_LOGIC
 	this.Type = typeVar
 	return &this
+}
+
+// GetAddressKey returns the AddressKey field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSumoLogicSource) GetAddressKey() string {
+	if o == nil || o.AddressKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.AddressKey
+}
+
+// GetAddressKeyOk returns a tuple with the AddressKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSumoLogicSource) GetAddressKeyOk() (*string, bool) {
+	if o == nil || o.AddressKey == nil {
+		return nil, false
+	}
+	return o.AddressKey, true
+}
+
+// HasAddressKey returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSumoLogicSource) HasAddressKey() bool {
+	return o != nil && o.AddressKey != nil
+}
+
+// SetAddressKey gets a reference to the given string and assigns it to the AddressKey field.
+func (o *ObservabilityPipelineSumoLogicSource) SetAddressKey(v string) {
+	o.AddressKey = &v
 }
 
 // GetId returns the Id field value.
@@ -94,6 +126,9 @@ func (o ObservabilityPipelineSumoLogicSource) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AddressKey != nil {
+		toSerialize["address_key"] = o.AddressKey
+	}
 	toSerialize["id"] = o.Id
 	toSerialize["type"] = o.Type
 
@@ -106,8 +141,9 @@ func (o ObservabilityPipelineSumoLogicSource) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineSumoLogicSource) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string                                   `json:"id"`
-		Type *ObservabilityPipelineSumoLogicSourceType `json:"type"`
+		AddressKey *string                                   `json:"address_key,omitempty"`
+		Id         *string                                   `json:"id"`
+		Type       *ObservabilityPipelineSumoLogicSourceType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -120,12 +156,13 @@ func (o *ObservabilityPipelineSumoLogicSource) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"address_key", "id", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AddressKey = all.AddressKey
 	o.Id = *all.Id
 	if !all.Type.IsValid() {
 		hasInvalidField = true

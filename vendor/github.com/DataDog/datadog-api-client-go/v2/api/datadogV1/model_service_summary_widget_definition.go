@@ -10,8 +10,10 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ServiceSummaryWidgetDefinition The service summary displays the graphs of a chosen service in your screenboard. Only available on FREE layout dashboards.
+// ServiceSummaryWidgetDefinition The service summary displays the graphs of a chosen service in your dashboard.
 type ServiceSummaryWidgetDefinition struct {
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Number of columns to display.
 	DisplayFormat *WidgetServiceSummaryDisplayFormat `json:"display_format,omitempty"`
 	// APM environment.
@@ -70,6 +72,34 @@ func NewServiceSummaryWidgetDefinitionWithDefaults() *ServiceSummaryWidgetDefini
 	var typeVar ServiceSummaryWidgetDefinitionType = SERVICESUMMARYWIDGETDEFINITIONTYPE_TRACE_SERVICE
 	this.Type = typeVar
 	return &this
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *ServiceSummaryWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceSummaryWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *ServiceSummaryWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *ServiceSummaryWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetDisplayFormat returns the DisplayFormat field value if set, zero value otherwise.
@@ -506,6 +536,9 @@ func (o ServiceSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.DisplayFormat != nil {
 		toSerialize["display_format"] = o.DisplayFormat
 	}
@@ -556,6 +589,7 @@ func (o ServiceSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Description      *string                             `json:"description,omitempty"`
 		DisplayFormat    *WidgetServiceSummaryDisplayFormat  `json:"display_format,omitempty"`
 		Env              *string                             `json:"env"`
 		Service          *string                             `json:"service"`
@@ -590,12 +624,13 @@ func (o *ServiceSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"display_format", "env", "service", "show_breakdown", "show_distribution", "show_errors", "show_hits", "show_latency", "show_resource_list", "size_format", "span_name", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "display_format", "env", "service", "show_breakdown", "show_distribution", "show_errors", "show_hits", "show_latency", "show_resource_list", "size_format", "span_name", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Description = all.Description
 	if all.DisplayFormat != nil && !all.DisplayFormat.IsValid() {
 		hasInvalidField = true
 	} else {

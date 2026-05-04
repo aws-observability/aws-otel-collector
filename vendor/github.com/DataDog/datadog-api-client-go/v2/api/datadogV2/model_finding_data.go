@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FindingData
+// FindingData Data object representing a security finding.
 type FindingData struct {
-	// The unique identifier of the security finding.
+	// Unique identifier of the security finding.
 	Id string `json:"id"`
 	// Security findings resource type.
 	Type FindingDataType `json:"type"`

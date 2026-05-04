@@ -98,6 +98,12 @@ type PutAccountSettingInput struct {
 	//   Fargate task. For information about the Fargate tasks maintenance, see [Amazon Web Services Fargate task maintenance]in the
 	//   Amazon ECS Developer Guide.
 	//
+	//   - fargateEventWindows - When Amazon Web Services determines that a security or
+	//   infrastructure update is needed for an Amazon ECS task hosted on Fargate, the
+	//   tasks need to be stopped and new tasks launched to replace them. Use
+	//   fargateEventWindows to use EC2 Event Windows associated with Fargate tasks to
+	//   configure time windows for task retirement.
+	//
 	//   - tagResourceAuthorization - Amazon ECS is introducing tagging authorization
 	//   for resource creation. Users must have permissions for actions that create the
 	//   resource, such as ecsCreateCluster . If tags are specified when you create a
@@ -221,7 +227,7 @@ func (c *Client) addOperationPutAccountSettingMiddlewares(stack *middleware.Stac
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -243,9 +249,6 @@ func (c *Client) addOperationPutAccountSettingMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {

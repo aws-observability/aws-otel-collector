@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryEventFilteredUsersRequest
+// QueryEventFilteredUsersRequest Request body for querying users filtered by user properties combined with event platform activity.
 type QueryEventFilteredUsersRequest struct {
-	//
+	// The data object containing the resource type and attributes for querying event-filtered users.
 	Data *QueryEventFilteredUsersRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

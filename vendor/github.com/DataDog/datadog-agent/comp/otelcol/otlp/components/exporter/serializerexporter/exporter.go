@@ -75,7 +75,7 @@ func (f SourceProviderFunc) Source(ctx context.Context) (source.Source, error) {
 // Exporter translate OTLP metrics into the Datadog format and sends
 // them to the agent serializer.
 type Exporter struct {
-	tr                *metrics.Translator
+	tr                metrics.Provider
 	s                 serializer.MetricSerializer
 	hostGetter        SourceProviderFunc
 	extraTags         []string
@@ -87,6 +87,7 @@ type Exporter struct {
 	gatewayUsage      otel.GatewayUsage
 	coatUsageMetric   telemetry.Gauge
 	coatGWUsageMetric telemetry.Gauge
+	ipath             ingestionPath
 }
 
 // TODO: expose the same function in OSS exporter and remove this
@@ -97,7 +98,7 @@ func translatorFromConfig(
 	hostGetter SourceProviderFunc,
 	statsIn chan []byte,
 	extraOptions ...metrics.TranslatorOption,
-) (*metrics.Translator, error) {
+) (metrics.Provider, error) {
 	histogramMode := metrics.HistogramMode(cfg.HistConfig.Mode)
 	switch histogramMode {
 	case metrics.HistogramModeCounters, metrics.HistogramModeNoBuckets, metrics.HistogramModeDistributions:
@@ -140,7 +141,7 @@ func translatorFromConfig(
 	options = append(options, metrics.WithInitialCumulMonoValueMode(
 		metrics.InitialCumulMonoValueMode(cfg.SumConfig.InitialCumulativeMonotonicMode)))
 
-	return metrics.NewTranslator(set, attributesTranslator, options...)
+	return metrics.NewDefaultTranslator(set, attributesTranslator, options...)
 }
 
 // NewExporter creates a new exporter that translates OTLP metrics into the Datadog format and sends
@@ -149,12 +150,13 @@ func NewExporter(
 	cfg *ExporterConfig,
 	hostGetter SourceProviderFunc,
 	createConsumer createConsumerFunc,
-	tr *metrics.Translator,
+	tr metrics.Provider,
 	params exporter.Settings,
 	reporter *inframetadata.Reporter,
 	gatewayUsage otel.GatewayUsage,
 	coatUsageMetric telemetry.Gauge,
 	coatGWUsageMetric telemetry.Gauge,
+	ipath ingestionPath,
 ) (*Exporter, error) {
 	var extraTags []string
 	if cfg.Metrics.Tags != "" {
@@ -177,11 +179,22 @@ func NewExporter(
 		gatewayUsage:      gatewayUsage,
 		coatUsageMetric:   coatUsageMetric,
 		coatGWUsageMetric: coatGWUsageMetric,
+		ipath:             ipath,
 	}, nil
 }
 
 // ConsumeMetrics translates OTLP metrics into the Datadog format and sends
 func (e *Exporter) ConsumeMetrics(ctx context.Context, ld pmetric.Metrics) error {
+
+	// Track requests based on ingestion path
+	switch e.ipath {
+	case agentOTLPIngest:
+		OTLPIngestAgentMetricsRequests.Inc()
+		OTLPIngestAgentMetricsEvents.Add(float64(ld.MetricCount()))
+	case ddot:
+		OTLPIngestDDOTMetricsRequests.Inc()
+		OTLPIngestDDOTMetricsEvents.Add(float64(ld.MetricCount()))
+	}
 	if e.hostmetadata.Enabled {
 		// Consume resources for host metadata
 		for i := 0; i < ld.ResourceMetrics().Len(); i++ {

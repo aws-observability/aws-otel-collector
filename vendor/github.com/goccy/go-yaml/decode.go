@@ -288,7 +288,9 @@ func (d *Decoder) addSequenceNodeCommentToMap(node *ast.SequenceNode) {
 			texts = append(texts, comment.Token.Value)
 		}
 		if len(texts) != 0 {
-			d.addCommentToMap(node.Values[0].GetPath(), HeadComment(texts...))
+			if len(node.Values) != 0 {
+				d.addCommentToMap(node.Values[0].GetPath(), HeadComment(texts...))
+			}
 		}
 	}
 }
@@ -463,8 +465,10 @@ func (d *Decoder) nodeToValue(ctx context.Context, node ast.Node) (any, error) {
 			}
 			return v.Interface(), nil
 		}
-		aliasName := n.Value.GetToken().Value
-		return nil, errors.ErrSyntax(fmt.Sprintf("could not find alias %q", aliasName), n.Value.GetToken())
+		if node, exists := d.anchorNodeMap[text]; exists {
+			return d.nodeToValue(ctx, node)
+		}
+		return nil, errors.ErrSyntax(fmt.Sprintf("could not find alias %q", text), n.Value.GetToken())
 	case *ast.LiteralNode:
 		return n.Value.GetValue(), nil
 	case *ast.MappingKeyNode:
@@ -1750,14 +1754,11 @@ func (d *Decoder) decodeMap(ctx context.Context, dst reflect.Value, src ast.Node
 				return err
 			}
 		} else {
-			keyVal, err := d.nodeToValue(ctx, key)
+			keyVal, err := d.createDecodedNewValue(ctx, keyType, reflect.Value{}, key)
 			if err != nil {
 				return err
 			}
-			k = reflect.ValueOf(keyVal)
-			if k.IsValid() && k.Type().ConvertibleTo(keyType) {
-				k = k.Convert(keyType)
-			}
+			k = keyVal
 		}
 
 		if k.IsValid() {

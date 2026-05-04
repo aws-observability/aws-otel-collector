@@ -10,13 +10,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonitorSummaryWidgetDefinition The monitor summary widget displays a summary view of all your Datadog monitors, or a subset based on a query. Only available on FREE layout dashboards.
+// MonitorSummaryWidgetDefinition The monitor summary widget displays a summary view of all your Datadog monitors, or a subset based on a query.
 type MonitorSummaryWidgetDefinition struct {
 	// Which color to use on the widget.
 	ColorPreference *WidgetColorPreference `json:"color_preference,omitempty"`
 	// The number of monitors to display.
 	// Deprecated
 	Count *int64 `json:"count,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// What to display on the widget.
 	DisplayFormat *WidgetMonitorSummaryDisplayFormat `json:"display_format,omitempty"`
 	// Whether to show counts of 0 or not.
@@ -129,6 +131,34 @@ func (o *MonitorSummaryWidgetDefinition) HasCount() bool {
 // Deprecated
 func (o *MonitorSummaryWidgetDefinition) SetCount(v int64) {
 	o.Count = &v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *MonitorSummaryWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorSummaryWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *MonitorSummaryWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *MonitorSummaryWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetDisplayFormat returns the DisplayFormat field value if set, zero value otherwise.
@@ -472,6 +502,9 @@ func (o MonitorSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.Count != nil {
 		toSerialize["count"] = o.Count
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.DisplayFormat != nil {
 		toSerialize["display_format"] = o.DisplayFormat
 	}
@@ -516,6 +549,7 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 	all := struct {
 		ColorPreference   *WidgetColorPreference              `json:"color_preference,omitempty"`
 		Count             *int64                              `json:"count,omitempty"`
+		Description       *string                             `json:"description,omitempty"`
 		DisplayFormat     *WidgetMonitorSummaryDisplayFormat  `json:"display_format,omitempty"`
 		HideZeroCounts    *bool                               `json:"hide_zero_counts,omitempty"`
 		Query             *string                             `json:"query"`
@@ -540,7 +574,7 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"color_preference", "count", "display_format", "hide_zero_counts", "query", "show_last_triggered", "show_priority", "sort", "start", "summary_type", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"color_preference", "count", "description", "display_format", "hide_zero_counts", "query", "show_last_triggered", "show_priority", "sort", "start", "summary_type", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
@@ -552,6 +586,7 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		o.ColorPreference = all.ColorPreference
 	}
 	o.Count = all.Count
+	o.Description = all.Description
 	if all.DisplayFormat != nil && !all.DisplayFormat.IsValid() {
 		hasInvalidField = true
 	} else {

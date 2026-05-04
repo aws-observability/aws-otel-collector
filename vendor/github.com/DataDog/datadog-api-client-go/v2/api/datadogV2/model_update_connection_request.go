@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateConnectionRequest
+// UpdateConnectionRequest Request body for updating an existing data source connection by adding, modifying, or removing fields.
 type UpdateConnectionRequest struct {
-	//
+	// The data object containing the resource identifier and attributes for updating an existing connection.
 	Data *UpdateConnectionRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

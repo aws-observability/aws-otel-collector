@@ -173,6 +173,25 @@ func (AssignPublicIp) Values() []AssignPublicIp {
 	}
 }
 
+type AutoRepairActionsStatus string
+
+// Enum values for AutoRepairActionsStatus
+const (
+	AutoRepairActionsStatusEnabled  AutoRepairActionsStatus = "ENABLED"
+	AutoRepairActionsStatusDisabled AutoRepairActionsStatus = "DISABLED"
+)
+
+// Values returns all known values for AutoRepairActionsStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AutoRepairActionsStatus) Values() []AutoRepairActionsStatus {
+	return []AutoRepairActionsStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type AvailabilityZoneRebalancing string
 
 // Enum values for AvailabilityZoneRebalancing
@@ -231,6 +250,27 @@ func (BurstablePerformance) Values() []BurstablePerformance {
 		"included",
 		"required",
 		"excluded",
+	}
+}
+
+type CapacityOptionType string
+
+// Enum values for CapacityOptionType
+const (
+	CapacityOptionTypeOnDemand CapacityOptionType = "ON_DEMAND"
+	CapacityOptionTypeSpot     CapacityOptionType = "SPOT"
+	CapacityOptionTypeReserved CapacityOptionType = "RESERVED"
+)
+
+// Values returns all known values for CapacityOptionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CapacityOptionType) Values() []CapacityOptionType {
+	return []CapacityOptionType{
+		"ON_DEMAND",
+		"SPOT",
+		"RESERVED",
 	}
 }
 
@@ -328,6 +368,28 @@ func (CapacityProviderUpdateStatus) Values() []CapacityProviderUpdateStatus {
 		"UPDATE_IN_PROGRESS",
 		"UPDATE_COMPLETE",
 		"UPDATE_FAILED",
+	}
+}
+
+type CapacityReservationPreference string
+
+// Enum values for CapacityReservationPreference
+const (
+	CapacityReservationPreferenceReservationsOnly     CapacityReservationPreference = "RESERVATIONS_ONLY"
+	CapacityReservationPreferenceReservationsFirst    CapacityReservationPreference = "RESERVATIONS_FIRST"
+	CapacityReservationPreferenceReservationsExcluded CapacityReservationPreference = "RESERVATIONS_EXCLUDED"
+)
+
+// Values returns all known values for CapacityReservationPreference. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CapacityReservationPreference) Values() []CapacityReservationPreference {
+	return []CapacityReservationPreference{
+		"RESERVATIONS_ONLY",
+		"RESERVATIONS_FIRST",
+		"RESERVATIONS_EXCLUDED",
 	}
 }
 
@@ -519,6 +581,160 @@ func (CpuManufacturer) Values() []CpuManufacturer {
 		"intel",
 		"amd",
 		"amazon-web-services",
+	}
+}
+
+type DaemonDeploymentRollbackMonitorsStatus string
+
+// Enum values for DaemonDeploymentRollbackMonitorsStatus
+const (
+	DaemonDeploymentRollbackMonitorsStatusTriggered          DaemonDeploymentRollbackMonitorsStatus = "TRIGGERED"
+	DaemonDeploymentRollbackMonitorsStatusMonitoring         DaemonDeploymentRollbackMonitorsStatus = "MONITORING"
+	DaemonDeploymentRollbackMonitorsStatusMonitoringComplete DaemonDeploymentRollbackMonitorsStatus = "MONITORING_COMPLETE"
+	DaemonDeploymentRollbackMonitorsStatusDisabled           DaemonDeploymentRollbackMonitorsStatus = "DISABLED"
+)
+
+// Values returns all known values for DaemonDeploymentRollbackMonitorsStatus.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonDeploymentRollbackMonitorsStatus) Values() []DaemonDeploymentRollbackMonitorsStatus {
+	return []DaemonDeploymentRollbackMonitorsStatus{
+		"TRIGGERED",
+		"MONITORING",
+		"MONITORING_COMPLETE",
+		"DISABLED",
+	}
+}
+
+type DaemonDeploymentStatus string
+
+// Enum values for DaemonDeploymentStatus
+const (
+	DaemonDeploymentStatusPending            DaemonDeploymentStatus = "PENDING"
+	DaemonDeploymentStatusSuccessful         DaemonDeploymentStatus = "SUCCESSFUL"
+	DaemonDeploymentStatusStopped            DaemonDeploymentStatus = "STOPPED"
+	DaemonDeploymentStatusStopRequested      DaemonDeploymentStatus = "STOP_REQUESTED"
+	DaemonDeploymentStatusInProgress         DaemonDeploymentStatus = "IN_PROGRESS"
+	DaemonDeploymentStatusRollbackInProgress DaemonDeploymentStatus = "ROLLBACK_IN_PROGRESS"
+	DaemonDeploymentStatusRollbackSuccessful DaemonDeploymentStatus = "ROLLBACK_SUCCESSFUL"
+	DaemonDeploymentStatusRollbackFailed     DaemonDeploymentStatus = "ROLLBACK_FAILED"
+)
+
+// Values returns all known values for DaemonDeploymentStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonDeploymentStatus) Values() []DaemonDeploymentStatus {
+	return []DaemonDeploymentStatus{
+		"PENDING",
+		"SUCCESSFUL",
+		"STOPPED",
+		"STOP_REQUESTED",
+		"IN_PROGRESS",
+		"ROLLBACK_IN_PROGRESS",
+		"ROLLBACK_SUCCESSFUL",
+		"ROLLBACK_FAILED",
+	}
+}
+
+type DaemonPropagateTags string
+
+// Enum values for DaemonPropagateTags
+const (
+	DaemonPropagateTagsDaemon DaemonPropagateTags = "DAEMON"
+	DaemonPropagateTagsNone   DaemonPropagateTags = "NONE"
+)
+
+// Values returns all known values for DaemonPropagateTags. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonPropagateTags) Values() []DaemonPropagateTags {
+	return []DaemonPropagateTags{
+		"DAEMON",
+		"NONE",
+	}
+}
+
+type DaemonStatus string
+
+// Enum values for DaemonStatus
+const (
+	DaemonStatusActive           DaemonStatus = "ACTIVE"
+	DaemonStatusDeleteInProgress DaemonStatus = "DELETE_IN_PROGRESS"
+)
+
+// Values returns all known values for DaemonStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonStatus) Values() []DaemonStatus {
+	return []DaemonStatus{
+		"ACTIVE",
+		"DELETE_IN_PROGRESS",
+	}
+}
+
+type DaemonTaskDefinitionRevisionFilter string
+
+// Enum values for DaemonTaskDefinitionRevisionFilter
+const (
+	DaemonTaskDefinitionRevisionFilterLastRegistered DaemonTaskDefinitionRevisionFilter = "LAST_REGISTERED"
+)
+
+// Values returns all known values for DaemonTaskDefinitionRevisionFilter. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonTaskDefinitionRevisionFilter) Values() []DaemonTaskDefinitionRevisionFilter {
+	return []DaemonTaskDefinitionRevisionFilter{
+		"LAST_REGISTERED",
+	}
+}
+
+type DaemonTaskDefinitionStatus string
+
+// Enum values for DaemonTaskDefinitionStatus
+const (
+	DaemonTaskDefinitionStatusActive           DaemonTaskDefinitionStatus = "ACTIVE"
+	DaemonTaskDefinitionStatusDeleteInProgress DaemonTaskDefinitionStatus = "DELETE_IN_PROGRESS"
+	DaemonTaskDefinitionStatusDeleted          DaemonTaskDefinitionStatus = "DELETED"
+)
+
+// Values returns all known values for DaemonTaskDefinitionStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonTaskDefinitionStatus) Values() []DaemonTaskDefinitionStatus {
+	return []DaemonTaskDefinitionStatus{
+		"ACTIVE",
+		"DELETE_IN_PROGRESS",
+		"DELETED",
+	}
+}
+
+type DaemonTaskDefinitionStatusFilter string
+
+// Enum values for DaemonTaskDefinitionStatusFilter
+const (
+	DaemonTaskDefinitionStatusFilterActive           DaemonTaskDefinitionStatusFilter = "ACTIVE"
+	DaemonTaskDefinitionStatusFilterDeleteInProgress DaemonTaskDefinitionStatusFilter = "DELETE_IN_PROGRESS"
+	DaemonTaskDefinitionStatusFilterAll              DaemonTaskDefinitionStatusFilter = "ALL"
+)
+
+// Values returns all known values for DaemonTaskDefinitionStatusFilter. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonTaskDefinitionStatusFilter) Values() []DaemonTaskDefinitionStatusFilter {
+	return []DaemonTaskDefinitionStatusFilter{
+		"ACTIVE",
+		"DELETE_IN_PROGRESS",
+		"ALL",
 	}
 }
 
@@ -900,7 +1116,9 @@ type InstanceHealthCheckType string
 
 // Enum values for InstanceHealthCheckType
 const (
-	InstanceHealthCheckTypeContainerRuntime InstanceHealthCheckType = "CONTAINER_RUNTIME"
+	InstanceHealthCheckTypeContainerRuntime   InstanceHealthCheckType = "CONTAINER_RUNTIME"
+	InstanceHealthCheckTypeAcceleratedCompute InstanceHealthCheckType = "ACCELERATED_COMPUTE"
+	InstanceHealthCheckTypeDaemon             InstanceHealthCheckType = "DAEMON"
 )
 
 // Values returns all known values for InstanceHealthCheckType. Note that this can
@@ -910,6 +1128,8 @@ const (
 func (InstanceHealthCheckType) Values() []InstanceHealthCheckType {
 	return []InstanceHealthCheckType{
 		"CONTAINER_RUNTIME",
+		"ACCELERATED_COMPUTE",
+		"DAEMON",
 	}
 }
 
@@ -1596,6 +1816,7 @@ const (
 	SettingNameFargateTaskRetirementWaitPeriod SettingName = "fargateTaskRetirementWaitPeriod"
 	SettingNameGuardDutyActivate               SettingName = "guardDutyActivate"
 	SettingNameDefaultLogDriverMode            SettingName = "defaultLogDriverMode"
+	SettingNameFargateEventWindows             SettingName = "fargateEventWindows"
 )
 
 // Values returns all known values for SettingName. Note that this can be expanded
@@ -1614,6 +1835,7 @@ func (SettingName) Values() []SettingName {
 		"fargateTaskRetirementWaitPeriod",
 		"guardDutyActivate",
 		"defaultLogDriverMode",
+		"fargateEventWindows",
 	}
 }
 

@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsResponseData
+// ResolveVulnerableSymbolsResponseData The data object in a response for resolving vulnerable symbols, containing the result attributes and response type.
 type ResolveVulnerableSymbolsResponseData struct {
-	//
+	// The attributes of a response containing resolved vulnerable symbols, organized by package.
 	Attributes *ResolveVulnerableSymbolsResponseDataAttributes `json:"attributes,omitempty"`
-	//
+	// The unique identifier for this response data object.
 	Id *string `json:"id,omitempty"`
-	//
+	// The type identifier for responses containing resolved vulnerable symbols.
 	Type ResolveVulnerableSymbolsResponseDataType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

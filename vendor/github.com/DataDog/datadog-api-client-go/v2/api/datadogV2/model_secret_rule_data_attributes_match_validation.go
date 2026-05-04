@@ -8,23 +8,23 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecretRuleDataAttributesMatchValidation
+// SecretRuleDataAttributesMatchValidation Configuration for validating whether a detected secret is active by making an HTTP request and inspecting the response.
 type SecretRuleDataAttributesMatchValidation struct {
-	//
+	// The URL endpoint to call when validating a detected secret.
 	Endpoint *string `json:"endpoint,omitempty"`
-	//
+	// The list of hostnames to include when performing secret match validation.
 	Hosts []string `json:"hosts,omitempty"`
-	//
+	// The HTTP method (e.g., GET, POST) to use when making the validation request.
 	HttpMethod *string `json:"http_method,omitempty"`
-	//
+	// The HTTP status code ranges that indicate the detected secret is invalid or inactive.
 	InvalidHttpStatusCode []SecretRuleDataAttributesMatchValidationInvalidHttpStatusCodeItems `json:"invalid_http_status_code,omitempty"`
-	//
+	// A map of HTTP header names to values to include in the validation request.
 	RequestHeaders map[string]string `json:"request_headers,omitempty"`
-	//
+	// The maximum number of seconds to wait for a response during validation before timing out.
 	TimeoutSeconds *int64 `json:"timeout_seconds,omitempty"`
-	//
+	// The type of match validation to perform (e.g., http).
 	Type *string `json:"type,omitempty"`
-	//
+	// The HTTP status code ranges that indicate the detected secret is valid and active.
 	ValidHttpStatusCode []SecretRuleDataAttributesMatchValidationValidHttpStatusCodeItems `json:"valid_http_status_code,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

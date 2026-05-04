@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonitorSearchResponse The response form a monitor search.
+// MonitorSearchResponse The response from a monitor search.
 type MonitorSearchResponse struct {
 	// The counts of monitors per different criteria.
 	Counts *MonitorSearchResponseCounts `json:"counts,omitempty"`

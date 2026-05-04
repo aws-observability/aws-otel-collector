@@ -15,6 +15,9 @@ type LogsExclusionFilter struct {
 	// Default query is `*`, meaning all logs flowing in the index would be excluded.
 	// Scope down exclusion filter to only a subset of logs with a log query.
 	Query *string `json:"query,omitempty"`
+	// Sample attribute to use for the sampling of logs going through this exclusion filter.
+	// When set, only the logs with the specified attribute are sampled.
+	SampleAttribute *string `json:"sample_attribute,omitempty"`
 	// Sample rate to apply to logs going through this exclusion filter,
 	// a value of 1.0 excludes all logs matching the query.
 	SampleRate float64 `json:"sample_rate"`
@@ -69,6 +72,34 @@ func (o *LogsExclusionFilter) SetQuery(v string) {
 	o.Query = &v
 }
 
+// GetSampleAttribute returns the SampleAttribute field value if set, zero value otherwise.
+func (o *LogsExclusionFilter) GetSampleAttribute() string {
+	if o == nil || o.SampleAttribute == nil {
+		var ret string
+		return ret
+	}
+	return *o.SampleAttribute
+}
+
+// GetSampleAttributeOk returns a tuple with the SampleAttribute field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsExclusionFilter) GetSampleAttributeOk() (*string, bool) {
+	if o == nil || o.SampleAttribute == nil {
+		return nil, false
+	}
+	return o.SampleAttribute, true
+}
+
+// HasSampleAttribute returns a boolean if a field has been set.
+func (o *LogsExclusionFilter) HasSampleAttribute() bool {
+	return o != nil && o.SampleAttribute != nil
+}
+
+// SetSampleAttribute gets a reference to the given string and assigns it to the SampleAttribute field.
+func (o *LogsExclusionFilter) SetSampleAttribute(v string) {
+	o.SampleAttribute = &v
+}
+
 // GetSampleRate returns the SampleRate field value.
 func (o *LogsExclusionFilter) GetSampleRate() float64 {
 	if o == nil {
@@ -101,6 +132,9 @@ func (o LogsExclusionFilter) MarshalJSON() ([]byte, error) {
 	if o.Query != nil {
 		toSerialize["query"] = o.Query
 	}
+	if o.SampleAttribute != nil {
+		toSerialize["sample_attribute"] = o.SampleAttribute
+	}
 	toSerialize["sample_rate"] = o.SampleRate
 
 	for key, value := range o.AdditionalProperties {
@@ -112,8 +146,9 @@ func (o LogsExclusionFilter) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsExclusionFilter) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Query      *string  `json:"query,omitempty"`
-		SampleRate *float64 `json:"sample_rate"`
+		Query           *string  `json:"query,omitempty"`
+		SampleAttribute *string  `json:"sample_attribute,omitempty"`
+		SampleRate      *float64 `json:"sample_rate"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -123,11 +158,12 @@ func (o *LogsExclusionFilter) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"query", "sample_rate"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"query", "sample_attribute", "sample_rate"})
 	} else {
 		return err
 	}
 	o.Query = all.Query
+	o.SampleAttribute = all.SampleAttribute
 	o.SampleRate = *all.SampleRate
 
 	if len(additionalProperties) > 0 {

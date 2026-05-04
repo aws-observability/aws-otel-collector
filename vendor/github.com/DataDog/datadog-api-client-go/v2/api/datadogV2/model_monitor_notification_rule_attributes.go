@@ -14,7 +14,7 @@ import (
 type MonitorNotificationRuleAttributes struct {
 	// Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`.
 	ConditionalRecipients *MonitorNotificationRuleConditionalRecipients `json:"conditional_recipients,omitempty"`
-	// Filter used to associate the notification rule with monitors.
+	// Specifies the matching criteria for monitor notifications.
 	Filter *MonitorNotificationRuleFilter `json:"filter,omitempty"`
 	// The name of the monitor notification rule.
 	Name string `json:"name"`

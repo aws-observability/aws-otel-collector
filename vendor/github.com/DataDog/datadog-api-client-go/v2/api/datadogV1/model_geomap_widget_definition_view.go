@@ -12,7 +12,7 @@ import (
 
 // GeomapWidgetDefinitionView The view of the world that the map should render.
 type GeomapWidgetDefinitionView struct {
-	// The 2-letter ISO code of a country to focus the map on. Or `WORLD`.
+	// The 2-letter ISO code of a country to focus the map on, or `WORLD` for global view, or a region (`EMEA`, `APAC`, `LATAM`), or a continent (`NORTH_AMERICA`, `SOUTH_AMERICA`, `EUROPE`, `AFRICA`, `ASIA`, `OCEANIA`).
 	Focus string `json:"focus"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

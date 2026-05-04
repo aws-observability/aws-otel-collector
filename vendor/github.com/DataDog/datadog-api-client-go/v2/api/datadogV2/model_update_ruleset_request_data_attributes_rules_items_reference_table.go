@@ -16,8 +16,11 @@ type UpdateRulesetRequestDataAttributesRulesItemsReferenceTable struct {
 	CaseInsensitivity *bool `json:"case_insensitivity,omitempty"`
 	// The `reference_table` `field_pairs`.
 	FieldPairs []UpdateRulesetRequestDataAttributesRulesItemsReferenceTableFieldPairsItems `json:"field_pairs"`
-	// The `reference_table` `if_not_exists`.
+	// Deprecated. Use `if_tag_exists` instead. The `reference_table` `if_not_exists`.
+	// Deprecated
 	IfNotExists *bool `json:"if_not_exists,omitempty"`
+	// The behavior when the tag already exists.
+	IfTagExists *DataAttributesRulesItemsIfTagExists `json:"if_tag_exists,omitempty"`
 	// The `reference_table` `source_keys`.
 	SourceKeys []string `json:"source_keys"`
 	// The `reference_table` `table_name`.
@@ -99,6 +102,7 @@ func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) SetFieldPai
 }
 
 // GetIfNotExists returns the IfNotExists field value if set, zero value otherwise.
+// Deprecated
 func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) GetIfNotExists() bool {
 	if o == nil || o.IfNotExists == nil {
 		var ret bool
@@ -109,6 +113,7 @@ func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) GetIfNotExi
 
 // GetIfNotExistsOk returns a tuple with the IfNotExists field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) GetIfNotExistsOk() (*bool, bool) {
 	if o == nil || o.IfNotExists == nil {
 		return nil, false
@@ -122,8 +127,37 @@ func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) HasIfNotExi
 }
 
 // SetIfNotExists gets a reference to the given bool and assigns it to the IfNotExists field.
+// Deprecated
 func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) SetIfNotExists(v bool) {
 	o.IfNotExists = &v
+}
+
+// GetIfTagExists returns the IfTagExists field value if set, zero value otherwise.
+func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) GetIfTagExists() DataAttributesRulesItemsIfTagExists {
+	if o == nil || o.IfTagExists == nil {
+		var ret DataAttributesRulesItemsIfTagExists
+		return ret
+	}
+	return *o.IfTagExists
+}
+
+// GetIfTagExistsOk returns a tuple with the IfTagExists field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) GetIfTagExistsOk() (*DataAttributesRulesItemsIfTagExists, bool) {
+	if o == nil || o.IfTagExists == nil {
+		return nil, false
+	}
+	return o.IfTagExists, true
+}
+
+// HasIfTagExists returns a boolean if a field has been set.
+func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) HasIfTagExists() bool {
+	return o != nil && o.IfTagExists != nil
+}
+
+// SetIfTagExists gets a reference to the given DataAttributesRulesItemsIfTagExists and assigns it to the IfTagExists field.
+func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) SetIfTagExists(v DataAttributesRulesItemsIfTagExists) {
+	o.IfTagExists = &v
 }
 
 // GetSourceKeys returns the SourceKeys field value.
@@ -185,6 +219,9 @@ func (o UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) MarshalJSON(
 	if o.IfNotExists != nil {
 		toSerialize["if_not_exists"] = o.IfNotExists
 	}
+	if o.IfTagExists != nil {
+		toSerialize["if_tag_exists"] = o.IfTagExists
+	}
 	toSerialize["source_keys"] = o.SourceKeys
 	toSerialize["table_name"] = o.TableName
 
@@ -200,6 +237,7 @@ func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) UnmarshalJS
 		CaseInsensitivity *bool                                                                        `json:"case_insensitivity,omitempty"`
 		FieldPairs        *[]UpdateRulesetRequestDataAttributesRulesItemsReferenceTableFieldPairsItems `json:"field_pairs"`
 		IfNotExists       *bool                                                                        `json:"if_not_exists,omitempty"`
+		IfTagExists       *DataAttributesRulesItemsIfTagExists                                         `json:"if_tag_exists,omitempty"`
 		SourceKeys        *[]string                                                                    `json:"source_keys"`
 		TableName         *string                                                                      `json:"table_name"`
 	}{}
@@ -217,18 +255,29 @@ func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) UnmarshalJS
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"case_insensitivity", "field_pairs", "if_not_exists", "source_keys", "table_name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"case_insensitivity", "field_pairs", "if_not_exists", "if_tag_exists", "source_keys", "table_name"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.CaseInsensitivity = all.CaseInsensitivity
 	o.FieldPairs = *all.FieldPairs
 	o.IfNotExists = all.IfNotExists
+	if all.IfTagExists != nil && !all.IfTagExists.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.IfTagExists = all.IfTagExists
+	}
 	o.SourceKeys = *all.SourceKeys
 	o.TableName = *all.TableName
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

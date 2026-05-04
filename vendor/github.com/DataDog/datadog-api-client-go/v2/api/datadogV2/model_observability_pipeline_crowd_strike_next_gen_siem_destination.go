@@ -11,17 +11,25 @@ import (
 )
 
 // ObservabilityPipelineCrowdStrikeNextGenSiemDestination The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineCrowdStrikeNextGenSiemDestination struct {
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// Compression configuration for log events.
 	Compression *ObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompression `json:"compression,omitempty"`
 	// Encoding format for log events.
 	Encoding ObservabilityPipelineCrowdStrikeNextGenSiemDestinationEncoding `json:"encoding"`
+	// Name of the environment variable or secret that holds the CrowdStrike endpoint URL.
+	EndpointUrlKey *string `json:"endpoint_url_key,omitempty"`
 	// The unique identifier for this component.
 	Id string `json:"id"`
 	// A list of component IDs whose output is used as the `input` for this component.
 	Inputs []string `json:"inputs"`
 	// Configuration for enabling TLS encryption between the pipeline component and external services.
 	Tls *ObservabilityPipelineTls `json:"tls,omitempty"`
+	// Name of the environment variable or secret that holds the CrowdStrike API token.
+	TokenKey *string `json:"token_key,omitempty"`
 	// The destination type. The value should always be `crowdstrike_next_gen_siem`.
 	Type ObservabilityPipelineCrowdStrikeNextGenSiemDestinationType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -50,6 +58,34 @@ func NewObservabilityPipelineCrowdStrikeNextGenSiemDestinationWithDefaults() *Ob
 	var typeVar ObservabilityPipelineCrowdStrikeNextGenSiemDestinationType = OBSERVABILITYPIPELINECROWDSTRIKENEXTGENSIEMDESTINATIONTYPE_CROWDSTRIKE_NEXT_GEN_SIEM
 	this.Type = typeVar
 	return &this
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetCompression returns the Compression field value if set, zero value otherwise.
@@ -101,6 +137,34 @@ func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetEncodingOk()
 // SetEncoding sets field value.
 func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) SetEncoding(v ObservabilityPipelineCrowdStrikeNextGenSiemDestinationEncoding) {
 	o.Encoding = v
+}
+
+// GetEndpointUrlKey returns the EndpointUrlKey field value if set, zero value otherwise.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetEndpointUrlKey() string {
+	if o == nil || o.EndpointUrlKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.EndpointUrlKey
+}
+
+// GetEndpointUrlKeyOk returns a tuple with the EndpointUrlKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetEndpointUrlKeyOk() (*string, bool) {
+	if o == nil || o.EndpointUrlKey == nil {
+		return nil, false
+	}
+	return o.EndpointUrlKey, true
+}
+
+// HasEndpointUrlKey returns a boolean if a field has been set.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) HasEndpointUrlKey() bool {
+	return o != nil && o.EndpointUrlKey != nil
+}
+
+// SetEndpointUrlKey gets a reference to the given string and assigns it to the EndpointUrlKey field.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) SetEndpointUrlKey(v string) {
+	o.EndpointUrlKey = &v
 }
 
 // GetId returns the Id field value.
@@ -177,6 +241,34 @@ func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) SetTls(v Observ
 	o.Tls = &v
 }
 
+// GetTokenKey returns the TokenKey field value if set, zero value otherwise.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetTokenKey() string {
+	if o == nil || o.TokenKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.TokenKey
+}
+
+// GetTokenKeyOk returns a tuple with the TokenKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetTokenKeyOk() (*string, bool) {
+	if o == nil || o.TokenKey == nil {
+		return nil, false
+	}
+	return o.TokenKey, true
+}
+
+// HasTokenKey returns a boolean if a field has been set.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) HasTokenKey() bool {
+	return o != nil && o.TokenKey != nil
+}
+
+// SetTokenKey gets a reference to the given string and assigns it to the TokenKey field.
+func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) SetTokenKey(v string) {
+	o.TokenKey = &v
+}
+
 // GetType returns the Type field value.
 func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) GetType() ObservabilityPipelineCrowdStrikeNextGenSiemDestinationType {
 	if o == nil {
@@ -206,14 +298,23 @@ func (o ObservabilityPipelineCrowdStrikeNextGenSiemDestination) MarshalJSON() ([
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	if o.Compression != nil {
 		toSerialize["compression"] = o.Compression
 	}
 	toSerialize["encoding"] = o.Encoding
+	if o.EndpointUrlKey != nil {
+		toSerialize["endpoint_url_key"] = o.EndpointUrlKey
+	}
 	toSerialize["id"] = o.Id
 	toSerialize["inputs"] = o.Inputs
 	if o.Tls != nil {
 		toSerialize["tls"] = o.Tls
+	}
+	if o.TokenKey != nil {
+		toSerialize["token_key"] = o.TokenKey
 	}
 	toSerialize["type"] = o.Type
 
@@ -226,12 +327,15 @@ func (o ObservabilityPipelineCrowdStrikeNextGenSiemDestination) MarshalJSON() ([
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Compression *ObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompression `json:"compression,omitempty"`
-		Encoding    *ObservabilityPipelineCrowdStrikeNextGenSiemDestinationEncoding    `json:"encoding"`
-		Id          *string                                                            `json:"id"`
-		Inputs      *[]string                                                          `json:"inputs"`
-		Tls         *ObservabilityPipelineTls                                          `json:"tls,omitempty"`
-		Type        *ObservabilityPipelineCrowdStrikeNextGenSiemDestinationType        `json:"type"`
+		Buffer         *ObservabilityPipelineBufferOptions                                `json:"buffer,omitempty"`
+		Compression    *ObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompression `json:"compression,omitempty"`
+		Encoding       *ObservabilityPipelineCrowdStrikeNextGenSiemDestinationEncoding    `json:"encoding"`
+		EndpointUrlKey *string                                                            `json:"endpoint_url_key,omitempty"`
+		Id             *string                                                            `json:"id"`
+		Inputs         *[]string                                                          `json:"inputs"`
+		Tls            *ObservabilityPipelineTls                                          `json:"tls,omitempty"`
+		TokenKey       *string                                                            `json:"token_key,omitempty"`
+		Type           *ObservabilityPipelineCrowdStrikeNextGenSiemDestinationType        `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -250,12 +354,13 @@ func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) UnmarshalJSON(b
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"compression", "encoding", "id", "inputs", "tls", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"buffer", "compression", "encoding", "endpoint_url_key", "id", "inputs", "tls", "token_key", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Buffer = all.Buffer
 	if all.Compression != nil && all.Compression.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
@@ -265,12 +370,14 @@ func (o *ObservabilityPipelineCrowdStrikeNextGenSiemDestination) UnmarshalJSON(b
 	} else {
 		o.Encoding = *all.Encoding
 	}
+	o.EndpointUrlKey = all.EndpointUrlKey
 	o.Id = *all.Id
 	o.Inputs = *all.Inputs
 	if all.Tls != nil && all.Tls.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
 	o.Tls = all.Tls
+	o.TokenKey = all.TokenKey
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

@@ -36,6 +36,8 @@ type UserAttributes struct {
 	Status *string `json:"status,omitempty"`
 	// Title of the user.
 	Title datadog.NullableString `json:"title,omitempty"`
+	// UUID of the user.
+	Uuid *string `json:"uuid,omitempty"`
 	// Whether the user is verified.
 	Verified *bool `json:"verified,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -429,6 +431,34 @@ func (o *UserAttributes) UnsetTitle() {
 	o.Title.Unset()
 }
 
+// GetUuid returns the Uuid field value if set, zero value otherwise.
+func (o *UserAttributes) GetUuid() string {
+	if o == nil || o.Uuid == nil {
+		var ret string
+		return ret
+	}
+	return *o.Uuid
+}
+
+// GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetUuidOk() (*string, bool) {
+	if o == nil || o.Uuid == nil {
+		return nil, false
+	}
+	return o.Uuid, true
+}
+
+// HasUuid returns a boolean if a field has been set.
+func (o *UserAttributes) HasUuid() bool {
+	return o != nil && o.Uuid != nil
+}
+
+// SetUuid gets a reference to the given string and assigns it to the Uuid field.
+func (o *UserAttributes) SetUuid(v string) {
+	o.Uuid = &v
+}
+
 // GetVerified returns the Verified field value if set, zero value otherwise.
 func (o *UserAttributes) GetVerified() bool {
 	if o == nil || o.Verified == nil {
@@ -507,6 +537,9 @@ func (o UserAttributes) MarshalJSON() ([]byte, error) {
 	if o.Title.IsSet() {
 		toSerialize["title"] = o.Title.Get()
 	}
+	if o.Uuid != nil {
+		toSerialize["uuid"] = o.Uuid
+	}
 	if o.Verified != nil {
 		toSerialize["verified"] = o.Verified
 	}
@@ -532,6 +565,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		ServiceAccount *bool                  `json:"service_account,omitempty"`
 		Status         *string                `json:"status,omitempty"`
 		Title          datadog.NullableString `json:"title,omitempty"`
+		Uuid           *string                `json:"uuid,omitempty"`
 		Verified       *bool                  `json:"verified,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -539,7 +573,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "disabled", "email", "handle", "icon", "last_login_time", "mfa_enabled", "modified_at", "name", "service_account", "status", "title", "verified"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "disabled", "email", "handle", "icon", "last_login_time", "mfa_enabled", "modified_at", "name", "service_account", "status", "title", "uuid", "verified"})
 	} else {
 		return err
 	}
@@ -555,6 +589,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.ServiceAccount = all.ServiceAccount
 	o.Status = all.Status
 	o.Title = all.Title
+	o.Uuid = all.Uuid
 	o.Verified = all.Verified
 
 	if len(additionalProperties) > 0 {

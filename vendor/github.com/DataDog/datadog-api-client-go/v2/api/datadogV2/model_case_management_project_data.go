@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CaseManagementProjectData
+// CaseManagementProjectData Data object representing a case management project.
 type CaseManagementProjectData struct {
-	// The unique identifier of the case management project.
+	// Unique identifier of the case management project.
 	Id string `json:"id"`
 	// Projects resource type.
 	Type CaseManagementProjectDataType `json:"type"`

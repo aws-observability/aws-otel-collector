@@ -14,6 +14,8 @@ import (
 type AlertValueWidgetDefinition struct {
 	// ID of the alert to use in the widget.
 	AlertId string `json:"alert_id"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Number of decimal to show. If not defined, will use the raw value.
 	Precision *int64 `json:"precision,omitempty"`
 	// How to align the text on the widget.
@@ -75,6 +77,34 @@ func (o *AlertValueWidgetDefinition) GetAlertIdOk() (*string, bool) {
 // SetAlertId sets field value.
 func (o *AlertValueWidgetDefinition) SetAlertId(v string) {
 	o.AlertId = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *AlertValueWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AlertValueWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *AlertValueWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *AlertValueWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetPrecision returns the Precision field value if set, zero value otherwise.
@@ -275,6 +305,9 @@ func (o AlertValueWidgetDefinition) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["alert_id"] = o.AlertId
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Precision != nil {
 		toSerialize["precision"] = o.Precision
 	}
@@ -304,14 +337,15 @@ func (o AlertValueWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AlertValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AlertId    *string                         `json:"alert_id"`
-		Precision  *int64                          `json:"precision,omitempty"`
-		TextAlign  *WidgetTextAlign                `json:"text_align,omitempty"`
-		Title      *string                         `json:"title,omitempty"`
-		TitleAlign *WidgetTextAlign                `json:"title_align,omitempty"`
-		TitleSize  *string                         `json:"title_size,omitempty"`
-		Type       *AlertValueWidgetDefinitionType `json:"type"`
-		Unit       *string                         `json:"unit,omitempty"`
+		AlertId     *string                         `json:"alert_id"`
+		Description *string                         `json:"description,omitempty"`
+		Precision   *int64                          `json:"precision,omitempty"`
+		TextAlign   *WidgetTextAlign                `json:"text_align,omitempty"`
+		Title       *string                         `json:"title,omitempty"`
+		TitleAlign  *WidgetTextAlign                `json:"title_align,omitempty"`
+		TitleSize   *string                         `json:"title_size,omitempty"`
+		Type        *AlertValueWidgetDefinitionType `json:"type"`
+		Unit        *string                         `json:"unit,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -324,13 +358,14 @@ func (o *AlertValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"alert_id", "precision", "text_align", "title", "title_align", "title_size", "type", "unit"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"alert_id", "description", "precision", "text_align", "title", "title_align", "title_size", "type", "unit"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.AlertId = *all.AlertId
+	o.Description = all.Description
 	o.Precision = all.Precision
 	if all.TextAlign != nil && !all.TextAlign.IsValid() {
 		hasInvalidField = true

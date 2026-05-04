@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecretRuleDataAttributesMatchValidationInvalidHttpStatusCodeItems
+// SecretRuleDataAttributesMatchValidationInvalidHttpStatusCodeItems An HTTP status code range that indicates an invalid (unsuccessful) secret match during validation.
 type SecretRuleDataAttributesMatchValidationInvalidHttpStatusCodeItems struct {
-	//
+	// The inclusive upper bound of the HTTP status code range.
 	End *int64 `json:"end,omitempty"`
-	//
+	// The inclusive lower bound of the HTTP status code range.
 	Start *int64 `json:"start,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

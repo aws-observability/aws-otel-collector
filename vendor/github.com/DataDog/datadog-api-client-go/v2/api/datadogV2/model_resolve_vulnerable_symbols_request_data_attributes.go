@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsRequestDataAttributes
+// ResolveVulnerableSymbolsRequestDataAttributes The attributes of a request to resolve vulnerable symbols, containing the list of package PURLs to check.
 type ResolveVulnerableSymbolsRequestDataAttributes struct {
-	//
+	// The list of Package URLs (PURLs) for which to resolve vulnerable symbols.
 	Purls []string `json:"purls,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

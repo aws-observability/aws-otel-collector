@@ -16,10 +16,16 @@ type Datacenter struct {
 	Name        string
 	Description string
 	Location    *Location
+
+	// Deprecated: [Datacenter.ServerTypes] is deprecated and will not be returned after 2026-10-01.
+	// Use [ServerType.Locations] instead.
 	ServerTypes DatacenterServerTypes
 }
 
 // DatacenterServerTypes represents the server types available and supported in a datacenter.
+//
+// Deprecated: [DatacenterServerTypes] is deprecated and will not be returned after 2026-10-01.
+// Use [ServerType.Locations] instead.
 type DatacenterServerTypes struct {
 	Supported             []*ServerType
 	AvailableForMigration []*ServerType
@@ -103,11 +109,14 @@ func (c *DatacenterClient) List(ctx context.Context, opts DatacenterListOpts) ([
 
 // All returns all datacenters.
 func (c *DatacenterClient) All(ctx context.Context) ([]*Datacenter, error) {
-	return c.AllWithOpts(ctx, DatacenterListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, DatacenterListOpts{})
 }
 
 // AllWithOpts returns all datacenters for the given options.
 func (c *DatacenterClient) AllWithOpts(ctx context.Context, opts DatacenterListOpts) ([]*Datacenter, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Datacenter, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

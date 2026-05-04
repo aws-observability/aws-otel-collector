@@ -1,4 +1,4 @@
-// Copyright 2021 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -73,7 +73,7 @@ func (c *KumaSDConfig) UnmarshalYAML(unmarshal func(any) error) error {
 		return err
 	}
 
-	if len(c.Server) == 0 {
+	if c.Server == "" {
 		return fmt.Errorf("kuma SD server must not be empty: %s", c.Server)
 	}
 	parsedURL, err := url.Parse(c.Server)
@@ -81,7 +81,7 @@ func (c *KumaSDConfig) UnmarshalYAML(unmarshal func(any) error) error {
 		return err
 	}
 
-	if len(parsedURL.Scheme) == 0 || len(parsedURL.Host) == 0 {
+	if parsedURL.Scheme == "" || parsedURL.Host == "" {
 		return fmt.Errorf("kuma SD server must not be empty and have a scheme: %s", c.Server)
 	}
 

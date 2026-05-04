@@ -14,8 +14,6 @@ import (
 type AttachJiraIssueRequestData struct {
 	// Attributes of the Jira issue to attach security findings to.
 	Attributes *AttachJiraIssueRequestDataAttributes `json:"attributes,omitempty"`
-	// The unique identifier of the Jira issue attachment request.
-	Id *string `json:"id,omitempty"`
 	// Relationships of the Jira issue to attach security findings to.
 	Relationships *AttachJiraIssueRequestDataRelationships `json:"relationships,omitempty"`
 	// Jira issues resource type.
@@ -71,34 +69,6 @@ func (o *AttachJiraIssueRequestData) HasAttributes() bool {
 // SetAttributes gets a reference to the given AttachJiraIssueRequestDataAttributes and assigns it to the Attributes field.
 func (o *AttachJiraIssueRequestData) SetAttributes(v AttachJiraIssueRequestDataAttributes) {
 	o.Attributes = &v
-}
-
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *AttachJiraIssueRequestData) GetId() string {
-	if o == nil || o.Id == nil {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AttachJiraIssueRequestData) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
-		return nil, false
-	}
-	return o.Id, true
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *AttachJiraIssueRequestData) HasId() bool {
-	return o != nil && o.Id != nil
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *AttachJiraIssueRequestData) SetId(v string) {
-	o.Id = &v
 }
 
 // GetRelationships returns the Relationships field value if set, zero value otherwise.
@@ -161,9 +131,6 @@ func (o AttachJiraIssueRequestData) MarshalJSON() ([]byte, error) {
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
 	}
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
-	}
 	if o.Relationships != nil {
 		toSerialize["relationships"] = o.Relationships
 	}
@@ -179,7 +146,6 @@ func (o AttachJiraIssueRequestData) MarshalJSON() ([]byte, error) {
 func (o *AttachJiraIssueRequestData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes    *AttachJiraIssueRequestDataAttributes    `json:"attributes,omitempty"`
-		Id            *string                                  `json:"id,omitempty"`
 		Relationships *AttachJiraIssueRequestDataRelationships `json:"relationships,omitempty"`
 		Type          *JiraIssuesDataType                      `json:"type"`
 	}{}
@@ -191,7 +157,7 @@ func (o *AttachJiraIssueRequestData) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "relationships", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "relationships", "type"})
 	} else {
 		return err
 	}
@@ -201,7 +167,6 @@ func (o *AttachJiraIssueRequestData) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Attributes = all.Attributes
-	o.Id = all.Id
 	if all.Relationships != nil && all.Relationships.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

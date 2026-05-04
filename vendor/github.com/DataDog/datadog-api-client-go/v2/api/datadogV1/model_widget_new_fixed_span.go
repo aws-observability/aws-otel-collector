@@ -12,11 +12,11 @@ import (
 
 // WidgetNewFixedSpan Used for fixed span times, such as 'March 1 to March 7'.
 type WidgetNewFixedSpan struct {
-	// Start time in seconds since epoch.
+	// Start time in milliseconds since epoch.
 	From int64 `json:"from"`
 	// Whether to hide incomplete cost data in the widget.
 	HideIncompleteCostData *bool `json:"hide_incomplete_cost_data,omitempty"`
-	// End time in seconds since epoch.
+	// End time in milliseconds since epoch.
 	To int64 `json:"to"`
 	// Type "fixed" denotes a fixed span.
 	Type WidgetNewFixedSpanType `json:"type"`

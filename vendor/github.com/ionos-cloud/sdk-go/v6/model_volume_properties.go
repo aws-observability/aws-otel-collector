@@ -76,8 +76,6 @@ type VolumeProperties struct {
 func NewVolumeProperties() *VolumeProperties {
 	this := VolumeProperties{}
 
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
 	var exposeSerial bool = false
 	this.ExposeSerial = &exposeSerial
 	var requireLegacyBios bool = true
@@ -93,8 +91,6 @@ func NewVolumeProperties() *VolumeProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewVolumePropertiesWithDefaults() *VolumeProperties {
 	this := VolumeProperties{}
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
 	var exposeSerial bool = false
 	this.ExposeSerial = &exposeSerial
 	var requireLegacyBios bool = true

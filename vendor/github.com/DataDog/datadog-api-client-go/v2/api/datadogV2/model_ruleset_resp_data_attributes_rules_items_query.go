@@ -16,8 +16,11 @@ type RulesetRespDataAttributesRulesItemsQuery struct {
 	Addition NullableRulesetRespDataAttributesRulesItemsQueryAddition `json:"addition"`
 	// The `query` `case_insensitivity`.
 	CaseInsensitivity *bool `json:"case_insensitivity,omitempty"`
-	// The `query` `if_not_exists`.
-	IfNotExists bool `json:"if_not_exists"`
+	// Deprecated. Use `if_tag_exists` instead. The `query` `if_not_exists`.
+	// Deprecated
+	IfNotExists *bool `json:"if_not_exists,omitempty"`
+	// The behavior when the tag already exists.
+	IfTagExists *DataAttributesRulesItemsIfTagExists `json:"if_tag_exists,omitempty"`
 	// The `query` `query`.
 	Query string `json:"query"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -29,10 +32,9 @@ type RulesetRespDataAttributesRulesItemsQuery struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewRulesetRespDataAttributesRulesItemsQuery(addition NullableRulesetRespDataAttributesRulesItemsQueryAddition, ifNotExists bool, query string) *RulesetRespDataAttributesRulesItemsQuery {
+func NewRulesetRespDataAttributesRulesItemsQuery(addition NullableRulesetRespDataAttributesRulesItemsQueryAddition, query string) *RulesetRespDataAttributesRulesItemsQuery {
 	this := RulesetRespDataAttributesRulesItemsQuery{}
 	this.Addition = addition
-	this.IfNotExists = ifNotExists
 	this.Query = query
 	return &this
 }
@@ -98,27 +100,63 @@ func (o *RulesetRespDataAttributesRulesItemsQuery) SetCaseInsensitivity(v bool) 
 	o.CaseInsensitivity = &v
 }
 
-// GetIfNotExists returns the IfNotExists field value.
+// GetIfNotExists returns the IfNotExists field value if set, zero value otherwise.
+// Deprecated
 func (o *RulesetRespDataAttributesRulesItemsQuery) GetIfNotExists() bool {
-	if o == nil {
+	if o == nil || o.IfNotExists == nil {
 		var ret bool
 		return ret
 	}
-	return o.IfNotExists
+	return *o.IfNotExists
 }
 
-// GetIfNotExistsOk returns a tuple with the IfNotExists field value
+// GetIfNotExistsOk returns a tuple with the IfNotExists field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *RulesetRespDataAttributesRulesItemsQuery) GetIfNotExistsOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || o.IfNotExists == nil {
 		return nil, false
 	}
-	return &o.IfNotExists, true
+	return o.IfNotExists, true
 }
 
-// SetIfNotExists sets field value.
+// HasIfNotExists returns a boolean if a field has been set.
+func (o *RulesetRespDataAttributesRulesItemsQuery) HasIfNotExists() bool {
+	return o != nil && o.IfNotExists != nil
+}
+
+// SetIfNotExists gets a reference to the given bool and assigns it to the IfNotExists field.
+// Deprecated
 func (o *RulesetRespDataAttributesRulesItemsQuery) SetIfNotExists(v bool) {
-	o.IfNotExists = v
+	o.IfNotExists = &v
+}
+
+// GetIfTagExists returns the IfTagExists field value if set, zero value otherwise.
+func (o *RulesetRespDataAttributesRulesItemsQuery) GetIfTagExists() DataAttributesRulesItemsIfTagExists {
+	if o == nil || o.IfTagExists == nil {
+		var ret DataAttributesRulesItemsIfTagExists
+		return ret
+	}
+	return *o.IfTagExists
+}
+
+// GetIfTagExistsOk returns a tuple with the IfTagExists field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RulesetRespDataAttributesRulesItemsQuery) GetIfTagExistsOk() (*DataAttributesRulesItemsIfTagExists, bool) {
+	if o == nil || o.IfTagExists == nil {
+		return nil, false
+	}
+	return o.IfTagExists, true
+}
+
+// HasIfTagExists returns a boolean if a field has been set.
+func (o *RulesetRespDataAttributesRulesItemsQuery) HasIfTagExists() bool {
+	return o != nil && o.IfTagExists != nil
+}
+
+// SetIfTagExists gets a reference to the given DataAttributesRulesItemsIfTagExists and assigns it to the IfTagExists field.
+func (o *RulesetRespDataAttributesRulesItemsQuery) SetIfTagExists(v DataAttributesRulesItemsIfTagExists) {
+	o.IfTagExists = &v
 }
 
 // GetQuery returns the Query field value.
@@ -154,7 +192,12 @@ func (o RulesetRespDataAttributesRulesItemsQuery) MarshalJSON() ([]byte, error) 
 	if o.CaseInsensitivity != nil {
 		toSerialize["case_insensitivity"] = o.CaseInsensitivity
 	}
-	toSerialize["if_not_exists"] = o.IfNotExists
+	if o.IfNotExists != nil {
+		toSerialize["if_not_exists"] = o.IfNotExists
+	}
+	if o.IfTagExists != nil {
+		toSerialize["if_tag_exists"] = o.IfTagExists
+	}
 	toSerialize["query"] = o.Query
 
 	for key, value := range o.AdditionalProperties {
@@ -168,7 +211,8 @@ func (o *RulesetRespDataAttributesRulesItemsQuery) UnmarshalJSON(bytes []byte) (
 	all := struct {
 		Addition          NullableRulesetRespDataAttributesRulesItemsQueryAddition `json:"addition"`
 		CaseInsensitivity *bool                                                    `json:"case_insensitivity,omitempty"`
-		IfNotExists       *bool                                                    `json:"if_not_exists"`
+		IfNotExists       *bool                                                    `json:"if_not_exists,omitempty"`
+		IfTagExists       *DataAttributesRulesItemsIfTagExists                     `json:"if_tag_exists,omitempty"`
 		Query             *string                                                  `json:"query"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -177,25 +221,33 @@ func (o *RulesetRespDataAttributesRulesItemsQuery) UnmarshalJSON(bytes []byte) (
 	if !all.Addition.IsSet() {
 		return fmt.Errorf("required field addition missing")
 	}
-	if all.IfNotExists == nil {
-		return fmt.Errorf("required field if_not_exists missing")
-	}
 	if all.Query == nil {
 		return fmt.Errorf("required field query missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"addition", "case_insensitivity", "if_not_exists", "query"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"addition", "case_insensitivity", "if_not_exists", "if_tag_exists", "query"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Addition = all.Addition
 	o.CaseInsensitivity = all.CaseInsensitivity
-	o.IfNotExists = *all.IfNotExists
+	o.IfNotExists = all.IfNotExists
+	if all.IfTagExists != nil && !all.IfTagExists.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.IfTagExists = all.IfTagExists
+	}
 	o.Query = *all.Query
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

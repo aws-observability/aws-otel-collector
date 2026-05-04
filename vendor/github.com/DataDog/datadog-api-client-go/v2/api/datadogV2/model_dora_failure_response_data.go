@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DORAFailureResponseData Response after receiving a DORA failure event.
+// DORAFailureResponseData Response after receiving a DORA incident event.
 type DORAFailureResponseData struct {
-	// The ID of the received DORA failure event.
+	// The ID of the received DORA incident event.
 	Id string `json:"id"`
-	// JSON:API type for DORA failure events.
+	// JSON:API type for DORA incident events.
 	Type *DORAFailureType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

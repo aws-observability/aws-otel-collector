@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestData
+// ScaRequestData The data object in an SCA request, containing the dependency graph attributes and request type.
 type ScaRequestData struct {
-	//
+	// The attributes of an SCA request, containing dependency graph data, vulnerability information, and repository context.
 	Attributes *ScaRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// An optional identifier for this SCA request data object.
 	Id *string `json:"id,omitempty"`
-	//
+	// The type identifier for SCA dependency analysis requests.
 	Type ScaRequestDataType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

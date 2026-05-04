@@ -67,8 +67,6 @@ func NewSnapshotProperties() *SnapshotProperties {
 	this.ExposeSerial = &exposeSerial
 	var requireLegacyBios bool = true
 	this.RequireLegacyBios = &requireLegacyBios
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
 
 	return &this
 }
@@ -82,8 +80,6 @@ func NewSnapshotPropertiesWithDefaults() *SnapshotProperties {
 	this.ExposeSerial = &exposeSerial
 	var requireLegacyBios bool = true
 	this.RequireLegacyBios = &requireLegacyBios
-	var applicationType string = "UNKNOWN"
-	this.ApplicationType = &applicationType
 	return &this
 }
 

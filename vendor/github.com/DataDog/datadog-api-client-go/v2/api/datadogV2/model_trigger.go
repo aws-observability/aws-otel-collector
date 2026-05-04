@@ -17,10 +17,12 @@ type Trigger struct {
 	DatabaseMonitoringTriggerWrapper *DatabaseMonitoringTriggerWrapper
 	DatastoreTriggerWrapper          *DatastoreTriggerWrapper
 	DashboardTriggerWrapper          *DashboardTriggerWrapper
+	FormTriggerWrapper               *FormTriggerWrapper
 	GithubWebhookTriggerWrapper      *GithubWebhookTriggerWrapper
 	IncidentTriggerWrapper           *IncidentTriggerWrapper
 	MonitorTriggerWrapper            *MonitorTriggerWrapper
 	NotebookTriggerWrapper           *NotebookTriggerWrapper
+	OnCallTriggerWrapper             *OnCallTriggerWrapper
 	ScheduleTriggerWrapper           *ScheduleTriggerWrapper
 	SecurityTriggerWrapper           *SecurityTriggerWrapper
 	SelfServiceTriggerWrapper        *SelfServiceTriggerWrapper
@@ -67,6 +69,11 @@ func DashboardTriggerWrapperAsTrigger(v *DashboardTriggerWrapper) Trigger {
 	return Trigger{DashboardTriggerWrapper: v}
 }
 
+// FormTriggerWrapperAsTrigger is a convenience function that returns FormTriggerWrapper wrapped in Trigger.
+func FormTriggerWrapperAsTrigger(v *FormTriggerWrapper) Trigger {
+	return Trigger{FormTriggerWrapper: v}
+}
+
 // GithubWebhookTriggerWrapperAsTrigger is a convenience function that returns GithubWebhookTriggerWrapper wrapped in Trigger.
 func GithubWebhookTriggerWrapperAsTrigger(v *GithubWebhookTriggerWrapper) Trigger {
 	return Trigger{GithubWebhookTriggerWrapper: v}
@@ -85,6 +92,11 @@ func MonitorTriggerWrapperAsTrigger(v *MonitorTriggerWrapper) Trigger {
 // NotebookTriggerWrapperAsTrigger is a convenience function that returns NotebookTriggerWrapper wrapped in Trigger.
 func NotebookTriggerWrapperAsTrigger(v *NotebookTriggerWrapper) Trigger {
 	return Trigger{NotebookTriggerWrapper: v}
+}
+
+// OnCallTriggerWrapperAsTrigger is a convenience function that returns OnCallTriggerWrapper wrapped in Trigger.
+func OnCallTriggerWrapperAsTrigger(v *OnCallTriggerWrapper) Trigger {
+	return Trigger{OnCallTriggerWrapper: v}
 }
 
 // ScheduleTriggerWrapperAsTrigger is a convenience function that returns ScheduleTriggerWrapper wrapped in Trigger.
@@ -240,6 +252,23 @@ func (obj *Trigger) UnmarshalJSON(data []byte) error {
 		obj.DashboardTriggerWrapper = nil
 	}
 
+	// try to unmarshal data into FormTriggerWrapper
+	err = datadog.Unmarshal(data, &obj.FormTriggerWrapper)
+	if err == nil {
+		if obj.FormTriggerWrapper != nil && obj.FormTriggerWrapper.UnparsedObject == nil {
+			jsonFormTriggerWrapper, _ := datadog.Marshal(obj.FormTriggerWrapper)
+			if string(jsonFormTriggerWrapper) == "{}" { // empty struct
+				obj.FormTriggerWrapper = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.FormTriggerWrapper = nil
+		}
+	} else {
+		obj.FormTriggerWrapper = nil
+	}
+
 	// try to unmarshal data into GithubWebhookTriggerWrapper
 	err = datadog.Unmarshal(data, &obj.GithubWebhookTriggerWrapper)
 	if err == nil {
@@ -306,6 +335,23 @@ func (obj *Trigger) UnmarshalJSON(data []byte) error {
 		}
 	} else {
 		obj.NotebookTriggerWrapper = nil
+	}
+
+	// try to unmarshal data into OnCallTriggerWrapper
+	err = datadog.Unmarshal(data, &obj.OnCallTriggerWrapper)
+	if err == nil {
+		if obj.OnCallTriggerWrapper != nil && obj.OnCallTriggerWrapper.UnparsedObject == nil {
+			jsonOnCallTriggerWrapper, _ := datadog.Marshal(obj.OnCallTriggerWrapper)
+			if string(jsonOnCallTriggerWrapper) == "{}" { // empty struct
+				obj.OnCallTriggerWrapper = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.OnCallTriggerWrapper = nil
+		}
+	} else {
+		obj.OnCallTriggerWrapper = nil
 	}
 
 	// try to unmarshal data into ScheduleTriggerWrapper
@@ -419,10 +465,12 @@ func (obj *Trigger) UnmarshalJSON(data []byte) error {
 		obj.DatabaseMonitoringTriggerWrapper = nil
 		obj.DatastoreTriggerWrapper = nil
 		obj.DashboardTriggerWrapper = nil
+		obj.FormTriggerWrapper = nil
 		obj.GithubWebhookTriggerWrapper = nil
 		obj.IncidentTriggerWrapper = nil
 		obj.MonitorTriggerWrapper = nil
 		obj.NotebookTriggerWrapper = nil
+		obj.OnCallTriggerWrapper = nil
 		obj.ScheduleTriggerWrapper = nil
 		obj.SecurityTriggerWrapper = nil
 		obj.SelfServiceTriggerWrapper = nil
@@ -464,6 +512,10 @@ func (obj Trigger) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(&obj.DashboardTriggerWrapper)
 	}
 
+	if obj.FormTriggerWrapper != nil {
+		return datadog.Marshal(&obj.FormTriggerWrapper)
+	}
+
 	if obj.GithubWebhookTriggerWrapper != nil {
 		return datadog.Marshal(&obj.GithubWebhookTriggerWrapper)
 	}
@@ -478,6 +530,10 @@ func (obj Trigger) MarshalJSON() ([]byte, error) {
 
 	if obj.NotebookTriggerWrapper != nil {
 		return datadog.Marshal(&obj.NotebookTriggerWrapper)
+	}
+
+	if obj.OnCallTriggerWrapper != nil {
+		return datadog.Marshal(&obj.OnCallTriggerWrapper)
 	}
 
 	if obj.ScheduleTriggerWrapper != nil {
@@ -540,6 +596,10 @@ func (obj *Trigger) GetActualInstance() interface{} {
 		return obj.DashboardTriggerWrapper
 	}
 
+	if obj.FormTriggerWrapper != nil {
+		return obj.FormTriggerWrapper
+	}
+
 	if obj.GithubWebhookTriggerWrapper != nil {
 		return obj.GithubWebhookTriggerWrapper
 	}
@@ -554,6 +614,10 @@ func (obj *Trigger) GetActualInstance() interface{} {
 
 	if obj.NotebookTriggerWrapper != nil {
 		return obj.NotebookTriggerWrapper
+	}
+
+	if obj.OnCallTriggerWrapper != nil {
+		return obj.OnCallTriggerWrapper
 	}
 
 	if obj.ScheduleTriggerWrapper != nil {

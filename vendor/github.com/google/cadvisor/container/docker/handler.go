@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Handler for Docker containers.
+//go:build linux
+
+// Package docker implements a handler for Docker containers.
 package docker
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -23,6 +26,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	dclient "github.com/moby/moby/client"
+	"github.com/opencontainers/cgroups"
+	"github.com/opencontainers/runtime-spec/specs-go"
 
 	"github.com/google/cadvisor/container"
 	"github.com/google/cadvisor/container/common"
@@ -34,11 +41,8 @@ import (
 	"github.com/google/cadvisor/fs"
 	info "github.com/google/cadvisor/info/v1"
 	"github.com/google/cadvisor/zfs"
-	"github.com/opencontainers/cgroups"
-	"github.com/opencontainers/runtime-spec/specs-go"
 
-	docker "github.com/docker/docker/client"
-	"golang.org/x/net/context"
+	"k8s.io/klog/v2"
 )
 
 const (
@@ -51,7 +55,7 @@ const (
 	pathToContainersDir = "containers"
 )
 
-type dockerContainerHandler struct {
+type containerHandler struct {
 	// machineInfoFactory provides info.MachineInfo
 	machineInfoFactory info.MachineInfoFactory
 
@@ -68,9 +72,8 @@ type dockerContainerHandler struct {
 	creationTime time.Time
 
 	// Metadata associated with the container.
-	envs         map[string]string
-	labels       map[string]string
-	healthStatus string
+	envs   map[string]string
+	labels map[string]string
 
 	// Image name used for this container.
 	image string
@@ -81,10 +84,10 @@ type dockerContainerHandler struct {
 	// The IP address of the container
 	ipAddress string
 
-	includedMetrics container.MetricSet
+	metrics container.MetricSet
 
 	// the devicemapper poolname
-	poolName string
+	thinPoolName string
 
 	// zfsParent is the parent for docker zfs
 	zfsParent string
@@ -93,9 +96,12 @@ type dockerContainerHandler struct {
 	reference info.ContainerReference
 
 	libcontainerHandler *containerlibcontainer.Handler
+
+	// the docker client is needed to inspect the container and get the health status
+	client dclient.APIClient
 }
 
-var _ container.ContainerHandler = &dockerContainerHandler{}
+var _ container.ContainerHandler = &containerHandler{}
 
 func getRwLayerID(containerID, storageDir string, sd StorageDriver, dockerVersion []int) (string, error) {
 	const (
@@ -114,9 +120,9 @@ func getRwLayerID(containerID, storageDir string, sd StorageDriver, dockerVersio
 	return string(bytes), err
 }
 
-// newDockerContainerHandler returns a new container.ContainerHandler
-func newDockerContainerHandler(
-	client *docker.Client,
+// newContainerHandler returns a new container.ContainerHandler
+func newContainerHandler(
+	client *dclient.Client,
 	containerdClient containerd.ContainerdClient,
 	name string,
 	machineInfoFactory info.MachineInfoFactory,
@@ -127,7 +133,7 @@ func newDockerContainerHandler(
 	inHostNamespace bool,
 	metadataEnvAllowList []string,
 	dockerVersion []int,
-	includedMetrics container.MetricSet,
+	metrics container.MetricSet,
 	thinPoolName string,
 	thinPoolWatcher *devicemapper.ThinPoolWatcher,
 	zfsWatcher *zfs.ZfsWatcher,
@@ -181,79 +187,87 @@ func newDockerContainerHandler(
 	}
 
 	// We assume that if Inspect fails then the container is not known to docker.
-	ctnr, err := client.ContainerInspect(context.Background(), id)
+	res, err := client.ContainerInspect(context.Background(), id, dclient.ContainerInspectOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to inspect container %q: %v", id, err)
 	}
+	ctnr := res.Container
+
+	// Obtain the IP address for the container.
+	var ipAddress string
+	if ctnr.NetworkSettings != nil && ctnr.HostConfig != nil {
+		c := ctnr
+		if ctnr.HostConfig.NetworkMode.IsContainer() {
+			// If the NetworkMode starts with 'container:' then we need to use the IP address of the container specified.
+			// This happens in cases such as kubernetes where the containers doesn't have an IP address itself and we need to use the pod's address
+			containerID := ctnr.HostConfig.NetworkMode.ConnectedContainer()
+			res, err := client.ContainerInspect(context.Background(), containerID, dclient.ContainerInspectOptions{})
+			if err != nil {
+				return nil, fmt.Errorf("failed to inspect container %q: %v", containerID, err)
+			}
+			c = res.Container
+		}
+		if nw, ok := c.NetworkSettings.Networks[c.HostConfig.NetworkMode.NetworkName()]; ok {
+			if nw.IPAddress.IsValid() {
+				ipAddress = nw.IPAddress.String()
+			}
+		}
+	}
 
 	// Do not report network metrics for containers that share netns with another container.
-	metrics := common.RemoveNetMetrics(includedMetrics, ctnr.HostConfig.NetworkMode.IsContainer())
+	includedMetrics := common.RemoveNetMetrics(metrics, ctnr.HostConfig.NetworkMode.IsContainer())
 
-	// TODO: extract object mother method
-	handler := &dockerContainerHandler{
+	handler := &containerHandler{
 		machineInfoFactory: machineInfoFactory,
 		cgroupPaths:        cgroupPaths,
-		fsInfo:             fsInfo,
 		storageDriver:      storageDriver,
-		poolName:           thinPoolName,
+		fsInfo:             fsInfo,
 		rootfsStorageDir:   rootfsStorageDir,
+		ipAddress:          ipAddress,
 		envs:               make(map[string]string),
 		labels:             ctnr.Config.Labels,
-		includedMetrics:    metrics,
+		image:              ctnr.Config.Image,
+		metrics:            includedMetrics,
+		thinPoolName:       thinPoolName,
 		zfsParent:          zfsParent,
+		client:             client,
+		reference: info.ContainerReference{
+			// Add the name and bare ID as aliases of the container.
+			Id:        id,
+			Name:      name,
+			Aliases:   []string{strings.TrimPrefix(ctnr.Name, "/"), id},
+			Namespace: DockerNamespace,
+		},
+		libcontainerHandler: containerlibcontainer.NewHandler(cgroupManager, rootFs, ctnr.State.Pid, metrics),
 	}
-	// Health status may be nil if no health check is configured
-	if ctnr.State.Health != nil {
-		handler.healthStatus = ctnr.State.Health.Status
-	}
+
 	// Timestamp returned by Docker is in time.RFC3339Nano format.
 	handler.creationTime, err = time.Parse(time.RFC3339Nano, ctnr.Created)
 	if err != nil {
-		// This should not happen, report the error just in case
 		return nil, fmt.Errorf("failed to parse the create timestamp %q for container %q: %v", ctnr.Created, id, err)
 	}
-	handler.libcontainerHandler = containerlibcontainer.NewHandler(cgroupManager, rootFs, ctnr.State.Pid, metrics)
 
-	// Add the name and bare ID as aliases of the container.
-	handler.reference = info.ContainerReference{
-		Id:        id,
-		Name:      name,
-		Aliases:   []string{strings.TrimPrefix(ctnr.Name, "/"), id},
-		Namespace: DockerNamespace,
-	}
-	handler.image = ctnr.Config.Image
-	// Only adds restartcount label if it's greater than 0
 	if ctnr.RestartCount > 0 {
 		handler.labels["restartcount"] = strconv.Itoa(ctnr.RestartCount)
 	}
 
-	// Obtain the IP address for the container.
-	// If the NetworkMode starts with 'container:' then we need to use the IP address of the container specified.
-	// This happens in cases such as kubernetes where the containers doesn't have an IP address itself and we need to use the pod's address
-	ipAddress := ctnr.NetworkSettings.IPAddress
-	networkMode := string(ctnr.HostConfig.NetworkMode)
-	if ipAddress == "" && strings.HasPrefix(networkMode, "container:") {
-		containerID := strings.TrimPrefix(networkMode, "container:")
-		c, err := client.ContainerInspect(context.Background(), containerID)
-		if err != nil {
-			return nil, fmt.Errorf("failed to inspect container %q: %v", id, err)
-		}
-		ipAddress = c.NetworkSettings.IPAddress
-	}
-
-	handler.ipAddress = ipAddress
-
 	if includedMetrics.Has(container.DiskUsageMetrics) {
+		var deviceID string
+		if ctnr.GraphDriver != nil {
+			deviceID = ctnr.GraphDriver.Data["DeviceId"]
+		} else {
+			klog.V(4).Infof("GraphDriver not found for container %q", id)
+		}
 		handler.fsHandler = &FsHandler{
 			FsHandler:       common.NewFsHandler(common.DefaultPeriod, rootfsStorageDir, otherStorageDir, fsInfo),
 			ThinPoolWatcher: thinPoolWatcher,
 			ZfsWatcher:      zfsWatcher,
-			DeviceID:        ctnr.GraphDriver.Data["DeviceId"],
+			DeviceID:        deviceID,
 			ZfsFilesystem:   zfsFilesystem,
 		}
 	}
 
-	// split env vars to get metadata map.
+	// Split env vars to get metadata map.
 	for _, exposedEnv := range metadataEnvAllowList {
 		if exposedEnv == "" {
 			// if no dockerEnvWhitelist provided, len(metadataEnvAllowList) == 1, metadataEnvAllowList[0] == ""
@@ -296,46 +310,47 @@ func DetermineDeviceStorage(storageDriver StorageDriver, storageDir string, rwLa
 	return
 }
 
-func (h *dockerContainerHandler) Start() {
-	if h.fsHandler != nil {
-		h.fsHandler.Start()
-	}
-}
-
-func (h *dockerContainerHandler) Cleanup() {
-	if h.fsHandler != nil {
-		h.fsHandler.Stop()
-	}
-}
-
-func (h *dockerContainerHandler) ContainerReference() (info.ContainerReference, error) {
+func (h *containerHandler) ContainerReference() (info.ContainerReference, error) {
 	return h.reference, nil
 }
 
-func (h *dockerContainerHandler) GetSpec() (info.ContainerSpec, error) {
-	hasFilesystem := h.includedMetrics.Has(container.DiskUsageMetrics)
-	hasNetwork := h.includedMetrics.Has(container.NetworkUsageMetrics)
+func (h *containerHandler) GetSpec() (info.ContainerSpec, error) {
+	hasFilesystem := h.metrics.Has(container.DiskUsageMetrics)
+	hasNetwork := h.metrics.Has(container.NetworkUsageMetrics)
 	spec, err := common.GetSpec(h.cgroupPaths, h.machineInfoFactory, hasNetwork, hasFilesystem)
+	if err != nil {
+		return info.ContainerSpec{}, err
+	}
 
 	spec.Labels = h.labels
 	spec.Envs = h.envs
 	spec.Image = h.image
 	spec.CreationTime = h.creationTime
 
-	return spec, err
+	return spec, nil
 }
 
-func (h *dockerContainerHandler) GetStats() (*info.ContainerStats, error) {
+func (h *containerHandler) GetStats() (*info.ContainerStats, error) {
 	// TODO(vmarmol): Get from libcontainer API instead of cgroup manager when we don't have to support older Dockers.
 	stats, err := h.libcontainerHandler.GetStats()
 	if err != nil {
 		return stats, err
 	}
-	stats.Health.Status = h.healthStatus
+
+	// We assume that if Inspect fails then the container is not known to docker.
+	res, err := h.client.ContainerInspect(context.Background(), h.reference.Id, dclient.ContainerInspectOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to inspect container %q: %v", h.reference.Id, err)
+	}
+	ctnr := res.Container
+
+	if ctnr.State.Health != nil {
+		stats.Health.Status = string(ctnr.State.Health.Status)
+	}
 
 	// Get filesystem stats.
-	err = FsStats(stats, h.machineInfoFactory, h.includedMetrics, h.storageDriver,
-		h.fsHandler, h.fsInfo, h.poolName, h.rootfsStorageDir, h.zfsParent)
+	err = FsStats(stats, h.machineInfoFactory, h.metrics, h.storageDriver,
+		h.fsHandler, h.fsInfo, h.thinPoolName, h.rootfsStorageDir, h.zfsParent)
 	if err != nil {
 		return stats, err
 	}
@@ -343,39 +358,64 @@ func (h *dockerContainerHandler) GetStats() (*info.ContainerStats, error) {
 	return stats, nil
 }
 
-func (h *dockerContainerHandler) ListContainers(listType container.ListType) ([]info.ContainerReference, error) {
-	// No-op for Docker driver.
+func (h *containerHandler) ListContainers(container.ListType) ([]info.ContainerReference, error) {
 	return []info.ContainerReference{}, nil
 }
 
-func (h *dockerContainerHandler) GetCgroupPath(resource string) (string, error) {
+func (h *containerHandler) ListProcesses(container.ListType) ([]int, error) {
+	return h.libcontainerHandler.GetProcesses()
+}
+
+func (h *containerHandler) GetCgroupPath(resource string) (string, error) {
 	var res string
 	if !cgroups.IsCgroup2UnifiedMode() {
 		res = resource
 	}
-	path, ok := h.cgroupPaths[res]
+	cgroupPath, ok := h.cgroupPaths[res]
 	if !ok {
 		return "", fmt.Errorf("could not find path for resource %q for container %q", resource, h.reference.Name)
 	}
-	return path, nil
+	return cgroupPath, nil
 }
 
-func (h *dockerContainerHandler) GetContainerLabels() map[string]string {
+func (h *containerHandler) GetContainerLabels() map[string]string {
 	return h.labels
 }
 
-func (h *dockerContainerHandler) GetContainerIPAddress() string {
+func (h *containerHandler) GetContainerIPAddress() string {
 	return h.ipAddress
 }
 
-func (h *dockerContainerHandler) ListProcesses(listType container.ListType) ([]int, error) {
-	return h.libcontainerHandler.GetProcesses()
-}
-
-func (h *dockerContainerHandler) Exists() bool {
+func (h *containerHandler) Exists() bool {
 	return common.CgroupExists(h.cgroupPaths)
 }
 
-func (h *dockerContainerHandler) Type() container.ContainerType {
+func (h *containerHandler) Cleanup() {
+	if h.fsHandler != nil {
+		h.fsHandler.Stop()
+	}
+}
+
+func (h *containerHandler) Start() {
+	if h.fsHandler != nil {
+		h.fsHandler.Start()
+	}
+}
+
+func (h *containerHandler) Type() container.ContainerType {
 	return container.ContainerTypeDocker
+}
+
+func (h *containerHandler) GetExitCode() (int, error) {
+	res, err := h.client.ContainerInspect(context.Background(), h.reference.Id, dclient.ContainerInspectOptions{})
+	if err != nil {
+		return -1, fmt.Errorf("failed to inspect container %s: %w", h.reference.Id, err)
+	}
+	ctnr := res.Container
+
+	if ctnr.State.Running {
+		return -1, fmt.Errorf("container %s is still running", h.reference.Id)
+	}
+
+	return ctnr.State.ExitCode, nil
 }

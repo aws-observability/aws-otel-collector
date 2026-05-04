@@ -29,14 +29,14 @@ type SyntheticsTestDetails struct {
 	// Define whether you want to start (`live`) or pause (`paused`) a
 	// Synthetic test.
 	Status *SyntheticsTestPauseStatus `json:"status,omitempty"`
-	// For browser test, the steps of the test.
+	// The steps of the test if they exist.
 	Steps []SyntheticsStep `json:"steps,omitempty"`
 	// The subtype of the Synthetic API test, `http`, `ssl`, `tcp`,
 	// `dns`, `icmp`, `udp`, `websocket`, `grpc` or `multi`.
 	Subtype *SyntheticsTestDetailsSubType `json:"subtype,omitempty"`
 	// Array of tags attached to the test.
 	Tags []string `json:"tags,omitempty"`
-	// Type of the Synthetic test, either `api` or `browser`.
+	// Type of the Synthetic test.
 	Type *SyntheticsTestDetailsType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -10,7 +10,8 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonthlyUsageAttributionSupportedMetrics Supported metrics for monthly usage attribution requests.
+// MonthlyUsageAttributionSupportedMetrics Supported metrics for monthly usage attribution requests. Usage types are in the format `<usage_type>_usage`.
+// To obtain the complete list of valid usage types, make a request to the [Get usage attribution types API](https://docs.datadoghq.com/api/latest/usage-metering/#get-usage-attribution-types).
 type MonthlyUsageAttributionSupportedMetrics string
 
 // List of MonthlyUsageAttributionSupportedMetrics.
@@ -29,6 +30,8 @@ const (
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_PERCENTAGE                                   MonthlyUsageAttributionSupportedMetrics = "appsec_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ASM_SERVERLESS_TRACED_INVOCATIONS_USAGE             MonthlyUsageAttributionSupportedMetrics = "asm_serverless_traced_invocations_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ASM_SERVERLESS_TRACED_INVOCATIONS_PERCENTAGE        MonthlyUsageAttributionSupportedMetrics = "asm_serverless_traced_invocations_percentage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BITS_AI_INVESTIGATIONS_USAGE                        MonthlyUsageAttributionSupportedMetrics = "bits_ai_investigations_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BITS_AI_INVESTIGATIONS_PERCENTAGE                   MonthlyUsageAttributionSupportedMetrics = "bits_ai_investigations_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_USAGE                                       MonthlyUsageAttributionSupportedMetrics = "browser_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_PERCENTAGE                                  MonthlyUsageAttributionSupportedMetrics = "browser_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CI_VISIBILITY_ITR_USAGE                             MonthlyUsageAttributionSupportedMetrics = "ci_visibility_itr_usage"
@@ -71,6 +74,10 @@ const (
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ESTIMATED_INGESTED_SPANS_PERCENTAGE                 MonthlyUsageAttributionSupportedMetrics = "estimated_ingested_spans_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FARGATE_USAGE                                       MonthlyUsageAttributionSupportedMetrics = "fargate_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FARGATE_PERCENTAGE                                  MonthlyUsageAttributionSupportedMetrics = "fargate_percentage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_LOGS_STARTER_USAGE                             MonthlyUsageAttributionSupportedMetrics = "flex_logs_starter_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_LOGS_STARTER_PERCENTAGE                        MonthlyUsageAttributionSupportedMetrics = "flex_logs_starter_percentage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_STORED_LOGS_USAGE                              MonthlyUsageAttributionSupportedMetrics = "flex_stored_logs_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_STORED_LOGS_PERCENTAGE                         MonthlyUsageAttributionSupportedMetrics = "flex_stored_logs_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FUNCTIONS_USAGE                                     MonthlyUsageAttributionSupportedMetrics = "functions_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FUNCTIONS_PERCENTAGE                                MonthlyUsageAttributionSupportedMetrics = "functions_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_INCIDENT_MANAGEMENT_MONTHLY_ACTIVE_USERS_USAGE      MonthlyUsageAttributionSupportedMetrics = "incident_management_monthly_active_users_usage"
@@ -83,6 +90,8 @@ const (
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LAMBDA_TRACED_INVOCATIONS_PERCENTAGE                MonthlyUsageAttributionSupportedMetrics = "lambda_traced_invocations_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_OBSERVABILITY_USAGE                             MonthlyUsageAttributionSupportedMetrics = "llm_observability_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_OBSERVABILITY_PERCENTAGE                        MonthlyUsageAttributionSupportedMetrics = "llm_observability_percentage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_SPANS_USAGE                                     MonthlyUsageAttributionSupportedMetrics = "llm_spans_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_SPANS_PERCENTAGE                                MonthlyUsageAttributionSupportedMetrics = "llm_spans_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_MOBILE_APP_TESTING_USAGE                            MonthlyUsageAttributionSupportedMetrics = "mobile_app_testing_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_MOBILE_APP_TESTING_PERCENTAGE                       MonthlyUsageAttributionSupportedMetrics = "mobile_app_testing_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_NDM_NETFLOW_USAGE                                   MonthlyUsageAttributionSupportedMetrics = "ndm_netflow_usage"
@@ -109,6 +118,8 @@ const (
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_PUBLISHED_APP_PERCENTAGE                            MonthlyUsageAttributionSupportedMetrics = "published_app_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_USAGE                               MonthlyUsageAttributionSupportedMetrics = "serverless_apps_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_PERCENTAGE                          MonthlyUsageAttributionSupportedMetrics = "serverless_apps_percentage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_APM_USAGE                           MonthlyUsageAttributionSupportedMetrics = "serverless_apps_apm_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_APM_PERCENTAGE                      MonthlyUsageAttributionSupportedMetrics = "serverless_apps_apm_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SNMP_USAGE                                          MonthlyUsageAttributionSupportedMetrics = "snmp_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SNMP_PERCENTAGE                                     MonthlyUsageAttributionSupportedMetrics = "snmp_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_UNIVERSAL_SERVICE_MONITORING_USAGE                  MonthlyUsageAttributionSupportedMetrics = "universal_service_monitoring_usage"
@@ -187,6 +198,8 @@ var allowedMonthlyUsageAttributionSupportedMetricsEnumValues = []MonthlyUsageAtt
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ASM_SERVERLESS_TRACED_INVOCATIONS_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ASM_SERVERLESS_TRACED_INVOCATIONS_PERCENTAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BITS_AI_INVESTIGATIONS_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BITS_AI_INVESTIGATIONS_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CI_VISIBILITY_ITR_USAGE,
@@ -229,6 +242,10 @@ var allowedMonthlyUsageAttributionSupportedMetricsEnumValues = []MonthlyUsageAtt
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ESTIMATED_INGESTED_SPANS_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FARGATE_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FARGATE_PERCENTAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_LOGS_STARTER_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_LOGS_STARTER_PERCENTAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_STORED_LOGS_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FLEX_STORED_LOGS_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FUNCTIONS_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_FUNCTIONS_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_INCIDENT_MANAGEMENT_MONTHLY_ACTIVE_USERS_USAGE,
@@ -241,6 +258,8 @@ var allowedMonthlyUsageAttributionSupportedMetricsEnumValues = []MonthlyUsageAtt
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LAMBDA_TRACED_INVOCATIONS_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_OBSERVABILITY_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_OBSERVABILITY_PERCENTAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_SPANS_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_LLM_SPANS_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_MOBILE_APP_TESTING_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_MOBILE_APP_TESTING_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_NDM_NETFLOW_USAGE,
@@ -267,6 +286,8 @@ var allowedMonthlyUsageAttributionSupportedMetricsEnumValues = []MonthlyUsageAtt
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_PUBLISHED_APP_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_PERCENTAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_APM_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SERVERLESS_APPS_APM_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SNMP_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SNMP_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_UNIVERSAL_SERVICE_MONITORING_USAGE,

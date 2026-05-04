@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonitorNotificationRuleFilterScope Filter monitor notifications. A monitor notification must match the scope.
+// MonitorNotificationRuleFilterScope Filters monitor notifications using a scope expression over key:value pairs with boolean logic (AND, OR, NOT).
 type MonitorNotificationRuleFilterScope struct {
-	// A scope composed of one or several key:value pairs, which can be used to filter monitor notifications on monitor and group tags.
+	// A scope expression composed by key:value pairs (e.g. `service:foo`) with boolean operators (AND, OR, NOT) and parentheses for grouping.
 	Scope string `json:"scope"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

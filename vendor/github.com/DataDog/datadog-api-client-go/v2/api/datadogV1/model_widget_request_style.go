@@ -14,6 +14,10 @@ type WidgetRequestStyle struct {
 	LineType *WidgetLineType `json:"line_type,omitempty"`
 	// Width of line displayed.
 	LineWidth *WidgetLineWidth `json:"line_width,omitempty"`
+	// How to order series in timeseries visualizations.
+	// - `tags`: Order series alphabetically by tag name (default behavior)
+	// - `values`: Order series by their current metric values (typically descending)
+	OrderBy *WidgetStyleOrderBy `json:"order_by,omitempty"`
 	// Color palette to apply to the widget.
 	Palette *string `json:"palette,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -94,6 +98,34 @@ func (o *WidgetRequestStyle) SetLineWidth(v WidgetLineWidth) {
 	o.LineWidth = &v
 }
 
+// GetOrderBy returns the OrderBy field value if set, zero value otherwise.
+func (o *WidgetRequestStyle) GetOrderBy() WidgetStyleOrderBy {
+	if o == nil || o.OrderBy == nil {
+		var ret WidgetStyleOrderBy
+		return ret
+	}
+	return *o.OrderBy
+}
+
+// GetOrderByOk returns a tuple with the OrderBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WidgetRequestStyle) GetOrderByOk() (*WidgetStyleOrderBy, bool) {
+	if o == nil || o.OrderBy == nil {
+		return nil, false
+	}
+	return o.OrderBy, true
+}
+
+// HasOrderBy returns a boolean if a field has been set.
+func (o *WidgetRequestStyle) HasOrderBy() bool {
+	return o != nil && o.OrderBy != nil
+}
+
+// SetOrderBy gets a reference to the given WidgetStyleOrderBy and assigns it to the OrderBy field.
+func (o *WidgetRequestStyle) SetOrderBy(v WidgetStyleOrderBy) {
+	o.OrderBy = &v
+}
+
 // GetPalette returns the Palette field value if set, zero value otherwise.
 func (o *WidgetRequestStyle) GetPalette() string {
 	if o == nil || o.Palette == nil {
@@ -134,6 +166,9 @@ func (o WidgetRequestStyle) MarshalJSON() ([]byte, error) {
 	if o.LineWidth != nil {
 		toSerialize["line_width"] = o.LineWidth
 	}
+	if o.OrderBy != nil {
+		toSerialize["order_by"] = o.OrderBy
+	}
 	if o.Palette != nil {
 		toSerialize["palette"] = o.Palette
 	}
@@ -147,16 +182,17 @@ func (o WidgetRequestStyle) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetRequestStyle) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		LineType  *WidgetLineType  `json:"line_type,omitempty"`
-		LineWidth *WidgetLineWidth `json:"line_width,omitempty"`
-		Palette   *string          `json:"palette,omitempty"`
+		LineType  *WidgetLineType     `json:"line_type,omitempty"`
+		LineWidth *WidgetLineWidth    `json:"line_width,omitempty"`
+		OrderBy   *WidgetStyleOrderBy `json:"order_by,omitempty"`
+		Palette   *string             `json:"palette,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"line_type", "line_width", "palette"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"line_type", "line_width", "order_by", "palette"})
 	} else {
 		return err
 	}
@@ -171,6 +207,11 @@ func (o *WidgetRequestStyle) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	} else {
 		o.LineWidth = all.LineWidth
+	}
+	if all.OrderBy != nil && !all.OrderBy.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.OrderBy = all.OrderBy
 	}
 	o.Palette = all.Palette
 

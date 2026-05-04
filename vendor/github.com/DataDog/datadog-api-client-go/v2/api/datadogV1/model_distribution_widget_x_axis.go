@@ -16,6 +16,8 @@ type DistributionWidgetXAxis struct {
 	Max *string `json:"max,omitempty"`
 	// Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
 	Min *string `json:"min,omitempty"`
+	// Number of value buckets to target, also known as the resolution of the value bins.
+	NumBuckets *int64 `json:"num_buckets,omitempty"`
 	// Specifies the scale type. Possible values are `linear`.
 	Scale *string `json:"scale,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -136,6 +138,34 @@ func (o *DistributionWidgetXAxis) SetMin(v string) {
 	o.Min = &v
 }
 
+// GetNumBuckets returns the NumBuckets field value if set, zero value otherwise.
+func (o *DistributionWidgetXAxis) GetNumBuckets() int64 {
+	if o == nil || o.NumBuckets == nil {
+		var ret int64
+		return ret
+	}
+	return *o.NumBuckets
+}
+
+// GetNumBucketsOk returns a tuple with the NumBuckets field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DistributionWidgetXAxis) GetNumBucketsOk() (*int64, bool) {
+	if o == nil || o.NumBuckets == nil {
+		return nil, false
+	}
+	return o.NumBuckets, true
+}
+
+// HasNumBuckets returns a boolean if a field has been set.
+func (o *DistributionWidgetXAxis) HasNumBuckets() bool {
+	return o != nil && o.NumBuckets != nil
+}
+
+// SetNumBuckets gets a reference to the given int64 and assigns it to the NumBuckets field.
+func (o *DistributionWidgetXAxis) SetNumBuckets(v int64) {
+	o.NumBuckets = &v
+}
+
 // GetScale returns the Scale field value if set, zero value otherwise.
 func (o *DistributionWidgetXAxis) GetScale() string {
 	if o == nil || o.Scale == nil {
@@ -179,6 +209,9 @@ func (o DistributionWidgetXAxis) MarshalJSON() ([]byte, error) {
 	if o.Min != nil {
 		toSerialize["min"] = o.Min
 	}
+	if o.NumBuckets != nil {
+		toSerialize["num_buckets"] = o.NumBuckets
+	}
 	if o.Scale != nil {
 		toSerialize["scale"] = o.Scale
 	}
@@ -195,6 +228,7 @@ func (o *DistributionWidgetXAxis) UnmarshalJSON(bytes []byte) (err error) {
 		IncludeZero *bool   `json:"include_zero,omitempty"`
 		Max         *string `json:"max,omitempty"`
 		Min         *string `json:"min,omitempty"`
+		NumBuckets  *int64  `json:"num_buckets,omitempty"`
 		Scale       *string `json:"scale,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -202,13 +236,14 @@ func (o *DistributionWidgetXAxis) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"include_zero", "max", "min", "scale"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"include_zero", "max", "min", "num_buckets", "scale"})
 	} else {
 		return err
 	}
 	o.IncludeZero = all.IncludeZero
 	o.Max = all.Max
 	o.Min = all.Min
+	o.NumBuckets = all.NumBuckets
 	o.Scale = all.Scale
 
 	if len(additionalProperties) > 0 {

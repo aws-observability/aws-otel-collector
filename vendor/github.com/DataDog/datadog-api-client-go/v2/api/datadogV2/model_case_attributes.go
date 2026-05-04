@@ -34,8 +34,13 @@ type CaseAttributes struct {
 	Priority *CasePriority `json:"priority,omitempty"`
 	// ServiceNow ticket attached to case
 	ServiceNowTicket NullableServiceNowTicket `json:"service_now_ticket,omitempty"`
-	// Case status
+	// Deprecated way of representing the case status, which only supports OPEN, IN_PROGRESS, and CLOSED statuses. Use `status_name` instead.
+	// Deprecated
 	Status *CaseStatus `json:"status,omitempty"`
+	// Status group of the case.
+	StatusGroup *CaseStatusGroup `json:"status_group,omitempty"`
+	// Status of the case. Must be one of the existing statuses for the case's type.
+	StatusName *string `json:"status_name,omitempty"`
 	// Title
 	Title *string `json:"title,omitempty"`
 	// Case type
@@ -433,6 +438,7 @@ func (o *CaseAttributes) UnsetServiceNowTicket() {
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
+// Deprecated
 func (o *CaseAttributes) GetStatus() CaseStatus {
 	if o == nil || o.Status == nil {
 		var ret CaseStatus
@@ -443,6 +449,7 @@ func (o *CaseAttributes) GetStatus() CaseStatus {
 
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CaseAttributes) GetStatusOk() (*CaseStatus, bool) {
 	if o == nil || o.Status == nil {
 		return nil, false
@@ -456,8 +463,65 @@ func (o *CaseAttributes) HasStatus() bool {
 }
 
 // SetStatus gets a reference to the given CaseStatus and assigns it to the Status field.
+// Deprecated
 func (o *CaseAttributes) SetStatus(v CaseStatus) {
 	o.Status = &v
+}
+
+// GetStatusGroup returns the StatusGroup field value if set, zero value otherwise.
+func (o *CaseAttributes) GetStatusGroup() CaseStatusGroup {
+	if o == nil || o.StatusGroup == nil {
+		var ret CaseStatusGroup
+		return ret
+	}
+	return *o.StatusGroup
+}
+
+// GetStatusGroupOk returns a tuple with the StatusGroup field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CaseAttributes) GetStatusGroupOk() (*CaseStatusGroup, bool) {
+	if o == nil || o.StatusGroup == nil {
+		return nil, false
+	}
+	return o.StatusGroup, true
+}
+
+// HasStatusGroup returns a boolean if a field has been set.
+func (o *CaseAttributes) HasStatusGroup() bool {
+	return o != nil && o.StatusGroup != nil
+}
+
+// SetStatusGroup gets a reference to the given CaseStatusGroup and assigns it to the StatusGroup field.
+func (o *CaseAttributes) SetStatusGroup(v CaseStatusGroup) {
+	o.StatusGroup = &v
+}
+
+// GetStatusName returns the StatusName field value if set, zero value otherwise.
+func (o *CaseAttributes) GetStatusName() string {
+	if o == nil || o.StatusName == nil {
+		var ret string
+		return ret
+	}
+	return *o.StatusName
+}
+
+// GetStatusNameOk returns a tuple with the StatusName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CaseAttributes) GetStatusNameOk() (*string, bool) {
+	if o == nil || o.StatusName == nil {
+		return nil, false
+	}
+	return o.StatusName, true
+}
+
+// HasStatusName returns a boolean if a field has been set.
+func (o *CaseAttributes) HasStatusName() bool {
+	return o != nil && o.StatusName != nil
+}
+
+// SetStatusName gets a reference to the given string and assigns it to the StatusName field.
+func (o *CaseAttributes) SetStatusName(v string) {
+	o.StatusName = &v
 }
 
 // GetTitle returns the Title field value if set, zero value otherwise.
@@ -593,6 +657,12 @@ func (o CaseAttributes) MarshalJSON() ([]byte, error) {
 	if o.Status != nil {
 		toSerialize["status"] = o.Status
 	}
+	if o.StatusGroup != nil {
+		toSerialize["status_group"] = o.StatusGroup
+	}
+	if o.StatusName != nil {
+		toSerialize["status_name"] = o.StatusName
+	}
 	if o.Title != nil {
 		toSerialize["title"] = o.Title
 	}
@@ -624,6 +694,8 @@ func (o *CaseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Priority         *CasePriority                   `json:"priority,omitempty"`
 		ServiceNowTicket NullableServiceNowTicket        `json:"service_now_ticket,omitempty"`
 		Status           *CaseStatus                     `json:"status,omitempty"`
+		StatusGroup      *CaseStatusGroup                `json:"status_group,omitempty"`
+		StatusName       *string                         `json:"status_name,omitempty"`
 		Title            *string                         `json:"title,omitempty"`
 		Type             *CaseType                       `json:"type,omitempty"`
 		TypeId           *string                         `json:"type_id,omitempty"`
@@ -633,7 +705,7 @@ func (o *CaseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "attributes", "closed_at", "created_at", "custom_attributes", "description", "jira_issue", "key", "modified_at", "priority", "service_now_ticket", "status", "title", "type", "type_id"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "attributes", "closed_at", "created_at", "custom_attributes", "description", "jira_issue", "key", "modified_at", "priority", "service_now_ticket", "status", "status_group", "status_name", "title", "type", "type_id"})
 	} else {
 		return err
 	}
@@ -659,6 +731,12 @@ func (o *CaseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Status = all.Status
 	}
+	if all.StatusGroup != nil && !all.StatusGroup.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.StatusGroup = all.StatusGroup
+	}
+	o.StatusName = all.StatusName
 	o.Title = all.Title
 	if all.Type != nil && !all.Type.IsValid() {
 		hasInvalidField = true

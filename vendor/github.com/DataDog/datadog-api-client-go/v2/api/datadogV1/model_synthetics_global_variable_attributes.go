@@ -10,7 +10,8 @@ import (
 
 // SyntheticsGlobalVariableAttributes Attributes of the global variable.
 type SyntheticsGlobalVariableAttributes struct {
-	// A list of role identifiers that can be pulled from the Roles API, for restricting read and write access.
+	// A list of role identifiers that can be pulled from the Roles API, for restricting read and write access. This field is deprecated. Use the restriction policies API to manage permissions.
+	// Deprecated
 	RestrictedRoles []string `json:"restricted_roles,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -35,6 +36,7 @@ func NewSyntheticsGlobalVariableAttributesWithDefaults() *SyntheticsGlobalVariab
 }
 
 // GetRestrictedRoles returns the RestrictedRoles field value if set, zero value otherwise.
+// Deprecated
 func (o *SyntheticsGlobalVariableAttributes) GetRestrictedRoles() []string {
 	if o == nil || o.RestrictedRoles == nil {
 		var ret []string
@@ -45,6 +47,7 @@ func (o *SyntheticsGlobalVariableAttributes) GetRestrictedRoles() []string {
 
 // GetRestrictedRolesOk returns a tuple with the RestrictedRoles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SyntheticsGlobalVariableAttributes) GetRestrictedRolesOk() (*[]string, bool) {
 	if o == nil || o.RestrictedRoles == nil {
 		return nil, false
@@ -58,6 +61,7 @@ func (o *SyntheticsGlobalVariableAttributes) HasRestrictedRoles() bool {
 }
 
 // SetRestrictedRoles gets a reference to the given []string and assigns it to the RestrictedRoles field.
+// Deprecated
 func (o *SyntheticsGlobalVariableAttributes) SetRestrictedRoles(v []string) {
 	o.RestrictedRoles = v
 }

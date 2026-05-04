@@ -49,7 +49,9 @@ type VPCIP struct {
 	VPCID        int     `json:"vpc_id"`
 	SubnetID     int     `json:"subnet_id"`
 	InterfaceID  int     `json:"interface_id"`
-
+	// NOTE: NodeBalancerID and DatabaseID may not currently be available to all users.
+	NodeBalancerID *int `json:"nodebalancer_id"`
+	DatabaseID     *int `json:"database_id"`
 	// NOTE: IPv6 VPCs may not currently be available to all users.
 	IPv6Range     *string            `json:"ipv6_range"`
 	IPv6IsPublic  *bool              `json:"ipv6_is_public"`
@@ -70,6 +72,8 @@ type InstanceIPv6Response struct {
 	LinkLocal *InstanceIP `json:"link_local"`
 	SLAAC     *InstanceIP `json:"slaac"`
 	Global    []IPv6Range `json:"global"`
+	// NOTE: IPv6 VPCs may not currently be available to all users.
+	VPC []VPCIP `json:"vpc"`
 }
 
 // InstanceIPNAT1To1 contains information about the NAT 1:1 mapping

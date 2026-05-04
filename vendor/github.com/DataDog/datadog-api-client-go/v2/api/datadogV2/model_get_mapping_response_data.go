@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMappingResponseData
+// GetMappingResponseData The data object containing the resource type and attributes for the get mapping response.
 type GetMappingResponseData struct {
-	//
+	// Attributes of the get mapping response, containing the list of configured entity attributes.
 	Attributes *GetMappingResponseDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the get mapping response resource.
 	Id *string `json:"id,omitempty"`
 	// Get mappings response resource type.
 	Type GetMappingResponseDataType `json:"type"`

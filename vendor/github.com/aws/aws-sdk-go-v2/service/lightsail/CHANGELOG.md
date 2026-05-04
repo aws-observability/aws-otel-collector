@@ -1,3 +1,51 @@
+# v1.51.0 (2026-03-23)
+
+* **Feature**: Add support for tagging of ContactMethod resource type
+
+# v1.50.14 (2026-03-13)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.13 (2026-03-03)
+
+* **Dependency Update**: Bump minimum Go version to 1.24
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.12 (2026-02-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.11 (2026-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.10 (2025-12-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.9 (2025-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.24.0. Notably this version of the library reduces the allocation footprint of the middleware system. We observe a ~10% reduction in allocations per SDK call with this change.
+
+# v1.50.8 (2025-11-25)
+
+* **Bug Fix**: Add error check for endpoint param binding during auth scheme resolution to fix panic reported in #3234
+
+# v1.50.7 (2025-11-19.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.50.6 (2025-11-12)
+
+* **Bug Fix**: Further reduce allocation overhead when the metrics system isn't in-use.
+* **Bug Fix**: Reduce allocation overhead when the client doesn't have any HTTP interceptors configured.
+* **Bug Fix**: Remove blank trace spans towards the beginning of the request that added no additional information. This conveys a slight reduction in overall allocations.
+
+# v1.50.5 (2025-11-11)
+
+* **Bug Fix**: Return validation error if input region is not a valid host label.
+
 # v1.50.4 (2025-11-04)
 
 * **Dependency Update**: Updated to the latest SDK module versions

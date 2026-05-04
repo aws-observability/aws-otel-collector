@@ -195,7 +195,7 @@ func (a *ContainersApi) ListContainersWithPagination(ctx _context.Context, o ...
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()

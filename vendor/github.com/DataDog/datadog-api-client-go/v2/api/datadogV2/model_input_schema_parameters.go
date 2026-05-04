@@ -12,6 +12,10 @@ import (
 
 // InputSchemaParameters The definition of `InputSchemaParameters` object.
 type InputSchemaParameters struct {
+	// The `InputSchemaParameters` `allowExtraValues`.
+	AllowExtraValues *bool `json:"allowExtraValues,omitempty"`
+	// The `InputSchemaParameters` `allowedValues`.
+	AllowedValues interface{} `json:"allowedValues,omitempty"`
 	// The `InputSchemaParameters` `defaultValue`.
 	DefaultValue interface{} `json:"defaultValue,omitempty"`
 	// The `InputSchemaParameters` `description`.
@@ -44,6 +48,62 @@ func NewInputSchemaParameters(name string, typeVar InputSchemaParametersType) *I
 func NewInputSchemaParametersWithDefaults() *InputSchemaParameters {
 	this := InputSchemaParameters{}
 	return &this
+}
+
+// GetAllowExtraValues returns the AllowExtraValues field value if set, zero value otherwise.
+func (o *InputSchemaParameters) GetAllowExtraValues() bool {
+	if o == nil || o.AllowExtraValues == nil {
+		var ret bool
+		return ret
+	}
+	return *o.AllowExtraValues
+}
+
+// GetAllowExtraValuesOk returns a tuple with the AllowExtraValues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InputSchemaParameters) GetAllowExtraValuesOk() (*bool, bool) {
+	if o == nil || o.AllowExtraValues == nil {
+		return nil, false
+	}
+	return o.AllowExtraValues, true
+}
+
+// HasAllowExtraValues returns a boolean if a field has been set.
+func (o *InputSchemaParameters) HasAllowExtraValues() bool {
+	return o != nil && o.AllowExtraValues != nil
+}
+
+// SetAllowExtraValues gets a reference to the given bool and assigns it to the AllowExtraValues field.
+func (o *InputSchemaParameters) SetAllowExtraValues(v bool) {
+	o.AllowExtraValues = &v
+}
+
+// GetAllowedValues returns the AllowedValues field value if set, zero value otherwise.
+func (o *InputSchemaParameters) GetAllowedValues() interface{} {
+	if o == nil || o.AllowedValues == nil {
+		var ret interface{}
+		return ret
+	}
+	return o.AllowedValues
+}
+
+// GetAllowedValuesOk returns a tuple with the AllowedValues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InputSchemaParameters) GetAllowedValuesOk() (*interface{}, bool) {
+	if o == nil || o.AllowedValues == nil {
+		return nil, false
+	}
+	return &o.AllowedValues, true
+}
+
+// HasAllowedValues returns a boolean if a field has been set.
+func (o *InputSchemaParameters) HasAllowedValues() bool {
+	return o != nil && o.AllowedValues != nil
+}
+
+// SetAllowedValues gets a reference to the given interface{} and assigns it to the AllowedValues field.
+func (o *InputSchemaParameters) SetAllowedValues(v interface{}) {
+	o.AllowedValues = v
 }
 
 // GetDefaultValue returns the DefaultValue field value if set, zero value otherwise.
@@ -182,6 +242,12 @@ func (o InputSchemaParameters) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AllowExtraValues != nil {
+		toSerialize["allowExtraValues"] = o.AllowExtraValues
+	}
+	if o.AllowedValues != nil {
+		toSerialize["allowedValues"] = o.AllowedValues
+	}
 	if o.DefaultValue != nil {
 		toSerialize["defaultValue"] = o.DefaultValue
 	}
@@ -203,11 +269,13 @@ func (o InputSchemaParameters) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *InputSchemaParameters) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		DefaultValue interface{}                `json:"defaultValue,omitempty"`
-		Description  *string                    `json:"description,omitempty"`
-		Label        *string                    `json:"label,omitempty"`
-		Name         *string                    `json:"name"`
-		Type         *InputSchemaParametersType `json:"type"`
+		AllowExtraValues *bool                      `json:"allowExtraValues,omitempty"`
+		AllowedValues    interface{}                `json:"allowedValues,omitempty"`
+		DefaultValue     interface{}                `json:"defaultValue,omitempty"`
+		Description      *string                    `json:"description,omitempty"`
+		Label            *string                    `json:"label,omitempty"`
+		Name             *string                    `json:"name"`
+		Type             *InputSchemaParametersType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -220,12 +288,14 @@ func (o *InputSchemaParameters) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"defaultValue", "description", "label", "name", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"allowExtraValues", "allowedValues", "defaultValue", "description", "label", "name", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AllowExtraValues = all.AllowExtraValues
+	o.AllowedValues = all.AllowedValues
 	o.DefaultValue = all.DefaultValue
 	o.Description = all.Description
 	o.Label = all.Label

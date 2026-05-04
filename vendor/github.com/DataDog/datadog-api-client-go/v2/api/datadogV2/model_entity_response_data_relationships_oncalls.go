@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsOncalls
+// EntityResponseDataRelationshipsOncalls Oncalls relationship containing a list of oncall resources associated with this entity.
 type EntityResponseDataRelationshipsOncalls struct {
-	//
+	// List of oncall relationship data items.
 	Data []EntityResponseDataRelationshipsOncallsDataItems `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

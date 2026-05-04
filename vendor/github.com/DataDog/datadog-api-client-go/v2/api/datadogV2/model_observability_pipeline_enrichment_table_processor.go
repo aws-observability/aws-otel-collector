@@ -10,8 +10,14 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ObservabilityPipelineEnrichmentTableProcessor The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database.
+// ObservabilityPipelineEnrichmentTableProcessor The `enrichment_table` processor enriches logs using a static CSV file, GeoIP database, or reference table. Exactly one of `file`, `geoip`, or `reference_table` must be configured.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineEnrichmentTableProcessor struct {
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
+	Enabled bool `json:"enabled"`
 	// Defines a static enrichment table loaded from a CSV file.
 	File *ObservabilityPipelineEnrichmentTableFile `json:"file,omitempty"`
 	// Uses a GeoIP database to enrich logs based on an IP field.
@@ -20,8 +26,8 @@ type ObservabilityPipelineEnrichmentTableProcessor struct {
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the input for this processor.
-	Inputs []string `json:"inputs"`
+	// Uses a Datadog reference table to enrich logs.
+	ReferenceTable *ObservabilityPipelineEnrichmentTableReferenceTable `json:"reference_table,omitempty"`
 	// Path where enrichment results should be stored in the log.
 	Target string `json:"target"`
 	// The processor type. The value should always be `enrichment_table`.
@@ -35,11 +41,11 @@ type ObservabilityPipelineEnrichmentTableProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineEnrichmentTableProcessor(id string, include string, inputs []string, target string, typeVar ObservabilityPipelineEnrichmentTableProcessorType) *ObservabilityPipelineEnrichmentTableProcessor {
+func NewObservabilityPipelineEnrichmentTableProcessor(enabled bool, id string, include string, target string, typeVar ObservabilityPipelineEnrichmentTableProcessorType) *ObservabilityPipelineEnrichmentTableProcessor {
 	this := ObservabilityPipelineEnrichmentTableProcessor{}
+	this.Enabled = enabled
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Target = target
 	this.Type = typeVar
 	return &this
@@ -53,6 +59,57 @@ func NewObservabilityPipelineEnrichmentTableProcessorWithDefaults() *Observabili
 	var typeVar ObservabilityPipelineEnrichmentTableProcessorType = OBSERVABILITYPIPELINEENRICHMENTTABLEPROCESSORTYPE_ENRICHMENT_TABLE
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetFile returns the File field value if set, zero value otherwise.
@@ -157,27 +214,32 @@ func (o *ObservabilityPipelineEnrichmentTableProcessor) SetInclude(v string) {
 	o.Include = v
 }
 
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineEnrichmentTableProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
+// GetReferenceTable returns the ReferenceTable field value if set, zero value otherwise.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) GetReferenceTable() ObservabilityPipelineEnrichmentTableReferenceTable {
+	if o == nil || o.ReferenceTable == nil {
+		var ret ObservabilityPipelineEnrichmentTableReferenceTable
 		return ret
 	}
-	return o.Inputs
+	return *o.ReferenceTable
 }
 
-// GetInputsOk returns a tuple with the Inputs field value
+// GetReferenceTableOk returns a tuple with the ReferenceTable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineEnrichmentTableProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
+func (o *ObservabilityPipelineEnrichmentTableProcessor) GetReferenceTableOk() (*ObservabilityPipelineEnrichmentTableReferenceTable, bool) {
+	if o == nil || o.ReferenceTable == nil {
 		return nil, false
 	}
-	return &o.Inputs, true
+	return o.ReferenceTable, true
 }
 
-// SetInputs sets field value.
-func (o *ObservabilityPipelineEnrichmentTableProcessor) SetInputs(v []string) {
-	o.Inputs = v
+// HasReferenceTable returns a boolean if a field has been set.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) HasReferenceTable() bool {
+	return o != nil && o.ReferenceTable != nil
+}
+
+// SetReferenceTable gets a reference to the given ObservabilityPipelineEnrichmentTableReferenceTable and assigns it to the ReferenceTable field.
+func (o *ObservabilityPipelineEnrichmentTableProcessor) SetReferenceTable(v ObservabilityPipelineEnrichmentTableReferenceTable) {
+	o.ReferenceTable = &v
 }
 
 // GetTarget returns the Target field value.
@@ -232,6 +294,10 @@ func (o ObservabilityPipelineEnrichmentTableProcessor) MarshalJSON() ([]byte, er
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
+	toSerialize["enabled"] = o.Enabled
 	if o.File != nil {
 		toSerialize["file"] = o.File
 	}
@@ -240,7 +306,9 @@ func (o ObservabilityPipelineEnrichmentTableProcessor) MarshalJSON() ([]byte, er
 	}
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
+	if o.ReferenceTable != nil {
+		toSerialize["reference_table"] = o.ReferenceTable
+	}
 	toSerialize["target"] = o.Target
 	toSerialize["type"] = o.Type
 
@@ -253,25 +321,27 @@ func (o ObservabilityPipelineEnrichmentTableProcessor) MarshalJSON() ([]byte, er
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineEnrichmentTableProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		File    *ObservabilityPipelineEnrichmentTableFile          `json:"file,omitempty"`
-		Geoip   *ObservabilityPipelineEnrichmentTableGeoIp         `json:"geoip,omitempty"`
-		Id      *string                                            `json:"id"`
-		Include *string                                            `json:"include"`
-		Inputs  *[]string                                          `json:"inputs"`
-		Target  *string                                            `json:"target"`
-		Type    *ObservabilityPipelineEnrichmentTableProcessorType `json:"type"`
+		DisplayName    *string                                             `json:"display_name,omitempty"`
+		Enabled        *bool                                               `json:"enabled"`
+		File           *ObservabilityPipelineEnrichmentTableFile           `json:"file,omitempty"`
+		Geoip          *ObservabilityPipelineEnrichmentTableGeoIp          `json:"geoip,omitempty"`
+		Id             *string                                             `json:"id"`
+		Include        *string                                             `json:"include"`
+		ReferenceTable *ObservabilityPipelineEnrichmentTableReferenceTable `json:"reference_table,omitempty"`
+		Target         *string                                             `json:"target"`
+		Type           *ObservabilityPipelineEnrichmentTableProcessorType  `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
 	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
 	}
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
-	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
 	}
 	if all.Target == nil {
 		return fmt.Errorf("required field target missing")
@@ -281,12 +351,14 @@ func (o *ObservabilityPipelineEnrichmentTableProcessor) UnmarshalJSON(bytes []by
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"file", "geoip", "id", "include", "inputs", "target", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "file", "geoip", "id", "include", "reference_table", "target", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
+	o.Enabled = *all.Enabled
 	if all.File != nil && all.File.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
@@ -297,7 +369,10 @@ func (o *ObservabilityPipelineEnrichmentTableProcessor) UnmarshalJSON(bytes []by
 	o.Geoip = all.Geoip
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
+	if all.ReferenceTable != nil && all.ReferenceTable.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ReferenceTable = all.ReferenceTable
 	o.Target = *all.Target
 	if !all.Type.IsValid() {
 		hasInvalidField = true

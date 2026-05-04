@@ -10,8 +10,8 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Deletes an existing scheduled query and all its associated configurations. This
-// operation permanently removes the scheduled query and cannot be undone.
+// Deletes a scheduled query and stops all future executions. This operation also
+// removes any configured actions and associated resources.
 func (c *Client) DeleteScheduledQuery(ctx context.Context, params *DeleteScheduledQueryInput, optFns ...func(*Options)) (*DeleteScheduledQueryOutput, error) {
 	if params == nil {
 		params = &DeleteScheduledQueryInput{}
@@ -29,7 +29,7 @@ func (c *Client) DeleteScheduledQuery(ctx context.Context, params *DeleteSchedul
 
 type DeleteScheduledQueryInput struct {
 
-	// The name or ARN of the scheduled query to delete.
+	// The ARN or name of the scheduled query to delete.
 	//
 	// This member is required.
 	Identifier *string
@@ -78,7 +78,7 @@ func (c *Client) addOperationDeleteScheduledQueryMiddlewares(stack *middleware.S
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -100,9 +100,6 @@ func (c *Client) addOperationDeleteScheduledQueryMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {

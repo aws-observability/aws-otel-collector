@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsRelatedEntitiesDataItems
+// EntityResponseDataRelationshipsRelatedEntitiesDataItems Related entity relationship data item containing the related entity resource identifier and type.
 type EntityResponseDataRelationshipsRelatedEntitiesDataItems struct {
-	//
+	// Related entity unique identifier.
 	Id string `json:"id"`
 	// Related entity resource type.
 	Type EntityResponseDataRelationshipsRelatedEntitiesDataItemsType `json:"type"`

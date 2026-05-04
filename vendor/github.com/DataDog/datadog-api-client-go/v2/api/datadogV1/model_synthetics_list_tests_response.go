@@ -11,7 +11,7 @@ import (
 // SyntheticsListTestsResponse Object containing an array of Synthetic tests configuration.
 type SyntheticsListTestsResponse struct {
 	// Array of Synthetic tests configuration.
-	Tests []SyntheticsTestDetails `json:"tests,omitempty"`
+	Tests []SyntheticsTestDetailsWithoutSteps `json:"tests,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -35,9 +35,9 @@ func NewSyntheticsListTestsResponseWithDefaults() *SyntheticsListTestsResponse {
 }
 
 // GetTests returns the Tests field value if set, zero value otherwise.
-func (o *SyntheticsListTestsResponse) GetTests() []SyntheticsTestDetails {
+func (o *SyntheticsListTestsResponse) GetTests() []SyntheticsTestDetailsWithoutSteps {
 	if o == nil || o.Tests == nil {
-		var ret []SyntheticsTestDetails
+		var ret []SyntheticsTestDetailsWithoutSteps
 		return ret
 	}
 	return o.Tests
@@ -45,7 +45,7 @@ func (o *SyntheticsListTestsResponse) GetTests() []SyntheticsTestDetails {
 
 // GetTestsOk returns a tuple with the Tests field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsListTestsResponse) GetTestsOk() (*[]SyntheticsTestDetails, bool) {
+func (o *SyntheticsListTestsResponse) GetTestsOk() (*[]SyntheticsTestDetailsWithoutSteps, bool) {
 	if o == nil || o.Tests == nil {
 		return nil, false
 	}
@@ -57,8 +57,8 @@ func (o *SyntheticsListTestsResponse) HasTests() bool {
 	return o != nil && o.Tests != nil
 }
 
-// SetTests gets a reference to the given []SyntheticsTestDetails and assigns it to the Tests field.
-func (o *SyntheticsListTestsResponse) SetTests(v []SyntheticsTestDetails) {
+// SetTests gets a reference to the given []SyntheticsTestDetailsWithoutSteps and assigns it to the Tests field.
+func (o *SyntheticsListTestsResponse) SetTests(v []SyntheticsTestDetailsWithoutSteps) {
 	o.Tests = v
 }
 
@@ -81,7 +81,7 @@ func (o SyntheticsListTestsResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsListTestsResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Tests []SyntheticsTestDetails `json:"tests,omitempty"`
+		Tests []SyntheticsTestDetailsWithoutSteps `json:"tests,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

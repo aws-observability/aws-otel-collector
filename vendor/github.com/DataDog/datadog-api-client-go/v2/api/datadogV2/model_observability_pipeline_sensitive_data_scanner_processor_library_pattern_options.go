@@ -12,6 +12,8 @@ import (
 
 // ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions Options for selecting a predefined library pattern and enabling keyword support.
 type ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions struct {
+	// Human-readable description providing context about a sensitive data scanner rule
+	Description *string `json:"description,omitempty"`
 	// Identifier for a predefined pattern from the sensitive data scanner pattern library.
 	Id string `json:"id"`
 	// Whether to augment the pattern with recommended keywords (optional).
@@ -37,6 +39,34 @@ func NewObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions(
 func NewObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptionsWithDefaults() *ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions {
 	this := ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions{}
 	return &this
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetId returns the Id field value.
@@ -96,6 +126,9 @@ func (o ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions)
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	toSerialize["id"] = o.Id
 	if o.UseRecommendedKeywords != nil {
 		toSerialize["use_recommended_keywords"] = o.UseRecommendedKeywords
@@ -110,6 +143,7 @@ func (o ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions)
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Description            *string `json:"description,omitempty"`
 		Id                     *string `json:"id"`
 		UseRecommendedKeywords *bool   `json:"use_recommended_keywords,omitempty"`
 	}{}
@@ -121,10 +155,11 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessorLibraryPatternOptions
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "use_recommended_keywords"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "id", "use_recommended_keywords"})
 	} else {
 		return err
 	}
+	o.Description = all.Description
 	o.Id = *all.Id
 	o.UseRecommendedKeywords = all.UseRecommendedKeywords
 

@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ProjectResourceType Project resource type
+// ProjectResourceType Project resource type.
 type ProjectResourceType string
 
 // List of ProjectResourceType.

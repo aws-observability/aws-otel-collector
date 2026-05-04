@@ -11,13 +11,17 @@ import (
 )
 
 // ObservabilityPipelineAddEnvVarsProcessor The `add_env_vars` processor adds environment variable values to log events.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineAddEnvVarsProcessor struct {
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
+	Enabled bool `json:"enabled"`
 	// The unique identifier for this component. Used to reference this processor in the pipeline.
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the input for this processor.
-	Inputs []string `json:"inputs"`
 	// The processor type. The value should always be `add_env_vars`.
 	Type ObservabilityPipelineAddEnvVarsProcessorType `json:"type"`
 	// A list of environment variable mappings to apply to log fields.
@@ -31,11 +35,11 @@ type ObservabilityPipelineAddEnvVarsProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineAddEnvVarsProcessor(id string, include string, inputs []string, typeVar ObservabilityPipelineAddEnvVarsProcessorType, variables []ObservabilityPipelineAddEnvVarsProcessorVariable) *ObservabilityPipelineAddEnvVarsProcessor {
+func NewObservabilityPipelineAddEnvVarsProcessor(enabled bool, id string, include string, typeVar ObservabilityPipelineAddEnvVarsProcessorType, variables []ObservabilityPipelineAddEnvVarsProcessorVariable) *ObservabilityPipelineAddEnvVarsProcessor {
 	this := ObservabilityPipelineAddEnvVarsProcessor{}
+	this.Enabled = enabled
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Type = typeVar
 	this.Variables = variables
 	return &this
@@ -49,6 +53,57 @@ func NewObservabilityPipelineAddEnvVarsProcessorWithDefaults() *ObservabilityPip
 	var typeVar ObservabilityPipelineAddEnvVarsProcessorType = OBSERVABILITYPIPELINEADDENVVARSPROCESSORTYPE_ADD_ENV_VARS
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineAddEnvVarsProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetId returns the Id field value.
@@ -95,29 +150,6 @@ func (o *ObservabilityPipelineAddEnvVarsProcessor) GetIncludeOk() (*string, bool
 // SetInclude sets field value.
 func (o *ObservabilityPipelineAddEnvVarsProcessor) SetInclude(v string) {
 	o.Include = v
-}
-
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineAddEnvVarsProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineAddEnvVarsProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineAddEnvVarsProcessor) SetInputs(v []string) {
-	o.Inputs = v
 }
 
 // GetType returns the Type field value.
@@ -172,9 +204,12 @@ func (o ObservabilityPipelineAddEnvVarsProcessor) MarshalJSON() ([]byte, error) 
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["type"] = o.Type
 	toSerialize["variables"] = o.Variables
 
@@ -187,23 +222,24 @@ func (o ObservabilityPipelineAddEnvVarsProcessor) MarshalJSON() ([]byte, error) 
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineAddEnvVarsProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id        *string                                             `json:"id"`
-		Include   *string                                             `json:"include"`
-		Inputs    *[]string                                           `json:"inputs"`
-		Type      *ObservabilityPipelineAddEnvVarsProcessorType       `json:"type"`
-		Variables *[]ObservabilityPipelineAddEnvVarsProcessorVariable `json:"variables"`
+		DisplayName *string                                             `json:"display_name,omitempty"`
+		Enabled     *bool                                               `json:"enabled"`
+		Id          *string                                             `json:"id"`
+		Include     *string                                             `json:"include"`
+		Type        *ObservabilityPipelineAddEnvVarsProcessorType       `json:"type"`
+		Variables   *[]ObservabilityPipelineAddEnvVarsProcessorVariable `json:"variables"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
 	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
 	}
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
-	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -213,15 +249,16 @@ func (o *ObservabilityPipelineAddEnvVarsProcessor) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "include", "inputs", "type", "variables"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "id", "include", "type", "variables"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
+	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

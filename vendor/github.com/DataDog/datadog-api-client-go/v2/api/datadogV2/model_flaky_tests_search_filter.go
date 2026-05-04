@@ -10,6 +10,10 @@ import (
 
 // FlakyTestsSearchFilter Search filter settings.
 type FlakyTestsSearchFilter struct {
+	// Whether to include the status change history for each flaky test in the response.
+	// When set to true, each test will include a `history` array with chronological status changes.
+	// Defaults to false.
+	IncludeHistory *bool `json:"include_history,omitempty"`
 	// Search query following log syntax used to filter flaky tests, same as on Flaky Tests Management UI. The supported search keys are:
 	// - `flaky_test_state`
 	// - `flaky_test_category`
@@ -33,6 +37,8 @@ type FlakyTestsSearchFilter struct {
 // will change when the set of required properties is changed.
 func NewFlakyTestsSearchFilter() *FlakyTestsSearchFilter {
 	this := FlakyTestsSearchFilter{}
+	var includeHistory bool = false
+	this.IncludeHistory = &includeHistory
 	var query string = "*"
 	this.Query = &query
 	return &this
@@ -43,9 +49,39 @@ func NewFlakyTestsSearchFilter() *FlakyTestsSearchFilter {
 // but it doesn't guarantee that properties required by API are set.
 func NewFlakyTestsSearchFilterWithDefaults() *FlakyTestsSearchFilter {
 	this := FlakyTestsSearchFilter{}
+	var includeHistory bool = false
+	this.IncludeHistory = &includeHistory
 	var query string = "*"
 	this.Query = &query
 	return &this
+}
+
+// GetIncludeHistory returns the IncludeHistory field value if set, zero value otherwise.
+func (o *FlakyTestsSearchFilter) GetIncludeHistory() bool {
+	if o == nil || o.IncludeHistory == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IncludeHistory
+}
+
+// GetIncludeHistoryOk returns a tuple with the IncludeHistory field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FlakyTestsSearchFilter) GetIncludeHistoryOk() (*bool, bool) {
+	if o == nil || o.IncludeHistory == nil {
+		return nil, false
+	}
+	return o.IncludeHistory, true
+}
+
+// HasIncludeHistory returns a boolean if a field has been set.
+func (o *FlakyTestsSearchFilter) HasIncludeHistory() bool {
+	return o != nil && o.IncludeHistory != nil
+}
+
+// SetIncludeHistory gets a reference to the given bool and assigns it to the IncludeHistory field.
+func (o *FlakyTestsSearchFilter) SetIncludeHistory(v bool) {
+	o.IncludeHistory = &v
 }
 
 // GetQuery returns the Query field value if set, zero value otherwise.
@@ -82,6 +118,9 @@ func (o FlakyTestsSearchFilter) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.IncludeHistory != nil {
+		toSerialize["include_history"] = o.IncludeHistory
+	}
 	if o.Query != nil {
 		toSerialize["query"] = o.Query
 	}
@@ -95,17 +134,19 @@ func (o FlakyTestsSearchFilter) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FlakyTestsSearchFilter) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Query *string `json:"query,omitempty"`
+		IncludeHistory *bool   `json:"include_history,omitempty"`
+		Query          *string `json:"query,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"query"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"include_history", "query"})
 	} else {
 		return err
 	}
+	o.IncludeHistory = all.IncludeHistory
 	o.Query = all.Query
 
 	if len(additionalProperties) > 0 {

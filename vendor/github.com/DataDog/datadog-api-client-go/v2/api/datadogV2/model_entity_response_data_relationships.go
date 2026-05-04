@@ -8,17 +8,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationships
+// EntityResponseDataRelationships Entity relationships including incidents, oncalls, schemas, and related entities.
 type EntityResponseDataRelationships struct {
-	//
+	// Incidents relationship containing a list of incident resources associated with this entity.
 	Incidents *EntityResponseDataRelationshipsIncidents `json:"incidents,omitempty"`
-	//
+	// Oncalls relationship containing a list of oncall resources associated with this entity.
 	Oncalls *EntityResponseDataRelationshipsOncalls `json:"oncalls,omitempty"`
-	//
+	// Raw schema relationship linking an entity to its raw schema resource.
 	RawSchema *EntityResponseDataRelationshipsRawSchema `json:"rawSchema,omitempty"`
-	//
+	// Related entities relationship containing a list of entity references related to this entity.
 	RelatedEntities *EntityResponseDataRelationshipsRelatedEntities `json:"relatedEntities,omitempty"`
-	//
+	// Schema relationship linking an entity to its associated schema resource.
 	Schema *EntityResponseDataRelationshipsSchema `json:"schema,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EventsScalarQuery An individual scalar events query.
+// EventsScalarQuery An individual scalar query for logs, RUM, traces, CI pipelines, security signals, and other event-based data sources. Use this query type for any data source powered by the Events Platform. See the data_source field for the full list of supported sources.
 type EventsScalarQuery struct {
 	// The instructions for what to compute for this query.
 	Compute EventsCompute `json:"compute"`

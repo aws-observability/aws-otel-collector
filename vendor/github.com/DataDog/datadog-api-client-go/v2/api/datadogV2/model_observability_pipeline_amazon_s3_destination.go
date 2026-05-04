@@ -11,12 +11,16 @@ import (
 )
 
 // ObservabilityPipelineAmazonS3Destination The `amazon_s3` destination sends your logs in Datadog-rehydratable format to an Amazon S3 bucket for archiving.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineAmazonS3Destination struct {
 	// AWS authentication credentials used for accessing AWS services such as S3.
 	// If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).
 	Auth *ObservabilityPipelineAwsAuth `json:"auth,omitempty"`
 	// S3 bucket name.
 	Bucket string `json:"bucket"`
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// Unique identifier for the destination component.
 	Id string `json:"id"`
 	// A list of component IDs whose output is used as the `input` for this component.
@@ -110,6 +114,34 @@ func (o *ObservabilityPipelineAmazonS3Destination) GetBucketOk() (*string, bool)
 // SetBucket sets field value.
 func (o *ObservabilityPipelineAmazonS3Destination) SetBucket(v string) {
 	o.Bucket = v
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineAmazonS3Destination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineAmazonS3Destination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineAmazonS3Destination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineAmazonS3Destination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetId returns the Id field value.
@@ -293,6 +325,9 @@ func (o ObservabilityPipelineAmazonS3Destination) MarshalJSON() ([]byte, error) 
 		toSerialize["auth"] = o.Auth
 	}
 	toSerialize["bucket"] = o.Bucket
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	toSerialize["id"] = o.Id
 	toSerialize["inputs"] = o.Inputs
 	if o.KeyPrefix != nil {
@@ -316,6 +351,7 @@ func (o *ObservabilityPipelineAmazonS3Destination) UnmarshalJSON(bytes []byte) (
 	all := struct {
 		Auth         *ObservabilityPipelineAwsAuth                         `json:"auth,omitempty"`
 		Bucket       *string                                               `json:"bucket"`
+		Buffer       *ObservabilityPipelineBufferOptions                   `json:"buffer,omitempty"`
 		Id           *string                                               `json:"id"`
 		Inputs       *[]string                                             `json:"inputs"`
 		KeyPrefix    *string                                               `json:"key_prefix,omitempty"`
@@ -347,7 +383,7 @@ func (o *ObservabilityPipelineAmazonS3Destination) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"auth", "bucket", "id", "inputs", "key_prefix", "region", "storage_class", "tls", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"auth", "bucket", "buffer", "id", "inputs", "key_prefix", "region", "storage_class", "tls", "type"})
 	} else {
 		return err
 	}
@@ -358,6 +394,7 @@ func (o *ObservabilityPipelineAmazonS3Destination) UnmarshalJSON(bytes []byte) (
 	}
 	o.Auth = all.Auth
 	o.Bucket = *all.Bucket
+	o.Buffer = all.Buffer
 	o.Id = *all.Id
 	o.Inputs = *all.Inputs
 	o.KeyPrefix = all.KeyPrefix

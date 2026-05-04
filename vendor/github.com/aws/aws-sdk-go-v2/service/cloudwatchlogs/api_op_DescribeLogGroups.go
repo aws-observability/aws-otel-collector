@@ -11,8 +11,9 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns information about log groups. You can return all your log groups or
-// filter the results by prefix. The results are ASCII-sorted by log group name.
+// Returns information about log groups, including data sources that ingest into
+// each log group. You can return all your log groups or filter the results by
+// prefix. The results are ASCII-sorted by log group name.
 //
 // CloudWatch Logs doesn't support IAM policies that control access to the
 // DescribeLogGroups action by using the aws:ResourceTag/key-name  condition key.
@@ -169,7 +170,7 @@ func (c *Client) addOperationDescribeLogGroupsMiddlewares(stack *middleware.Stac
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -191,9 +192,6 @@ func (c *Client) addOperationDescribeLogGroupsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {

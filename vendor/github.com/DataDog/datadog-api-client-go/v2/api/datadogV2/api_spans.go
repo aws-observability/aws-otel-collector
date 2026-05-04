@@ -225,7 +225,7 @@ func (a *SpansApi) ListSpansWithPagination(ctx _context.Context, body SpansListR
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()
@@ -444,7 +444,7 @@ func (a *SpansApi) ListSpansGetWithPagination(ctx _context.Context, o ...ListSpa
 					return
 				}
 			}
-			if len(results) < int(pageSize_) {
+			if len(results) == 0 {
 				break
 			}
 			cursorMeta, ok := resp.GetMetaOk()

@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsIncidents
+// EntityResponseDataRelationshipsIncidents Incidents relationship containing a list of incident resources associated with this entity.
 type EntityResponseDataRelationshipsIncidents struct {
-	//
+	// List of incident relationship data items.
 	Data []EntityResponseDataRelationshipsIncidentsDataItems `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

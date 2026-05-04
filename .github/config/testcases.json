@@ -321,17 +321,6 @@
 			]
 		},
 		{
-			"case_name": "sapm_exporter_trace_mock",
-			"platforms": [
-				"EC2",
-				"ECS",
-				"EKS",
-				"EKS_ARM64",
-				"LOCAL",
-				"PERF"
-			]
-		},
-		{
 			"case_name": "signalfx_exporter_metric_mock",
 			"platforms": [
 				"EC2",

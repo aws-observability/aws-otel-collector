@@ -18,6 +18,8 @@ type EventPayload struct {
 	Attributes EventPayloadAttributes `json:"attributes"`
 	// Event category identifying the type of event.
 	Category EventCategory `json:"category"`
+	// Host name to associate with the event. Any tags associated with the host are also applied to this event. Limited to 255 characters.
+	Host *string `json:"host,omitempty"`
 	// Integration ID sourced from integration manifests.
 	IntegrationId *EventPayloadIntegrationId `json:"integration_id,omitempty"`
 	// Free formed text associated with the event. It's suggested to use `data.attributes.attributes.custom` for well-structured attributes. Limited to 4000 characters.
@@ -127,6 +129,34 @@ func (o *EventPayload) GetCategoryOk() (*EventCategory, bool) {
 // SetCategory sets field value.
 func (o *EventPayload) SetCategory(v EventCategory) {
 	o.Category = v
+}
+
+// GetHost returns the Host field value if set, zero value otherwise.
+func (o *EventPayload) GetHost() string {
+	if o == nil || o.Host == nil {
+		var ret string
+		return ret
+	}
+	return *o.Host
+}
+
+// GetHostOk returns a tuple with the Host field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EventPayload) GetHostOk() (*string, bool) {
+	if o == nil || o.Host == nil {
+		return nil, false
+	}
+	return o.Host, true
+}
+
+// HasHost returns a boolean if a field has been set.
+func (o *EventPayload) HasHost() bool {
+	return o != nil && o.Host != nil
+}
+
+// SetHost gets a reference to the given string and assigns it to the Host field.
+func (o *EventPayload) SetHost(v string) {
+	o.Host = &v
 }
 
 // GetIntegrationId returns the IntegrationId field value if set, zero value otherwise.
@@ -275,6 +305,9 @@ func (o EventPayload) MarshalJSON() ([]byte, error) {
 	}
 	toSerialize["attributes"] = o.Attributes
 	toSerialize["category"] = o.Category
+	if o.Host != nil {
+		toSerialize["host"] = o.Host
+	}
 	if o.IntegrationId != nil {
 		toSerialize["integration_id"] = o.IntegrationId
 	}
@@ -297,6 +330,7 @@ func (o *EventPayload) UnmarshalJSON(bytes []byte) (err error) {
 		AggregationKey *string                    `json:"aggregation_key,omitempty"`
 		Attributes     *EventPayloadAttributes    `json:"attributes"`
 		Category       *EventCategory             `json:"category"`
+		Host           *string                    `json:"host,omitempty"`
 		IntegrationId  *EventPayloadIntegrationId `json:"integration_id,omitempty"`
 		Message        *string                    `json:"message,omitempty"`
 		Tags           []string                   `json:"tags,omitempty"`
@@ -324,6 +358,7 @@ func (o *EventPayload) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Category = *all.Category
 	}
+	o.Host = all.Host
 	if all.IntegrationId != nil && !all.IntegrationId.IsValid() {
 		hasInvalidField = true
 	} else {

@@ -6,12 +6,10 @@
 package metrics
 
 import (
-	"fmt"
 	"maps"
 	"net/http"
 	"slices"
-
-	"github.com/google/uuid"
+	"strconv"
 
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/resolver"
 	"github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/transaction"
@@ -75,9 +73,9 @@ type PipelineConfig struct {
 
 // PipelineDestination describes how to deliver a payload to the intake.
 type PipelineDestination struct {
-	Resolver             resolver.DomainResolver
-	Endpoint             transaction.Endpoint
-	AddValidationHeaders bool
+	Resolver          resolver.DomainResolver
+	Endpoint          transaction.Endpoint
+	ValidationBatchID string
 }
 
 type forwarder interface {
@@ -85,11 +83,6 @@ type forwarder interface {
 }
 
 func (dest *PipelineDestination) send(payloads transaction.BytesPayloads, forwarder forwarder, headers http.Header) error {
-	batchID, err := dest.maybeMakeBatchID()
-	if err != nil {
-		return err
-	}
-
 	domain := dest.Resolver.Resolve(dest.Endpoint)
 	for _, auth := range dest.Resolver.GetAuthorizers() {
 		for seq, payload := range payloads {
@@ -100,10 +93,10 @@ func (dest *PipelineDestination) send(payloads transaction.BytesPayloads, forwar
 			for key := range headers {
 				txn.Headers.Set(key, headers.Get(key))
 			}
-			if dest.AddValidationHeaders {
-				txn.Headers.Set("X-Metrics-Request-ID", batchID)
-				txn.Headers.Set("X-Metrics-Request-Seq", fmt.Sprintf("%v", seq))
-				txn.Headers.Set("X-Metrics-Request-Len", fmt.Sprintf("%v", len(payloads)))
+			if dest.ValidationBatchID != "" {
+				txn.Headers.Set("X-Metrics-Request-ID", dest.ValidationBatchID)
+				txn.Headers.Set("X-Metrics-Request-Seq", strconv.Itoa(seq))
+				txn.Headers.Set("X-Metrics-Request-Len", strconv.Itoa(len(payloads)))
 			}
 
 			auth.Authorize(txn)
@@ -114,17 +107,6 @@ func (dest *PipelineDestination) send(payloads transaction.BytesPayloads, forwar
 		}
 	}
 	return nil
-}
-
-func (dest *PipelineDestination) maybeMakeBatchID() (string, error) {
-	if dest.AddValidationHeaders {
-		uuid, err := uuid.NewV7()
-		if err != nil {
-			return "", err
-		}
-		return uuid.String(), nil
-	}
-	return "", nil
 }
 
 // PipelineContext holds information needed during and after pipeline execution.

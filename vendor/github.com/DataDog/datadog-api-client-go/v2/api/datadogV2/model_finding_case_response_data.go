@@ -14,7 +14,7 @@ import (
 type FindingCaseResponseData struct {
 	// Attributes of the case.
 	Attributes *FindingCaseResponseDataAttributes `json:"attributes,omitempty"`
-	// The unique identifier of the case.
+	// Unique identifier of the case.
 	Id *string `json:"id,omitempty"`
 	// Relationships of the case.
 	Relationships *FindingCaseResponseDataRelationships `json:"relationships,omitempty"`

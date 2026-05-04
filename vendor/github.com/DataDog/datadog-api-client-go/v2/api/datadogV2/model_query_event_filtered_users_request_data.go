@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryEventFilteredUsersRequestData
+// QueryEventFilteredUsersRequestData The data object containing the resource type and attributes for querying event-filtered users.
 type QueryEventFilteredUsersRequestData struct {
-	//
+	// Attributes for filtering users by both user properties and event platform activity.
 	Attributes *QueryEventFilteredUsersRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the query event filtered users request resource.
 	Id *string `json:"id,omitempty"`
 	// Query event filtered users request resource type.
 	Type QueryEventFilteredUsersRequestDataType `json:"type"`

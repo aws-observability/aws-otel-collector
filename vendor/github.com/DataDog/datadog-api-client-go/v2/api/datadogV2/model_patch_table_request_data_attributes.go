@@ -16,8 +16,6 @@ type PatchTableRequestDataAttributes struct {
 	FileMetadata *PatchTableRequestDataAttributesFileMetadata `json:"file_metadata,omitempty"`
 	// Schema defining the updates to the structure and columns of the reference table. Schema fields cannot be deleted or renamed.
 	Schema *PatchTableRequestDataAttributesSchema `json:"schema,omitempty"`
-	// Whether this table is synced automatically.
-	SyncEnabled *bool `json:"sync_enabled,omitempty"`
 	// Tags for organizing and filtering reference tables.
 	Tags []string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -126,34 +124,6 @@ func (o *PatchTableRequestDataAttributes) SetSchema(v PatchTableRequestDataAttri
 	o.Schema = &v
 }
 
-// GetSyncEnabled returns the SyncEnabled field value if set, zero value otherwise.
-func (o *PatchTableRequestDataAttributes) GetSyncEnabled() bool {
-	if o == nil || o.SyncEnabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.SyncEnabled
-}
-
-// GetSyncEnabledOk returns a tuple with the SyncEnabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PatchTableRequestDataAttributes) GetSyncEnabledOk() (*bool, bool) {
-	if o == nil || o.SyncEnabled == nil {
-		return nil, false
-	}
-	return o.SyncEnabled, true
-}
-
-// HasSyncEnabled returns a boolean if a field has been set.
-func (o *PatchTableRequestDataAttributes) HasSyncEnabled() bool {
-	return o != nil && o.SyncEnabled != nil
-}
-
-// SetSyncEnabled gets a reference to the given bool and assigns it to the SyncEnabled field.
-func (o *PatchTableRequestDataAttributes) SetSyncEnabled(v bool) {
-	o.SyncEnabled = &v
-}
-
 // GetTags returns the Tags field value if set, zero value otherwise.
 func (o *PatchTableRequestDataAttributes) GetTags() []string {
 	if o == nil || o.Tags == nil {
@@ -197,9 +167,6 @@ func (o PatchTableRequestDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.Schema != nil {
 		toSerialize["schema"] = o.Schema
 	}
-	if o.SyncEnabled != nil {
-		toSerialize["sync_enabled"] = o.SyncEnabled
-	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
@@ -216,7 +183,6 @@ func (o *PatchTableRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error
 		Description  *string                                      `json:"description,omitempty"`
 		FileMetadata *PatchTableRequestDataAttributesFileMetadata `json:"file_metadata,omitempty"`
 		Schema       *PatchTableRequestDataAttributesSchema       `json:"schema,omitempty"`
-		SyncEnabled  *bool                                        `json:"sync_enabled,omitempty"`
 		Tags         []string                                     `json:"tags,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -224,7 +190,7 @@ func (o *PatchTableRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "file_metadata", "schema", "sync_enabled", "tags"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "file_metadata", "schema", "tags"})
 	} else {
 		return err
 	}
@@ -236,7 +202,6 @@ func (o *PatchTableRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error
 		hasInvalidField = true
 	}
 	o.Schema = all.Schema
-	o.SyncEnabled = all.SyncEnabled
 	o.Tags = all.Tags
 
 	if len(additionalProperties) > 0 {

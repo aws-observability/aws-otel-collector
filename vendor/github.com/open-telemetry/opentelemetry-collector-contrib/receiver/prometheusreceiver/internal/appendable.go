@@ -5,7 +5,6 @@ package internal // import "github.com/open-telemetry/opentelemetry-collector-co
 
 import (
 	"context"
-	"regexp"
 
 	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/storage"
@@ -15,45 +14,40 @@ import (
 )
 
 // appendable translates Prometheus scraping diffs into OpenTelemetry format.
+// It implements storage.AppendableV2.
 type appendable struct {
-	sink                 consumer.Metrics
-	useStartTimeMetric   bool
-	useMetadata          bool
-	trimSuffixes         bool
-	startTimeMetricRegex *regexp.Regexp
-	externalLabels       labels.Labels
+	sink           consumer.Metrics
+	useMetadata    bool
+	trimSuffixes   bool
+	externalLabels labels.Labels
 
 	settings receiver.Settings
 	obsrecv  *receiverhelper.ObsReport
 }
 
-// NewAppendable returns a storage.Appendable instance that emits metrics to the sink.
+// NewAppendable returns an appendable instance that emits metrics to the sink.
 func NewAppendable(
 	sink consumer.Metrics,
 	set receiver.Settings,
-	useStartTimeMetric bool,
-	startTimeMetricRegex *regexp.Regexp,
 	useMetadata bool,
 	externalLabels labels.Labels,
 	trimSuffixes bool,
-) (storage.Appendable, error) {
+) (storage.AppendableV2, error) {
 	obsrecv, err := receiverhelper.NewObsReport(receiverhelper.ObsReportSettings{ReceiverID: set.ID, Transport: transport, ReceiverCreateSettings: set})
 	if err != nil {
 		return nil, err
 	}
 
 	return &appendable{
-		sink:                 sink,
-		settings:             set,
-		useStartTimeMetric:   useStartTimeMetric,
-		useMetadata:          useMetadata,
-		startTimeMetricRegex: startTimeMetricRegex,
-		externalLabels:       externalLabels,
-		obsrecv:              obsrecv,
-		trimSuffixes:         trimSuffixes,
+		sink:           sink,
+		settings:       set,
+		useMetadata:    useMetadata,
+		externalLabels: externalLabels,
+		obsrecv:        obsrecv,
+		trimSuffixes:   trimSuffixes,
 	}, nil
 }
 
-func (o *appendable) Appender(ctx context.Context) storage.Appender {
+func (o *appendable) AppenderV2(ctx context.Context) storage.AppenderV2 {
 	return newTransaction(ctx, o.sink, o.externalLabels, o.settings, o.obsrecv, o.trimSuffixes, o.useMetadata)
 }

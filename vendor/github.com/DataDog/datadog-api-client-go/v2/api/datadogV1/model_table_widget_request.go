@@ -38,7 +38,8 @@ type TableWidgetRequest struct {
 	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
 	// The log query.
 	ProfileMetricsQuery *LogQueryDefinition `json:"profile_metrics_query,omitempty"`
-	// Query definition.
+	// Query definition. Deprecated - Use `queries` and `formulas` instead.
+	// Deprecated
 	Q *string `json:"q,omitempty"`
 	// List of queries that can be returned directly or used in formulas.
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
@@ -467,6 +468,7 @@ func (o *TableWidgetRequest) SetProfileMetricsQuery(v LogQueryDefinition) {
 }
 
 // GetQ returns the Q field value if set, zero value otherwise.
+// Deprecated
 func (o *TableWidgetRequest) GetQ() string {
 	if o == nil || o.Q == nil {
 		var ret string
@@ -477,6 +479,7 @@ func (o *TableWidgetRequest) GetQ() string {
 
 // GetQOk returns a tuple with the Q field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *TableWidgetRequest) GetQOk() (*string, bool) {
 	if o == nil || o.Q == nil {
 		return nil, false
@@ -490,6 +493,7 @@ func (o *TableWidgetRequest) HasQ() bool {
 }
 
 // SetQ gets a reference to the given string and assigns it to the Q field.
+// Deprecated
 func (o *TableWidgetRequest) SetQ(v string) {
 	o.Q = &v
 }

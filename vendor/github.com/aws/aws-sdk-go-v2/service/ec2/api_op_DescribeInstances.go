@@ -423,8 +423,8 @@ type DescribeInstancesInput struct {
 	//   to the state-reason-code filter.
 	//
 	//   - requester-id - The ID of the entity that launched the instance on your
-	//   behalf (for example, Amazon Web Services Management Console, Amazon EC2 Auto
-	//   Scaling, and so on).
+	//   behalf (for example, Amazon Web Services Management Console, Auto Scaling, and
+	//   so on).
 	//
 	//   - reservation-id - The ID of the instance's reservation. A reservation ID is
 	//   created any time you launch an instance. A reservation ID has a one-to-one
@@ -482,6 +482,11 @@ type DescribeInstancesInput struct {
 	//
 	//   - vpc-id - The ID of the VPC that the instance is running in.
 	Filters []types.Filter
+
+	// Indicates whether to include managed resources in the output. If this parameter
+	// is set to true , the output includes resources that are managed by Amazon Web
+	// Services services, even if managed resource visibility is set to hidden.
+	IncludeManagedResources *bool
 
 	// The instance IDs.
 	//
@@ -554,7 +559,7 @@ func (c *Client) addOperationDescribeInstancesMiddlewares(stack *middleware.Stac
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -576,9 +581,6 @@ func (c *Client) addOperationDescribeInstancesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {

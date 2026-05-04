@@ -20,7 +20,7 @@ type DORADeploymentRequestAttributes struct {
 	FinishedAt int64 `json:"finished_at"`
 	// Git info for DORA Metrics events.
 	Git *DORAGitInfo `json:"git,omitempty"`
-	// Deployment ID.
+	// Deployment ID. Must be 16-128 characters and contain only alphanumeric characters, hyphens, underscores, periods, and colons (a-z, A-Z, 0-9, -, _, ., :).
 	Id *string `json:"id,omitempty"`
 	// Service name.
 	Service string `json:"service"`

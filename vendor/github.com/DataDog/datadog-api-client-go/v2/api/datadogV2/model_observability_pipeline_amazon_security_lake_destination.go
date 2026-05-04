@@ -11,12 +11,16 @@ import (
 )
 
 // ObservabilityPipelineAmazonSecurityLakeDestination The `amazon_security_lake` destination sends your logs to Amazon Security Lake.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineAmazonSecurityLakeDestination struct {
 	// AWS authentication credentials used for accessing AWS services such as S3.
 	// If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).
 	Auth *ObservabilityPipelineAwsAuth `json:"auth,omitempty"`
 	// Name of the Amazon S3 bucket in Security Lake (3-63 characters).
 	Bucket string `json:"bucket"`
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// Custom source name for the logs in Security Lake.
 	CustomSourceName string `json:"custom_source_name"`
 	// Unique identifier for the destination component.
@@ -108,6 +112,34 @@ func (o *ObservabilityPipelineAmazonSecurityLakeDestination) GetBucketOk() (*str
 // SetBucket sets field value.
 func (o *ObservabilityPipelineAmazonSecurityLakeDestination) SetBucket(v string) {
 	o.Bucket = v
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineAmazonSecurityLakeDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineAmazonSecurityLakeDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineAmazonSecurityLakeDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineAmazonSecurityLakeDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetCustomSourceName returns the CustomSourceName field value.
@@ -263,6 +295,9 @@ func (o ObservabilityPipelineAmazonSecurityLakeDestination) MarshalJSON() ([]byt
 		toSerialize["auth"] = o.Auth
 	}
 	toSerialize["bucket"] = o.Bucket
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	toSerialize["custom_source_name"] = o.CustomSourceName
 	toSerialize["id"] = o.Id
 	toSerialize["inputs"] = o.Inputs
@@ -283,6 +318,7 @@ func (o *ObservabilityPipelineAmazonSecurityLakeDestination) UnmarshalJSON(bytes
 	all := struct {
 		Auth             *ObservabilityPipelineAwsAuth                           `json:"auth,omitempty"`
 		Bucket           *string                                                 `json:"bucket"`
+		Buffer           *ObservabilityPipelineBufferOptions                     `json:"buffer,omitempty"`
 		CustomSourceName *string                                                 `json:"custom_source_name"`
 		Id               *string                                                 `json:"id"`
 		Inputs           *[]string                                               `json:"inputs"`
@@ -313,7 +349,7 @@ func (o *ObservabilityPipelineAmazonSecurityLakeDestination) UnmarshalJSON(bytes
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"auth", "bucket", "custom_source_name", "id", "inputs", "region", "tls", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"auth", "bucket", "buffer", "custom_source_name", "id", "inputs", "region", "tls", "type"})
 	} else {
 		return err
 	}
@@ -324,6 +360,7 @@ func (o *ObservabilityPipelineAmazonSecurityLakeDestination) UnmarshalJSON(bytes
 	}
 	o.Auth = all.Auth
 	o.Bucket = *all.Bucket
+	o.Buffer = all.Buffer
 	o.CustomSourceName = *all.CustomSourceName
 	o.Id = *all.Id
 	o.Inputs = *all.Inputs

@@ -16,6 +16,8 @@ import (
 type DistributionWidgetDefinition struct {
 	// A list of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// (Deprecated) The widget legend was replaced by a tooltip and sidebar.
 	// Deprecated
 	LegendSize *string `json:"legend_size,omitempty"`
@@ -95,6 +97,34 @@ func (o *DistributionWidgetDefinition) HasCustomLinks() bool {
 // SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
 func (o *DistributionWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
 	o.CustomLinks = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *DistributionWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DistributionWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *DistributionWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *DistributionWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetLegendSize returns the LegendSize field value if set, zero value otherwise.
@@ -410,6 +440,9 @@ func (o DistributionWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.LegendSize != nil {
 		toSerialize["legend_size"] = o.LegendSize
 	}
@@ -450,6 +483,7 @@ func (o DistributionWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *DistributionWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CustomLinks []WidgetCustomLink                `json:"custom_links,omitempty"`
+		Description *string                           `json:"description,omitempty"`
 		LegendSize  *string                           `json:"legend_size,omitempty"`
 		Markers     []WidgetMarker                    `json:"markers,omitempty"`
 		Requests    *[]DistributionWidgetRequest      `json:"requests"`
@@ -473,13 +507,14 @@ func (o *DistributionWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "legend_size", "markers", "requests", "show_legend", "time", "title", "title_align", "title_size", "type", "xaxis", "yaxis"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "legend_size", "markers", "requests", "show_legend", "time", "title", "title_align", "title_size", "type", "xaxis", "yaxis"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
+	o.Description = all.Description
 	o.LegendSize = all.LegendSize
 	o.Markers = all.Markers
 	o.Requests = *all.Requests

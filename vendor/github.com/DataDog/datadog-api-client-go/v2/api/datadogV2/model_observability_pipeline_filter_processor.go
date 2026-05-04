@@ -10,14 +10,18 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ObservabilityPipelineFilterProcessor The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.
+// ObservabilityPipelineFilterProcessor The `filter` processor allows conditional processing of logs/metrics based on a Datadog search query. Logs/metrics that match the `include` query are passed through; others are discarded.
+//
+// **Supported pipeline types:** logs, metrics
 type ObservabilityPipelineFilterProcessor struct {
-	// The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
+	Enabled bool `json:"enabled"`
+	// The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the `input` to downstream components).
 	Id string `json:"id"`
-	// A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.
+	// A Datadog search query used to determine which logs/metrics should pass through the filter. Logs/metrics that match this query continue to downstream components; others are dropped.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the `input` for this component.
-	Inputs []string `json:"inputs"`
 	// The processor type. The value should always be `filter`.
 	Type ObservabilityPipelineFilterProcessorType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -29,11 +33,11 @@ type ObservabilityPipelineFilterProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineFilterProcessor(id string, include string, inputs []string, typeVar ObservabilityPipelineFilterProcessorType) *ObservabilityPipelineFilterProcessor {
+func NewObservabilityPipelineFilterProcessor(enabled bool, id string, include string, typeVar ObservabilityPipelineFilterProcessorType) *ObservabilityPipelineFilterProcessor {
 	this := ObservabilityPipelineFilterProcessor{}
+	this.Enabled = enabled
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Type = typeVar
 	return &this
 }
@@ -46,6 +50,57 @@ func NewObservabilityPipelineFilterProcessorWithDefaults() *ObservabilityPipelin
 	var typeVar ObservabilityPipelineFilterProcessorType = OBSERVABILITYPIPELINEFILTERPROCESSORTYPE_FILTER
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineFilterProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineFilterProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineFilterProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineFilterProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineFilterProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineFilterProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineFilterProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetId returns the Id field value.
@@ -94,29 +149,6 @@ func (o *ObservabilityPipelineFilterProcessor) SetInclude(v string) {
 	o.Include = v
 }
 
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineFilterProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineFilterProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineFilterProcessor) SetInputs(v []string) {
-	o.Inputs = v
-}
-
 // GetType returns the Type field value.
 func (o *ObservabilityPipelineFilterProcessor) GetType() ObservabilityPipelineFilterProcessorType {
 	if o == nil {
@@ -146,9 +178,12 @@ func (o ObservabilityPipelineFilterProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -160,13 +195,17 @@ func (o ObservabilityPipelineFilterProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineFilterProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id      *string                                   `json:"id"`
-		Include *string                                   `json:"include"`
-		Inputs  *[]string                                 `json:"inputs"`
-		Type    *ObservabilityPipelineFilterProcessorType `json:"type"`
+		DisplayName *string                                   `json:"display_name,omitempty"`
+		Enabled     *bool                                     `json:"enabled"`
+		Id          *string                                   `json:"id"`
+		Include     *string                                   `json:"include"`
+		Type        *ObservabilityPipelineFilterProcessorType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
 	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
@@ -174,23 +213,21 @@ func (o *ObservabilityPipelineFilterProcessor) UnmarshalJSON(bytes []byte) (err 
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
 	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
-	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "include", "inputs", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "id", "include", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
+	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

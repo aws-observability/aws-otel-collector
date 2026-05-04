@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MetricAllTags Object for a single metric's indexed tags.
+// MetricAllTags Object for a single metric's indexed and ingested tags.
 type MetricAllTags struct {
-	// Object containing the definition of a metric's tags.
+	// Object containing the definition of a metric's indexed and ingested tags.
 	Attributes *MetricAllTagsAttributes `json:"attributes,omitempty"`
 	// The metric name for this resource.
 	Id *string `json:"id,omitempty"`

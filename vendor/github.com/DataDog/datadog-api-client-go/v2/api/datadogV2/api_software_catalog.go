@@ -163,6 +163,7 @@ type ListCatalogEntityOptionalParameters struct {
 	FilterRelationType    *RelationType
 	FilterExcludeSnapshot *string
 	Include               *IncludeType
+	IncludeDiscovered     *bool
 }
 
 // NewListCatalogEntityOptionalParameters creates an empty struct for parameters.
@@ -231,6 +232,12 @@ func (r *ListCatalogEntityOptionalParameters) WithInclude(include IncludeType) *
 	return r
 }
 
+// WithIncludeDiscovered sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithIncludeDiscovered(includeDiscovered bool) *ListCatalogEntityOptionalParameters {
+	r.IncludeDiscovered = &includeDiscovered
+	return r
+}
+
 // ListCatalogEntity Get a list of entities.
 // Get a list of entities from Software Catalog.
 func (a *SoftwareCatalogApi) ListCatalogEntity(ctx _context.Context, o ...ListCatalogEntityOptionalParameters) (ListEntityCatalogResponse, *_nethttp.Response, error) {
@@ -287,6 +294,9 @@ func (a *SoftwareCatalogApi) ListCatalogEntity(ctx _context.Context, o ...ListCa
 	}
 	if optionalParams.Include != nil {
 		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
+	}
+	if optionalParams.IncludeDiscovered != nil {
+		localVarQueryParams.Add("includeDiscovered", datadog.ParameterToString(*optionalParams.IncludeDiscovered, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 
@@ -583,12 +593,13 @@ func (a *SoftwareCatalogApi) ListCatalogKindWithPagination(ctx _context.Context,
 
 // ListCatalogRelationOptionalParameters holds optional parameters for ListCatalogRelation.
 type ListCatalogRelationOptionalParameters struct {
-	PageOffset    *int64
-	PageLimit     *int64
-	FilterType    *RelationType
-	FilterFromRef *string
-	FilterToRef   *string
-	Include       *RelationIncludeType
+	PageOffset        *int64
+	PageLimit         *int64
+	FilterType        *RelationType
+	FilterFromRef     *string
+	FilterToRef       *string
+	Include           *RelationIncludeType
+	IncludeDiscovered *bool
 }
 
 // NewListCatalogRelationOptionalParameters creates an empty struct for parameters.
@@ -630,6 +641,12 @@ func (r *ListCatalogRelationOptionalParameters) WithFilterToRef(filterToRef stri
 // WithInclude sets the corresponding parameter name and returns the struct.
 func (r *ListCatalogRelationOptionalParameters) WithInclude(include RelationIncludeType) *ListCatalogRelationOptionalParameters {
 	r.Include = &include
+	return r
+}
+
+// WithIncludeDiscovered sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogRelationOptionalParameters) WithIncludeDiscovered(includeDiscovered bool) *ListCatalogRelationOptionalParameters {
+	r.IncludeDiscovered = &includeDiscovered
 	return r
 }
 
@@ -677,6 +694,9 @@ func (a *SoftwareCatalogApi) ListCatalogRelation(ctx _context.Context, o ...List
 	}
 	if optionalParams.Include != nil {
 		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
+	}
+	if optionalParams.IncludeDiscovered != nil {
+		localVarQueryParams.Add("includeDiscovered", datadog.ParameterToString(*optionalParams.IncludeDiscovered, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 

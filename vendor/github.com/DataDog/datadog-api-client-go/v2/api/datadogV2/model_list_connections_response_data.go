@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListConnectionsResponseData
+// ListConnectionsResponseData The data object containing the resource type and attributes for the list connections response.
 type ListConnectionsResponseData struct {
-	//
+	// Attributes of the list connections response, containing the collection of data source connections.
 	Attributes *ListConnectionsResponseDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the list connections response resource.
 	Id *string `json:"id,omitempty"`
 	// List connections response resource type.
 	Type ListConnectionsResponseDataType `json:"type"`

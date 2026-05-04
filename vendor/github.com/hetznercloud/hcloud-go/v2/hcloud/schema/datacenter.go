@@ -2,14 +2,20 @@ package schema
 
 // Datacenter defines the schema of a datacenter.
 type Datacenter struct {
-	ID          int64                 `json:"id"`
-	Name        string                `json:"name"`
-	Description string                `json:"description"`
-	Location    Location              `json:"location"`
-	ServerTypes DatacenterServerTypes `json:"server_types"`
+	ID          int64    `json:"id"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Location    Location `json:"location"`
+
+	// Deprecated: [Datacenter.ServerTypes] is deprecated and will not be returned after 2026-10-01.
+	// Use [ServerType.Locations] instead.
+	ServerTypes *DatacenterServerTypes `json:"server_types,omitempty"`
 }
 
 // DatacenterServerTypes defines the schema of the server types available in a datacenter.
+//
+// Deprecated: [DatacenterServerTypes] is deprecated and will not be returned after 2026-10-01.
+// Use [ServerType.Locations] instead.
 type DatacenterServerTypes struct {
 	Supported             []int64 `json:"supported"`
 	AvailableForMigration []int64 `json:"available_for_migration"`

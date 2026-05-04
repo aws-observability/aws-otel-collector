@@ -340,6 +340,8 @@ FlowLogsApi | [**DatacentersServersNicsFlowlogsGet**](docs/api/FlowLogsApi.md#da
 FlowLogsApi | [**DatacentersServersNicsFlowlogsPatch**](docs/api/FlowLogsApi.md#datacentersserversnicsflowlogspatch) | **Patch** /datacenters/{datacenterId}/servers/{serverId}/nics/{nicId}/flowlogs/{flowlogId} | Partially modify Flow Logs
 FlowLogsApi | [**DatacentersServersNicsFlowlogsPost**](docs/api/FlowLogsApi.md#datacentersserversnicsflowlogspost) | **Post** /datacenters/{datacenterId}/servers/{serverId}/nics/{nicId}/flowlogs | Create a Flow Log
 FlowLogsApi | [**DatacentersServersNicsFlowlogsPut**](docs/api/FlowLogsApi.md#datacentersserversnicsflowlogsput) | **Put** /datacenters/{datacenterId}/servers/{serverId}/nics/{nicId}/flowlogs/{flowlogId} | Modify Flow Logs
+GraphicsProcessingUnitCardsApi | [**DatacentersServersGPUsFindById**](docs/api/GraphicsProcessingUnitCardsApi.md#datacentersserversgpusfindbyid) | **Get** /datacenters/{datacenterId}/servers/{serverId}/gpus/{gpuId} | Retrieve GPUs by ID
+GraphicsProcessingUnitCardsApi | [**DatacentersServersGPUsGet**](docs/api/GraphicsProcessingUnitCardsApi.md#datacentersserversgpusget) | **Get** /datacenters/{datacenterId}/servers/{serverId}/gpus | List GPUs
 IPBlocksApi | [**IpblocksDelete**](docs/api/IPBlocksApi.md#ipblocksdelete) | **Delete** /ipblocks/{ipblockId} | Delete IP blocks
 IPBlocksApi | [**IpblocksFindById**](docs/api/IPBlocksApi.md#ipblocksfindbyid) | **Get** /ipblocks/{ipblockId} | Retrieve IP blocks
 IPBlocksApi | [**IpblocksGet**](docs/api/IPBlocksApi.md#ipblocksget) | **Get** /ipblocks | List IP blocks 
@@ -611,6 +613,11 @@ All URIs are relative to *https://api.ionos.com/cloudapi/v6*
  - [FlowLogProperties](docs/models/FlowLogProperties)
  - [FlowLogPut](docs/models/FlowLogPut)
  - [FlowLogs](docs/models/FlowLogs)
+ - [Gpu](docs/models/Gpu)
+ - [GpuArchitectureProperties](docs/models/GpuArchitectureProperties)
+ - [GpuProperties](docs/models/GpuProperties)
+ - [GpuTemplate](docs/models/GpuTemplate)
+ - [Gpus](docs/models/Gpus)
  - [Group](docs/models/Group)
  - [GroupEntities](docs/models/GroupEntities)
  - [GroupMembers](docs/models/GroupMembers)

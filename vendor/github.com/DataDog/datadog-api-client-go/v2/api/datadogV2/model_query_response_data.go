@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryResponseData
+// QueryResponseData The data object containing the resource type and attributes of the query response.
 type QueryResponseData struct {
-	//
+	// Attributes of the query response, containing the matched records and total count.
 	Attributes *QueryResponseDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the query response resource.
 	Id *string `json:"id,omitempty"`
 	// Query response resource type.
 	Type QueryResponseDataType `json:"type"`

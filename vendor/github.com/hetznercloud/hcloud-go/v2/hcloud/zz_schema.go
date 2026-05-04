@@ -78,7 +78,7 @@ func (c *converterImpl) DatacenterFromSchema(source schema.Datacenter) *Datacent
 	hcloudDatacenter.Name = source.Name
 	hcloudDatacenter.Description = source.Description
 	hcloudDatacenter.Location = c.LocationFromSchema(source.Location)
-	hcloudDatacenter.ServerTypes = c.schemaDatacenterServerTypesToHcloudDatacenterServerTypes(source.ServerTypes)
+	hcloudDatacenter.ServerTypes = c.pSchemaDatacenterServerTypesToHcloudDatacenterServerTypes(source.ServerTypes)
 	return &hcloudDatacenter
 }
 func (c *converterImpl) DeprecationFromSchema(source *schema.DeprecationInfo) *DeprecationInfo {
@@ -442,7 +442,8 @@ func (c *converterImpl) PrimaryIPFromSchema(source schema.PrimaryIP) *PrimaryIP 
 	hcloudPrimaryIP.AutoDelete = source.AutoDelete
 	hcloudPrimaryIP.Blocked = source.Blocked
 	hcloudPrimaryIP.Created = c.timeTimeToTimeTime(source.Created)
-	hcloudPrimaryIP.Datacenter = c.DatacenterFromSchema(source.Datacenter)
+	hcloudPrimaryIP.Location = c.LocationFromSchema(source.Location)
+	hcloudPrimaryIP.Datacenter = c.pSchemaDatacenterToPHcloudDatacenter(source.Datacenter)
 	return &hcloudPrimaryIP
 }
 func (c *converterImpl) SSHKeyFromSchema(source schema.SSHKey) *SSHKey {
@@ -514,7 +515,7 @@ func (c *converterImpl) SchemaFromDatacenter(source *Datacenter) schema.Datacent
 		schemaDatacenter.Name = (*source).Name
 		schemaDatacenter.Description = (*source).Description
 		schemaDatacenter.Location = c.SchemaFromLocation((*source).Location)
-		schemaDatacenter.ServerTypes = c.hcloudDatacenterServerTypesToSchemaDatacenterServerTypes((*source).ServerTypes)
+		schemaDatacenter.ServerTypes = schemaPtrFromDatacenterServerTypes((*source).ServerTypes)
 	}
 	return schemaDatacenter
 }
@@ -956,7 +957,8 @@ func (c *converterImpl) SchemaFromPrimaryIP(source *PrimaryIP) schema.PrimaryIP 
 		schemaPrimaryIP.AutoDelete = (*source).AutoDelete
 		schemaPrimaryIP.Blocked = (*source).Blocked
 		schemaPrimaryIP.Created = c.timeTimeToTimeTime((*source).Created)
-		schemaPrimaryIP.Datacenter = c.SchemaFromDatacenter((*source).Datacenter)
+		schemaPrimaryIP.Location = c.SchemaFromLocation((*source).Location)
+		schemaPrimaryIP.Datacenter = c.pHcloudDatacenterToPSchemaDatacenter((*source).Datacenter)
 	}
 	return schemaPrimaryIP
 }
@@ -986,6 +988,7 @@ func (c *converterImpl) SchemaFromPrimaryIPCreateOpts(source PrimaryIPCreateOpts
 	schemaPrimaryIPCreateRequest.AssigneeID = source.AssigneeID
 	schemaPrimaryIPCreateRequest.Labels = stringMapToStringMapPtr(source.Labels)
 	schemaPrimaryIPCreateRequest.AutoDelete = source.AutoDelete
+	schemaPrimaryIPCreateRequest.Location = source.Location
 	schemaPrimaryIPCreateRequest.Datacenter = source.Datacenter
 	return schemaPrimaryIPCreateRequest
 }
@@ -1030,7 +1033,7 @@ func (c *converterImpl) SchemaFromServer(source *Server) schema.Server {
 		schemaServer.RescueEnabled = (*source).RescueEnabled
 		schemaServer.ISO = c.pHcloudISOToPSchemaISO((*source).ISO)
 		schemaServer.Locked = (*source).Locked
-		schemaServer.Datacenter = c.SchemaFromDatacenter((*source).Datacenter)
+		schemaServer.Location = c.SchemaFromLocation((*source).Location)
 		schemaServer.Image = c.pHcloudImageToPSchemaImage((*source).Image)
 		schemaServer.Protection = c.hcloudServerProtectionToSchemaServerProtection((*source).Protection)
 		schemaServer.Labels = (*source).Labels
@@ -1048,6 +1051,7 @@ func (c *converterImpl) SchemaFromServer(source *Server) schema.Server {
 				schemaServer.LoadBalancers[k] = c.pHcloudLoadBalancerToInt64((*source).LoadBalancers[k])
 			}
 		}
+		schemaServer.Datacenter = c.pHcloudDatacenterToPSchemaDatacenter((*source).Datacenter)
 	}
 	return schemaServer
 }
@@ -1222,6 +1226,7 @@ func (c *converterImpl) SchemaFromStorageBoxSubaccount(source *StorageBoxSubacco
 	var schemaStorageBoxSubaccount schema.StorageBoxSubaccount
 	if source != nil {
 		schemaStorageBoxSubaccount.ID = (*source).ID
+		schemaStorageBoxSubaccount.Name = (*source).Name
 		schemaStorageBoxSubaccount.Username = (*source).Username
 		schemaStorageBoxSubaccount.HomeDirectory = (*source).HomeDirectory
 		schemaStorageBoxSubaccount.Server = (*source).Server
@@ -1240,6 +1245,7 @@ func (c *converterImpl) SchemaFromStorageBoxSubaccountChangeHomeDirectoryOpts(so
 }
 func (c *converterImpl) SchemaFromStorageBoxSubaccountCreateOpts(source StorageBoxSubaccountCreateOpts) schema.StorageBoxSubaccountCreateRequest {
 	var schemaStorageBoxSubaccountCreateRequest schema.StorageBoxSubaccountCreateRequest
+	schemaStorageBoxSubaccountCreateRequest.Name = source.Name
 	schemaStorageBoxSubaccountCreateRequest.HomeDirectory = source.HomeDirectory
 	schemaStorageBoxSubaccountCreateRequest.Password = source.Password
 	schemaStorageBoxSubaccountCreateRequest.Description = source.Description
@@ -1263,6 +1269,7 @@ func (c *converterImpl) SchemaFromStorageBoxSubaccountUpdateAccessSettingsOpts(s
 }
 func (c *converterImpl) SchemaFromStorageBoxSubaccountUpdateOpts(source StorageBoxSubaccountUpdateOpts) schema.StorageBoxSubaccountUpdateRequest {
 	var schemaStorageBoxSubaccountUpdateRequest schema.StorageBoxSubaccountUpdateRequest
+	schemaStorageBoxSubaccountUpdateRequest.Name = source.Name
 	schemaStorageBoxSubaccountUpdateRequest.Description = source.Description
 	schemaStorageBoxSubaccountUpdateRequest.Labels = stringMapToStringMapPtr(source.Labels)
 	return schemaStorageBoxSubaccountUpdateRequest
@@ -1467,6 +1474,16 @@ func (c *converterImpl) SchemaFromZoneRRSetUpdateOpts(source ZoneRRSetUpdateOpts
 	schemaZoneRRSetUpdateRequest.Labels = stringMapToStringMapPtr(source.Labels)
 	return schemaZoneRRSetUpdateRequest
 }
+func (c *converterImpl) SchemaFromZoneRRSetUpdateRecordsOpts(source ZoneRRSetUpdateRecordsOpts) schema.ZoneRRSetUpdateRecordsRequest {
+	var schemaZoneRRSetUpdateRecordsRequest schema.ZoneRRSetUpdateRecordsRequest
+	if source.Records != nil {
+		schemaZoneRRSetUpdateRecordsRequest.Records = make([]schema.ZoneRRSetUpdateRecordsRequestRecord, len(source.Records))
+		for i := 0; i < len(source.Records); i++ {
+			schemaZoneRRSetUpdateRecordsRequest.Records[i] = c.hcloudZoneRRSetRecordToSchemaZoneRRSetUpdateRecordsRequestRecord(source.Records[i])
+		}
+	}
+	return schemaZoneRRSetUpdateRecordsRequest
+}
 func (c *converterImpl) SchemaFromZoneUpdateOpts(source ZoneUpdateOpts) schema.ZoneUpdateRequest {
 	var schemaZoneUpdateRequest schema.ZoneUpdateRequest
 	schemaZoneUpdateRequest.Labels = stringMapToStringMapPtr(source.Labels)
@@ -1486,7 +1503,7 @@ func (c *converterImpl) ServerFromSchema(source schema.Server) *Server {
 		}
 	}
 	hcloudServer.ServerType = c.ServerTypeFromSchema(source.ServerType)
-	hcloudServer.Datacenter = c.DatacenterFromSchema(source.Datacenter)
+	hcloudServer.Location = c.LocationFromSchema(source.Location)
 	hcloudServer.IncludedTraffic = source.IncludedTraffic
 	if source.OutgoingTraffic != nil {
 		hcloudServer.OutgoingTraffic = *source.OutgoingTraffic
@@ -1518,6 +1535,7 @@ func (c *converterImpl) ServerFromSchema(source schema.Server) *Server {
 			hcloudServer.LoadBalancers[k] = &hcloudLoadBalancer
 		}
 	}
+	hcloudServer.Datacenter = c.pSchemaDatacenterToPHcloudDatacenter(source.Datacenter)
 	return &hcloudServer
 }
 func (c *converterImpl) ServerMetricsFromSchema(source *schema.ServerGetMetricsResponse) (*ServerMetrics, error) {
@@ -1672,6 +1690,7 @@ func (c *converterImpl) StorageBoxSubaccountFromCreateResponse(source schema.Sto
 func (c *converterImpl) StorageBoxSubaccountFromSchema(source schema.StorageBoxSubaccount) *StorageBoxSubaccount {
 	var hcloudStorageBoxSubaccount StorageBoxSubaccount
 	hcloudStorageBoxSubaccount.ID = source.ID
+	hcloudStorageBoxSubaccount.Name = source.Name
 	hcloudStorageBoxSubaccount.Username = source.Username
 	hcloudStorageBoxSubaccount.HomeDirectory = source.HomeDirectory
 	hcloudStorageBoxSubaccount.Server = source.Server
@@ -1768,28 +1787,6 @@ func (c *converterImpl) hcloudCertificateUsedByRefToSchemaCertificateUsedByRef(s
 	schemaCertificateUsedByRef.ID = source.ID
 	schemaCertificateUsedByRef.Type = string(source.Type)
 	return schemaCertificateUsedByRef
-}
-func (c *converterImpl) hcloudDatacenterServerTypesToSchemaDatacenterServerTypes(source DatacenterServerTypes) schema.DatacenterServerTypes {
-	var schemaDatacenterServerTypes schema.DatacenterServerTypes
-	if source.Supported != nil {
-		schemaDatacenterServerTypes.Supported = make([]int64, len(source.Supported))
-		for i := 0; i < len(source.Supported); i++ {
-			schemaDatacenterServerTypes.Supported[i] = int64FromServerType(source.Supported[i])
-		}
-	}
-	if source.AvailableForMigration != nil {
-		schemaDatacenterServerTypes.AvailableForMigration = make([]int64, len(source.AvailableForMigration))
-		for j := 0; j < len(source.AvailableForMigration); j++ {
-			schemaDatacenterServerTypes.AvailableForMigration[j] = int64FromServerType(source.AvailableForMigration[j])
-		}
-	}
-	if source.Available != nil {
-		schemaDatacenterServerTypes.Available = make([]int64, len(source.Available))
-		for k := 0; k < len(source.Available); k++ {
-			schemaDatacenterServerTypes.Available[k] = int64FromServerType(source.Available[k])
-		}
-	}
-	return schemaDatacenterServerTypes
 }
 func (c *converterImpl) hcloudDeprecatableResourceToSchemaDeprecatableResource(source DeprecatableResource) schema.DeprecatableResource {
 	var schemaDeprecatableResource schema.DeprecatableResource
@@ -2049,6 +2046,12 @@ func (c *converterImpl) hcloudZoneRRSetRecordToSchemaZoneRRSetRecord(source Zone
 	schemaZoneRRSetRecord.Comment = source.Comment
 	return schemaZoneRRSetRecord
 }
+func (c *converterImpl) hcloudZoneRRSetRecordToSchemaZoneRRSetUpdateRecordsRequestRecord(source ZoneRRSetRecord) schema.ZoneRRSetUpdateRecordsRequestRecord {
+	var schemaZoneRRSetUpdateRecordsRequestRecord schema.ZoneRRSetUpdateRecordsRequestRecord
+	schemaZoneRRSetUpdateRecordsRequestRecord.Value = source.Value
+	schemaZoneRRSetUpdateRecordsRequestRecord.Comment = source.Comment
+	return schemaZoneRRSetUpdateRecordsRequestRecord
+}
 func (c *converterImpl) intISOFromSchema(source schema.ISO) ISO {
 	var hcloudISO ISO
 	hcloudISO.ID = source.ID
@@ -2109,6 +2112,19 @@ func (c *converterImpl) pHcloudCertificateStatusToPSchemaCertificateStatusRef(so
 		pSchemaCertificateStatusRef = &schemaCertificateStatusRef
 	}
 	return pSchemaCertificateStatusRef
+}
+func (c *converterImpl) pHcloudDatacenterToPSchemaDatacenter(source *Datacenter) *schema.Datacenter {
+	var pSchemaDatacenter *schema.Datacenter
+	if source != nil {
+		var schemaDatacenter schema.Datacenter
+		schemaDatacenter.ID = (*source).ID
+		schemaDatacenter.Name = (*source).Name
+		schemaDatacenter.Description = (*source).Description
+		schemaDatacenter.Location = c.SchemaFromLocation((*source).Location)
+		schemaDatacenter.ServerTypes = schemaPtrFromDatacenterServerTypes((*source).ServerTypes)
+		pSchemaDatacenter = &schemaDatacenter
+	}
+	return pSchemaDatacenter
 }
 func (c *converterImpl) pHcloudErrorToPSchemaError(source *Error) *schema.Error {
 	var pSchemaError *schema.Error
@@ -2535,6 +2551,43 @@ func (c *converterImpl) pSchemaCertificateStatusRefToPHcloudCertificateStatus(so
 	}
 	return pHcloudCertificateStatus
 }
+func (c *converterImpl) pSchemaDatacenterServerTypesToHcloudDatacenterServerTypes(source *schema.DatacenterServerTypes) DatacenterServerTypes {
+	var hcloudDatacenterServerTypes DatacenterServerTypes
+	if source != nil {
+		if (*source).Supported != nil {
+			hcloudDatacenterServerTypes.Supported = make([]*ServerType, len((*source).Supported))
+			for i := 0; i < len((*source).Supported); i++ {
+				hcloudDatacenterServerTypes.Supported[i] = serverTypeFromInt64((*source).Supported[i])
+			}
+		}
+		if (*source).AvailableForMigration != nil {
+			hcloudDatacenterServerTypes.AvailableForMigration = make([]*ServerType, len((*source).AvailableForMigration))
+			for j := 0; j < len((*source).AvailableForMigration); j++ {
+				hcloudDatacenterServerTypes.AvailableForMigration[j] = serverTypeFromInt64((*source).AvailableForMigration[j])
+			}
+		}
+		if (*source).Available != nil {
+			hcloudDatacenterServerTypes.Available = make([]*ServerType, len((*source).Available))
+			for k := 0; k < len((*source).Available); k++ {
+				hcloudDatacenterServerTypes.Available[k] = serverTypeFromInt64((*source).Available[k])
+			}
+		}
+	}
+	return hcloudDatacenterServerTypes
+}
+func (c *converterImpl) pSchemaDatacenterToPHcloudDatacenter(source *schema.Datacenter) *Datacenter {
+	var pHcloudDatacenter *Datacenter
+	if source != nil {
+		var hcloudDatacenter Datacenter
+		hcloudDatacenter.ID = (*source).ID
+		hcloudDatacenter.Name = (*source).Name
+		hcloudDatacenter.Description = (*source).Description
+		hcloudDatacenter.Location = c.LocationFromSchema((*source).Location)
+		hcloudDatacenter.ServerTypes = c.pSchemaDatacenterServerTypesToHcloudDatacenterServerTypes((*source).ServerTypes)
+		pHcloudDatacenter = &hcloudDatacenter
+	}
+	return pHcloudDatacenter
+}
 func (c *converterImpl) pSchemaErrorToPHcloudError(source *schema.Error) *Error {
 	var pHcloudError *Error
 	if source != nil {
@@ -2708,28 +2761,6 @@ func (c *converterImpl) schemaCertificateUsedByRefToHcloudCertificateUsedByRef(s
 	hcloudCertificateUsedByRef.Type = CertificateUsedByRefType(source.Type)
 	return hcloudCertificateUsedByRef
 }
-func (c *converterImpl) schemaDatacenterServerTypesToHcloudDatacenterServerTypes(source schema.DatacenterServerTypes) DatacenterServerTypes {
-	var hcloudDatacenterServerTypes DatacenterServerTypes
-	if source.Supported != nil {
-		hcloudDatacenterServerTypes.Supported = make([]*ServerType, len(source.Supported))
-		for i := 0; i < len(source.Supported); i++ {
-			hcloudDatacenterServerTypes.Supported[i] = serverTypeFromInt64(source.Supported[i])
-		}
-	}
-	if source.AvailableForMigration != nil {
-		hcloudDatacenterServerTypes.AvailableForMigration = make([]*ServerType, len(source.AvailableForMigration))
-		for j := 0; j < len(source.AvailableForMigration); j++ {
-			hcloudDatacenterServerTypes.AvailableForMigration[j] = serverTypeFromInt64(source.AvailableForMigration[j])
-		}
-	}
-	if source.Available != nil {
-		hcloudDatacenterServerTypes.Available = make([]*ServerType, len(source.Available))
-		for k := 0; k < len(source.Available); k++ {
-			hcloudDatacenterServerTypes.Available[k] = serverTypeFromInt64(source.Available[k])
-		}
-	}
-	return hcloudDatacenterServerTypes
-}
 func (c *converterImpl) schemaDeprecatableResourceToHcloudDeprecatableResource(source schema.DeprecatableResource) DeprecatableResource {
 	var hcloudDeprecatableResource DeprecatableResource
 	hcloudDeprecatableResource.Deprecation = c.DeprecationFromSchema(source.Deprecation)
@@ -2772,6 +2803,28 @@ func (c *converterImpl) schemaFloatingIPProtectionToHcloudFloatingIPProtection(s
 	var hcloudFloatingIPProtection FloatingIPProtection
 	hcloudFloatingIPProtection.Delete = source.Delete
 	return hcloudFloatingIPProtection
+}
+func (c *converterImpl) schemaFromDatacenterServerTypes(source DatacenterServerTypes) schema.DatacenterServerTypes {
+	var schemaDatacenterServerTypes schema.DatacenterServerTypes
+	if source.Supported != nil {
+		schemaDatacenterServerTypes.Supported = make([]int64, len(source.Supported))
+		for i := 0; i < len(source.Supported); i++ {
+			schemaDatacenterServerTypes.Supported[i] = int64FromServerType(source.Supported[i])
+		}
+	}
+	if source.AvailableForMigration != nil {
+		schemaDatacenterServerTypes.AvailableForMigration = make([]int64, len(source.AvailableForMigration))
+		for j := 0; j < len(source.AvailableForMigration); j++ {
+			schemaDatacenterServerTypes.AvailableForMigration[j] = int64FromServerType(source.AvailableForMigration[j])
+		}
+	}
+	if source.Available != nil {
+		schemaDatacenterServerTypes.Available = make([]int64, len(source.Available))
+		for k := 0; k < len(source.Available); k++ {
+			schemaDatacenterServerTypes.Available[k] = int64FromServerType(source.Available[k])
+		}
+	}
+	return schemaDatacenterServerTypes
 }
 func (c *converterImpl) schemaFromFloatingIPPricing(source FloatingIPPricing) schema.PricingFloatingIP {
 	var schemaPricingFloatingIP schema.PricingFloatingIP
@@ -2859,6 +2912,8 @@ func (c *converterImpl) schemaFromServerTypeLocation(source ServerTypeLocation) 
 	if pString != nil {
 		schemaServerTypeLocation.Name = *pString
 	}
+	schemaServerTypeLocation.Recommended = source.Recommended
+	schemaServerTypeLocation.Available = source.Available
 	schemaServerTypeLocation.DeprecatableResource = c.hcloudDeprecatableResourceToSchemaDeprecatableResource(source.DeprecatableResource)
 	return schemaServerTypeLocation
 }
@@ -3051,6 +3106,8 @@ func (c *converterImpl) schemaZoneRRSetRecordToHcloudZoneRRSetRecord(source sche
 func (c *converterImpl) serverTypeLocationFromSchema(source schema.ServerTypeLocation) ServerTypeLocation {
 	var hcloudServerTypeLocation ServerTypeLocation
 	hcloudServerTypeLocation.Location = locationFromServerTypeLocationSchema(source)
+	hcloudServerTypeLocation.Available = source.Available
+	hcloudServerTypeLocation.Recommended = source.Recommended
 	hcloudServerTypeLocation.DeprecatableResource = c.schemaDeprecatableResourceToHcloudDeprecatableResource(source.DeprecatableResource)
 	return hcloudServerTypeLocation
 }

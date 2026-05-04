@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseDataAttributesRulesetsItemsData
+// GetMultipleRulesetsResponseDataAttributesRulesetsItemsData The resource identifier and type for a ruleset.
 type GetMultipleRulesetsResponseDataAttributesRulesetsItemsData struct {
-	//
+	// The unique identifier of the ruleset resource.
 	Id *string `json:"id,omitempty"`
 	// Rulesets resource type.
 	Type GetMultipleRulesetsResponseDataAttributesRulesetsItemsDataType `json:"type"`

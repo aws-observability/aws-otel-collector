@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryEventFilteredUsersRequestDataAttributesEventQuery
+// QueryEventFilteredUsersRequestDataAttributesEventQuery Event platform query used to filter users based on their event activity within a specified time window.
 type QueryEventFilteredUsersRequestDataAttributesEventQuery struct {
-	//
+	// The event platform query expression for filtering users by their event activity.
 	Query *string `json:"query,omitempty"`
-	//
+	// The time window defining the start and end of the event query period as Unix timestamps.
 	TimeFrame *QueryEventFilteredUsersRequestDataAttributesEventQueryTimeFrame `json:"time_frame,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

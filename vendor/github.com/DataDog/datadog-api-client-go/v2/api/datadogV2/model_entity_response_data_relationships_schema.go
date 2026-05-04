@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsSchema
+// EntityResponseDataRelationshipsSchema Schema relationship linking an entity to its associated schema resource.
 type EntityResponseDataRelationshipsSchema struct {
-	//
+	// Schema relationship data containing the schema resource identifier and type.
 	Data EntityResponseDataRelationshipsSchemaData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

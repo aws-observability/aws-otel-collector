@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesFilesItems
+// ScaRequestDataAttributesFilesItems A file entry in the repository associated with a dependency manifest.
 type ScaRequestDataAttributesFilesItems struct {
-	//
+	// The name or path of the file within the repository.
 	Name *string `json:"name,omitempty"`
-	//
+	// The Package URL (PURL) associated with the dependency declared in this file.
 	Purl *string `json:"purl,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

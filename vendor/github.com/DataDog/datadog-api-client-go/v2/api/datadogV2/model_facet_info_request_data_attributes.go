@@ -10,15 +10,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoRequestDataAttributes
+// FacetInfoRequestDataAttributes Attributes for the facet info request, specifying which facet to query and optional filters to apply.
 type FacetInfoRequestDataAttributes struct {
-	//
+	// The identifier of the facet attribute to retrieve value information for.
 	FacetId string `json:"facet_id"`
-	//
+	// Maximum number of facet values to return in the response.
 	Limit int64 `json:"limit"`
-	//
+	// Query-based search configuration for filtering the audience context when retrieving facet values.
 	Search *FacetInfoRequestDataAttributesSearch `json:"search,omitempty"`
-	//
+	// Term-level search configuration for filtering facet values by an exact or partial term match.
 	TermSearch *FacetInfoRequestDataAttributesTermSearch `json:"term_search,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -12,8 +12,6 @@ import (
 
 // DetachCaseRequestData Data for detaching security findings from their case.
 type DetachCaseRequestData struct {
-	// The unique identifier of the detachment request.
-	Id *string `json:"id,omitempty"`
 	// Relationships detaching security findings from their case.
 	Relationships *DetachCaseRequestDataRelationships `json:"relationships,omitempty"`
 	// Cases resource type.
@@ -41,34 +39,6 @@ func NewDetachCaseRequestDataWithDefaults() *DetachCaseRequestData {
 	var typeVar CaseDataType = CASEDATATYPE_CASES
 	this.Type = typeVar
 	return &this
-}
-
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *DetachCaseRequestData) GetId() string {
-	if o == nil || o.Id == nil {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DetachCaseRequestData) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
-		return nil, false
-	}
-	return o.Id, true
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *DetachCaseRequestData) HasId() bool {
-	return o != nil && o.Id != nil
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *DetachCaseRequestData) SetId(v string) {
-	o.Id = &v
 }
 
 // GetRelationships returns the Relationships field value if set, zero value otherwise.
@@ -128,9 +98,6 @@ func (o DetachCaseRequestData) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
-	}
 	if o.Relationships != nil {
 		toSerialize["relationships"] = o.Relationships
 	}
@@ -145,7 +112,6 @@ func (o DetachCaseRequestData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *DetachCaseRequestData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id            *string                             `json:"id,omitempty"`
 		Relationships *DetachCaseRequestDataRelationships `json:"relationships,omitempty"`
 		Type          *CaseDataType                       `json:"type"`
 	}{}
@@ -157,13 +123,12 @@ func (o *DetachCaseRequestData) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "relationships", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"relationships", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
-	o.Id = all.Id
 	if all.Relationships != nil && all.Relationships.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

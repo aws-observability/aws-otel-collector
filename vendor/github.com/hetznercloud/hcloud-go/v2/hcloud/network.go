@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil"
@@ -56,6 +57,13 @@ type Network struct {
 	ExposeRoutesToVSwitch bool
 }
 
+func (o *Network) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
+}
+
 // NetworkSubnet represents a subnet of a network in the Hetzner Cloud.
 type NetworkSubnet struct {
 	Type        NetworkSubnetType
@@ -79,7 +87,7 @@ type NetworkProtection struct {
 // NetworkClient is a client for the network API.
 type NetworkClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*Network]
 }
 
 // GetByID retrieves a network by its ID. If the network does not exist, nil is returned.
@@ -151,11 +159,14 @@ func (c *NetworkClient) List(ctx context.Context, opts NetworkListOpts) ([]*Netw
 
 // All returns all networks.
 func (c *NetworkClient) All(ctx context.Context) ([]*Network, error) {
-	return c.AllWithOpts(ctx, NetworkListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, NetworkListOpts{})
 }
 
 // AllWithOpts returns all networks for the given options.
 func (c *NetworkClient) AllWithOpts(ctx context.Context, opts NetworkListOpts) ([]*Network, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Network, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

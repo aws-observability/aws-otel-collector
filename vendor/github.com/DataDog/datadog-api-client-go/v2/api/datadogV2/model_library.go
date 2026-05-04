@@ -12,6 +12,8 @@ import (
 
 // Library Vulnerability library.
 type Library struct {
+	// Related library or package names (such as child packages or affected binary paths).
+	AdditionalNames []string `json:"additional_names,omitempty"`
 	// Vulnerability library name.
 	Name string `json:"name"`
 	// Vulnerability library version.
@@ -37,6 +39,34 @@ func NewLibrary(name string) *Library {
 func NewLibraryWithDefaults() *Library {
 	this := Library{}
 	return &this
+}
+
+// GetAdditionalNames returns the AdditionalNames field value if set, zero value otherwise.
+func (o *Library) GetAdditionalNames() []string {
+	if o == nil || o.AdditionalNames == nil {
+		var ret []string
+		return ret
+	}
+	return o.AdditionalNames
+}
+
+// GetAdditionalNamesOk returns a tuple with the AdditionalNames field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Library) GetAdditionalNamesOk() (*[]string, bool) {
+	if o == nil || o.AdditionalNames == nil {
+		return nil, false
+	}
+	return &o.AdditionalNames, true
+}
+
+// HasAdditionalNames returns a boolean if a field has been set.
+func (o *Library) HasAdditionalNames() bool {
+	return o != nil && o.AdditionalNames != nil
+}
+
+// SetAdditionalNames gets a reference to the given []string and assigns it to the AdditionalNames field.
+func (o *Library) SetAdditionalNames(v []string) {
+	o.AdditionalNames = v
 }
 
 // GetName returns the Name field value.
@@ -96,6 +126,9 @@ func (o Library) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AdditionalNames != nil {
+		toSerialize["additional_names"] = o.AdditionalNames
+	}
 	toSerialize["name"] = o.Name
 	if o.Version != nil {
 		toSerialize["version"] = o.Version
@@ -110,8 +143,9 @@ func (o Library) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *Library) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Name    *string `json:"name"`
-		Version *string `json:"version,omitempty"`
+		AdditionalNames []string `json:"additional_names,omitempty"`
+		Name            *string  `json:"name"`
+		Version         *string  `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -121,10 +155,11 @@ func (o *Library) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"name", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"additional_names", "name", "version"})
 	} else {
 		return err
 	}
+	o.AdditionalNames = all.AdditionalNames
 	o.Name = *all.Name
 	o.Version = all.Version
 

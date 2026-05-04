@@ -11,9 +11,17 @@ import (
 )
 
 // MicrosoftSentinelDestination The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel.
+//
+// **Supported pipeline types:** logs
 type MicrosoftSentinelDestination struct {
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// Azure AD client ID used for authentication.
 	ClientId string `json:"client_id"`
+	// Name of the environment variable or secret that holds the Azure AD client secret.
+	ClientSecretKey *string `json:"client_secret_key,omitempty"`
+	// Name of the environment variable or secret that holds the Data Collection Endpoint (DCE) URI.
+	DceUriKey *string `json:"dce_uri_key,omitempty"`
 	// The immutable ID of the Data Collection Rule (DCR).
 	DcrImmutableId string `json:"dcr_immutable_id"`
 	// The unique identifier for this component.
@@ -57,6 +65,34 @@ func NewMicrosoftSentinelDestinationWithDefaults() *MicrosoftSentinelDestination
 	return &this
 }
 
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *MicrosoftSentinelDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MicrosoftSentinelDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *MicrosoftSentinelDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *MicrosoftSentinelDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
+}
+
 // GetClientId returns the ClientId field value.
 func (o *MicrosoftSentinelDestination) GetClientId() string {
 	if o == nil {
@@ -78,6 +114,62 @@ func (o *MicrosoftSentinelDestination) GetClientIdOk() (*string, bool) {
 // SetClientId sets field value.
 func (o *MicrosoftSentinelDestination) SetClientId(v string) {
 	o.ClientId = v
+}
+
+// GetClientSecretKey returns the ClientSecretKey field value if set, zero value otherwise.
+func (o *MicrosoftSentinelDestination) GetClientSecretKey() string {
+	if o == nil || o.ClientSecretKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.ClientSecretKey
+}
+
+// GetClientSecretKeyOk returns a tuple with the ClientSecretKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MicrosoftSentinelDestination) GetClientSecretKeyOk() (*string, bool) {
+	if o == nil || o.ClientSecretKey == nil {
+		return nil, false
+	}
+	return o.ClientSecretKey, true
+}
+
+// HasClientSecretKey returns a boolean if a field has been set.
+func (o *MicrosoftSentinelDestination) HasClientSecretKey() bool {
+	return o != nil && o.ClientSecretKey != nil
+}
+
+// SetClientSecretKey gets a reference to the given string and assigns it to the ClientSecretKey field.
+func (o *MicrosoftSentinelDestination) SetClientSecretKey(v string) {
+	o.ClientSecretKey = &v
+}
+
+// GetDceUriKey returns the DceUriKey field value if set, zero value otherwise.
+func (o *MicrosoftSentinelDestination) GetDceUriKey() string {
+	if o == nil || o.DceUriKey == nil {
+		var ret string
+		return ret
+	}
+	return *o.DceUriKey
+}
+
+// GetDceUriKeyOk returns a tuple with the DceUriKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MicrosoftSentinelDestination) GetDceUriKeyOk() (*string, bool) {
+	if o == nil || o.DceUriKey == nil {
+		return nil, false
+	}
+	return o.DceUriKey, true
+}
+
+// HasDceUriKey returns a boolean if a field has been set.
+func (o *MicrosoftSentinelDestination) HasDceUriKey() bool {
+	return o != nil && o.DceUriKey != nil
+}
+
+// SetDceUriKey gets a reference to the given string and assigns it to the DceUriKey field.
+func (o *MicrosoftSentinelDestination) SetDceUriKey(v string) {
+	o.DceUriKey = &v
 }
 
 // GetDcrImmutableId returns the DcrImmutableId field value.
@@ -224,7 +316,16 @@ func (o MicrosoftSentinelDestination) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	toSerialize["client_id"] = o.ClientId
+	if o.ClientSecretKey != nil {
+		toSerialize["client_secret_key"] = o.ClientSecretKey
+	}
+	if o.DceUriKey != nil {
+		toSerialize["dce_uri_key"] = o.DceUriKey
+	}
 	toSerialize["dcr_immutable_id"] = o.DcrImmutableId
 	toSerialize["id"] = o.Id
 	toSerialize["inputs"] = o.Inputs
@@ -241,13 +342,16 @@ func (o MicrosoftSentinelDestination) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *MicrosoftSentinelDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ClientId       *string                           `json:"client_id"`
-		DcrImmutableId *string                           `json:"dcr_immutable_id"`
-		Id             *string                           `json:"id"`
-		Inputs         *[]string                         `json:"inputs"`
-		Table          *string                           `json:"table"`
-		TenantId       *string                           `json:"tenant_id"`
-		Type           *MicrosoftSentinelDestinationType `json:"type"`
+		Buffer          *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
+		ClientId        *string                             `json:"client_id"`
+		ClientSecretKey *string                             `json:"client_secret_key,omitempty"`
+		DceUriKey       *string                             `json:"dce_uri_key,omitempty"`
+		DcrImmutableId  *string                             `json:"dcr_immutable_id"`
+		Id              *string                             `json:"id"`
+		Inputs          *[]string                           `json:"inputs"`
+		Table           *string                             `json:"table"`
+		TenantId        *string                             `json:"tenant_id"`
+		Type            *MicrosoftSentinelDestinationType   `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -275,13 +379,16 @@ func (o *MicrosoftSentinelDestination) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"client_id", "dcr_immutable_id", "id", "inputs", "table", "tenant_id", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"buffer", "client_id", "client_secret_key", "dce_uri_key", "dcr_immutable_id", "id", "inputs", "table", "tenant_id", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Buffer = all.Buffer
 	o.ClientId = *all.ClientId
+	o.ClientSecretKey = all.ClientSecretKey
+	o.DceUriKey = all.DceUriKey
 	o.DcrImmutableId = *all.DcrImmutableId
 	o.Id = *all.Id
 	o.Inputs = *all.Inputs

@@ -437,7 +437,7 @@ func (a *LogsIndexesApi) ListLogIndexes(ctx _context.Context) (LogsIndexListResp
 // Update an index as identified by its name.
 // Returns the Index object passed in the request body when the request is successful.
 //
-// Using the `PUT` method updates your index’s configuration by **replacing**
+// Using the `PUT` method updates your index's configuration by **replacing**
 // your current configuration with the new one sent to your Datadog organization.
 func (a *LogsIndexesApi) UpdateLogsIndex(ctx _context.Context, name string, body LogsIndexUpdateRequest) (LogsIndex, *_nethttp.Response, error) {
 	var (
