@@ -48,7 +48,7 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 50
+  MAX_JOBS: 110
   BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
   GO_VERSION: ~1.26.2
 
@@ -651,6 +651,7 @@ jobs:
 
   run-batch-job:
     runs-on: ubuntu-22.04
+    timeout-minutes: 120
     needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref, build-aotutil]
     strategy:
       fail-fast: false
@@ -838,7 +839,19 @@ jobs:
         run: |
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/terraform
+          rm -f ./.cache-misses
           make checkCacheHits
+
+      - name: surface cache-miss list (always)
+        if: always()
+        run: |
+          if [ -s testing-framework/terraform/.cache-misses ]; then
+            echo "## Cache misses (testcases without a green DynamoDB record)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat testing-framework/terraform/.cache-misses >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
 
   release-candidate:
     runs-on: ubuntu-22.04
