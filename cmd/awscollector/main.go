@@ -43,7 +43,8 @@ const (
 // aws-otel-collector is built upon opentelemetry-collector.
 // in main() function, aws team has customized logging and configuration handling
 // logic and it only supports the selected components which have been verified by AWS
-// from opentelemetry-collector list
+// from opentelemetry-collector list.
+// See CONTRIBUTING.md for component selection criteria.
 func main() {
 	// get extra config
 
