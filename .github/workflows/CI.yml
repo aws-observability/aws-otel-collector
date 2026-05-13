@@ -95,11 +95,8 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-          if [[ ${{ github.ref_name }} == release/v* ]]; then 
-            echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
-          else
-            echo "ref=terraform" >> $GITHUB_OUTPUT
-          fi
+          # TODO: revert before merging to release/v0.48.x
+          echo "ref=fix/vpc-tf-version" >> $GITHUB_OUTPUT
 
   build-aotutil:
     runs-on: ubuntu-22.04
