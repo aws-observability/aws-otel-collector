@@ -700,6 +700,10 @@ jobs:
 
       - name: run tests
         run: |
+          echo "## Batch ${{ matrix.BatchKey }} Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Testcase | Status | Duration |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|----------|--------|----------|" >> $GITHUB_STEP_SUMMARY
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/terraform
