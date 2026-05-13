@@ -553,6 +553,21 @@ jobs:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
 
+      - name: ensure security group ports
+        run: |
+          SG_ID="sg-0bb18e38fc7a9285b"
+          EXISTING=$(aws ec2 describe-security-groups --group-ids $SG_ID --query 'SecurityGroups[0].IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]].FromPort' --output text)
+          for PORT in 80 443 4317 4567 5985 8080 9411 55671; do
+            if ! echo "$EXISTING" | grep -qw $PORT; then
+              echo "Adding TCP $PORT to $SG_ID"
+              aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port $PORT --cidr 0.0.0.0/0
+            fi
+          done
+          if ! echo "$EXISTING" | grep -qw 55690; then
+            echo "Adding UDP 55690 to $SG_ID"
+            aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol udp --port 55690 --cidr 0.0.0.0/0 || true
+          fi
+
       - name: Login to Public Integration Test ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         uses: docker/login-action@v3
