@@ -578,17 +578,20 @@ jobs:
 
       - name: ensure security group ports
         run: |
+          # Verify VPC-internal rules exist (NOT 0.0.0.0/0 — runner access is via per-run SGs)
           SG_ID="sg-0bb18e38fc7a9285b"
-          EXISTING=$(aws ec2 describe-security-groups --group-ids $SG_ID --query 'SecurityGroups[0].IpPermissions[?IpRanges[?CidrIp==`0.0.0.0/0`]].FromPort' --output text)
+          VPC_CIDR="10.0.0.0/16"
+          EXISTING=$(aws ec2 describe-security-groups --group-ids $SG_ID --query 'SecurityGroups[0].IpPermissions[?IpRanges[?CidrIp==`10.0.0.0/16`]].FromPort' --output text)
           for PORT in 80 443 4317 4567 5985 8080 9411 55671; do
             if ! echo "$EXISTING" | grep -qw $PORT; then
-              echo "Adding TCP $PORT to $SG_ID"
-              aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port $PORT --cidr 0.0.0.0/0
+              echo "Adding TCP $PORT from $VPC_CIDR to $SG_ID"
+              aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol tcp --port $PORT --cidr $VPC_CIDR || true
             fi
           done
-          if ! echo "$EXISTING" | grep -qw 55690; then
-            echo "Adding UDP 55690 to $SG_ID"
-            aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol udp --port 55690 --cidr 0.0.0.0/0 || true
+          EXISTING_UDP=$(aws ec2 describe-security-groups --group-ids $SG_ID --query 'SecurityGroups[0].IpPermissions[?IpRanges[?CidrIp==`10.0.0.0/16`]].FromPort' --output text)
+          if ! echo "$EXISTING_UDP" | grep -qw 55690; then
+            echo "Adding UDP 55690 from $VPC_CIDR to $SG_ID"
+            aws ec2 authorize-security-group-ingress --group-id $SG_ID --protocol udp --port 55690 --cidr $VPC_CIDR || true
           fi
 
       - name: Login to Public Integration Test ECR
