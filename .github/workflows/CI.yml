@@ -98,7 +98,7 @@ jobs:
         id: setRef
         run: |
           # TODO: revert before merging to release/v0.48.x
-          echo "ref=fix/vpc-tf-version" >> $GITHUB_OUTPUT
+          echo "ref=fix/ami" >> $GITHUB_OUTPUT
 
   build-aotutil:
     runs-on: ubuntu-22.04
