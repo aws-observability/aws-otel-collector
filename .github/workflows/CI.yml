@@ -554,6 +554,25 @@ jobs:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
 
+      - name: cleanup orphaned test instances
+        run: |
+          echo "Terminating Integ-test instances older than 3 hours..."
+          CUTOFF=$(date -u -d '3 hours ago' '+%Y-%m-%dT%H:%M:%S' 2>/dev/null || date -u -v-3H '+%Y-%m-%dT%H:%M:%S')
+          INSTANCE_IDS=$(aws ec2 describe-instances \
+            --filters "Name=vpc-id,Values=vpc-0d39d985b13a63d43" \
+                      "Name=instance-state-name,Values=running" \
+                      "Name=tag:Name,Values=Integ-test-*" \
+            --query "Reservations[*].Instances[?LaunchTime<\`${CUTOFF}\`].InstanceId" \
+            --output text | tr '\t' '\n' | grep -v '^$')
+          COUNT=$(echo "$INSTANCE_IDS" | grep -c . || true)
+          if [ "$COUNT" -gt 0 ]; then
+            echo "Found $COUNT orphaned instances to terminate"
+            echo "$INSTANCE_IDS" | xargs -n 100 aws ec2 terminate-instances --instance-ids --output text > /dev/null
+            echo "Terminated $COUNT instances"
+          else
+            echo "No orphaned instances found"
+          fi
+
       - name: ensure security group ports
         run: |
           SG_ID="sg-0bb18e38fc7a9285b"
