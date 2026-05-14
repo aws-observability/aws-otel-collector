@@ -86,7 +86,7 @@ for i in "${local_to_s3_path[@]}"; do
     s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
 
     echo "check if package is already there: ${s3_version_url}"
-    aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" >/dev/null || version_not_exist=true
+    aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" >/dev/null 2>&1 || version_not_exist=true
 
     if [ "${version_not_exist}" ]; then
         echo "upload package ${local_path} to ${s3_version_url}"
