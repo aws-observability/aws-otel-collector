@@ -1,5 +1,5 @@
 # CI workflow for ADOT Collector — integration tests via aws-otel-test-framework
-# Security: provisioning via SSM, no SSH/WinRM. HTTP ports public for ALB/validator.
+# Security: per-run SG with runner IP, SSH/WinRM restricted to VPC CIDR, no SSH/WinRM. HTTP ports public for ALB/validator.
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
