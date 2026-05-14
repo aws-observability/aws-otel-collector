@@ -564,8 +564,8 @@ jobs:
       - name: cleanup orphaned test instances
         shell: bash {0}
         run: |
-          echo "Terminating Integ-test instances older than 3 hours..."
-          CUTOFF=$(date -u -d '3 hours ago' '+%Y-%m-%dT%H:%M:%S')
+          echo "Terminating Integ-test instances older than 1 hour..."
+          CUTOFF=$(date -u -d '1 hour ago' '+%Y-%m-%dT%H:%M:%S')
           echo "Cutoff time: $CUTOFF"
           INSTANCE_IDS=$(aws ec2 describe-instances \
             --filters "Name=vpc-id,Values=vpc-0d39d985b13a63d43" \
@@ -580,6 +580,22 @@ jobs:
             echo "Terminated $COUNT instances"
           else
             echo "No orphaned instances found"
+          fi
+
+      - name: cleanup orphaned runner security groups
+        shell: bash {0}
+        run: |
+          echo "Cleaning up orphaned runner-* security groups..."
+          SG_IDS=$(aws ec2 describe-security-groups \
+            --filters "Name=group-name,Values=runner-*" \
+            --query 'SecurityGroups[].GroupId' --output text | tr '\t' '\n' | grep . || true)
+          if [ -n "$SG_IDS" ]; then
+            COUNT=$(echo "$SG_IDS" | wc -l)
+            echo "Found $COUNT orphaned runner SGs, attempting deletion..."
+            echo "$SG_IDS" | xargs -P10 -I{} sh -c \
+              'aws ec2 delete-security-group --group-id {} 2>/dev/null && echo "deleted {}" || true' | wc -l
+          else
+            echo "No orphaned runner SGs found"
           fi
 
       - name: ensure security group ports
@@ -780,17 +796,35 @@ jobs:
           cd testing-framework/terraform
           make checkCacheHits
 
-      # This is here just in case workflow cancel
-      # We first kill terraform processes to ensure that no state
-      # file locks are being held from SIGTERMS dispatched in previous
-      # steps.
+      # On cancel: kill terraform, attempt destroy, then brute-force cleanup by tags
       - name: Destroy resources
         if: ${{ cancelled() }}
         shell: bash {0}
         run: |
-          ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill
+          ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill 2>/dev/null || true
+          sleep 2
           cd testing-framework/terraform
-          make terraformCleanup
+          make terraformCleanup || true
+
+      - name: Force-cleanup instances on cancel
+        if: ${{ cancelled() }}
+        shell: bash {0}
+        run: |
+          # Find instances tagged with this run's testing IDs and terminate them
+          INSTANCE_IDS=$(aws ec2 describe-instances \
+            --filters "Name=instance-state-name,Values=running" \
+                      "Name=tag:ephemeral,Values=true" \
+                      "Name=tag:Name,Values=Integ-test-*" \
+            --query 'Reservations[].Instances[?LaunchTime>=`'"$(date -u -d '2 hours ago' '+%Y-%m-%dT%H:%M:%S')"'`].InstanceId' \
+            --output text | tr '\t' '\n' | grep . || true)
+          if [ -n "$INSTANCE_IDS" ]; then
+            echo "Force-terminating $(echo "$INSTANCE_IDS" | wc -l) instances from cancelled run"
+            echo "$INSTANCE_IDS" | xargs -n 100 aws ec2 terminate-instances --instance-ids > /dev/null || true
+          fi
+          # Clean up runner SGs created by this run
+          aws ec2 describe-security-groups --filters "Name=group-name,Values=runner-*" \
+            --query 'SecurityGroups[].GroupId' --output text | tr '\t' '\n' | grep . | \
+            xargs -P10 -I{} aws ec2 delete-security-group --group-id {} 2>/dev/null || true
 
   run-collector-testbed:
     runs-on: ubuntu-22.04
