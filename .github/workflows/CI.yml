@@ -598,6 +598,24 @@ jobs:
             echo "No orphaned runner SGs found"
           fi
 
+      - name: cleanup orphaned load balancers
+        shell: bash {0}
+        run: |
+          echo "Checking for orphaned ALBs (created > 1 hour ago)..."
+          CUTOFF=$(date -u -d '1 hour ago' '+%Y-%m-%dT%H:%M:%S')
+          ARNS=$(aws elbv2 describe-load-balancers \
+            --query "LoadBalancers[?CreatedTime<\`${CUTOFF}\`].LoadBalancerArn" \
+            --output text | tr '\t' '\n' | grep . || true)
+          if [ -n "$ARNS" ]; then
+            COUNT=$(echo "$ARNS" | wc -l)
+            echo "Found $COUNT orphaned ALBs, deleting..."
+            echo "$ARNS" | while read arn; do
+              aws elbv2 delete-load-balancer --load-balancer-arn "$arn" 2>/dev/null && echo "deleted" || true
+            done | grep -c deleted || true
+          else
+            echo "No orphaned ALBs found"
+          fi
+
       - name: ensure security group ports
         run: |
           SG_ID="sg-0bb18e38fc7a9285b"
