@@ -1,4 +1,5 @@
 # CI workflow for ADOT Collector — integration tests via aws-otel-test-framework
+# Security: test framework now uses per-run SGs with runner IP (no 0.0.0.0/0)
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
