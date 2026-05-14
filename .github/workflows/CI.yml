@@ -122,6 +122,12 @@ jobs:
         with:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
+      - name: Upload aotutil artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aotutil
+          path: testing-framework/cmd/aotutil/aotutil
+          retention-days: 1
 
   build:
     needs:
@@ -745,6 +751,16 @@ jobs:
         with:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
+
+      - name: Fallback - download aotutil artifact
+        if: ${{ !hashFiles('testing-framework/cmd/aotutil/aotutil') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: aotutil
+          path: testing-framework/cmd/aotutil
+
+      - name: Ensure aotutil is executable
+        run: chmod +x testing-framework/cmd/aotutil/aotutil
 
       - name: run tests
         run: |
