@@ -555,17 +555,19 @@ jobs:
           aws-region: us-west-2
 
       - name: cleanup orphaned test instances
+        shell: bash {0}
         run: |
           echo "Terminating Integ-test instances older than 3 hours..."
-          CUTOFF=$(date -u -d '3 hours ago' '+%Y-%m-%dT%H:%M:%S' 2>/dev/null || date -u -v-3H '+%Y-%m-%dT%H:%M:%S')
+          CUTOFF=$(date -u -d '3 hours ago' '+%Y-%m-%dT%H:%M:%S')
+          echo "Cutoff time: $CUTOFF"
           INSTANCE_IDS=$(aws ec2 describe-instances \
             --filters "Name=vpc-id,Values=vpc-0d39d985b13a63d43" \
                       "Name=instance-state-name,Values=running" \
                       "Name=tag:Name,Values=Integ-test-*" \
             --query "Reservations[*].Instances[?LaunchTime<\`${CUTOFF}\`].InstanceId" \
-            --output text | tr '\t' '\n' | grep -v '^$')
-          COUNT=$(echo "$INSTANCE_IDS" | grep -c . || true)
-          if [ "$COUNT" -gt 0 ]; then
+            --output text | tr '\t' '\n' | grep . || true)
+          if [ -n "$INSTANCE_IDS" ]; then
+            COUNT=$(echo "$INSTANCE_IDS" | wc -l)
             echo "Found $COUNT orphaned instances to terminate"
             echo "$INSTANCE_IDS" | xargs -n 100 aws ec2 terminate-instances --instance-ids --output text > /dev/null
             echo "Terminated $COUNT instances"
