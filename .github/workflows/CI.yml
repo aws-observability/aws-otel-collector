@@ -1,4 +1,4 @@
-# CI workflow for ADOT Collector - runs integration tests via aws-otel-test-framework
+# CI workflow for ADOT Collector — integration tests via aws-otel-test-framework
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
