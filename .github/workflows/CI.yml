@@ -95,7 +95,7 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+          if [[ ${{ github.ref_name }} == release/v* ]]; then
             echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
             echo "ref=terraform" >> $GITHUB_OUTPUT
@@ -687,7 +687,7 @@ jobs:
       - name: create test-case-batch file
         run: |
           jsonStr='${{ needs.get-testing-suites.outputs.test-case-batch-value }}'
-          jsonStr="$(jq -r '.${{ matrix.BatchKey }} | join("\n")' <<< "${jsonStr}")"
+          jsonStr="$(jq -r '.["${{ matrix.BatchKey }}"] | join("\n")' <<< "${jsonStr}")"
           echo "$jsonStr" >> testing-framework/terraform/test-case-batch
           cat testing-framework/terraform/test-case-batch
       - name: Get TTL_DATE for cache
