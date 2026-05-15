@@ -94,12 +94,29 @@ jobs:
     steps:
       - name: Set testRef output
         id: setRef
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          if [[ ${{ github.ref_name }} == release/v* ]]; then
-            echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
-          else
-            echo "ref=terraform" >> $GITHUB_OUTPUT
+          ref=terraform
+          encoded_ref="${REF_NAME//\//%2F}"
+          if [[ $REF_NAME == release/v* ]]; then
+            if ! gh api repos/${{ env.TESTING_FRAMEWORK_REPO }}/branches/$encoded_ref --silent 2>/dev/null; then
+              echo "::error::Release branch '$REF_NAME' not found in ${{ env.TESTING_FRAMEWORK_REPO }}"
+              exit 1
+            fi
+            ref=$REF_NAME
+          elif [[ $REF_NAME == test/* ]] && \
+              gh api repos/${{ env.TESTING_FRAMEWORK_REPO }}/branches/$encoded_ref \
+              --silent 2>/dev/null; then
+            ref=$REF_NAME
           fi
+          if [[ $ref == terraform ]]; then
+            echo "::notice::Using default 'terraform' branch for test framework"
+          else
+            echo "::notice::Using test framework branch '$ref'"
+          fi
+          echo "ref=$ref" >> $GITHUB_OUTPUT
 
   build-aotutil:
     runs-on: ubuntu-22.04
