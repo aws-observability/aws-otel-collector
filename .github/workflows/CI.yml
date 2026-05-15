@@ -214,13 +214,15 @@ jobs:
         BUILD_INFO="github.com/aws-observability/aws-otel-collector/tools/version"
         LDFLAGS="-s -w -X ${BUILD_INFO}.GitHash=${GIT_SHA} -X ${BUILD_INFO}.Version=${VERSION} -X ${BUILD_INFO}.Date=${DATE}"
         mkdir -p ./build/linux/amd64 ./build/linux/arm64 ./build/windows/amd64
-        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/aoc ./cmd/awscollector &
-        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/aoc ./cmd/awscollector &
-        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/aoc ./cmd/awscollector &
-        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/healthcheck ./cmd/healthcheck &
-        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/healthcheck ./cmd/healthcheck &
-        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/healthcheck ./cmd/healthcheck &
-        wait
+        echo "Building linux/amd64..."
+        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/aoc ./cmd/awscollector
+        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
+        echo "Building linux/arm64..."
+        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/aoc ./cmd/awscollector
+        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
+        echo "Building windows/amd64..."
+        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/aoc ./cmd/awscollector
+        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
         echo "Build complete. Artifacts:"
         find ./build -type f -name "aoc" -o -name "healthcheck" -o -name "*.exe" | sort
 
