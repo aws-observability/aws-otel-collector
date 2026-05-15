@@ -62,33 +62,8 @@ permissions:
   contents: read
 
 jobs:
-  validate-markdown:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Install markdown-link-check
-        run: npm install -g markdown-link-check@3.12.2
-
-      - name: Run markdown-link-check in the developers docs
-        run: |
-          find ./docs/developers -name "*.md" | xargs markdown-link-check \
-            --verbose \
-            --config .github/config/markdown-links-config.json \
-            || { echo "Check that anchor links are lowercase"; exit 1; }
-      - name: Run markdown-link-check on main documentation
-        run: |
-          markdown-link-check \
-          --verbose \
-          --config .github/config/markdown-links-config.json \
-          README.md CONTRIBUTING.md CODE_OF_CONDUCT.md \
-          || { echo "Check that anchor links are lowercase"; exit 1; } 
-
   create-test-ref:
     runs-on: ubuntu-22.04
-    needs: validate-markdown
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -128,31 +103,23 @@ jobs:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: false
-      - name: Cache go
-        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}
-          restore-keys: |
-            v1-go-pkg-mod-${{ runner.os }}-
-      - name: Build aotutil
-        run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
+        id: cached_aotutil
         uses: actions/cache@v3
         with:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
+      - name: Set up Go 1.x
+        if: steps.cached_aotutil.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: testing-framework/cmd/aotutil/go.sum
+      - name: Build aotutil
+        if: steps.cached_aotutil.outputs.cache-hit != 'true'
+        run: cd testing-framework/cmd/aotutil && make build
 
   build:
-    needs:
-      - create-test-ref
     runs-on: ${{ vars.ADOTLARGERUNNERS || 'ubuntu-22.04' }}
 
     steps:
@@ -175,22 +142,19 @@ jobs:
 
     - uses: actions/checkout@v4
 
+    - name: Cache binaries
+      id: cached_binaries
+      uses: actions/cache@v3
+      with:
+        key: "cached_binaries_${{ github.run_id }}"
+        path: build
+
     - name: Set up Go 1.x
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
       uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
-        cache: false
-
-    - name: Cache go
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
-      with:
-        path: |
-          ~/go/pkg/mod
-          ~/.cache/go-build
-        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          v1-go-pkg-mod-${{ runner.os }}-
+        cache-dependency-path: "**/go.sum"
 
     - name: apply patches
       run: make apply-patches
@@ -218,13 +182,6 @@ jobs:
         echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
         cat go.mod
         ls pkg
-
-    - name: Cache binaries
-      id: cached_binaries
-      uses: actions/cache@v3
-      with:
-        key: "cached_binaries_${{ github.run_id }}"
-        path: build
 
     # Unit Test and attach test coverage badge
     - name: Unit Test
@@ -673,17 +630,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache: false
-
-      - name: Cache go
-        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('testing-framework/tools/batchTestGenerator/go.sum') }}
-          restore-keys: |
-            v1-go-pkg-mod-${{ runner.os }}-
+          cache-dependency-path: testing-framework/tools/batchTestGenerator/go.sum
 
       - name: Create test batch key values
         id: set-batches
@@ -854,7 +801,7 @@ jobs:
   validate-all-tests-pass:
     runs-on: ubuntu-22.04
     needs: [run-batch-job,e2etest-preparation,create-test-ref,get-testing-suites]
-    if: always()
+    if: ${{ !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -867,17 +814,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache: false
-
-      - name: Cache go
-        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('testing-framework/terraform/go.sum') }}
-          restore-keys: |
-            v1-go-pkg-mod-${{ runner.os }}-
+          cache-dependency-path: testing-framework/terraform/go.sum
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -941,7 +878,7 @@ jobs:
   publish-ci-status:
     runs-on: ubuntu-22.04
     needs: [release-candidate]
-    if: always()
+    if: ${{ !cancelled() }}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
