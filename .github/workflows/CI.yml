@@ -132,7 +132,16 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: testing-framework/cmd/aotutil/go.sum
+          cache: false
+      - name: Cache go
+        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}
+          restore-keys: |
+            v1-go-pkg-mod-${{ runner.os }}-
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
@@ -170,6 +179,18 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
+        cache: false
+
+    - name: Cache go
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
+      uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          v1-go-pkg-mod-${{ runner.os }}-
 
     - name: apply patches
       run: make apply-patches
@@ -652,7 +673,17 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: testing-framework/tools/batchTestGenerator/go.sum
+          cache: false
+
+      - name: Cache go
+        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('testing-framework/tools/batchTestGenerator/go.sum') }}
+          restore-keys: |
+            v1-go-pkg-mod-${{ runner.os }}-
 
       - name: Create test batch key values
         id: set-batches
@@ -836,6 +867,17 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+          cache: false
+
+      - name: Cache go
+        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('testing-framework/terraform/go.sum') }}
+          restore-keys: |
+            v1-go-pkg-mod-${{ runner.os }}-
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
