@@ -197,6 +197,8 @@ jobs:
       uses: actions/cache@v3
       with:
         key: "cached_binaries_${{ github.sha }}"
+        restore-keys: |
+          cached_binaries_
         path: build
 
     # Build binaries — run lint first then build in 2 batches to avoid OOM
