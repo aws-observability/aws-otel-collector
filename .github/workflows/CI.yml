@@ -199,10 +199,34 @@ jobs:
         key: "cached_binaries_${{ github.sha }}"
         path: build
 
-    # Build binaries (parallel, same as working run)
+    # Build binaries — run lint first then build in 2 batches to avoid OOM
+    - name: Lint
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
+      run: make install-tools golint
+
     - name: Build Binaries
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: PARALLEL=1 make build
+      run: |
+        source <(grep -E '^(GOBUILD|LDFLAGS|VERSION|GIT_SHA|DATE|BUILD_INFO_IMPORT_PATH)' <(make -n -p 2>/dev/null) | head -20)
+        VERSION=$(cat VERSION)
+        GIT_SHA=$(git rev-parse --short HEAD)
+        DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+        BUILD_INFO="github.com/aws-observability/aws-otel-collector/tools/version"
+        LDFLAGS="-s -w -X ${BUILD_INFO}.GitHash=${GIT_SHA} -X ${BUILD_INFO}.Version=${VERSION} -X ${BUILD_INFO}.Date=${DATE}"
+        mkdir -p ./build/linux/amd64 ./build/linux/arm64 ./build/windows/amd64 ./build/darwin/amd64
+        echo "Batch 1: linux + windows aoc..."
+        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/aoc ./cmd/awscollector &
+        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/aoc ./cmd/awscollector &
+        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/aoc ./cmd/awscollector &
+        CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/darwin/amd64/aoc ./cmd/awscollector &
+        wait
+        echo "Batch 2: healthcheck..."
+        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/healthcheck ./cmd/healthcheck &
+        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/healthcheck ./cmd/healthcheck &
+        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/healthcheck ./cmd/healthcheck &
+        CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/darwin/amd64/healthcheck ./cmd/healthcheck &
+        wait
+        echo "All binaries built."
 
     # upload the binaries to artifact as well because cache@v3 hasn't support windows
     - name: Upload
