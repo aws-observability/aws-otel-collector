@@ -69,6 +69,27 @@ if __name__ == "__main__":
     else:
         response = client.list_document_versions(Name=pkg_name)
         if len([ver for ver in response['DocumentVersions'] if ver['VersionName'] == rel_ver]) == 0:
+            # Delete oldest non-default versions if at the limit (max 25 versions)
+            versions = response['DocumentVersions']
+            if len(versions) >= 25:
+                # Sort by creation date, oldest first
+                deletable = sorted(
+                    [v for v in versions if not v.get('IsDefaultVersion')],
+                    key=lambda v: v['CreatedDate']
+                )
+                if deletable:
+                    oldest = deletable[0]
+                    print("Deleting oldest version %s (%s) to make room..." % (oldest['DocumentVersion'], oldest.get('VersionName', '')))
+                    try:
+                        client.delete_document(
+                            Name=pkg_name,
+                            DocumentVersion=oldest['DocumentVersion']
+                        )
+                    except Exception as e:
+                        print("WARNING: Failed to delete version %s: %s" % (oldest['DocumentVersion'], e))
+                        print("You may need to add ssm:DeleteDocument permission to the CI role, or manually delete old versions.")
+                        raise
+
             with open("build/packages/ssm/manifest.json","r") as f:
                 manifest = f.read()
             response = client.update_document(
