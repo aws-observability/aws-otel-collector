@@ -199,30 +199,10 @@ jobs:
         key: "cached_binaries_${{ github.sha }}"
         path: build
 
-    # Download dependencies first (populates module cache for future runs)
-    - name: Download Go modules
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: go mod download && cd testbed && go mod download
-
-    # Build linux + windows only (skip darwin + unit tests to avoid runner timeout)
+    # Build binaries (parallel, same as Jeffrey's working run)
     - name: Build Binaries
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: |
-        VERSION=$(cat VERSION)
-        GIT_SHA=$(git rev-parse --short HEAD)
-        DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-        BUILD_INFO="github.com/aws-observability/aws-otel-collector/tools/version"
-        LDFLAGS="-s -w -X ${BUILD_INFO}.GitHash=${GIT_SHA} -X ${BUILD_INFO}.Version=${VERSION} -X ${BUILD_INFO}.Date=${DATE}"
-        mkdir -p ./build/linux/amd64 ./build/linux/arm64 ./build/windows/amd64
-        echo "Building linux/amd64..."
-        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/aoc ./cmd/awscollector
-        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
-        echo "Building linux/arm64..."
-        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/aoc ./cmd/awscollector
-        CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
-        echo "Building windows/amd64..."
-        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/aoc ./cmd/awscollector
-        CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "${LDFLAGS}" -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
+      run: PARALLEL=1 make build
         echo "Build complete. Artifacts:"
         find ./build -type f -name "aoc" -o -name "healthcheck" -o -name "*.exe" | sort
 
