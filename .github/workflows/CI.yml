@@ -132,7 +132,7 @@ jobs:
   build:
     needs:
       - create-test-ref
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Remove cache
