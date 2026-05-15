@@ -671,6 +671,16 @@ jobs:
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
+      - name: Ensure docker-compose in S3
+        run: |
+          for arch in x86_64 aarch64; do
+            if ! aws s3api head-object --bucket aws-otel-collector-test --key "tools/docker-compose-linux-${arch}" --region us-east-1 2>/dev/null; then
+              echo "Uploading docker-compose-linux-${arch} to S3..."
+              curl -sL "https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-${arch}" -o "/tmp/docker-compose-linux-${arch}"
+              aws s3 cp "/tmp/docker-compose-linux-${arch}" "s3://aws-otel-collector-test/tools/docker-compose-linux-${arch}" --region us-east-1
+            fi
+          done
+
       - name: Set up Docker Buildx
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         uses: docker/setup-buildx-action@v3
