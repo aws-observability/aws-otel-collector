@@ -551,6 +551,39 @@ jobs:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
 
+      - name: Cleanup orphaned test instances
+        shell: bash {0}
+        run: |
+          CUTOFF=$(date -u -d '1 hour ago' '+%Y-%m-%dT%H:%M:%S')
+          INSTANCE_IDS=$(aws ec2 describe-instances \
+            --filters "Name=vpc-id,Values=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=aoc-vpc" --query 'Vpcs[0].VpcId' --output text)" \
+                      "Name=instance-state-name,Values=running" \
+                      "Name=tag:Name,Values=Integ-test-*" \
+                      "Name=tag:ephemeral,Values=true" \
+            --query "Reservations[*].Instances[?LaunchTime<\`${CUTOFF}\`].InstanceId" \
+            --output text | tr '\t' '\n' | grep . || true)
+          if [ -n "$INSTANCE_IDS" ]; then
+            COUNT=$(echo "$INSTANCE_IDS" | wc -l)
+            echo "Terminating $COUNT orphaned instances older than 1 hour"
+            echo "$INSTANCE_IDS" | xargs -n 100 aws ec2 terminate-instances --instance-ids > /dev/null
+          fi
+
+      - name: Cleanup orphaned load balancers
+        shell: bash {0}
+        run: |
+          VPC_ID="$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=aoc-vpc" --query 'Vpcs[0].VpcId' --output text)"
+          CUTOFF=$(date -u -d '1 hour ago' '+%Y-%m-%dT%H:%M:%S')
+          ARNS=$(aws elbv2 describe-load-balancers \
+            --query "LoadBalancers[?VpcId=='${VPC_ID}' && CreatedTime<\`${CUTOFF}\`].LoadBalancerArn" \
+            --output text | tr '\t' '\n' | grep . || true)
+          if [ -n "$ARNS" ]; then
+            COUNT=$(echo "$ARNS" | wc -l)
+            echo "Deleting $COUNT orphaned ALBs older than 1 hour in $VPC_ID"
+            echo "$ARNS" | while read arn; do
+              aws elbv2 delete-load-balancer --load-balancer-arn "$arn" 2>/dev/null || true
+            done
+          fi
+
       - name: Login to Public Integration Test ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         uses: docker/login-action@v3
