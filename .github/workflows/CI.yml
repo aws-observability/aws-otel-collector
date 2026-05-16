@@ -48,7 +48,7 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 50
+  MAX_JOBS: 100
   BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
   GO_VERSION: ~1.26.2
 
@@ -95,11 +95,8 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-          if [[ ${{ github.ref_name }} == release/v* ]]; then
-            echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
-          else
-            echo "ref=terraform" >> $GITHUB_OUTPUT
-          fi
+          # TODO: revert to release/v0.48.x after test framework PR #1837 merges
+          echo "ref=fix/batch-display-names" >> $GITHUB_OUTPUT
 
   build-aotutil:
     runs-on: ubuntu-22.04
@@ -526,6 +523,8 @@ jobs:
   e2etest-release:
     runs-on: ubuntu-22.04
     needs: [e2etest-preparation]
+    outputs:
+      runner-sg-id: ${{ steps.runner-sg.outputs.sg_id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -555,6 +554,24 @@ jobs:
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
+
+      - name: Create runner-IP security group
+        id: runner-sg
+        run: |
+          RUNNER_IP=$(curl -s https://checkip.amazonaws.com)/32
+          VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=aoc-vpc" --query 'Vpcs[0].VpcId' --output text)
+          SG_ID=$(aws ec2 create-security-group \
+            --group-name "runner-${GITHUB_RUN_ID}" \
+            --description "Runner IP access for run ${GITHUB_RUN_ID}" \
+            --vpc-id "$VPC_ID" \
+            --query 'GroupId' --output text)
+          aws ec2 authorize-security-group-ingress --group-id "$SG_ID" --protocol tcp --port 5985 --cidr "$RUNNER_IP"
+          aws ec2 authorize-security-group-ingress --group-id "$SG_ID" --protocol tcp --port 22 --cidr "$RUNNER_IP"
+          aws ec2 authorize-security-group-ingress --group-id "$SG_ID" --protocol tcp --port 80 --cidr "$RUNNER_IP"
+          aws ec2 authorize-security-group-ingress --group-id "$SG_ID" --protocol tcp --port 8080 --cidr "$RUNNER_IP"
+          aws ec2 create-tags --resources "$SG_ID" --tags Key=ephemeral,Value=true Key=Name,Value="runner-${GITHUB_RUN_ID}"
+          echo "sg_id=$SG_ID" >> $GITHUB_OUTPUT
+          echo "Created runner SG: $SG_ID for $RUNNER_IP"
 
       - name: Login to Public Integration Test ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
@@ -704,6 +721,7 @@ jobs:
         run: |
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
+          export TF_VAR_runner_sg_id=${{ needs.e2etest-release.outputs.runner-sg-id }}
           cd testing-framework/terraform
           make execute-batch-test
 
