@@ -48,7 +48,7 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 50
+  MAX_JOBS: 100
   BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
   GO_VERSION: ~1.26.2
 
@@ -194,10 +194,14 @@ jobs:
       with:
         file: ./coverage.txt
 
+    - name: Lint
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
+      run: make golint
+
     # Build and archive binaries into cache.
     - name: Build Binaries
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: PARALLEL=1 make build
+      run: make -j4 build
 
     # upload the binaries to artifact as well because cache@v3 hasn't support windows
     - name: Upload
@@ -681,6 +685,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref, build-aotutil]
     strategy:
+      max-parallel: 40
       fail-fast: false
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.test-case-batch-key) }}
 

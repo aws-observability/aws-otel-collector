@@ -80,65 +80,42 @@ dependabot-generate: install-dbotconf
 	@$(DBOTCONF) generate > $(DEPENDABOT_CONFIG); 
 
 .PHONY: build
-build: install-tools golint
-ifdef PARALLEL
-	@echo "Building 8 binaries in parallel..."
-	@mkdir -p ./build/darwin/amd64 ./build/linux/amd64 ./build/linux/arm64 ./build/windows/amd64
-	@mkdir -p ./build/.logs
-	@GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector > ./build/.logs/darwin-amd64-aoc.log 2>&1 & \
-	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector > ./build/.logs/linux-amd64-aoc.log 2>&1 & \
-	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector > ./build/.logs/linux-arm64-aoc.log 2>&1 & \
-	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector > ./build/.logs/windows-amd64-aoc.log 2>&1 & \
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/healthcheck ./cmd/healthcheck > ./build/.logs/darwin-amd64-healthcheck.log 2>&1 & \
-	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck > ./build/.logs/linux-amd64-healthcheck.log 2>&1 & \
-	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck > ./build/.logs/linux-arm64-healthcheck.log 2>&1 & \
-	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck > ./build/.logs/windows-amd64-healthcheck.log 2>&1 & \
-	wait; \
-	exit_code=0; \
-	for log in ./build/.logs/*.log; do \
-		if [ -s "$$log" ]; then \
-			echo "=== $$(basename $$log .log) FAILED ==="; \
-			cat "$$log"; \
-			exit_code=1; \
-		fi; \
-	done; \
-	rm -rf ./build/.logs; \
-	if [ $$exit_code -eq 0 ]; then \
-		echo "Verifying binaries..."; \
-		ls -lh ./build/darwin/amd64/aoc ./build/linux/amd64/aoc ./build/linux/arm64/aoc ./build/windows/amd64/aoc \
-		       ./build/darwin/amd64/healthcheck ./build/linux/amd64/healthcheck ./build/linux/arm64/healthcheck ./build/windows/amd64/healthcheck; \
-		echo "All 8 binaries built successfully!"; \
-	fi; \
-	exit $$exit_code
-else
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector
-	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
-	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
-	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/healthcheck ./cmd/healthcheck
-	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
-	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
-	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
-endif
-
+build: amd64-build arm64-build windows-build darwin-build \
+       amd64-build-healthcheck arm64-build-healthcheck windows-build-healthcheck darwin-build-healthcheck
 
 .PHONY: amd64-build
-amd64-build: install-tools golint
+amd64-build:
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
 
 .PHONY: arm64-build
-arm64-build: install-tools golint
+arm64-build:
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
 
 .PHONY: windows-build
-windows-build: install-tools golint
+windows-build:
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector
 
-# For building container image during development, no lint nor other platforms
-.PHONY: amd64-build-only
-amd64-build-only:
-	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
+.PHONY: darwin-build
+darwin-build:
+	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector
 
+.PHONY: amd64-build-healthcheck
+amd64-build-healthcheck:
+	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
+
+.PHONY: arm64-build-healthcheck
+arm64-build-healthcheck:
+	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
+
+.PHONY: windows-build-healthcheck
+windows-build-healthcheck:
+	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
+
+.PHONY: darwin-build-healthcheck
+darwin-build-healthcheck:
+	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/healthcheck ./cmd/healthcheck
+
+# For building container image during development, no lint nor other platforms
 .PHONY: awscollector
 awscollector:
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./bin/awscollector_$(GOOS)_$(GOARCH) ./cmd/awscollector
@@ -159,21 +136,9 @@ package-deb: build
 docker-build: amd64-build amd64-build-healthcheck
 	docker buildx build --platform linux/amd64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
-.PHONY: amd64-build-healthcheck
-amd64-build-healthcheck: install-tools golint
-	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
-
 .PHONY: docker-build-arm
 docker-build-arm: arm64-build arm64-build-healthcheck
 	docker buildx build --platform linux/arm64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
-
-.PHONY: arm64-build-healthcheck
-arm64-build-healthcheck: install-tools golint
-	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
-
-.PHONY: windows-build-healthcheck
-windows-build-healthcheck: install-tools golint
-	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-push
 docker-push:
@@ -215,7 +180,7 @@ fmt-sh: $(SHFMT)
 	$(SHFMT) -w -d -i 4 .
 
 .PHONY: lint-static-check
-lint-static-check:
+lint-static-check: install-tools
 	@STATIC_CHECK_OUT=`$(TOOLS_BIN_DIR)/staticcheck $(ALL_PKGS) 2>&1`; \
 		if [ "$$STATIC_CHECK_OUT" ]; then \
 			echo "$(STATIC_CHECK) FAILED => static check errors:\n"; \
@@ -226,7 +191,7 @@ lint-static-check:
 		fi
 
 .PHONY: golint
-golint: lint-static-check
+golint: install-tools lint-static-check
 	@$(MAKE) for-all-target TARGET="lint"
 
 .PHONY: gomod-tidy
