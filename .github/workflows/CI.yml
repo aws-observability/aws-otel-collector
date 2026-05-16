@@ -186,7 +186,7 @@ jobs:
     # Unit Test and attach test coverage badge
     - name: Unit Test
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make gotest
+      run: make -j4 gotest
 
     - name: Upload Coverage report to CodeCov
       if: steps.cached_binaries.outputs.cache-hit != 'true'
