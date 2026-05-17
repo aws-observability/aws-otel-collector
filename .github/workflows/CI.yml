@@ -702,6 +702,16 @@ jobs:
         id: runner_ip
         run: echo "ip=$(curl -s https://checkip.amazonaws.com)/32" >> "$GITHUB_OUTPUT"
 
+      - name: Clean stale NLBs
+        shell: bash {0}
+        run: |
+          CUTOFF=$(date -u -d '2 hours ago' +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -v-2H +%Y-%m-%dT%H:%M:%S)
+          ARNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?CreatedTime<'${CUTOFF}'].LoadBalancerArn" --output text)
+          for arn in $ARNS; do
+            echo "Deleting stale LB: $arn"
+            aws elbv2 delete-load-balancer --load-balancer-arn "$arn" || true
+          done
+
       - name: run tests
         run: |
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
