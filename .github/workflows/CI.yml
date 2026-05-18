@@ -88,7 +88,6 @@ jobs:
 
   create-test-ref:
     runs-on: ubuntu-22.04
-    needs: validate-markdown
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -732,8 +731,13 @@ jobs:
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           export TF_VAR_runner_ip=${{ steps.runner_ip.outputs.ip }}
+          BATCH_KEY="${{ matrix.BatchKey }}"
+          PARALLELISM=1
+          if [[ "$BATCH_KEY" == EKS* ]]; then
+            PARALLELISM=2
+          fi
           cd testing-framework/terraform
-          make execute-batch-test
+          make execute-batch-test BATCH_PARALLELISM=$PARALLELISM
 
       - name: output cache misses
         if: ${{ failure() }}
