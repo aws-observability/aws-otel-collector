@@ -19,6 +19,7 @@ on:
       - release/v*
       - dev
       - test/*
+      - perf/*
     paths-ignore:
       - '.github/**'
       - '!.github/config/testcases.json'
