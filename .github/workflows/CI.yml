@@ -712,6 +712,21 @@ jobs:
             aws elbv2 delete-load-balancer --load-balancer-arn "$arn" || true
           done
 
+      - name: Clean orphaned EKS namespaces
+        shell: bash {0}
+        run: |
+          BATCH_KEY="${{ matrix.BatchKey }}"
+          CLUSTER=$(echo "$BATCH_KEY" | cut -d'/' -f2)
+          if [[ "$BATCH_KEY" == EKS* ]] || [[ "$BATCH_KEY" == EKS_ARM64* ]] || [[ "$BATCH_KEY" == EKS_FARGATE* ]]; then
+            CLUSTER_NAME="collector-ci-${CLUSTER}"
+            aws eks update-kubeconfig --name "$CLUSTER_NAME" --region us-west-2
+            STALE_NS=$(kubectl get namespaces -o json | jq -r '.items[] | select(.metadata.name | test("^aoc-(ns|fargate-ns)-")) | select(.metadata.creationTimestamp | fromdateiso8601 < (now - 7200)) | .metadata.name')
+            if [ -n "$STALE_NS" ]; then
+              echo "Deleting $(echo "$STALE_NS" | wc -l) stale namespaces on $CLUSTER_NAME"
+              echo "$STALE_NS" | xargs kubectl delete namespace --wait=false
+            fi
+          fi
+
       - name: run tests
         run: |
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
