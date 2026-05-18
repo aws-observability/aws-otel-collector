@@ -843,11 +843,6 @@ jobs:
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
