@@ -95,7 +95,7 @@ jobs:
         id: setRef
         run: |
           # TODO: revert to release/v0.48.x after test framework PR #1837 merges
-          echo "ref=fix/batch-display-names" >> $GITHUB_OUTPUT
+          echo "ref=perf/ci-speedup" >> $GITHUB_OUTPUT
 
   build-aotutil:
     runs-on: ubuntu-22.04
