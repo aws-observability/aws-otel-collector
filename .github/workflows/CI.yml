@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: C/I  # v0.48.x integration tests (ClusterIP + cleaned clusters)
+name: C/I  # v0.48.x integration tests (3-node clusters + nohup fix)
 on:
   push:
     branches:
