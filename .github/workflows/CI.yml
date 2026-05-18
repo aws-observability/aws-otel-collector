@@ -723,7 +723,7 @@ jobs:
             STALE_NS=$(kubectl get namespaces -o json | jq -r '.items[] | select(.metadata.name | test("^aoc-(ns|fargate-ns)-")) | select(.metadata.creationTimestamp | fromdateiso8601 < (now - 7200)) | .metadata.name')
             if [ -n "$STALE_NS" ]; then
               echo "Deleting $(echo "$STALE_NS" | wc -l) stale namespaces on $CLUSTER_NAME"
-              echo "$STALE_NS" | xargs kubectl delete namespace --wait=false
+              echo "$STALE_NS" | xargs -I{} kubectl delete namespace {} --wait=false --ignore-not-found
             fi
           fi
 
