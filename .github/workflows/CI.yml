@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: C/I  # v0.48.x integration tests (cluster_ip pull-mode fix)
+name: C/I  # v0.48.x integration tests (subnet filter fix)
 on:
   push:
     branches:
