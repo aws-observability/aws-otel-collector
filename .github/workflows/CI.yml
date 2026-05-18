@@ -702,10 +702,17 @@ jobs:
         id: runner_ip
         run: echo "ip=$(curl -s https://checkip.amazonaws.com)/32" >> "$GITHUB_OUTPUT"
 
-      - name: Clean stale NLBs
+      - name: Clean stale resources
         shell: bash {0}
         run: |
           CUTOFF=$(date -u -d '2 hours ago' +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -v-2H +%Y-%m-%dT%H:%M:%S)
+          # Terminate orphaned EC2 instances older than 2 hours
+          OLD_IDS=$(aws ec2 describe-instances --filters "Name=tag:ephemeral,Values=true" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[?LaunchTime<'${CUTOFF}'].InstanceId[]" --output text)
+          if [ -n "$OLD_IDS" ]; then
+            echo "Terminating $(echo $OLD_IDS | wc -w) stale instances"
+            aws ec2 terminate-instances --instance-ids $OLD_IDS || true
+          fi
+          # Delete stale NLBs
           ARNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?CreatedTime<'${CUTOFF}'].LoadBalancerArn" --output text)
           for arn in $ARNS; do
             echo "Deleting stale LB: $arn"
