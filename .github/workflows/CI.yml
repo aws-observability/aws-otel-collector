@@ -732,6 +732,9 @@ jobs:
               echo "Deleting $(echo "$STALE_NS" | wc -l) stale namespaces on $CLUSTER_NAME"
               echo "$STALE_NS" | xargs -I{} kubectl delete namespace {} --wait=false --ignore-not-found
             fi
+            # Clean orphaned cluster-scoped Helm resources (nginx IngressClass from prometheus tests)
+            kubectl delete ingressclass nginx --ignore-not-found
+            kubectl get clusterrole,clusterrolebinding -o name | grep nginx | xargs -r kubectl delete --ignore-not-found
           fi
 
       - name: run tests
