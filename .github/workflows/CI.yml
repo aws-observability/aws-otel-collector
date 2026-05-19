@@ -48,7 +48,7 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 50
+  MAX_JOBS: 100
   BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
   GO_VERSION: ~1.26.2
 
@@ -700,10 +700,47 @@ jobs:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
 
+      - name: Get runner IP
+        id: runner_ip
+        run: echo "ip=$(curl -s https://checkip.amazonaws.com)/32" >> "$GITHUB_OUTPUT"
+
+      - name: Clean stale resources
+        shell: bash {0}
+        run: |
+          CUTOFF=$(date -u -d '2 hours ago' +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -v-2H +%Y-%m-%dT%H:%M:%S)
+          OLD_IDS=$(aws ec2 describe-instances --filters "Name=tag:ephemeral,Values=true" "Name=instance-state-name,Values=running" --query "Reservations[].Instances[?LaunchTime<'${CUTOFF}'].InstanceId[]" --output text)
+          if [ -n "$OLD_IDS" ]; then
+            echo "Terminating $(echo $OLD_IDS | wc -w) stale instances"
+            aws ec2 terminate-instances --instance-ids $OLD_IDS || true
+          fi
+          ARNS=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?CreatedTime<'${CUTOFF}'].LoadBalancerArn" --output text)
+          for arn in $ARNS; do
+            echo "Deleting stale LB: $arn"
+            aws elbv2 delete-load-balancer --load-balancer-arn "$arn" || true
+          done
+
+      - name: Clean orphaned EKS namespaces
+        shell: bash {0}
+        run: |
+          BATCH_KEY="${{ matrix.BatchKey }}"
+          CLUSTER=$(echo "$BATCH_KEY" | cut -d'/' -f2)
+          if [[ "$BATCH_KEY" == EKS* ]] || [[ "$BATCH_KEY" == EKS_ARM64* ]] || [[ "$BATCH_KEY" == EKS_FARGATE* ]]; then
+            CLUSTER_NAME="collector-ci-${CLUSTER}"
+            aws eks update-kubeconfig --name "$CLUSTER_NAME" --region us-west-2
+            STALE_NS=$(kubectl get namespaces -o json | jq -r '.items[] | select(.metadata.name | test("^aoc-(ns|fargate-ns)-")) | select(.metadata.creationTimestamp | fromdateiso8601 < (now - 7200)) | .metadata.name')
+            if [ -n "$STALE_NS" ]; then
+              echo "Deleting $(echo "$STALE_NS" | wc -l) stale namespaces on $CLUSTER_NAME"
+              echo "$STALE_NS" | xargs -I{} kubectl delete namespace {} --wait=false --ignore-not-found
+            fi
+            kubectl delete ingressclass nginx --ignore-not-found
+            kubectl get clusterrole,clusterrolebinding -o name | grep nginx | xargs -r kubectl delete --ignore-not-found
+          fi
+
       - name: run tests
         run: |
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
+          export TF_VAR_runner_ip=${{ steps.runner_ip.outputs.ip }}
           cd testing-framework/terraform
           make execute-batch-test
 
@@ -814,11 +851,6 @@ jobs:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
-
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
