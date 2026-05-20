@@ -96,6 +96,8 @@ jobs:
           kubectl delete ingressclass nginx --ignore-not-found
           kubectl get clusterrole,clusterrolebinding -o name | grep nginx | \
             xargs -r kubectl delete --ignore-not-found
+          kubectl get validatingwebhookconfiguration -o name | grep nginx | \
+            xargs -r kubectl delete --ignore-not-found
 
       - name: Cycle node group
         run: |
