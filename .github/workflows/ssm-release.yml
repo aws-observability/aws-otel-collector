@@ -39,7 +39,7 @@ on:
 env:
   SSM_S3_BUCKET: aws-otel-collector-ssm
   SSM_S3_BICKET_HKG: aws-otel-collector-ssm-hkg
-  SSM_S3_BICKET_BAH: aws-otel-collector-ssm-bah
+  #   SSM_S3_BICKET_BAH: aws-otel-collector-ssm-bah
   SSM_S3_BICKET_CPT: aws-otel-collector-ssm-cpt
   SSM_S3_BICKET_MXP: aws-otel-collector-ssm-mxp
   SSM_S3_BICKET_CN: aws-otel-collector-ssm-cn
@@ -152,36 +152,36 @@ jobs:
             echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
             echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
             echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
-      - name: Configure AWS Credentials for BAH
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
-          aws-region: me-south-1
-
-      - name: Copy SSM package to S3 in BAH
-        run: |
-          aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} --recursive
-
-      - name: Create SSM packages in BAH
-        run: |
-          REGIONS="me-south-1"
-          for region in ${REGIONS}; do
-            echo "Create package in ${region}"
-            python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
-          done
-
-      - name: Publish SSM packages to BAH
-        if: github.event.inputs.public == 'true'
-        run: |
-          REGIONS="me-south-1"
-          for region in ${REGIONS}; do
-            echo "Share package to public in ${region}"
-            aws --region ${region} ssm modify-document-permission \
-              --name "${{ github.event.inputs.pkgname }}" \
-              --permission-type "Share" \
-              --account-ids-to-add "All"
-          done
+      #       - name: Configure AWS Credentials for BAH
+      #         uses: aws-actions/configure-aws-credentials@v4
+      #         with:
+      #           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
+      #           aws-region: me-south-1
+      # 
+      #       - name: Copy SSM package to S3 in BAH
+      #         run: |
+      #           aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} --recursive
+      # 
+      #       - name: Create SSM packages in BAH
+      #         run: |
+      #           REGIONS="me-south-1"
+      #           for region in ${REGIONS}; do
+      #             echo "Create package in ${region}"
+      #             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
+      #               ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
+      #           done
+      # 
+      #       - name: Publish SSM packages to BAH
+      #         if: github.event.inputs.public == 'true'
+      #         run: |
+      #           REGIONS="me-south-1"
+      #           for region in ${REGIONS}; do
+      #             echo "Share package to public in ${region}"
+      #             aws --region ${region} ssm modify-document-permission \
+      #               --name "${{ github.event.inputs.pkgname }}" \
+      #               --permission-type "Share" \
+      #               --account-ids-to-add "All"
+      #           done
       - name: reset aws credentials
         shell: bash
         run: |
