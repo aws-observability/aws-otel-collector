@@ -106,9 +106,9 @@ jobs:
           - type: hkg
             regions: "ap-east-1"
             s3-bucket: aws-otel-collector-ssm-hkg
-          - type: bah
-            regions: "me-south-1"
-            s3-bucket: aws-otel-collector-ssm-bah
+          #           - type: bah
+          #             regions: "me-south-1"
+          #             s3-bucket: aws-otel-collector-ssm-bah
           - type: cpt
             regions: "af-south-1"
             s3-bucket: aws-otel-collector-ssm-cpt
@@ -131,12 +131,12 @@ jobs:
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_HKG_ROLE_ARN }}
           aws-region: ap-east-1
-      - name: Configure AWS Credentials for BAH
-        if: matrix.type == 'bah'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
-          aws-region: me-south-1
+      #       - name: Configure AWS Credentials for BAH
+      #         if: matrix.type == 'bah'
+      #         uses: aws-actions/configure-aws-credentials@v4
+      #         with:
+      #           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
+      #           aws-region: me-south-1
       - name: Configure AWS Credentials for CPT
         if: matrix.type == 'cpt'
         uses: aws-actions/configure-aws-credentials@v4
@@ -275,9 +275,9 @@ jobs:
                   ap-southeast-2 ca-central-1"
           - type: hkg
             regions: "ap-east-1"
-          - type: bah
-            regions: "me-south-1"
-          - type: cpt
+          #           - type: bah
+          #             regions: "me-south-1"
+          #           - type: cpt
             regions: "af-south-1"
           - type: mxp
             regions: "eu-south-1"
@@ -296,12 +296,12 @@ jobs:
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_HKG_ROLE_ARN }}
           aws-region: ap-east-1
-      - name: Configure AWS Credentials for BAH
-        if: matrix.type == 'bah'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
-          aws-region: me-south-1
+      #       - name: Configure AWS Credentials for BAH
+      #         if: matrix.type == 'bah'
+      #         uses: aws-actions/configure-aws-credentials@v4
+      #         with:
+      #           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
+      #           aws-region: me-south-1
       - name: Configure AWS Credentials for CPT
         if: matrix.type == 'cpt'
         uses: aws-actions/configure-aws-credentials@v4
