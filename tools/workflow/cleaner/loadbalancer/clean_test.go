@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	classictypes "github.com/aws/aws-sdk-go-v2/service/elasticloadbalancing/types"
 	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -86,6 +87,108 @@ func TestShouldDeleteLoadBalancer(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			result := shouldDeleteLoadBalancer(tc.lb, tc.expirationDate)
+			assert.Equal(t, tc.expected, result)
+		})
+	}
+}
+
+func TestShouldDeleteClassicLoadBalancer(t *testing.T) {
+	now := time.Now()
+	oldTime := now.Add(-10 * 24 * time.Hour)
+	newTime := now.Add(-1 * 24 * time.Hour)
+	expirationDate := now.Add(-5 * 24 * time.Hour)
+
+	tests := []struct {
+		name           string
+		lb             classictypes.LoadBalancerDescription
+		expirationDate time.Time
+		expected       bool
+	}{
+		{
+			name: "old zero-backend lb (k8s leak) should be deleted",
+			lb: classictypes.LoadBalancerDescription{
+				LoadBalancerName: aws.String("a1b2c3d4e5f6g7h8i9j0"),
+				CreatedTime:      &oldTime,
+				Instances:        nil,
+			},
+			expirationDate: expirationDate,
+			expected:       true,
+		},
+		{
+			name: "young zero-backend lb should not be deleted",
+			lb: classictypes.LoadBalancerDescription{
+				LoadBalancerName: aws.String("a1b2c3d4e5f6g7h8i9j0"),
+				CreatedTime:      &newTime,
+				Instances:        nil,
+			},
+			expirationDate: expirationDate,
+			expected:       false,
+		},
+		{
+			name: "old lb with backends should not be deleted",
+			lb: classictypes.LoadBalancerDescription{
+				LoadBalancerName: aws.String("production-elb"),
+				CreatedTime:      &oldTime,
+				Instances: []classictypes.Instance{
+					{InstanceId: aws.String("i-0123456789abcdef0")},
+				},
+			},
+			expirationDate: expirationDate,
+			expected:       false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := shouldDeleteClassicLoadBalancer(tc.lb, tc.expirationDate)
+			assert.Equal(t, tc.expected, result)
+		})
+	}
+}
+
+func TestShouldDeleteTargetGroup(t *testing.T) {
+	tests := []struct {
+		name     string
+		tg       types.TargetGroup
+		expected bool
+	}{
+		{
+			name: "aoc-lb orphan tg should be deleted",
+			tg: types.TargetGroup{
+				TargetGroupName:  aws.String("aoc-lbtg-0124db2f4f513571"),
+				LoadBalancerArns: []string{},
+			},
+			expected: true,
+		},
+		{
+			name: "aoc-lb tg with parent lb should not be deleted",
+			tg: types.TargetGroup{
+				TargetGroupName:  aws.String("aoc-lbtg-0124db2f4f513571"),
+				LoadBalancerArns: []string{"arn:aws:elasticloadbalancing:us-west-2:111122223333:loadbalancer/app/aoc-lb-x/abc"},
+			},
+			expected: false,
+		},
+		{
+			name: "non-aoc orphan tg should not be deleted",
+			tg: types.TargetGroup{
+				TargetGroupName:  aws.String("production-tg"),
+				LoadBalancerArns: []string{},
+			},
+			expected: false,
+		},
+		{
+			name: "tg with nil name should not be deleted",
+			tg: types.TargetGroup{
+				TargetGroupName:  nil,
+				LoadBalancerArns: []string{},
+			},
+			expected: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := shouldDeleteTargetGroup(tc.tg)
 			assert.Equal(t, tc.expected, result)
 		})
 	}
