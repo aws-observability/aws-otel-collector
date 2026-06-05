@@ -377,6 +377,12 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
+      - name: Build validator image
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        run: |
+          cd testing-framework
+          docker build -t aoc-validator:local ./validator
+
       - name: Run test
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: nick-invision/retry@v2
