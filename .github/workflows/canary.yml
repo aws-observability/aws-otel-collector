@@ -127,6 +127,11 @@ jobs:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
 
+      - name: Build validator image
+        run: |
+          cd testing-framework
+          docker build -t aoc-validator:local ./validator
+
       - name: Run Canary test
         uses: nick-fields/retry@v2
         with:
