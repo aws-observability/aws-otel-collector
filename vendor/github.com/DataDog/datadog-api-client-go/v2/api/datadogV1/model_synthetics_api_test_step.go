@@ -418,7 +418,7 @@ func (o *SyntheticsAPITestStep) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field subtype missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"allowFailure", "assertions", "exitIfSucceed", "extractedValues", "extractedValuesFromScript", "id", "isCritical", "name", "request", "retry", "subtype"})
 	} else {
 		return err

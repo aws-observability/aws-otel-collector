@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListPersonalAccessTokensResponse Response for a list of personal access tokens.
+// ListPersonalAccessTokensResponse Response for a list of access tokens. Includes both personal and service access tokens.
 type ListPersonalAccessTokensResponse struct {
-	// Array of personal access tokens.
-	Data []PersonalAccessToken `json:"data,omitempty"`
-	// Additional information related to the personal access token response.
+	// Array of access tokens. Includes both personal and service access tokens.
+	Data []AccessTokenListItem `json:"data,omitempty"`
+	// Additional information related to the access token response.
 	Meta *PersonalAccessTokenResponseMeta `json:"meta,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -37,9 +37,9 @@ func NewListPersonalAccessTokensResponseWithDefaults() *ListPersonalAccessTokens
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *ListPersonalAccessTokensResponse) GetData() []PersonalAccessToken {
+func (o *ListPersonalAccessTokensResponse) GetData() []AccessTokenListItem {
 	if o == nil || o.Data == nil {
-		var ret []PersonalAccessToken
+		var ret []AccessTokenListItem
 		return ret
 	}
 	return o.Data
@@ -47,7 +47,7 @@ func (o *ListPersonalAccessTokensResponse) GetData() []PersonalAccessToken {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListPersonalAccessTokensResponse) GetDataOk() (*[]PersonalAccessToken, bool) {
+func (o *ListPersonalAccessTokensResponse) GetDataOk() (*[]AccessTokenListItem, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -59,8 +59,8 @@ func (o *ListPersonalAccessTokensResponse) HasData() bool {
 	return o != nil && o.Data != nil
 }
 
-// SetData gets a reference to the given []PersonalAccessToken and assigns it to the Data field.
-func (o *ListPersonalAccessTokensResponse) SetData(v []PersonalAccessToken) {
+// SetData gets a reference to the given []AccessTokenListItem and assigns it to the Data field.
+func (o *ListPersonalAccessTokensResponse) SetData(v []AccessTokenListItem) {
 	o.Data = v
 }
 
@@ -114,14 +114,14 @@ func (o ListPersonalAccessTokensResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ListPersonalAccessTokensResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data []PersonalAccessToken            `json:"data,omitempty"`
+		Data []AccessTokenListItem            `json:"data,omitempty"`
 		Meta *PersonalAccessTokenResponseMeta `json:"meta,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data", "meta"})
 	} else {
 		return err

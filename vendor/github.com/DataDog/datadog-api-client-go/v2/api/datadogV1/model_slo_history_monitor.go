@@ -488,7 +488,7 @@ func (o *SLOHistoryMonitor) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"error_budget_remaining", "errors", "group", "history", "monitor_modified", "monitor_type", "name", "precision", "preview", "sli_value", "span_precision", "uptime"})
 	} else {
 		return err

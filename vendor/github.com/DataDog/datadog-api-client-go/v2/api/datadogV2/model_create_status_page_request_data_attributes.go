@@ -20,8 +20,6 @@ type CreateStatusPageRequestDataAttributes struct {
 	DomainPrefix string `json:"domain_prefix"`
 	// Base64-encoded image data included in email notifications sent to status page subscribers.
 	EmailHeaderImage *string `json:"email_header_image,omitempty"`
-	// Whether the status page is enabled.
-	Enabled bool `json:"enabled"`
 	// Base64-encoded image data displayed in the browser tab.
 	Favicon *string `json:"favicon,omitempty"`
 	// The name of the status page.
@@ -41,10 +39,9 @@ type CreateStatusPageRequestDataAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCreateStatusPageRequestDataAttributes(domainPrefix string, enabled bool, name string, typeVar CreateStatusPageRequestDataAttributesType, visualizationType CreateStatusPageRequestDataAttributesVisualizationType) *CreateStatusPageRequestDataAttributes {
+func NewCreateStatusPageRequestDataAttributes(domainPrefix string, name string, typeVar CreateStatusPageRequestDataAttributesType, visualizationType CreateStatusPageRequestDataAttributesVisualizationType) *CreateStatusPageRequestDataAttributes {
 	this := CreateStatusPageRequestDataAttributes{}
 	this.DomainPrefix = domainPrefix
-	this.Enabled = enabled
 	this.Name = name
 	this.Type = typeVar
 	this.VisualizationType = visualizationType
@@ -164,29 +161,6 @@ func (o *CreateStatusPageRequestDataAttributes) HasEmailHeaderImage() bool {
 // SetEmailHeaderImage gets a reference to the given string and assigns it to the EmailHeaderImage field.
 func (o *CreateStatusPageRequestDataAttributes) SetEmailHeaderImage(v string) {
 	o.EmailHeaderImage = &v
-}
-
-// GetEnabled returns the Enabled field value.
-func (o *CreateStatusPageRequestDataAttributes) GetEnabled() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
-	return o.Enabled
-}
-
-// GetEnabledOk returns a tuple with the Enabled field value
-// and a boolean to check if the value has been set.
-func (o *CreateStatusPageRequestDataAttributes) GetEnabledOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Enabled, true
-}
-
-// SetEnabled sets field value.
-func (o *CreateStatusPageRequestDataAttributes) SetEnabled(v bool) {
-	o.Enabled = v
 }
 
 // GetFavicon returns the Favicon field value if set, zero value otherwise.
@@ -330,7 +304,6 @@ func (o CreateStatusPageRequestDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.EmailHeaderImage != nil {
 		toSerialize["email_header_image"] = o.EmailHeaderImage
 	}
-	toSerialize["enabled"] = o.Enabled
 	if o.Favicon != nil {
 		toSerialize["favicon"] = o.Favicon
 	}
@@ -354,7 +327,6 @@ func (o *CreateStatusPageRequestDataAttributes) UnmarshalJSON(bytes []byte) (err
 		Components           []CreateStatusPageRequestDataAttributesComponentsItems  `json:"components,omitempty"`
 		DomainPrefix         *string                                                 `json:"domain_prefix"`
 		EmailHeaderImage     *string                                                 `json:"email_header_image,omitempty"`
-		Enabled              *bool                                                   `json:"enabled"`
 		Favicon              *string                                                 `json:"favicon,omitempty"`
 		Name                 *string                                                 `json:"name"`
 		SubscriptionsEnabled *bool                                                   `json:"subscriptions_enabled,omitempty"`
@@ -367,9 +339,6 @@ func (o *CreateStatusPageRequestDataAttributes) UnmarshalJSON(bytes []byte) (err
 	if all.DomainPrefix == nil {
 		return fmt.Errorf("required field domain_prefix missing")
 	}
-	if all.Enabled == nil {
-		return fmt.Errorf("required field enabled missing")
-	}
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
 	}
@@ -380,8 +349,8 @@ func (o *CreateStatusPageRequestDataAttributes) UnmarshalJSON(bytes []byte) (err
 		return fmt.Errorf("required field visualization_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"company_logo", "components", "domain_prefix", "email_header_image", "enabled", "favicon", "name", "subscriptions_enabled", "type", "visualization_type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"company_logo", "components", "domain_prefix", "email_header_image", "favicon", "name", "subscriptions_enabled", "type", "visualization_type"})
 	} else {
 		return err
 	}
@@ -391,7 +360,6 @@ func (o *CreateStatusPageRequestDataAttributes) UnmarshalJSON(bytes []byte) (err
 	o.Components = all.Components
 	o.DomainPrefix = *all.DomainPrefix
 	o.EmailHeaderImage = all.EmailHeaderImage
-	o.Enabled = *all.Enabled
 	o.Favicon = all.Favicon
 	o.Name = *all.Name
 	o.SubscriptionsEnabled = all.SubscriptionsEnabled

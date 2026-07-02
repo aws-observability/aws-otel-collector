@@ -189,7 +189,7 @@ func (o *IncidentNotificationTemplateUpdateAttributes) UnmarshalJSON(bytes []byt
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"category", "content", "name", "subject"})
 	} else {
 		return err

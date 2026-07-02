@@ -442,7 +442,7 @@ func (o *EventCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field title missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation_key", "alert_type", "date_happened", "device_name", "host", "priority", "related_event_id", "source_type_name", "tags", "text", "title"})
 	} else {
 		return err

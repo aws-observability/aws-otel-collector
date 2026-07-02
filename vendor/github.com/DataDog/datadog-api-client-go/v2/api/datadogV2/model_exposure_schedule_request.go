@@ -289,7 +289,7 @@ func (o *ExposureScheduleRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field rollout_steps missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"absolute_start_time", "control_variant_id", "control_variant_key", "id", "rollout_options", "rollout_steps"})
 	} else {
 		return err

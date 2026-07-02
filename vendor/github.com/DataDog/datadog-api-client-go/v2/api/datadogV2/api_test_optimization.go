@@ -6,8 +6,6 @@ package datadogV2
 
 import (
 	_context "context"
-	_fmt "fmt"
-	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
 
@@ -24,15 +22,6 @@ func (a *TestOptimizationApi) DeleteTestOptimizationServiceSettings(ctx _context
 		localVarHTTPMethod = _nethttp.MethodDelete
 		localVarPostBody   interface{}
 	)
-
-	operationId := "v2.DeleteTestOptimizationServiceSettings"
-	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
-	if !isOperationEnabled {
-		return nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-	if isOperationEnabled && a.Client.Cfg.Debug {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.TestOptimizationApi.DeleteTestOptimizationServiceSettings")
 	if err != nil {
@@ -104,15 +93,6 @@ func (a *TestOptimizationApi) GetFlakyTestsManagementPolicies(ctx _context.Conte
 		localVarPostBody    interface{}
 		localVarReturnValue TestOptimizationFlakyTestsManagementPoliciesResponse
 	)
-
-	operationId := "v2.GetFlakyTestsManagementPolicies"
-	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
-	if !isOperationEnabled {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-	if isOperationEnabled && a.Client.Cfg.Debug {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.TestOptimizationApi.GetFlakyTestsManagementPolicies")
 	if err != nil {
@@ -193,15 +173,6 @@ func (a *TestOptimizationApi) GetTestOptimizationServiceSettings(ctx _context.Co
 		localVarPostBody    interface{}
 		localVarReturnValue TestOptimizationServiceSettingsResponse
 	)
-
-	operationId := "v2.GetTestOptimizationServiceSettings"
-	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
-	if !isOperationEnabled {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-	if isOperationEnabled && a.Client.Cfg.Debug {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.TestOptimizationApi.GetTestOptimizationServiceSettings")
 	if err != nil {
@@ -319,15 +290,6 @@ func (a *TestOptimizationApi) SearchFlakyTests(ctx _context.Context, o ...Search
 	}
 	if len(o) == 1 {
 		optionalParams = o[0]
-	}
-
-	operationId := "v2.SearchFlakyTests"
-	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
-	if !isOperationEnabled {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-	if isOperationEnabled && a.Client.Cfg.Debug {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.TestOptimizationApi.SearchFlakyTests")
@@ -482,15 +444,6 @@ func (a *TestOptimizationApi) UpdateFlakyTests(ctx _context.Context, body Update
 		localVarReturnValue UpdateFlakyTestsResponse
 	)
 
-	operationId := "v2.UpdateFlakyTests"
-	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
-	if !isOperationEnabled {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-	if isOperationEnabled && a.Client.Cfg.Debug {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	}
-
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.TestOptimizationApi.UpdateFlakyTests")
 	if err != nil {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
@@ -572,15 +525,6 @@ func (a *TestOptimizationApi) UpdateFlakyTestsManagementPolicies(ctx _context.Co
 		localVarReturnValue TestOptimizationFlakyTestsManagementPoliciesResponse
 	)
 
-	operationId := "v2.UpdateFlakyTestsManagementPolicies"
-	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
-	if !isOperationEnabled {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-	if isOperationEnabled && a.Client.Cfg.Debug {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	}
-
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.TestOptimizationApi.UpdateFlakyTestsManagementPolicies")
 	if err != nil {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
@@ -661,15 +605,6 @@ func (a *TestOptimizationApi) UpdateTestOptimizationServiceSettings(ctx _context
 		localVarPostBody    interface{}
 		localVarReturnValue TestOptimizationServiceSettingsResponse
 	)
-
-	operationId := "v2.UpdateTestOptimizationServiceSettings"
-	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
-	if !isOperationEnabled {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-	if isOperationEnabled && a.Client.Cfg.Debug {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.TestOptimizationApi.UpdateTestOptimizationServiceSettings")
 	if err != nil {

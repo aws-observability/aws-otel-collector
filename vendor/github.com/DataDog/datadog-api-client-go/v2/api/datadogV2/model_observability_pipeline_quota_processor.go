@@ -489,7 +489,7 @@ func (o *ObservabilityPipelineQuotaProcessor) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "drop_events", "enabled", "id", "ignore_when_missing_partitions", "include", "limit", "name", "overflow_action", "overrides", "partition_fields", "too_many_buckets_action", "type"})
 	} else {
 		return err

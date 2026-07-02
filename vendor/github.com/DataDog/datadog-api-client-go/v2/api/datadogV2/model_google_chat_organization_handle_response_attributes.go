@@ -155,7 +155,7 @@ func (o *GoogleChatOrganizationHandleResponseAttributes) UnmarshalJSON(bytes []b
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"name", "space_display_name", "space_resource_name"})
 	} else {
 		return err

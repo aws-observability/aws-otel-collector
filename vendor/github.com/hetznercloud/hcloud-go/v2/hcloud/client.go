@@ -23,7 +23,7 @@ import (
 // Endpoint is the base URL of the Cloud API.
 const Endpoint = "https://api.hetzner.cloud/v1"
 
-// Endpoint is the base URL of the Hetzner API.
+// HetznerEndpoint is the base URL of the Hetzner API.
 const HetznerEndpoint = "https://api.hetzner.com/v1"
 
 // UserAgent is the value for the library part of the User-Agent header
@@ -103,7 +103,6 @@ type Client struct {
 
 	Action           ActionClient
 	Certificate      CertificateClient
-	Datacenter       DatacenterClient
 	Firewall         FirewallClient
 	FloatingIP       FloatingIPClient
 	Image            ImageClient
@@ -123,6 +122,10 @@ type Client struct {
 	PrimaryIP        PrimaryIPClient
 	StorageBoxType   StorageBoxTypeClient
 	Zone             ZoneClient
+
+	// Deprecated: [DatacenterClient] is deprecated and will be removed after the 2026-10-01. See
+	// https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
+	Datacenter DatacenterClient
 }
 
 // A ClientOption is used to configure a Client.
@@ -166,6 +169,8 @@ func WithToken(token string) ClientOption {
 //	hcloud.WithPollOpts(hcloud.PollOpts{
 //		BackoffFunc: hcloud.ConstantBackoff(2 * time.Second),
 //	})
+//
+//go:fix inline
 func WithPollInterval(pollInterval time.Duration) ClientOption {
 	return WithPollOpts(PollOpts{
 		BackoffFunc: ConstantBackoff(pollInterval),
@@ -176,6 +181,8 @@ func WithPollInterval(pollInterval time.Duration) ClientOption {
 // function when polling from the API.
 //
 // Deprecated: WithPollBackoffFunc is deprecated, use [WithPollOpts] instead.
+//
+//go:fix inline
 func WithPollBackoffFunc(f BackoffFunc) ClientOption {
 	return WithPollOpts(PollOpts{
 		BackoffFunc: f,
@@ -202,10 +209,12 @@ func WithPollOpts(opts PollOpts) ClientOption {
 // The backoff function is used for retrying HTTP requests.
 //
 // Deprecated: WithBackoffFunc is deprecated, use [WithRetryOpts] instead.
+//
+//go:fix inline
 func WithBackoffFunc(f BackoffFunc) ClientOption {
-	return func(client *Client) {
-		client.retryBackoffFunc = f
-	}
+	return WithRetryOpts(RetryOpts{
+		BackoffFunc: f,
+	})
 }
 
 // RetryOpts defines the options used by [WithRetryOpts].

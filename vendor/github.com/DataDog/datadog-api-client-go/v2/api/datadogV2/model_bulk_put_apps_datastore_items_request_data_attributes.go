@@ -120,7 +120,7 @@ func (o *BulkPutAppsDatastoreItemsRequestDataAttributes) UnmarshalJSON(bytes []b
 		return fmt.Errorf("required field values missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"conflict_mode", "values"})
 	} else {
 		return err

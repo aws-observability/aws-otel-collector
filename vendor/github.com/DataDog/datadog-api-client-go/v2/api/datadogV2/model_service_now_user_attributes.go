@@ -215,7 +215,7 @@ func (o *ServiceNowUserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field user_sys_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"email", "full_name", "instance_id", "user_name", "user_sys_id"})
 	} else {
 		return err

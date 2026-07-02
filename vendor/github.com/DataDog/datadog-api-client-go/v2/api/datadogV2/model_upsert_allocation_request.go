@@ -365,7 +365,7 @@ func (o *UpsertAllocationRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"experiment_id", "exposure_schedule", "guardrail_metrics", "id", "key", "name", "targeting_rules", "type", "variant_weights"})
 	} else {
 		return err

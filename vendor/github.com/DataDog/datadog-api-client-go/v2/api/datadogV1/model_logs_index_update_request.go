@@ -370,7 +370,7 @@ func (o *LogsIndexUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field filter missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"daily_limit", "daily_limit_reset", "daily_limit_warning_threshold_percentage", "disable_daily_limit", "exclusion_filters", "filter", "num_flex_logs_retention_days", "num_retention_days", "tags"})
 	} else {
 		return err

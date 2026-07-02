@@ -15,9 +15,9 @@ import (
 // RumMetricsApi service type
 type RumMetricsApi datadog.Service
 
-// CreateRumMetric Create a rum-based metric.
+// CreateRumMetric Create a RUM-based metric.
 // Create a metric based on your organization's RUM data.
-// Returns the rum-based metric object from the request body when the request is successful.
+// Returns the RUM-based metric object from the request body when the request is successful.
 func (a *RumMetricsApi) CreateRumMetric(ctx _context.Context, body RumMetricCreateRequest) (RumMetricResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -96,8 +96,8 @@ func (a *RumMetricsApi) CreateRumMetric(ctx _context.Context, body RumMetricCrea
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// DeleteRumMetric Delete a rum-based metric.
-// Delete a specific rum-based metric from your organization.
+// DeleteRumMetric Delete a RUM-based metric.
+// Delete a specific RUM-based metric from your organization.
 func (a *RumMetricsApi) DeleteRumMetric(ctx _context.Context, metricId string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -164,8 +164,8 @@ func (a *RumMetricsApi) DeleteRumMetric(ctx _context.Context, metricId string) (
 	return localVarHTTPResponse, nil
 }
 
-// GetRumMetric Get a rum-based metric.
-// Get a specific rum-based metric from your organization.
+// GetRumMetric Get a RUM-based metric.
+// Get a specific RUM-based metric from your organization.
 func (a *RumMetricsApi) GetRumMetric(ctx _context.Context, metricId string) (RumMetricResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -242,8 +242,8 @@ func (a *RumMetricsApi) GetRumMetric(ctx _context.Context, metricId string) (Rum
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// ListRumMetrics Get all rum-based metrics.
-// Get the list of configured rum-based metrics with their definitions.
+// ListRumMetrics Get all RUM-based metrics.
+// Get the list of configured RUM-based metrics with their definitions.
 func (a *RumMetricsApi) ListRumMetrics(ctx _context.Context) (RumMetricsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -319,9 +319,9 @@ func (a *RumMetricsApi) ListRumMetrics(ctx _context.Context) (RumMetricsResponse
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// UpdateRumMetric Update a rum-based metric.
-// Update a specific rum-based metric from your organization.
-// Returns the rum-based metric object from the request body when the request is successful.
+// UpdateRumMetric Update a RUM-based metric.
+// Update a specific RUM-based metric from your organization.
+// Returns the RUM-based metric object from the request body when the request is successful.
 func (a *RumMetricsApi) UpdateRumMetric(ctx _context.Context, metricId string, body RumMetricUpdateRequest) (RumMetricResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch

@@ -19,6 +19,10 @@ type TreeMapWidgetRequest struct {
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
 	// Timeseries, scalar, or event list response. Event list response formats are supported by Geomap widgets.
 	ResponseFormat *FormulaAndFunctionResponseFormat `json:"response_format,omitempty"`
+	// The controls for sorting the widget.
+	Sort *WidgetSortBy `json:"sort,omitempty"`
+	// Define request widget style.
+	Style *WidgetRequestStyle `json:"style,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -156,6 +160,62 @@ func (o *TreeMapWidgetRequest) SetResponseFormat(v FormulaAndFunctionResponseFor
 	o.ResponseFormat = &v
 }
 
+// GetSort returns the Sort field value if set, zero value otherwise.
+func (o *TreeMapWidgetRequest) GetSort() WidgetSortBy {
+	if o == nil || o.Sort == nil {
+		var ret WidgetSortBy
+		return ret
+	}
+	return *o.Sort
+}
+
+// GetSortOk returns a tuple with the Sort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TreeMapWidgetRequest) GetSortOk() (*WidgetSortBy, bool) {
+	if o == nil || o.Sort == nil {
+		return nil, false
+	}
+	return o.Sort, true
+}
+
+// HasSort returns a boolean if a field has been set.
+func (o *TreeMapWidgetRequest) HasSort() bool {
+	return o != nil && o.Sort != nil
+}
+
+// SetSort gets a reference to the given WidgetSortBy and assigns it to the Sort field.
+func (o *TreeMapWidgetRequest) SetSort(v WidgetSortBy) {
+	o.Sort = &v
+}
+
+// GetStyle returns the Style field value if set, zero value otherwise.
+func (o *TreeMapWidgetRequest) GetStyle() WidgetRequestStyle {
+	if o == nil || o.Style == nil {
+		var ret WidgetRequestStyle
+		return ret
+	}
+	return *o.Style
+}
+
+// GetStyleOk returns a tuple with the Style field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TreeMapWidgetRequest) GetStyleOk() (*WidgetRequestStyle, bool) {
+	if o == nil || o.Style == nil {
+		return nil, false
+	}
+	return o.Style, true
+}
+
+// HasStyle returns a boolean if a field has been set.
+func (o *TreeMapWidgetRequest) HasStyle() bool {
+	return o != nil && o.Style != nil
+}
+
+// SetStyle gets a reference to the given WidgetRequestStyle and assigns it to the Style field.
+func (o *TreeMapWidgetRequest) SetStyle(v WidgetRequestStyle) {
+	o.Style = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o TreeMapWidgetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -174,6 +234,12 @@ func (o TreeMapWidgetRequest) MarshalJSON() ([]byte, error) {
 	if o.ResponseFormat != nil {
 		toSerialize["response_format"] = o.ResponseFormat
 	}
+	if o.Sort != nil {
+		toSerialize["sort"] = o.Sort
+	}
+	if o.Style != nil {
+		toSerialize["style"] = o.Style
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -188,13 +254,15 @@ func (o *TreeMapWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Q              *string                             `json:"q,omitempty"`
 		Queries        []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
 		ResponseFormat *FormulaAndFunctionResponseFormat   `json:"response_format,omitempty"`
+		Sort           *WidgetSortBy                       `json:"sort,omitempty"`
+		Style          *WidgetRequestStyle                 `json:"style,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"formulas", "q", "queries", "response_format"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"formulas", "q", "queries", "response_format", "sort", "style"})
 	} else {
 		return err
 	}
@@ -208,6 +276,14 @@ func (o *TreeMapWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.ResponseFormat = all.ResponseFormat
 	}
+	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Sort = all.Sort
+	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Style = all.Style
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

@@ -141,7 +141,7 @@ type StorageBoxListOpts struct {
 	Sort []string
 }
 
-func (l StorageBoxListOpts) values() url.Values {
+func (l StorageBoxListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -162,7 +162,7 @@ func (c *StorageBoxClient) List(ctx context.Context, opts StorageBoxListOpts) ([
 	const opPath = "/storage_boxes?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.StorageBoxListResponse](ctx, c.client, reqPath)
 	if err != nil {
@@ -317,7 +317,7 @@ type StorageBoxFoldersOpts struct {
 	Path string
 }
 
-func (o StorageBoxFoldersOpts) values() url.Values {
+func (o StorageBoxFoldersOpts) Values() url.Values {
 	vals := url.Values{}
 	if o.Path != "" {
 		vals.Add("path", o.Path)
@@ -332,7 +332,7 @@ func (c *StorageBoxClient) Folders(ctx context.Context, storageBox *StorageBox, 
 	const opPath = "/storage_boxes/%d/folders?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, storageBox.ID, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, storageBox.ID, opts.Values().Encode())
 
 	result := StorageBoxFoldersResult{}
 
@@ -497,7 +497,7 @@ func (c *StorageBoxClient) EnableSnapshotPlan(
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
 	reqPath := fmt.Sprintf(opPath, storageBox.ID)
-	reqBody := SchemaFromStorageBoxEnableSnapshotPlan(opts)
+	reqBody := SchemaFromStorageBoxEnableSnapshotPlanOpts(opts)
 
 	respBody, resp, err := postRequest[schema.ActionGetResponse](ctx, c.client, reqPath, reqBody)
 	if err != nil {

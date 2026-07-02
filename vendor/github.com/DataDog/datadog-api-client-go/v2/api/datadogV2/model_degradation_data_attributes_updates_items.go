@@ -22,6 +22,8 @@ type DegradationDataAttributesUpdatesItems struct {
 	Description *string `json:"description,omitempty"`
 	// Identifier of the update.
 	Id *uuid.UUID `json:"id,omitempty"`
+	// UUID of the user who last modified the resource.
+	LastModifiedByUserUuid *string `json:"last_modified_by_user_uuid,omitempty"`
 	// Timestamp of when the update was last modified.
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Timestamp of when the update started.
@@ -162,6 +164,34 @@ func (o *DegradationDataAttributesUpdatesItems) SetId(v uuid.UUID) {
 	o.Id = &v
 }
 
+// GetLastModifiedByUserUuid returns the LastModifiedByUserUuid field value if set, zero value otherwise.
+func (o *DegradationDataAttributesUpdatesItems) GetLastModifiedByUserUuid() string {
+	if o == nil || o.LastModifiedByUserUuid == nil {
+		var ret string
+		return ret
+	}
+	return *o.LastModifiedByUserUuid
+}
+
+// GetLastModifiedByUserUuidOk returns a tuple with the LastModifiedByUserUuid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DegradationDataAttributesUpdatesItems) GetLastModifiedByUserUuidOk() (*string, bool) {
+	if o == nil || o.LastModifiedByUserUuid == nil {
+		return nil, false
+	}
+	return o.LastModifiedByUserUuid, true
+}
+
+// HasLastModifiedByUserUuid returns a boolean if a field has been set.
+func (o *DegradationDataAttributesUpdatesItems) HasLastModifiedByUserUuid() bool {
+	return o != nil && o.LastModifiedByUserUuid != nil
+}
+
+// SetLastModifiedByUserUuid gets a reference to the given string and assigns it to the LastModifiedByUserUuid field.
+func (o *DegradationDataAttributesUpdatesItems) SetLastModifiedByUserUuid(v string) {
+	o.LastModifiedByUserUuid = &v
+}
+
 // GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
 func (o *DegradationDataAttributesUpdatesItems) GetModifiedAt() time.Time {
 	if o == nil || o.ModifiedAt == nil {
@@ -268,6 +298,9 @@ func (o DegradationDataAttributesUpdatesItems) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
+	if o.LastModifiedByUserUuid != nil {
+		toSerialize["last_modified_by_user_uuid"] = o.LastModifiedByUserUuid
+	}
 	if o.ModifiedAt != nil {
 		if o.ModifiedAt.Nanosecond() == 0 {
 			toSerialize["modified_at"] = o.ModifiedAt.Format("2006-01-02T15:04:05Z07:00")
@@ -295,20 +328,21 @@ func (o DegradationDataAttributesUpdatesItems) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *DegradationDataAttributesUpdatesItems) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ComponentsAffected []DegradationDataAttributesUpdatesItemsComponentsAffectedItems `json:"components_affected,omitempty"`
-		CreatedAt          *time.Time                                                     `json:"created_at,omitempty"`
-		Description        *string                                                        `json:"description,omitempty"`
-		Id                 *uuid.UUID                                                     `json:"id,omitempty"`
-		ModifiedAt         *time.Time                                                     `json:"modified_at,omitempty"`
-		StartedAt          *time.Time                                                     `json:"started_at,omitempty"`
-		Status             *CreateDegradationRequestDataAttributesStatus                  `json:"status,omitempty"`
+		ComponentsAffected     []DegradationDataAttributesUpdatesItemsComponentsAffectedItems `json:"components_affected,omitempty"`
+		CreatedAt              *time.Time                                                     `json:"created_at,omitempty"`
+		Description            *string                                                        `json:"description,omitempty"`
+		Id                     *uuid.UUID                                                     `json:"id,omitempty"`
+		LastModifiedByUserUuid *string                                                        `json:"last_modified_by_user_uuid,omitempty"`
+		ModifiedAt             *time.Time                                                     `json:"modified_at,omitempty"`
+		StartedAt              *time.Time                                                     `json:"started_at,omitempty"`
+		Status                 *CreateDegradationRequestDataAttributesStatus                  `json:"status,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"components_affected", "created_at", "description", "id", "modified_at", "started_at", "status"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"components_affected", "created_at", "description", "id", "last_modified_by_user_uuid", "modified_at", "started_at", "status"})
 	} else {
 		return err
 	}
@@ -318,6 +352,7 @@ func (o *DegradationDataAttributesUpdatesItems) UnmarshalJSON(bytes []byte) (err
 	o.CreatedAt = all.CreatedAt
 	o.Description = all.Description
 	o.Id = all.Id
+	o.LastModifiedByUserUuid = all.LastModifiedByUserUuid
 	o.ModifiedAt = all.ModifiedAt
 	o.StartedAt = all.StartedAt
 	if all.Status != nil && !all.Status.IsValid() {

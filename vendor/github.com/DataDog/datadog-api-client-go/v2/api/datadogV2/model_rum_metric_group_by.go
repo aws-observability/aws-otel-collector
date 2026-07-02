@@ -12,7 +12,7 @@ import (
 
 // RumMetricGroupBy A group by rule.
 type RumMetricGroupBy struct {
-	// The path to the value the rum-based metric will be aggregated over.
+	// The path to the value the RUM-based metric will be aggregated over.
 	Path string `json:"path"`
 	// Eventual name of the tag that gets created. By default, `path` is used as the tag name.
 	TagName *string `json:"tag_name,omitempty"`
@@ -120,7 +120,7 @@ func (o *RumMetricGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field path missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"path", "tag_name"})
 	} else {
 		return err

@@ -150,7 +150,7 @@ func (o *ServiceNowBusinessServiceAttributes) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field service_sys_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"instance_id", "service_name", "service_sys_id"})
 	} else {
 		return err

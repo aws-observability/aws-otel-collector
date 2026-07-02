@@ -10,10 +10,18 @@ import (
 
 // LLMObsExperimentUpdateDataAttributesRequest Attributes for updating an LLM Observability experiment.
 type LLMObsExperimentUpdateDataAttributesRequest struct {
+	// Updated identifier of the dataset used in this experiment.
+	DatasetId *string `json:"dataset_id,omitempty"`
 	// Updated description of the experiment.
 	Description *string `json:"description,omitempty"`
+	// Error message describing why the experiment failed, if applicable.
+	Error *string `json:"error,omitempty"`
+	// Updated arbitrary metadata associated with the experiment.
+	Metadata map[string]interface{} `json:"metadata,omitempty"`
 	// Updated name of the experiment.
 	Name *string `json:"name,omitempty"`
+	// Execution status of an LLM Observability experiment.
+	Status *LLMObsExperimentStatus `json:"status,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -34,6 +42,34 @@ func NewLLMObsExperimentUpdateDataAttributesRequest() *LLMObsExperimentUpdateDat
 func NewLLMObsExperimentUpdateDataAttributesRequestWithDefaults() *LLMObsExperimentUpdateDataAttributesRequest {
 	this := LLMObsExperimentUpdateDataAttributesRequest{}
 	return &this
+}
+
+// GetDatasetId returns the DatasetId field value if set, zero value otherwise.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetDatasetId() string {
+	if o == nil || o.DatasetId == nil {
+		var ret string
+		return ret
+	}
+	return *o.DatasetId
+}
+
+// GetDatasetIdOk returns a tuple with the DatasetId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetDatasetIdOk() (*string, bool) {
+	if o == nil || o.DatasetId == nil {
+		return nil, false
+	}
+	return o.DatasetId, true
+}
+
+// HasDatasetId returns a boolean if a field has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) HasDatasetId() bool {
+	return o != nil && o.DatasetId != nil
+}
+
+// SetDatasetId gets a reference to the given string and assigns it to the DatasetId field.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) SetDatasetId(v string) {
+	o.DatasetId = &v
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -64,6 +100,62 @@ func (o *LLMObsExperimentUpdateDataAttributesRequest) SetDescription(v string) {
 	o.Description = &v
 }
 
+// GetError returns the Error field value if set, zero value otherwise.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetError() string {
+	if o == nil || o.Error == nil {
+		var ret string
+		return ret
+	}
+	return *o.Error
+}
+
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetErrorOk() (*string, bool) {
+	if o == nil || o.Error == nil {
+		return nil, false
+	}
+	return o.Error, true
+}
+
+// HasError returns a boolean if a field has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) HasError() bool {
+	return o != nil && o.Error != nil
+}
+
+// SetError gets a reference to the given string and assigns it to the Error field.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) SetError(v string) {
+	o.Error = &v
+}
+
+// GetMetadata returns the Metadata field value if set, zero value otherwise.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetMetadata() map[string]interface{} {
+	if o == nil || o.Metadata == nil {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Metadata
+}
+
+// GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetMetadataOk() (*map[string]interface{}, bool) {
+	if o == nil || o.Metadata == nil {
+		return nil, false
+	}
+	return &o.Metadata, true
+}
+
+// HasMetadata returns a boolean if a field has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) HasMetadata() bool {
+	return o != nil && o.Metadata != nil
+}
+
+// SetMetadata gets a reference to the given map[string]interface{} and assigns it to the Metadata field.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) SetMetadata(v map[string]interface{}) {
+	o.Metadata = v
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *LLMObsExperimentUpdateDataAttributesRequest) GetName() string {
 	if o == nil || o.Name == nil {
@@ -92,17 +184,57 @@ func (o *LLMObsExperimentUpdateDataAttributesRequest) SetName(v string) {
 	o.Name = &v
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetStatus() LLMObsExperimentStatus {
+	if o == nil || o.Status == nil {
+		var ret LLMObsExperimentStatus
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) GetStatusOk() (*LLMObsExperimentStatus, bool) {
+	if o == nil || o.Status == nil {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) HasStatus() bool {
+	return o != nil && o.Status != nil
+}
+
+// SetStatus gets a reference to the given LLMObsExperimentStatus and assigns it to the Status field.
+func (o *LLMObsExperimentUpdateDataAttributesRequest) SetStatus(v LLMObsExperimentStatus) {
+	o.Status = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o LLMObsExperimentUpdateDataAttributesRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DatasetId != nil {
+		toSerialize["dataset_id"] = o.DatasetId
+	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
+	if o.Error != nil {
+		toSerialize["error"] = o.Error
+	}
+	if o.Metadata != nil {
+		toSerialize["metadata"] = o.Metadata
+	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
+	}
+	if o.Status != nil {
+		toSerialize["status"] = o.Status
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -114,23 +246,41 @@ func (o LLMObsExperimentUpdateDataAttributesRequest) MarshalJSON() ([]byte, erro
 // UnmarshalJSON deserializes the given payload.
 func (o *LLMObsExperimentUpdateDataAttributesRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Description *string `json:"description,omitempty"`
-		Name        *string `json:"name,omitempty"`
+		DatasetId   *string                 `json:"dataset_id,omitempty"`
+		Description *string                 `json:"description,omitempty"`
+		Error       *string                 `json:"error,omitempty"`
+		Metadata    map[string]interface{}  `json:"metadata,omitempty"`
+		Name        *string                 `json:"name,omitempty"`
+		Status      *LLMObsExperimentStatus `json:"status,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "name"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"dataset_id", "description", "error", "metadata", "name", "status"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	o.DatasetId = all.DatasetId
 	o.Description = all.Description
+	o.Error = all.Error
+	o.Metadata = all.Metadata
 	o.Name = all.Name
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -219,7 +219,7 @@ func (o *OktaAccountUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field domain missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"api_key", "auth_method", "client_id", "client_secret", "domain"})
 	} else {
 		return err

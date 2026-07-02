@@ -573,7 +573,7 @@ func (o *StatusPageAsIncludedAttributes) UnmarshalJSON(bytes []byte) (err error)
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"company_logo", "components", "created_at", "custom_domain", "custom_domain_enabled", "domain_prefix", "email_header_image", "enabled", "favicon", "modified_at", "name", "page_url", "subscriptions_enabled", "type", "visualization_type"})
 	} else {
 		return err

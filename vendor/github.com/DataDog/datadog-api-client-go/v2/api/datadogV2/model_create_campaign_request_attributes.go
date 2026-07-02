@@ -389,7 +389,7 @@ func (o *CreateCampaignRequestAttributes) UnmarshalJSON(bytes []byte) (err error
 		return fmt.Errorf("required field start_date missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "due_date", "entity_scope", "guidance", "key", "name", "owner_id", "rule_ids", "start_date", "status"})
 	} else {
 		return err

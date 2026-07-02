@@ -1041,6 +1041,10 @@ func (a *DeploymentGatesApi) ListDeploymentGates(ctx _context.Context, o ...List
 // Triggers an asynchronous deployment gate evaluation for the given service and environment.
 // Returns an evaluation ID that can be used to poll for the result via the
 // `GET /api/v2/deployments/gates/evaluation/{id}` endpoint.
+//
+// When the `configuration` attribute is provided, rules are evaluated inline from that configuration
+// and no pre-configured gate is required. When `configuration` is omitted, rules are resolved from the
+// gate pre-configured for the given service and environment through the Datadog UI, API, or Terraform.
 func (a *DeploymentGatesApi) TriggerDeploymentGatesEvaluation(ctx _context.Context, body DeploymentGatesEvaluationRequest) (DeploymentGatesEvaluationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

@@ -86,7 +86,7 @@ func (o *LLMObsDeleteProjectsDataAttributesRequest) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field project_ids missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"project_ids"})
 	} else {
 		return err

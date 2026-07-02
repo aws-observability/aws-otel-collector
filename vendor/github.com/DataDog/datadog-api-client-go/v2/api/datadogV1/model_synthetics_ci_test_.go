@@ -562,7 +562,7 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field public_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"allowInsecureCertificates", "basicAuth", "body", "bodyType", "cookies", "deviceIds", "followRedirects", "headers", "locations", "metadata", "public_id", "retry", "startUrl", "variables", "version"})
 	} else {
 		return err

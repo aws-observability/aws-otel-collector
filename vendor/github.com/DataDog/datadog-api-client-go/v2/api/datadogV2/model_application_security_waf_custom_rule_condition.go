@@ -117,7 +117,7 @@ func (o *ApplicationSecurityWafCustomRuleCondition) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field parameters missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"operator", "parameters"})
 	} else {
 		return err

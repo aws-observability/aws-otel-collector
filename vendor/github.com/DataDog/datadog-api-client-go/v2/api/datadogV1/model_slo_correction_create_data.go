@@ -13,6 +13,8 @@ import (
 // SLOCorrectionCreateData The data object associated with the SLO correction to be created.
 type SLOCorrectionCreateData struct {
 	// The attribute object associated with the SLO correction to be created.
+	//
+	// Exactly one of `slo_id` or `slo_query` must be provided.
 	Attributes *SLOCorrectionCreateRequestAttributes `json:"attributes,omitempty"`
 	// SLO correction resource type.
 	Type SLOCorrectionType `json:"type"`
@@ -122,7 +124,7 @@ func (o *SLOCorrectionCreateData) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err

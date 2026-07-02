@@ -404,7 +404,7 @@ func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"from_ts", "group_by", "groups", "monitors", "overall", "series", "thresholds", "to_ts", "type", "type_id"})
 	} else {
 		return err

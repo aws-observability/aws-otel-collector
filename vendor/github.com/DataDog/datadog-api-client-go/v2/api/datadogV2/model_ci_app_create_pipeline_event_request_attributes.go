@@ -188,7 +188,7 @@ func (o *CIAppCreatePipelineEventRequestAttributes) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field resource missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"env", "provider_name", "resource", "service"})
 	} else {
 		return err

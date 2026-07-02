@@ -140,7 +140,7 @@ func (o *DowntimeScheduleCurrentDowntimeResponse) UnmarshalJSON(bytes []byte) (e
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"end", "start"})
 	} else {
 		return err

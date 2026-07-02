@@ -12,7 +12,7 @@ import (
 
 // CaseEmpty Case empty request data
 type CaseEmpty struct {
-	// Case resource type
+	// JSON:API resource type for cases.
 	Type CaseResourceType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -88,7 +88,7 @@ func (o *CaseEmpty) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"type"})
 	} else {
 		return err

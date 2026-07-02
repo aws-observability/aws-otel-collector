@@ -279,7 +279,7 @@ func (o *ObservabilityPipelineReduceProcessor) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "group_by", "id", "include", "merge_strategies", "type"})
 	} else {
 		return err

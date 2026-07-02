@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimelineCellResource Timeline cell JSON:API resource
+// TimelineCellResource A timeline cell resource representing a single entry in a case's activity timeline.
 type TimelineCellResource struct {
-	// timeline cell
+	// Attributes of a timeline cell, representing a single event in a case's chronological activity log (for example, a comment, status change, or assignment update).
 	Attributes TimelineCell `json:"attributes"`
 	// Timeline cell's identifier
 	Id string `json:"id"`
-	// Timeline cell JSON:API resource type
+	// JSON:API resource type for timeline cells.
 	Type TimelineCellResourceType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -150,7 +150,7 @@ func (o *TimelineCellResource) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err

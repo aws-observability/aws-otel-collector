@@ -371,7 +371,7 @@ func (o *LLMObsExperimentSpan) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field trace_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"dataset_id", "duration", "meta", "name", "project_id", "span_id", "start_ns", "status", "tags", "trace_id"})
 	} else {
 		return err

@@ -281,7 +281,7 @@ func (o *FormulaAndFunctionProductAnalyticsExtendedQueryDefinition) UnmarshalJSO
 		return fmt.Errorf("required field query missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"audience_filters", "compute", "data_source", "group_by", "indexes", "name", "query"})
 	} else {
 		return err

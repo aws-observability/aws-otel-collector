@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// RumMetricCreateData The new rum-based metric properties.
+// RumMetricCreateData The new RUM-based metric properties.
 type RumMetricCreateData struct {
-	// The object describing the Datadog rum-based metric to create.
+	// The object describing the Datadog RUM-based metric to create.
 	Attributes RumMetricCreateAttributes `json:"attributes"`
-	// The name of the rum-based metric.
+	// The name of the RUM-based metric.
 	Id string `json:"id"`
 	// The type of the resource. The value should always be rum_metrics.
 	Type RumMetricType `json:"type"`
@@ -150,7 +150,7 @@ func (o *RumMetricCreateData) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err

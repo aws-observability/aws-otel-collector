@@ -136,6 +136,8 @@ type PrimaryIPAssignOpts struct {
 }
 
 // Deprecated: Please use [schema.PrimaryIPActionAssignResponse] instead.
+//
+//go:fix inline
 type PrimaryIPAssignResult = schema.PrimaryIPActionAssignResponse
 
 // PrimaryIPChangeDNSPtrOpts defines the request to
@@ -147,6 +149,8 @@ type PrimaryIPChangeDNSPtrOpts struct {
 }
 
 // Deprecated: Please use [schema.PrimaryIPChangeDNSPtrResponse] instead.
+//
+//go:fix inline
 type PrimaryIPChangeDNSPtrResult = schema.PrimaryIPActionChangeDNSPtrResponse
 
 // PrimaryIPChangeProtectionOpts defines the request to
@@ -157,6 +161,8 @@ type PrimaryIPChangeProtectionOpts struct {
 }
 
 // Deprecated: Please use [schema.PrimaryIPActionChangeProtectionResponse] instead.
+//
+//go:fix inline
 type PrimaryIPChangeProtectionResult = schema.PrimaryIPActionChangeProtectionResponse
 
 // PrimaryIPClient is a client for the Primary IP API.
@@ -214,7 +220,7 @@ type PrimaryIPListOpts struct {
 	Sort []string
 }
 
-func (l PrimaryIPListOpts) values() url.Values {
+func (l PrimaryIPListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -236,7 +242,7 @@ func (c *PrimaryIPClient) List(ctx context.Context, opts PrimaryIPListOpts) ([]*
 	const opPath = "/primary_ips?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.PrimaryIPListResponse](ctx, c.client, reqPath)
 	if err != nil {

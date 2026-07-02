@@ -485,7 +485,7 @@ func (o *LLMObsExperimentMetric) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field timestamp_ms missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assessment", "boolean_value", "categorical_value", "error", "json_value", "label", "metadata", "metric_type", "reasoning", "score_value", "span_id", "tags", "timestamp_ms"})
 	} else {
 		return err

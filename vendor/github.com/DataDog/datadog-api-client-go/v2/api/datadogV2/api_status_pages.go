@@ -16,6 +16,224 @@ import (
 // StatusPagesApi service type
 type StatusPagesApi datadog.Service
 
+// CreateBackfilledDegradationOptionalParameters holds optional parameters for CreateBackfilledDegradation.
+type CreateBackfilledDegradationOptionalParameters struct {
+	Include *string
+}
+
+// NewCreateBackfilledDegradationOptionalParameters creates an empty struct for parameters.
+func NewCreateBackfilledDegradationOptionalParameters() *CreateBackfilledDegradationOptionalParameters {
+	this := CreateBackfilledDegradationOptionalParameters{}
+	return &this
+}
+
+// WithInclude sets the corresponding parameter name and returns the struct.
+func (r *CreateBackfilledDegradationOptionalParameters) WithInclude(include string) *CreateBackfilledDegradationOptionalParameters {
+	r.Include = &include
+	return r
+}
+
+// CreateBackfilledDegradation Create backfilled degradation.
+// Creates a backfilled degradation with predefined updates.
+func (a *StatusPagesApi) CreateBackfilledDegradation(ctx _context.Context, pageId uuid.UUID, body CreateBackfilledDegradationRequest, o ...CreateBackfilledDegradationOptionalParameters) (Degradation, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodPost
+		localVarPostBody    interface{}
+		localVarReturnValue Degradation
+		optionalParams      CreateBackfilledDegradationOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type CreateBackfilledDegradationOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.StatusPagesApi.CreateBackfilledDegradation")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/statuspages/{page_id}/degradations/backfill"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{page_id}", _neturl.PathEscape(datadog.ParameterToString(pageId, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.Include != nil {
+		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
+	}
+	localVarHeaderParams["Content-Type"] = "application/json"
+	localVarHeaderParams["Accept"] = "application/json"
+
+	// body params
+	localVarPostBody = &body
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// CreateBackfilledMaintenanceOptionalParameters holds optional parameters for CreateBackfilledMaintenance.
+type CreateBackfilledMaintenanceOptionalParameters struct {
+	Include *string
+}
+
+// NewCreateBackfilledMaintenanceOptionalParameters creates an empty struct for parameters.
+func NewCreateBackfilledMaintenanceOptionalParameters() *CreateBackfilledMaintenanceOptionalParameters {
+	this := CreateBackfilledMaintenanceOptionalParameters{}
+	return &this
+}
+
+// WithInclude sets the corresponding parameter name and returns the struct.
+func (r *CreateBackfilledMaintenanceOptionalParameters) WithInclude(include string) *CreateBackfilledMaintenanceOptionalParameters {
+	r.Include = &include
+	return r
+}
+
+// CreateBackfilledMaintenance Create backfilled maintenance.
+// Creates a backfilled maintenance with predefined updates.
+func (a *StatusPagesApi) CreateBackfilledMaintenance(ctx _context.Context, pageId uuid.UUID, body CreateBackfilledMaintenanceRequest, o ...CreateBackfilledMaintenanceOptionalParameters) (Maintenance, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodPost
+		localVarPostBody    interface{}
+		localVarReturnValue Maintenance
+		optionalParams      CreateBackfilledMaintenanceOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type CreateBackfilledMaintenanceOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.StatusPagesApi.CreateBackfilledMaintenance")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/statuspages/{page_id}/maintenances/backfill"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{page_id}", _neturl.PathEscape(datadog.ParameterToString(pageId, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.Include != nil {
+		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
+	}
+	localVarHeaderParams["Content-Type"] = "application/json"
+	localVarHeaderParams["Accept"] = "application/json"
+
+	// body params
+	localVarPostBody = &body
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // CreateComponentOptionalParameters holds optional parameters for CreateComponent.
 type CreateComponentOptionalParameters struct {
 	Include *string
@@ -381,7 +599,7 @@ func (r *CreateStatusPageOptionalParameters) WithInclude(include string) *Create
 }
 
 // CreateStatusPage Create status page.
-// Creates a new status page. **Note**: Publishing a status page on creation via the `enabled` property will be deprecated. Use the dedicated [publish](#publish-status-page) status page endpoint after creation instead.
+// Creates a new status page in an unpublished state. Use the dedicated [publish](#publish-status-page) status page endpoint to publish the page after creation.
 func (a *StatusPagesApi) CreateStatusPage(ctx _context.Context, body CreateStatusPageRequest, o ...CreateStatusPageOptionalParameters) (StatusPage, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -1213,8 +1431,8 @@ func (a *StatusPagesApi) ListComponents(ctx _context.Context, pageId uuid.UUID, 
 // ListDegradationsOptionalParameters holds optional parameters for ListDegradations.
 type ListDegradationsOptionalParameters struct {
 	FilterPageId *string
-	PageOffset   *int32
-	PageLimit    *int32
+	PageOffset   *int64
+	PageLimit    *int64
 	Include      *string
 	FilterStatus *string
 	Sort         *string
@@ -1233,13 +1451,13 @@ func (r *ListDegradationsOptionalParameters) WithFilterPageId(filterPageId strin
 }
 
 // WithPageOffset sets the corresponding parameter name and returns the struct.
-func (r *ListDegradationsOptionalParameters) WithPageOffset(pageOffset int32) *ListDegradationsOptionalParameters {
+func (r *ListDegradationsOptionalParameters) WithPageOffset(pageOffset int64) *ListDegradationsOptionalParameters {
 	r.PageOffset = &pageOffset
 	return r
 }
 
 // WithPageLimit sets the corresponding parameter name and returns the struct.
-func (r *ListDegradationsOptionalParameters) WithPageLimit(pageLimit int32) *ListDegradationsOptionalParameters {
+func (r *ListDegradationsOptionalParameters) WithPageLimit(pageLimit int64) *ListDegradationsOptionalParameters {
 	r.PageLimit = &pageLimit
 	return r
 }
@@ -1368,8 +1586,8 @@ func (a *StatusPagesApi) ListDegradations(ctx _context.Context, o ...ListDegrada
 // ListMaintenancesOptionalParameters holds optional parameters for ListMaintenances.
 type ListMaintenancesOptionalParameters struct {
 	FilterPageId *string
-	PageOffset   *int32
-	PageLimit    *int32
+	PageOffset   *int64
+	PageLimit    *int64
 	Include      *string
 	FilterStatus *string
 	Sort         *string
@@ -1388,13 +1606,13 @@ func (r *ListMaintenancesOptionalParameters) WithFilterPageId(filterPageId strin
 }
 
 // WithPageOffset sets the corresponding parameter name and returns the struct.
-func (r *ListMaintenancesOptionalParameters) WithPageOffset(pageOffset int32) *ListMaintenancesOptionalParameters {
+func (r *ListMaintenancesOptionalParameters) WithPageOffset(pageOffset int64) *ListMaintenancesOptionalParameters {
 	r.PageOffset = &pageOffset
 	return r
 }
 
 // WithPageLimit sets the corresponding parameter name and returns the struct.
-func (r *ListMaintenancesOptionalParameters) WithPageLimit(pageLimit int32) *ListMaintenancesOptionalParameters {
+func (r *ListMaintenancesOptionalParameters) WithPageLimit(pageLimit int64) *ListMaintenancesOptionalParameters {
 	r.PageLimit = &pageLimit
 	return r
 }
@@ -1522,8 +1740,8 @@ func (a *StatusPagesApi) ListMaintenances(ctx _context.Context, o ...ListMainten
 
 // ListStatusPagesOptionalParameters holds optional parameters for ListStatusPages.
 type ListStatusPagesOptionalParameters struct {
-	PageOffset         *int32
-	PageLimit          *int32
+	PageOffset         *int64
+	PageLimit          *int64
 	FilterDomainPrefix *string
 	Include            *string
 }
@@ -1535,13 +1753,13 @@ func NewListStatusPagesOptionalParameters() *ListStatusPagesOptionalParameters {
 }
 
 // WithPageOffset sets the corresponding parameter name and returns the struct.
-func (r *ListStatusPagesOptionalParameters) WithPageOffset(pageOffset int32) *ListStatusPagesOptionalParameters {
+func (r *ListStatusPagesOptionalParameters) WithPageOffset(pageOffset int64) *ListStatusPagesOptionalParameters {
 	r.PageOffset = &pageOffset
 	return r
 }
 
 // WithPageLimit sets the corresponding parameter name and returns the struct.
-func (r *ListStatusPagesOptionalParameters) WithPageLimit(pageLimit int32) *ListStatusPagesOptionalParameters {
+func (r *ListStatusPagesOptionalParameters) WithPageLimit(pageLimit int64) *ListStatusPagesOptionalParameters {
 	r.PageLimit = &pageLimit
 	return r
 }

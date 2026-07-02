@@ -148,7 +148,7 @@ func (o *GetInvestigationResponseDataAttributes) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field title missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"conclusions", "status", "title"})
 	} else {
 		return err

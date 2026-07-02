@@ -281,7 +281,7 @@ func (o *CreateMaintenanceRequestDataAttributes) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field title missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"completed_date", "completed_description", "components_affected", "in_progress_description", "scheduled_description", "start_date", "title"})
 	} else {
 		return err

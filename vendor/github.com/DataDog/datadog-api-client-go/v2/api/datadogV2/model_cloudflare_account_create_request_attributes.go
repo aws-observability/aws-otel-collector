@@ -219,7 +219,7 @@ func (o *CloudflareAccountCreateRequestAttributes) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"api_key", "email", "name", "resources", "zones"})
 	} else {
 		return err

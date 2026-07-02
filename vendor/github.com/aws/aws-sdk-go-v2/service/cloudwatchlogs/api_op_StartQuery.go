@@ -35,7 +35,8 @@ import (
 //   - Or the queryString must include a SOURCE command to select log groups for
 //     the query. The SOURCE command can select log groups based on log group name
 //     prefix, account ID, and log class, or select data sources using dataSource
-//     syntax in LogsQL, PPL, and SQL.
+//     syntax in LogsQL, PPL, and SQL. In LogsQL, the SOURCE command also supports
+//     filtering by log group tags.
 //
 // For more information about the SOURCE command, see [SOURCE].
 //
@@ -99,9 +100,12 @@ type StartQueryInput struct {
 	// This member is required.
 	StartTime *int64
 
-	// The maximum number of log events to return in the query. If the query string
-	// uses the fields command, only the specified fields and their values are
-	// returned. The default is 10,000.
+	// The maximum number of log events to return from the query. The maximum limit is
+	// 100,000. The maximum events returned in a single GetQueryResults API call is
+	// 10,000 log events per request. You can retrieve up to 100,000 log event results
+	// from a query by paginating with the nextToken . 100,000 limit is only supported
+	// for Logs Insights QL and is currently not supported for PPL and SQL query
+	// languages.
 	Limit *int32
 
 	// The list of log groups to query. You can include up to 50 log groups.

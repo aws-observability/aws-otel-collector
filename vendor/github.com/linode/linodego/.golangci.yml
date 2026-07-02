@@ -18,6 +18,7 @@ linters:
     - gochecknoglobals
     - gochecknoinits
     - godot
+    - godox
     - inamedparam
     - lll
     - musttag

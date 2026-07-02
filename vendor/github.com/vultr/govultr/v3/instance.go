@@ -132,8 +132,8 @@ type Neighbors struct {
 // Bandwidth used on a given instance.
 type Bandwidth struct {
 	Bandwidth map[string]struct {
-		IncomingBytes int `json:"incoming_bytes"`
-		OutgoingBytes int `json:"outgoing_bytes"`
+		IncomingBytes int64 `json:"incoming_bytes"`
+		OutgoingBytes int64 `json:"outgoing_bytes"`
 	} `json:"bandwidth"`
 }
 
@@ -321,6 +321,26 @@ type ReinstallReq struct {
 	Hostname string `json:"hostname,omitempty"`
 }
 
+type instanceIDsReq struct {
+	IDs []string `json:"instance_ids"`
+}
+
+type instanceVPCReq struct {
+	VPCID string `json:"vpc_id"`
+}
+
+type instanceISOReq struct {
+	ISOID string `json:"iso_id"`
+}
+
+type instanceIPReq struct {
+	IP string `json:"ip"`
+}
+
+type instanceRebootReq struct {
+	Reboot *bool `json:"reboot"`
+}
+
 // Create will create the server with the given parameters
 func (i *InstanceServiceHandler) Create(ctx context.Context, instanceReq *InstanceCreateReq) (*Instance, *http.Response, error) {
 	req, err := i.client.NewRequest(ctx, http.MethodPost, instancePath, instanceReq)
@@ -466,7 +486,7 @@ func (i *InstanceServiceHandler) Reinstall(ctx context.Context, instanceID strin
 func (i *InstanceServiceHandler) MassStart(ctx context.Context, instanceList []string) error {
 	uri := fmt.Sprintf("%s/start", instancePath)
 
-	reqBody := RequestBody{"instance_ids": instanceList}
+	reqBody := instanceIDsReq{IDs: instanceList}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, reqBody)
 	if err != nil {
 		return err
@@ -479,7 +499,7 @@ func (i *InstanceServiceHandler) MassStart(ctx context.Context, instanceList []s
 func (i *InstanceServiceHandler) MassHalt(ctx context.Context, instanceList []string) error {
 	uri := fmt.Sprintf("%s/halt", instancePath)
 
-	reqBody := RequestBody{"instance_ids": instanceList}
+	reqBody := instanceIDsReq{IDs: instanceList}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, reqBody)
 	if err != nil {
 		return err
@@ -492,7 +512,7 @@ func (i *InstanceServiceHandler) MassHalt(ctx context.Context, instanceList []st
 func (i *InstanceServiceHandler) MassReboot(ctx context.Context, instanceList []string) error {
 	uri := fmt.Sprintf("%s/reboot", instancePath)
 
-	reqBody := RequestBody{"instance_ids": instanceList}
+	reqBody := instanceIDsReq{IDs: instanceList}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, reqBody)
 	if err != nil {
 		return err
@@ -574,8 +594,8 @@ func (i *InstanceServiceHandler) ListVPCInfo(ctx context.Context, instanceID str
 // AttachVPC to an instance
 func (i *InstanceServiceHandler) AttachVPC(ctx context.Context, instanceID, vpcID string) error {
 	uri := fmt.Sprintf("%s/%s/vpcs/attach", instancePath, instanceID)
-	body := RequestBody{"vpc_id": vpcID}
 
+	body := instanceVPCReq{VPCID: vpcID}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return err
@@ -588,8 +608,8 @@ func (i *InstanceServiceHandler) AttachVPC(ctx context.Context, instanceID, vpcI
 // DetachVPC from an instance.
 func (i *InstanceServiceHandler) DetachVPC(ctx context.Context, instanceID, vpcID string) error {
 	uri := fmt.Sprintf("%s/%s/vpcs/detach", instancePath, instanceID)
-	body := RequestBody{"vpc_id": vpcID}
 
+	body := instanceVPCReq{VPCID: vpcID}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return err
@@ -644,8 +664,8 @@ func (i *InstanceServiceHandler) AttachVPC2(ctx context.Context, instanceID stri
 // Deprecated: VPC2 is no longer supported
 func (i *InstanceServiceHandler) DetachVPC2(ctx context.Context, instanceID, vpcID string) error {
 	uri := fmt.Sprintf("%s/%s/vpc2/detach", instancePath, instanceID)
-	body := RequestBody{"vpc_id": vpcID}
 
+	body := instanceVPCReq{VPCID: vpcID}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return err
@@ -675,8 +695,8 @@ func (i *InstanceServiceHandler) ISOStatus(ctx context.Context, instanceID strin
 // AttachISO will attach an ISO to the given instance and reboot it
 func (i *InstanceServiceHandler) AttachISO(ctx context.Context, instanceID, isoID string) (*http.Response, error) {
 	uri := fmt.Sprintf("%s/%s/iso/attach", instancePath, instanceID)
-	body := RequestBody{"iso_id": isoID}
 
+	body := instanceISOReq{ISOID: isoID}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return nil, err
@@ -729,8 +749,7 @@ func (i *InstanceServiceHandler) SetBackupSchedule(ctx context.Context, instance
 func (i *InstanceServiceHandler) CreateIPv4(ctx context.Context, instanceID string, reboot *bool) (*IPv4, *http.Response, error) {
 	uri := fmt.Sprintf("%s/%s/ipv4", instancePath, instanceID)
 
-	body := RequestBody{"reboot": reboot}
-
+	body := instanceRebootReq{Reboot: reboot}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return nil, nil, err
@@ -856,8 +875,8 @@ func (i *InstanceServiceHandler) CreateReverseIPv4(ctx context.Context, instance
 // DefaultReverseIPv4 will set the IPs reverse setting back to the original one supplied by Vultr.
 func (i *InstanceServiceHandler) DefaultReverseIPv4(ctx context.Context, instanceID, ip string) error {
 	uri := fmt.Sprintf("%s/%s/ipv4/reverse/default", instancePath, instanceID)
-	reqBody := RequestBody{"ip": ip}
 
+	reqBody := instanceIPReq{IP: ip}
 	req, err := i.client.NewRequest(ctx, http.MethodPost, uri, reqBody)
 	if err != nil {
 		return err

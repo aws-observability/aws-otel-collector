@@ -229,7 +229,7 @@ func (o *ExposureRolloutStepRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field is_pause_record missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"exposure_ratio", "grouped_step_index", "id", "interval_ms", "is_pause_record"})
 	} else {
 		return err

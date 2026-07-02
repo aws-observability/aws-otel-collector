@@ -14,6 +14,8 @@ import (
 type SloQuery struct {
 	// Additional filters applied to the SLO query.
 	AdditionalQueryFilters *string `json:"additional_query_filters,omitempty"`
+	// Organization UUIDs to query when using [cross-organization visibility](/account_management/org_settings/cross_org_visibility/). Limited to one organization UUID.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// A data source for SLO queries.
 	DataSource SloDataSource `json:"data_source"`
 	// How SLO results are grouped in the response.
@@ -79,6 +81,34 @@ func (o *SloQuery) HasAdditionalQueryFilters() bool {
 // SetAdditionalQueryFilters gets a reference to the given string and assigns it to the AdditionalQueryFilters field.
 func (o *SloQuery) SetAdditionalQueryFilters(v string) {
 	o.AdditionalQueryFilters = &v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *SloQuery) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SloQuery) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *SloQuery) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *SloQuery) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -243,6 +273,9 @@ func (o SloQuery) MarshalJSON() ([]byte, error) {
 	if o.AdditionalQueryFilters != nil {
 		toSerialize["additional_query_filters"] = o.AdditionalQueryFilters
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.GroupMode != nil {
 		toSerialize["group_mode"] = o.GroupMode
@@ -266,6 +299,7 @@ func (o SloQuery) MarshalJSON() ([]byte, error) {
 func (o *SloQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		AdditionalQueryFilters *string        `json:"additional_query_filters,omitempty"`
+		CrossOrgUuids          []string       `json:"cross_org_uuids,omitempty"`
 		DataSource             *SloDataSource `json:"data_source"`
 		GroupMode              *SlosGroupMode `json:"group_mode,omitempty"`
 		Measure                *SlosMeasure   `json:"measure"`
@@ -286,14 +320,15 @@ func (o *SloQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field slo_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "data_source", "group_mode", "measure", "name", "slo_id", "slo_query_type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "cross_org_uuids", "data_source", "group_mode", "measure", "name", "slo_id", "slo_query_type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.AdditionalQueryFilters = all.AdditionalQueryFilters
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

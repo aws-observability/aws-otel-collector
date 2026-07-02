@@ -117,7 +117,7 @@ func (o *OrgGroupMembershipBulkUpdateRelationships) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field target_org_group missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"source_org_group", "target_org_group"})
 	} else {
 		return err

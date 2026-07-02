@@ -543,7 +543,7 @@ func (o *MonitorSearchResult) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"classification", "creator", "id", "last_triggered_ts", "metrics", "name", "notifications", "org_id", "quality_issues", "query", "scopes", "status", "tags", "type"})
 	} else {
 		return err

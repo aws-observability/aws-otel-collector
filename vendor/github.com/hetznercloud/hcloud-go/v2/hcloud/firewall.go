@@ -140,7 +140,7 @@ type FirewallListOpts struct {
 	Sort []string
 }
 
-func (l FirewallListOpts) values() url.Values {
+func (l FirewallListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -159,7 +159,7 @@ func (c *FirewallClient) List(ctx context.Context, opts FirewallListOpts) ([]*Fi
 	const opPath = "/firewalls?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.FirewallListResponse](ctx, c.client, reqPath)
 	if err != nil {
@@ -220,7 +220,7 @@ func (c *FirewallClient) Create(ctx context.Context, opts FirewallCreateOpts) (F
 		return result, nil, err
 	}
 
-	reqBody := firewallCreateOptsToSchema(opts)
+	reqBody := SchemaFromFirewallCreateOpts(opts)
 
 	respBody, resp, err := postRequest[schema.FirewallCreateResponse](ctx, c.client, reqPath, reqBody)
 	if err != nil {
@@ -284,7 +284,7 @@ func (c *FirewallClient) SetRules(ctx context.Context, firewall *Firewall, opts 
 
 	reqPath := fmt.Sprintf(opPath, firewall.ID)
 
-	reqBody := firewallSetRulesOptsToSchema(opts)
+	reqBody := SchemaFromFirewallSetRulesOpts(opts)
 
 	respBody, resp, err := postRequest[schema.FirewallActionSetRulesResponse](ctx, c.client, reqPath, reqBody)
 	if err != nil {
@@ -302,7 +302,7 @@ func (c *FirewallClient) ApplyResources(ctx context.Context, firewall *Firewall,
 
 	applyTo := make([]schema.FirewallResource, len(resources))
 	for i, r := range resources {
-		applyTo[i] = firewallResourceToSchema(r)
+		applyTo[i] = SchemaFromFirewallResource(r)
 	}
 
 	reqBody := schema.FirewallActionApplyToResourcesRequest{ApplyTo: applyTo}
@@ -323,7 +323,7 @@ func (c *FirewallClient) RemoveResources(ctx context.Context, firewall *Firewall
 
 	removeFrom := make([]schema.FirewallResource, len(resources))
 	for i, r := range resources {
-		removeFrom[i] = firewallResourceToSchema(r)
+		removeFrom[i] = SchemaFromFirewallResource(r)
 	}
 
 	reqBody := schema.FirewallActionRemoveFromResourcesRequest{RemoveFrom: removeFrom}

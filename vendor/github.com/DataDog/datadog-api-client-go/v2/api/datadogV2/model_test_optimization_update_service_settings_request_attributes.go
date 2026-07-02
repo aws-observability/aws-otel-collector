@@ -356,7 +356,7 @@ func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) UnmarshalJSON(b
 		return fmt.Errorf("required field service_name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"auto_test_retries_enabled", "code_coverage_enabled", "early_flake_detection_enabled", "env", "failed_test_replay_enabled", "pr_comments_enabled", "repository_id", "service_name", "test_impact_analysis_enabled"})
 	} else {
 		return err

@@ -623,7 +623,7 @@ func (o *ServiceSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "display_format", "env", "service", "show_breakdown", "show_distribution", "show_errors", "show_hits", "show_latency", "show_resource_list", "size_format", "span_name", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err

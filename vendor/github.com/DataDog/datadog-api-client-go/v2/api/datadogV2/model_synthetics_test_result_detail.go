@@ -1447,7 +1447,7 @@ func (o *SyntheticsTestResultDetail) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assertions", "bucket_keys", "call_type", "cert", "compressed_json_descriptor", "compressed_steps", "connection_outcome", "dns_resolution", "duration", "exited_on_step_success", "failure", "finished_at", "handshake", "id", "initial_id", "is_fast_retry", "is_last_retry", "netpath", "netstats", "ocsp", "ping", "received_email_count", "received_message", "request", "resolved_ip", "response", "run_type", "sent_message", "start_url", "started_at", "status", "steps", "time_to_interactive", "timings", "trace", "traceroute", "triggered_at", "tunnel", "turns", "unhealthy", "variables"})
 	} else {
 		return err

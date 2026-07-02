@@ -261,7 +261,7 @@ func (o *SpansGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field facet missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"facet", "histogram", "limit", "missing", "sort", "total"})
 	} else {
 		return err

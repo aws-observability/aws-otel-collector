@@ -117,7 +117,7 @@ func (o *BatchRowsQueryRequestDataAttributes) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field table_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"row_ids", "table_id"})
 	} else {
 		return err

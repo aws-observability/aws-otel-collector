@@ -17,6 +17,8 @@ type SyntheticsTestOptions struct {
 	AllowInsecure *bool `json:"allow_insecure,omitempty"`
 	// Array of URL patterns to block.
 	BlockedRequestPatterns []string `json:"blockedRequestPatterns,omitempty"`
+	// Capture HTTP request/response headers and bodies for Fetch/XHR calls made during browser tests.
+	CaptureNetworkPayloads *bool `json:"captureNetworkPayloads,omitempty"`
 	// For SSL tests, whether or not the test should fail on revoked certificate in stapled OCSP.
 	CheckCertificateRevocation *bool `json:"checkCertificateRevocation,omitempty"`
 	// CI/CD options for a Synthetic test.
@@ -181,6 +183,34 @@ func (o *SyntheticsTestOptions) HasBlockedRequestPatterns() bool {
 // SetBlockedRequestPatterns gets a reference to the given []string and assigns it to the BlockedRequestPatterns field.
 func (o *SyntheticsTestOptions) SetBlockedRequestPatterns(v []string) {
 	o.BlockedRequestPatterns = v
+}
+
+// GetCaptureNetworkPayloads returns the CaptureNetworkPayloads field value if set, zero value otherwise.
+func (o *SyntheticsTestOptions) GetCaptureNetworkPayloads() bool {
+	if o == nil || o.CaptureNetworkPayloads == nil {
+		var ret bool
+		return ret
+	}
+	return *o.CaptureNetworkPayloads
+}
+
+// GetCaptureNetworkPayloadsOk returns a tuple with the CaptureNetworkPayloads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestOptions) GetCaptureNetworkPayloadsOk() (*bool, bool) {
+	if o == nil || o.CaptureNetworkPayloads == nil {
+		return nil, false
+	}
+	return o.CaptureNetworkPayloads, true
+}
+
+// HasCaptureNetworkPayloads returns a boolean if a field has been set.
+func (o *SyntheticsTestOptions) HasCaptureNetworkPayloads() bool {
+	return o != nil && o.CaptureNetworkPayloads != nil
+}
+
+// SetCaptureNetworkPayloads gets a reference to the given bool and assigns it to the CaptureNetworkPayloads field.
+func (o *SyntheticsTestOptions) SetCaptureNetworkPayloads(v bool) {
+	o.CaptureNetworkPayloads = &v
 }
 
 // GetCheckCertificateRevocation returns the CheckCertificateRevocation field value if set, zero value otherwise.
@@ -848,6 +878,9 @@ func (o SyntheticsTestOptions) MarshalJSON() ([]byte, error) {
 	if o.BlockedRequestPatterns != nil {
 		toSerialize["blockedRequestPatterns"] = o.BlockedRequestPatterns
 	}
+	if o.CaptureNetworkPayloads != nil {
+		toSerialize["captureNetworkPayloads"] = o.CaptureNetworkPayloads
+	}
 	if o.CheckCertificateRevocation != nil {
 		toSerialize["checkCertificateRevocation"] = o.CheckCertificateRevocation
 	}
@@ -930,6 +963,7 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		AcceptSelfSigned               *bool                                `json:"accept_self_signed,omitempty"`
 		AllowInsecure                  *bool                                `json:"allow_insecure,omitempty"`
 		BlockedRequestPatterns         []string                             `json:"blockedRequestPatterns,omitempty"`
+		CaptureNetworkPayloads         *bool                                `json:"captureNetworkPayloads,omitempty"`
 		CheckCertificateRevocation     *bool                                `json:"checkCertificateRevocation,omitempty"`
 		Ci                             *SyntheticsTestCiOptions             `json:"ci,omitempty"`
 		DeviceIds                      []string                             `json:"device_ids,omitempty"`
@@ -958,8 +992,8 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"accept_self_signed", "allow_insecure", "blockedRequestPatterns", "checkCertificateRevocation", "ci", "device_ids", "disableAiaIntermediateFetching", "disableCors", "disableCsp", "enableProfiling", "enableSecurityTesting", "follow_redirects", "httpVersion", "ignoreServerCertificateError", "initialNavigationTimeout", "min_failure_duration", "min_location_failed", "monitor_name", "monitor_options", "monitor_priority", "noScreenshot", "restricted_roles", "retry", "rumSettings", "scheduling", "tick_every"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"accept_self_signed", "allow_insecure", "blockedRequestPatterns", "captureNetworkPayloads", "checkCertificateRevocation", "ci", "device_ids", "disableAiaIntermediateFetching", "disableCors", "disableCsp", "enableProfiling", "enableSecurityTesting", "follow_redirects", "httpVersion", "ignoreServerCertificateError", "initialNavigationTimeout", "min_failure_duration", "min_location_failed", "monitor_name", "monitor_options", "monitor_priority", "noScreenshot", "restricted_roles", "retry", "rumSettings", "scheduling", "tick_every"})
 	} else {
 		return err
 	}
@@ -968,6 +1002,7 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 	o.AcceptSelfSigned = all.AcceptSelfSigned
 	o.AllowInsecure = all.AllowInsecure
 	o.BlockedRequestPatterns = all.BlockedRequestPatterns
+	o.CaptureNetworkPayloads = all.CaptureNetworkPayloads
 	o.CheckCertificateRevocation = all.CheckCertificateRevocation
 	if all.Ci != nil && all.Ci.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

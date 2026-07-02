@@ -359,7 +359,7 @@ func (o *PatchStatusPageRequestDataAttributes) UnmarshalJSON(bytes []byte) (err 
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"company_logo", "domain_prefix", "email_header_image", "enabled", "favicon", "name", "subscriptions_enabled", "type", "visualization_type"})
 	} else {
 		return err

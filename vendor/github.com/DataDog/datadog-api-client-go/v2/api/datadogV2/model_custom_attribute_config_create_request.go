@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomAttributeConfigCreateRequest Custom attribute config create request
+// CustomAttributeConfigCreateRequest Request payload for creating a custom attribute configuration.
 type CustomAttributeConfigCreateRequest struct {
-	// Custom attribute config
+	// Data object for creating a custom attribute configuration.
 	Data CustomAttributeConfigCreate `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -86,7 +86,7 @@ func (o *CustomAttributeConfigCreateRequest) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field data missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
 	} else {
 		return err

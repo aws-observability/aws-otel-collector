@@ -700,7 +700,7 @@ func (o *SyntheticsStepDetail) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"allowFailure", "browserErrors", "checkType", "description", "duration", "error", "failure", "playingTab", "screenshotBucketKey", "skipped", "snapshotBucketKey", "stepId", "subTestStepDetails", "timeToInteractive", "type", "url", "value", "vitalsMetrics", "warnings"})
 	} else {
 		return err

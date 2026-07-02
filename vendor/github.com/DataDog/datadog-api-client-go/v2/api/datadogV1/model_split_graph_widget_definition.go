@@ -283,7 +283,7 @@ func (o *SplitGraphWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"has_uniform_y_axes", "size", "source_widget_definition", "split_config", "time", "title", "type"})
 	} else {
 		return err

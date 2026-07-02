@@ -315,7 +315,7 @@ func (o *SBOMComponent) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field version missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"bom-ref", "licenses", "name", "properties", "purl", "supplier", "type", "version"})
 	} else {
 		return err

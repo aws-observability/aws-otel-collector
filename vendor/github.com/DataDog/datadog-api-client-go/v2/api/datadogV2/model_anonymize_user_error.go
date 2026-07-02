@@ -117,7 +117,7 @@ func (o *AnonymizeUserError) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field user_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"error", "user_id"})
 	} else {
 		return err

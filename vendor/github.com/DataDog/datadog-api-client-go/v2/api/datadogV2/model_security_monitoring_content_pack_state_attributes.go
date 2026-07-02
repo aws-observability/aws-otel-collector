@@ -276,7 +276,7 @@ func (o *SecurityMonitoringContentPackStateAttributes) UnmarshalJSON(bytes []byt
 		return fmt.Errorf("required field state missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"cloud_siem_index_incorrect", "cp_activation", "filters_configured_for_logs", "integration_installed_status", "logs_last_collected", "logs_seen_from_any_index", "state"})
 	} else {
 		return err

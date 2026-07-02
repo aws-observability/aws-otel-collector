@@ -78,11 +78,12 @@ type ServiceAccountKeyResponse struct {
 }
 
 type ServiceAccountKeyCredentials struct {
-	Aud        string    `json:"aud"`
-	Iss        string    `json:"iss"`
-	Kid        string    `json:"kid"`
-	PrivateKey *string   `json:"privateKey,omitempty"`
-	Sub        uuid.UUID `json:"sub"`
+	Aud           string    `json:"aud"`
+	Iss           string    `json:"iss"`
+	Kid           string    `json:"kid"`
+	PrivateKey    *string   `json:"privateKey,omitempty"`
+	Sub           uuid.UUID `json:"sub"`
+	TokenEndpoint string    `json:"tokenEndpoint"`
 }
 
 // GetConfig returns the flow configuration
@@ -117,13 +118,26 @@ func (c *KeyFlow) GetToken() TokenResponseBody {
 	return *c.token
 }
 
+// getCredentialsTokenEndpoint returns the token endpoint from credentials or a default fallback
+func (cfg *KeyFlowConfig) getCredentialsTokenEndpoint() string {
+	if cfg.ServiceAccountKey == nil || cfg.ServiceAccountKey.Credentials == nil {
+		return tokenAPI
+	}
+
+	if cfg.ServiceAccountKey.Credentials.TokenEndpoint == "" {
+		return tokenAPI
+	}
+
+	return cfg.ServiceAccountKey.Credentials.TokenEndpoint
+}
+
 func (c *KeyFlow) Init(cfg *KeyFlowConfig) error {
 	// No concurrency at this point, so no mutex check needed
 	c.token = &TokenResponseBody{}
 	c.config = cfg
 
 	if c.config.TokenUrl == "" {
-		c.config.TokenUrl = tokenAPI
+		c.config.TokenUrl = c.config.getCredentialsTokenEndpoint()
 	}
 
 	c.tokenExpirationLeeway = defaultTokenExpirationLeeway

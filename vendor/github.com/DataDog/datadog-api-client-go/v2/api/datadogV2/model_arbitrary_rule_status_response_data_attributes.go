@@ -1,0 +1,101 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2019-Present Datadog, Inc.
+
+package datadogV2
+
+import (
+	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+)
+
+// ArbitraryRuleStatusResponseDataAttributes Processing status for a custom allocation rule.
+type ArbitraryRuleStatusResponseDataAttributes struct {
+	// The processing status of the custom allocation rule.
+	ProcessingStatus string `json:"processing_status"`
+	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
+	UnparsedObject       map[string]interface{} `json:"-"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// NewArbitraryRuleStatusResponseDataAttributes instantiates a new ArbitraryRuleStatusResponseDataAttributes object.
+// This constructor will assign default values to properties that have it defined,
+// and makes sure properties required by API are set, but the set of arguments
+// will change when the set of required properties is changed.
+func NewArbitraryRuleStatusResponseDataAttributes(processingStatus string) *ArbitraryRuleStatusResponseDataAttributes {
+	this := ArbitraryRuleStatusResponseDataAttributes{}
+	this.ProcessingStatus = processingStatus
+	return &this
+}
+
+// NewArbitraryRuleStatusResponseDataAttributesWithDefaults instantiates a new ArbitraryRuleStatusResponseDataAttributes object.
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set.
+func NewArbitraryRuleStatusResponseDataAttributesWithDefaults() *ArbitraryRuleStatusResponseDataAttributes {
+	this := ArbitraryRuleStatusResponseDataAttributes{}
+	return &this
+}
+
+// GetProcessingStatus returns the ProcessingStatus field value.
+func (o *ArbitraryRuleStatusResponseDataAttributes) GetProcessingStatus() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+	return o.ProcessingStatus
+}
+
+// GetProcessingStatusOk returns a tuple with the ProcessingStatus field value
+// and a boolean to check if the value has been set.
+func (o *ArbitraryRuleStatusResponseDataAttributes) GetProcessingStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ProcessingStatus, true
+}
+
+// SetProcessingStatus sets field value.
+func (o *ArbitraryRuleStatusResponseDataAttributes) SetProcessingStatus(v string) {
+	o.ProcessingStatus = v
+}
+
+// MarshalJSON serializes the struct using spec logic.
+func (o ArbitraryRuleStatusResponseDataAttributes) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.UnparsedObject != nil {
+		return datadog.Marshal(o.UnparsedObject)
+	}
+	toSerialize["processing_status"] = o.ProcessingStatus
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+	return datadog.Marshal(toSerialize)
+}
+
+// UnmarshalJSON deserializes the given payload.
+func (o *ArbitraryRuleStatusResponseDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
+	all := struct {
+		ProcessingStatus *string `json:"processing_status"`
+	}{}
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.ProcessingStatus == nil {
+		return fmt.Errorf("required field processing_status missing")
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"processing_status"})
+	} else {
+		return err
+	}
+	o.ProcessingStatus = *all.ProcessingStatus
+
+	if len(additionalProperties) > 0 {
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return nil
+}

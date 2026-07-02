@@ -219,7 +219,7 @@ func (o *JiraIntegrationMetadataIssuesItem) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field project_key missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account", "issue_key", "issuetype_id", "project_key", "redirect_url"})
 	} else {
 		return err

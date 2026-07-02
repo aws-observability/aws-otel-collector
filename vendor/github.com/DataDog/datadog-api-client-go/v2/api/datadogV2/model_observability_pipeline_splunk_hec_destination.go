@@ -459,7 +459,7 @@ func (o *ObservabilityPipelineSplunkHecDestination) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"auto_extract_timestamp", "buffer", "encoding", "endpoint_url_key", "id", "index", "indexed_fields", "inputs", "sourcetype", "token_key", "token_strategy", "type"})
 	} else {
 		return err

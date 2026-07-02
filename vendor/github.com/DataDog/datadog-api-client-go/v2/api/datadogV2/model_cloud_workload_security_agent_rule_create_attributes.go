@@ -492,7 +492,7 @@ func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) UnmarshalJSON(bytes []b
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"actions", "agent_version", "blocking", "description", "disabled", "enabled", "expression", "filters", "monitoring", "name", "policy_id", "product_tags", "silent"})
 	} else {
 		return err

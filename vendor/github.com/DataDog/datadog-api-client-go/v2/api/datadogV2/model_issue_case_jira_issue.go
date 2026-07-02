@@ -10,6 +10,8 @@ import (
 
 // IssueCaseJiraIssue Jira issue of the case.
 type IssueCaseJiraIssue struct {
+	// Error message set when the Jira issue creation fails.
+	ErrorMessage *string `json:"error_message,omitempty"`
 	// Contains the identifiers and URL for a successfully created Jira issue.
 	Result *IssueCaseJiraIssueResult `json:"result,omitempty"`
 	// Creation status of the Jira issue.
@@ -34,6 +36,34 @@ func NewIssueCaseJiraIssue() *IssueCaseJiraIssue {
 func NewIssueCaseJiraIssueWithDefaults() *IssueCaseJiraIssue {
 	this := IssueCaseJiraIssue{}
 	return &this
+}
+
+// GetErrorMessage returns the ErrorMessage field value if set, zero value otherwise.
+func (o *IssueCaseJiraIssue) GetErrorMessage() string {
+	if o == nil || o.ErrorMessage == nil {
+		var ret string
+		return ret
+	}
+	return *o.ErrorMessage
+}
+
+// GetErrorMessageOk returns a tuple with the ErrorMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssueCaseJiraIssue) GetErrorMessageOk() (*string, bool) {
+	if o == nil || o.ErrorMessage == nil {
+		return nil, false
+	}
+	return o.ErrorMessage, true
+}
+
+// HasErrorMessage returns a boolean if a field has been set.
+func (o *IssueCaseJiraIssue) HasErrorMessage() bool {
+	return o != nil && o.ErrorMessage != nil
+}
+
+// SetErrorMessage gets a reference to the given string and assigns it to the ErrorMessage field.
+func (o *IssueCaseJiraIssue) SetErrorMessage(v string) {
+	o.ErrorMessage = &v
 }
 
 // GetResult returns the Result field value if set, zero value otherwise.
@@ -98,6 +128,9 @@ func (o IssueCaseJiraIssue) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ErrorMessage != nil {
+		toSerialize["error_message"] = o.ErrorMessage
+	}
 	if o.Result != nil {
 		toSerialize["result"] = o.Result
 	}
@@ -114,20 +147,22 @@ func (o IssueCaseJiraIssue) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *IssueCaseJiraIssue) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Result *IssueCaseJiraIssueResult `json:"result,omitempty"`
-		Status *string                   `json:"status,omitempty"`
+		ErrorMessage *string                   `json:"error_message,omitempty"`
+		Result       *IssueCaseJiraIssueResult `json:"result,omitempty"`
+		Status       *string                   `json:"status,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"result", "status"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"error_message", "result", "status"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.ErrorMessage = all.ErrorMessage
 	if all.Result != nil && all.Result.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

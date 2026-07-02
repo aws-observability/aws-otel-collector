@@ -14,6 +14,8 @@ import (
 //
 // **Supported pipeline types:** logs
 type ObservabilityPipelineCloudPremDestination struct {
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// Name of the environment variable or secret that holds the CloudPrem endpoint URL.
 	EndpointUrlKey *string `json:"endpoint_url_key,omitempty"`
 	// The unique identifier for this component.
@@ -47,6 +49,34 @@ func NewObservabilityPipelineCloudPremDestinationWithDefaults() *ObservabilityPi
 	var typeVar ObservabilityPipelineCloudPremDestinationType = OBSERVABILITYPIPELINECLOUDPREMDESTINATIONTYPE_CLOUD_PREM
 	this.Type = typeVar
 	return &this
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineCloudPremDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineCloudPremDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineCloudPremDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineCloudPremDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetEndpointUrlKey returns the EndpointUrlKey field value if set, zero value otherwise.
@@ -152,6 +182,9 @@ func (o ObservabilityPipelineCloudPremDestination) MarshalJSON() ([]byte, error)
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	if o.EndpointUrlKey != nil {
 		toSerialize["endpoint_url_key"] = o.EndpointUrlKey
 	}
@@ -168,6 +201,7 @@ func (o ObservabilityPipelineCloudPremDestination) MarshalJSON() ([]byte, error)
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineCloudPremDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Buffer         *ObservabilityPipelineBufferOptions            `json:"buffer,omitempty"`
 		EndpointUrlKey *string                                        `json:"endpoint_url_key,omitempty"`
 		Id             *string                                        `json:"id"`
 		Inputs         *[]string                                      `json:"inputs"`
@@ -186,13 +220,14 @@ func (o *ObservabilityPipelineCloudPremDestination) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"endpoint_url_key", "id", "inputs", "type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"buffer", "endpoint_url_key", "id", "inputs", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Buffer = all.Buffer
 	o.EndpointUrlKey = all.EndpointUrlKey
 	o.Id = *all.Id
 	o.Inputs = *all.Inputs

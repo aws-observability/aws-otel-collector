@@ -506,7 +506,7 @@ func (o *GcpUcConfigResponseDataAttributes) UnmarshalJSON(bytes []byte) (err err
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "bucket_name", "created_at", "dataset", "error_messages", "export_prefix", "export_project_name", "months", "project_id", "service_account", "status", "status_updated_at", "updated_at"})
 	} else {
 		return err

@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// PersonalAccessTokenCreateData Object used to create a personal access token.
+// PersonalAccessTokenCreateData Object used to create an access token.
 type PersonalAccessTokenCreateData struct {
-	// Attributes used to create a personal access token.
+	// Attributes used to create an access token.
 	Attributes PersonalAccessTokenCreateAttributes `json:"attributes"`
 	// Personal access tokens resource type.
 	Type PersonalAccessTokensType `json:"type"`
@@ -119,7 +119,7 @@ func (o *PersonalAccessTokenCreateData) UnmarshalJSON(bytes []byte) (err error) 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err

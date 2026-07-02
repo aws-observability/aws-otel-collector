@@ -1309,6 +1309,28 @@ type CancelCapacityReservationFleetError struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the cancellation terms for cancelling a future-dated Capacity
+// Reservation during its commitment duration.
+type CancellationTerms struct {
+
+	// The type of cancellation charge. Possible values include commitment-wind-down .
+	CancellationType ApplyCancellationCharges
+
+	// The number of hours for which cancellation charges will apply.
+	ChargeCommitmentDurationHours *int64
+
+	// The date and time at which cancellation charges will stop.
+	ChargeEndDate *time.Time
+
+	// The number of instances under commitment after cancellation.
+	CommittedInstanceCount *int32
+
+	// The state that the Capacity Reservation will transition to after cancellation.
+	ReservationState *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes a request to cancel a Spot Instance.
 type CancelledSpotInstanceRequest struct {
 
@@ -1986,6 +2008,11 @@ type CapacityReservation struct {
 	//   the future-dated Capacity Reservation request due to capacity constraints. You
 	//   can view unsupported requests for 30 days. The Capacity Reservation will not be
 	//   delivered.
+	//
+	//   - cancelling - (Future-dated Capacity Reservations) The Capacity Reservation
+	//   is being cancelled. Capacity has been released but charges continue for the
+	//   commitment wind-down period. The reservation transitions to cancelled when the
+	//   wind-down completes.
 	State CapacityReservationState
 
 	// Any tags assigned to the Capacity Reservation.
@@ -2042,6 +2069,40 @@ type CapacityReservationBillingRequest struct {
 	noSmithyDocumentSerde
 }
 
+// Describes a Capacity Reservation cancellation quote, which provides the
+// cancellation terms for cancelling a future-dated Capacity Reservation during its
+// commitment duration.
+type CapacityReservationCancellationQuote struct {
+
+	// The cancellation terms associated with the quote, including the fee type and
+	// charge details.
+	CancellationTerms []CancellationTerms
+
+	// The ID of the cancellation quote.
+	CapacityReservationCancellationQuoteId *string
+
+	// The ID of the Capacity Reservation associated with the cancellation quote.
+	CapacityReservationId *string
+
+	// The date and time at which the cancellation quote was created.
+	CreateTime *time.Time
+
+	// The current configuration of the Capacity Reservation.
+	CurrentConfiguration *CapacityReservationConfiguration
+
+	// The date and time at which the cancellation quote expires.
+	ExpirationTime *time.Time
+
+	// The state of the cancellation quote. Possible values include pending , active ,
+	// and expired .
+	QuoteState CapacityReservationCancellationQuoteState
+
+	// The tags assigned to the cancellation quote.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
 // Information about your commitment for a future-dated Capacity Reservation.
 type CapacityReservationCommitmentInfo struct {
 
@@ -2053,6 +2114,18 @@ type CapacityReservationCommitmentInfo struct {
 	// The instance capacity that you committed to when you requested the future-dated
 	// Capacity Reservation.
 	CommittedInstanceCount *int32
+
+	noSmithyDocumentSerde
+}
+
+// Describes the configuration of a Capacity Reservation.
+type CapacityReservationConfiguration struct {
+
+	// The number of instances in the Capacity Reservation.
+	InstanceCount *int32
+
+	// The current state of the Capacity Reservation.
+	ReservationState *string
 
 	noSmithyDocumentSerde
 }
@@ -3198,8 +3271,9 @@ type ConnectionNotification struct {
 type ConnectionTrackingConfiguration struct {
 
 	// Timeout (in seconds) for idle TCP connections in an established state. Min: 60
-	// seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended:
-	// Less than 432000 seconds.
+	// seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6
+	// instance types (excluding P6e-GB200); 432000 seconds for all other instance
+	// types (including P6e-GB200). Recommended: Less than 432000 seconds.
 	TcpEstablishedTimeout *int32
 
 	// Timeout (in seconds) for idle UDP flows classified as streams which have seen
@@ -3223,8 +3297,9 @@ type ConnectionTrackingConfiguration struct {
 type ConnectionTrackingSpecification struct {
 
 	// Timeout (in seconds) for idle TCP connections in an established state. Min: 60
-	// seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended:
-	// Less than 432000 seconds.
+	// seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6
+	// instance types (excluding P6e-GB200); 432000 seconds for all other instance
+	// types (including P6e-GB200). Recommended: Less than 432000 seconds.
 	TcpEstablishedTimeout *int32
 
 	// Timeout (in seconds) for idle UDP flows classified as streams which have seen
@@ -3248,8 +3323,9 @@ type ConnectionTrackingSpecification struct {
 type ConnectionTrackingSpecificationRequest struct {
 
 	// Timeout (in seconds) for idle TCP connections in an established state. Min: 60
-	// seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended:
-	// Less than 432000 seconds.
+	// seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6
+	// instance types (excluding P6e-GB200); 432000 seconds for all other instance
+	// types (including P6e-GB200). Recommended: Less than 432000 seconds.
 	TcpEstablishedTimeout *int32
 
 	// Timeout (in seconds) for idle UDP flows classified as streams which have seen
@@ -3273,8 +3349,9 @@ type ConnectionTrackingSpecificationRequest struct {
 type ConnectionTrackingSpecificationResponse struct {
 
 	// Timeout (in seconds) for idle TCP connections in an established state. Min: 60
-	// seconds. Max: 432000 seconds (5 days). Default: 432000 seconds. Recommended:
-	// Less than 432000 seconds.
+	// seconds. Max: 432000 seconds (5 days). Default: 350 seconds for Nitro v6
+	// instance types (excluding P6e-GB200); 432000 seconds for all other instance
+	// types (including P6e-GB200). Recommended: Less than 432000 seconds.
 	TcpEstablishedTimeout *int32
 
 	// Timeout (in seconds) for idle UDP flows classified as streams which have seen
@@ -6901,6 +6978,10 @@ type FlowLog struct {
 	// The ID of the resource being monitored.
 	ResourceId *string
 
+	// The tag configuration associated with the Flow Logs Amazon EC2 Tags feature
+	// fields in your custom log format.
+	TagFieldSpecifications []TagFieldSpecificationResponse
+
 	// The tags for the flow log.
 	Tags []Tag
 
@@ -7543,6 +7624,9 @@ type Image struct {
 	// The type of image.
 	ImageType ImageTypeValues
 
+	// The watermarks attached to the AMI.
+	ImageWatermarks []ImageWatermark
+
 	// If v2.0 , it indicates that IMDSv2 is specified in the AMI. Instances launched
 	// from this AMI will have HttpTokens automatically set to required so that, by
 	// default, the instance requires that IMDSv2 is used when requesting instance
@@ -7723,6 +7807,14 @@ type ImageCriterion struct {
 	// Maximum: 200 values
 	ImageProviders []string
 
+	// The watermark criteria that an AMI must match to be allowed. An AMI is allowed
+	// if it carries at least one watermark that satisfies an ImageWatermarkFilter. A
+	// watermark satisfies a filter when all specified fields in the
+	// ImageWatermarkFilter match the corresponding values on the watermark of the AMI.
+	//
+	// Maximum: 50 values
+	ImageWatermarks []ImageWatermarkFilterResponse
+
 	// The Amazon Web Services Marketplace product codes for allowed images.
 	//
 	// Length: 1-25 characters
@@ -7749,6 +7841,8 @@ type ImageCriterion struct {
 //   - 50 values for ImageNames
 //
 //   - 50 values for MarketplaceProductCodes
+//
+//   - 50 values for ImageWatermarks
 //
 // For more information, see [How Allowed AMIs works] in the Amazon EC2 User Guide.
 //
@@ -7797,6 +7891,14 @@ type ImageCriterionRequest struct {
 	//
 	// Maximum: 200 values
 	ImageProviders []string
+
+	// The watermark criteria that an AMI must match to be allowed. An AMI is allowed
+	// if it carries at least one watermark that satisfies an ImageWatermarkFilter. A
+	// watermark satisfies a filter when all specified fields in the
+	// ImageWatermarkFilter match the corresponding values on the watermark of the AMI.
+	//
+	// Maximum: 50 values
+	ImageWatermarks []ImageWatermarkFilterRequest
 
 	// The Amazon Web Services Marketplace product codes for allowed images.
 	//
@@ -7863,6 +7965,9 @@ type ImageMetadata struct {
 	//
 	// Valid values: amazon | aws-backup-vault | aws-marketplace
 	ImageOwnerAlias *string
+
+	// The watermarks attached to the AMI.
+	ImageWatermarks []ImageWatermark
 
 	// Indicates whether the AMI has public launch permissions. A value of true means
 	// this AMI has public launch permissions, while false means it has only implicit
@@ -8043,6 +8148,82 @@ type ImageUsageResourceTypeRequest struct {
 	// The options that affect the scope of the report. Valid only when ResourceType
 	// is ec2:LaunchTemplate .
 	ResourceTypeOptions []ImageUsageResourceTypeOptionRequest
+
+	noSmithyDocumentSerde
+}
+
+// Describes a watermark attached to an AMI.
+type ImageWatermark struct {
+
+	// The creation date of the source AMI, in the following format:
+	// YYYY-MM-DDTHH:MM:SS.ssssss+HH:MM.
+	SourceImageCreationTime *time.Time
+
+	// The ID of the AMI to which the watermark was originally attached.
+	SourceImageId *string
+
+	// The Region where the watermark was originally attached.
+	SourceImageRegion *string
+
+	// The date and time the watermark was attached to the AMI, in the following
+	// format: YYYY-MM-DDTHH:MM:SS.ssssss+HH:MM.
+	WatermarkCreationTime *time.Time
+
+	// The watermark identifier, in accountId:watermarkName format (for example,
+	// 123456789012:approvedAmi ). The accountId portion is the Amazon Web Services
+	// account ID of the watermark creator. The watermarkName portion is
+	// customer-provided.
+	WatermarkKey *string
+
+	noSmithyDocumentSerde
+}
+
+// The watermark filter criteria for an allowed image. Each entry can specify one
+// or more fields. All specified fields must match the same watermark on the image.
+type ImageWatermarkFilterRequest struct {
+
+	// The maximum number of days that have elapsed since the source image was created.
+	//
+	// Constraints: Minimum value of 0. Maximum value of 2147483647.
+	MaximumDaysSinceSourceImageCreated *int32
+
+	// The maximum number of days that have elapsed since the watermark was attached
+	// to the image.
+	//
+	// Constraints: Minimum value of 0. Maximum value of 2147483647.
+	MaximumDaysSinceWatermarkCreated *int32
+
+	// The Region where the watermark was originally created. Supports wildcards ( * ,
+	// ? ).
+	SourceImageRegion *string
+
+	// The accountId:name of the watermark. Supports wildcards ( * , ? ).
+	WatermarkKey *string
+
+	noSmithyDocumentSerde
+}
+
+// The watermark filter criteria for an allowed image. Each entry can specify one
+// or more fields. All specified fields must match the same watermark on the image.
+type ImageWatermarkFilterResponse struct {
+
+	// The maximum number of days that have elapsed since the source image was created.
+	//
+	// Constraints: Minimum value of 0. Maximum value of 2147483647.
+	MaximumDaysSinceSourceImageCreated *int32
+
+	// The maximum number of days that have elapsed since the watermark was attached
+	// to the image.
+	//
+	// Constraints: Minimum value of 0. Maximum value of 2147483647.
+	MaximumDaysSinceWatermarkCreated *int32
+
+	// The Region where the watermark was originally created. Supports wildcards ( * ,
+	// ? ).
+	SourceImageRegion *string
+
+	// The accountId:name of the watermark. Supports wildcards ( * , ? ).
+	WatermarkKey *string
 
 	noSmithyDocumentSerde
 }
@@ -10774,6 +10955,9 @@ type InstanceTypeInfo struct {
 	// [Boot modes]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html
 	SupportedBootModes []BootModeType
 
+	// Indicates whether the instance type is supported in the current Region.
+	SupportedInRegion *bool
+
 	// The supported root device types.
 	SupportedRootDeviceTypes []RootDeviceType
 
@@ -11624,6 +11808,9 @@ type IpamPoolAllocation struct {
 
 	// The type of the resource.
 	ResourceType IpamPoolAllocationResourceType
+
+	// The tags for the IPAM pool allocation.
+	Tags []Tag
 
 	noSmithyDocumentSerde
 }
@@ -14966,6 +15153,10 @@ type ModifyTransitGatewayOptions struct {
 	//   - Direct Connect Gateway
 	//
 	//   - Connect
+	//
+	//   - VPN Concentrator
+	//
+	//   - Client VPN
 	//
 	// You must first delete all transit gateway attachments configured prior to
 	// modifying the ASN on the transit gateway.
@@ -22400,6 +22591,36 @@ type TagDescription struct {
 	noSmithyDocumentSerde
 }
 
+// A single resource's tag configuration associated with the Flow Logs Amazon EC2
+// Tags feature fields in your custom log format.
+type TagFieldSpecificationRequest struct {
+
+	// The resource type for the tag keys associated with the Flow Logs Amazon EC2
+	// Tags feature fields in your custom log format.
+	ResourceType TaggableResourceType
+
+	// The tag keys on your tagged resources to be displayed by the Flow Logs Amazon
+	// EC2 Tags feature fields in your custom log format.
+	TagKeys []string
+
+	noSmithyDocumentSerde
+}
+
+// A single resource's tag configuration associated with the Flow Logs Amazon EC2
+// Tags feature fields in your custom log format.
+type TagFieldSpecificationResponse struct {
+
+	// The resource type for the tag keys associated with the Flow Logs Amazon EC2
+	// Tags feature fields in your custom log format.
+	ResourceType TaggableResourceType
+
+	// The tag keys on your tagged resources to be displayed by the Flow Logs Amazon
+	// EC2 Tags feature fields in your custom log format.
+	TagKeys []string
+
+	noSmithyDocumentSerde
+}
+
 // The tags to apply to a resource when the resource is being created. When you
 // specify a tag, you must specify the resource type to tag, otherwise the request
 // will fail.
@@ -25019,10 +25240,6 @@ type VolumeModification struct {
 
 	// The current modification state.
 	ModificationState VolumeModificationState
-
-	// Describes whether the resource is managed by a service provider and, if so,
-	// describes the service provider that manages it.
-	Operator *OperatorResponse
 
 	// The original IOPS rate of the volume.
 	OriginalIops *int32

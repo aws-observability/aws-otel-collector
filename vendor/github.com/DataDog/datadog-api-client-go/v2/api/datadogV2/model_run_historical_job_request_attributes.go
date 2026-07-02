@@ -12,10 +12,10 @@ import (
 type RunHistoricalJobRequestAttributes struct {
 	// Definition of a historical job based on a security monitoring rule.
 	FromRule *JobDefinitionFromRule `json:"fromRule,omitempty"`
-	// Request ID.
-	Id *string `json:"id,omitempty"`
 	// Definition of a historical job.
 	JobDefinition *JobDefinition `json:"jobDefinition,omitempty"`
+	// Whether the job outputs signals when results are converted.
+	SignalOutput *bool `json:"signalOutput,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -66,34 +66,6 @@ func (o *RunHistoricalJobRequestAttributes) SetFromRule(v JobDefinitionFromRule)
 	o.FromRule = &v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *RunHistoricalJobRequestAttributes) GetId() string {
-	if o == nil || o.Id == nil {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RunHistoricalJobRequestAttributes) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
-		return nil, false
-	}
-	return o.Id, true
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *RunHistoricalJobRequestAttributes) HasId() bool {
-	return o != nil && o.Id != nil
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *RunHistoricalJobRequestAttributes) SetId(v string) {
-	o.Id = &v
-}
-
 // GetJobDefinition returns the JobDefinition field value if set, zero value otherwise.
 func (o *RunHistoricalJobRequestAttributes) GetJobDefinition() JobDefinition {
 	if o == nil || o.JobDefinition == nil {
@@ -122,6 +94,34 @@ func (o *RunHistoricalJobRequestAttributes) SetJobDefinition(v JobDefinition) {
 	o.JobDefinition = &v
 }
 
+// GetSignalOutput returns the SignalOutput field value if set, zero value otherwise.
+func (o *RunHistoricalJobRequestAttributes) GetSignalOutput() bool {
+	if o == nil || o.SignalOutput == nil {
+		var ret bool
+		return ret
+	}
+	return *o.SignalOutput
+}
+
+// GetSignalOutputOk returns a tuple with the SignalOutput field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RunHistoricalJobRequestAttributes) GetSignalOutputOk() (*bool, bool) {
+	if o == nil || o.SignalOutput == nil {
+		return nil, false
+	}
+	return o.SignalOutput, true
+}
+
+// HasSignalOutput returns a boolean if a field has been set.
+func (o *RunHistoricalJobRequestAttributes) HasSignalOutput() bool {
+	return o != nil && o.SignalOutput != nil
+}
+
+// SetSignalOutput gets a reference to the given bool and assigns it to the SignalOutput field.
+func (o *RunHistoricalJobRequestAttributes) SetSignalOutput(v bool) {
+	o.SignalOutput = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o RunHistoricalJobRequestAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -131,11 +131,11 @@ func (o RunHistoricalJobRequestAttributes) MarshalJSON() ([]byte, error) {
 	if o.FromRule != nil {
 		toSerialize["fromRule"] = o.FromRule
 	}
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
-	}
 	if o.JobDefinition != nil {
 		toSerialize["jobDefinition"] = o.JobDefinition
+	}
+	if o.SignalOutput != nil {
+		toSerialize["signalOutput"] = o.SignalOutput
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -148,15 +148,15 @@ func (o RunHistoricalJobRequestAttributes) MarshalJSON() ([]byte, error) {
 func (o *RunHistoricalJobRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		FromRule      *JobDefinitionFromRule `json:"fromRule,omitempty"`
-		Id            *string                `json:"id,omitempty"`
 		JobDefinition *JobDefinition         `json:"jobDefinition,omitempty"`
+		SignalOutput  *bool                  `json:"signalOutput,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"fromRule", "id", "jobDefinition"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"fromRule", "jobDefinition", "signalOutput"})
 	} else {
 		return err
 	}
@@ -166,11 +166,11 @@ func (o *RunHistoricalJobRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 		hasInvalidField = true
 	}
 	o.FromRule = all.FromRule
-	o.Id = all.Id
 	if all.JobDefinition != nil && all.JobDefinition.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
 	o.JobDefinition = all.JobDefinition
+	o.SignalOutput = all.SignalOutput
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

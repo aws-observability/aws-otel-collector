@@ -69,7 +69,7 @@ type LoadBalancerTypeListOpts struct {
 	Sort []string
 }
 
-func (l LoadBalancerTypeListOpts) values() url.Values {
+func (l LoadBalancerTypeListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -88,7 +88,7 @@ func (c *LoadBalancerTypeClient) List(ctx context.Context, opts LoadBalancerType
 	const opPath = "/load_balancer_types?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.LoadBalancerTypeListResponse](ctx, c.client, reqPath)
 	if err != nil {

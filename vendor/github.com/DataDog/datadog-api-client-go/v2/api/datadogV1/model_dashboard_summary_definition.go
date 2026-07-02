@@ -386,7 +386,7 @@ func (o *DashboardSummaryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"author_handle", "created_at", "description", "id", "is_read_only", "layout_type", "modified_at", "title", "url"})
 	} else {
 		return err

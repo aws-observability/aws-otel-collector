@@ -5,15 +5,13 @@
 package datadogV2
 
 import (
-	"fmt"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// OrgGroupPaginationMeta Pagination metadata.
+// OrgGroupPaginationMeta Pagination metadata for org group list responses.
 type OrgGroupPaginationMeta struct {
-	// Page-based pagination details.
-	Page OrgGroupPaginationMetaPage `json:"page"`
+	// Page-based pagination details for org group list responses.
+	Page *OrgGroupPaginationMetaPage `json:"page,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,9 +21,8 @@ type OrgGroupPaginationMeta struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewOrgGroupPaginationMeta(page OrgGroupPaginationMetaPage) *OrgGroupPaginationMeta {
+func NewOrgGroupPaginationMeta() *OrgGroupPaginationMeta {
 	this := OrgGroupPaginationMeta{}
-	this.Page = page
 	return &this
 }
 
@@ -37,27 +34,32 @@ func NewOrgGroupPaginationMetaWithDefaults() *OrgGroupPaginationMeta {
 	return &this
 }
 
-// GetPage returns the Page field value.
+// GetPage returns the Page field value if set, zero value otherwise.
 func (o *OrgGroupPaginationMeta) GetPage() OrgGroupPaginationMetaPage {
-	if o == nil {
+	if o == nil || o.Page == nil {
 		var ret OrgGroupPaginationMetaPage
 		return ret
 	}
-	return o.Page
+	return *o.Page
 }
 
-// GetPageOk returns a tuple with the Page field value
+// GetPageOk returns a tuple with the Page field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OrgGroupPaginationMeta) GetPageOk() (*OrgGroupPaginationMetaPage, bool) {
-	if o == nil {
+	if o == nil || o.Page == nil {
 		return nil, false
 	}
-	return &o.Page, true
+	return o.Page, true
 }
 
-// SetPage sets field value.
+// HasPage returns a boolean if a field has been set.
+func (o *OrgGroupPaginationMeta) HasPage() bool {
+	return o != nil && o.Page != nil
+}
+
+// SetPage gets a reference to the given OrgGroupPaginationMetaPage and assigns it to the Page field.
 func (o *OrgGroupPaginationMeta) SetPage(v OrgGroupPaginationMetaPage) {
-	o.Page = v
+	o.Page = &v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -66,7 +68,9 @@ func (o OrgGroupPaginationMeta) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	toSerialize["page"] = o.Page
+	if o.Page != nil {
+		toSerialize["page"] = o.Page
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -77,26 +81,23 @@ func (o OrgGroupPaginationMeta) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *OrgGroupPaginationMeta) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Page *OrgGroupPaginationMetaPage `json:"page"`
+		Page *OrgGroupPaginationMetaPage `json:"page,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
-	if all.Page == nil {
-		return fmt.Errorf("required field page missing")
-	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"page"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
-	if all.Page.UnparsedObject != nil && o.UnparsedObject == nil {
+	if all.Page != nil && all.Page.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
-	o.Page = *all.Page
+	o.Page = all.Page
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

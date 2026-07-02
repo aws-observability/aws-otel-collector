@@ -307,6 +307,12 @@ type UpdateServiceInput struct {
 	// [CreateDeployment]: https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html
 	LoadBalancers []types.LoadBalancer
 
+	// The optional monitoring configuration for the service, which defines the
+	// resolution for the service-level CPUUtilization and MemoryUtilization Amazon
+	// CloudWatch metrics. When not specified, Amazon ECS uses the default resolution
+	// of 60 seconds.
+	Monitoring *types.MonitoringConfiguration
+
 	// An object representing the network configuration for the service.
 	//
 	// This parameter triggers a new service deployment.
@@ -422,6 +428,13 @@ type UpdateServiceInput struct {
 type UpdateServiceOutput struct {
 
 	// The full description of your service following the update call.
+	//
+	// The response includes a lifecycleHookDetails field, which is an empty array
+	// when the service is created or updated. The values are populated when a
+	// lifecycle hook executes and are available as part of the service deployment
+	// details ([DescribeServiceDeployments] ).
+	//
+	// [DescribeServiceDeployments]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServiceDeployments.html
 	Service *types.Service
 
 	// Metadata pertaining to the operation's result.

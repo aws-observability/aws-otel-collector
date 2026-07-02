@@ -14,7 +14,7 @@ import (
 type JobDefinition struct {
 	// Calculated fields.
 	CalculatedFields []CalculatedField `json:"calculatedFields,omitempty"`
-	// Cases used for generating job results.
+	// Cases used for generating job results. Up to 10 cases are allowed.
 	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
 	// Starting time of data analyzed by the job.
 	From int64 `json:"from"`
@@ -28,13 +28,13 @@ type JobDefinition struct {
 	Name string `json:"name"`
 	// Job options.
 	Options *HistoricalJobOptions `json:"options,omitempty"`
-	// Queries for selecting logs analyzed by the job.
+	// Queries for selecting logs analyzed by the job. Up to 10 queries are allowed.
 	Queries []HistoricalJobQuery `json:"queries"`
 	// Reference tables used in the queries.
 	ReferenceTables []SecurityMonitoringReferenceTable `json:"referenceTables,omitempty"`
 	// Tags for generated signals.
 	Tags []string `json:"tags,omitempty"`
-	// Cases for generating results from third-party detection method. Only available for third-party detection method.
+	// Cases for generating results from third-party detection method. Only available for third-party detection method. Up to 10 cases are allowed.
 	ThirdPartyCases []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`
 	// Ending time of data analyzed by the job.
 	To int64 `json:"to"`
@@ -510,7 +510,7 @@ func (o *JobDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field to missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"calculatedFields", "cases", "from", "groupSignalsBy", "index", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "to", "type"})
 	} else {
 		return err

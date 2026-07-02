@@ -20,8 +20,8 @@ type ObservabilityPipelineSyslogNgSource struct {
 	Id string `json:"id"`
 	// Protocol used by the syslog source to receive messages.
 	Mode ObservabilityPipelineSyslogSourceMode `json:"mode"`
-	// Configuration for enabling TLS encryption between the pipeline component and external services.
-	Tls *ObservabilityPipelineTls `json:"tls,omitempty"`
+	// Configuration for enabling TLS encryption between the pipeline component and external connecting clients.
+	Tls *ObservabilityPipelineMtlsServerTls `json:"tls,omitempty"`
 	// The source type. The value should always be `syslog_ng`.
 	Type ObservabilityPipelineSyslogNgSourceType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -126,9 +126,9 @@ func (o *ObservabilityPipelineSyslogNgSource) SetMode(v ObservabilityPipelineSys
 }
 
 // GetTls returns the Tls field value if set, zero value otherwise.
-func (o *ObservabilityPipelineSyslogNgSource) GetTls() ObservabilityPipelineTls {
+func (o *ObservabilityPipelineSyslogNgSource) GetTls() ObservabilityPipelineMtlsServerTls {
 	if o == nil || o.Tls == nil {
-		var ret ObservabilityPipelineTls
+		var ret ObservabilityPipelineMtlsServerTls
 		return ret
 	}
 	return *o.Tls
@@ -136,7 +136,7 @@ func (o *ObservabilityPipelineSyslogNgSource) GetTls() ObservabilityPipelineTls 
 
 // GetTlsOk returns a tuple with the Tls field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineSyslogNgSource) GetTlsOk() (*ObservabilityPipelineTls, bool) {
+func (o *ObservabilityPipelineSyslogNgSource) GetTlsOk() (*ObservabilityPipelineMtlsServerTls, bool) {
 	if o == nil || o.Tls == nil {
 		return nil, false
 	}
@@ -148,8 +148,8 @@ func (o *ObservabilityPipelineSyslogNgSource) HasTls() bool {
 	return o != nil && o.Tls != nil
 }
 
-// SetTls gets a reference to the given ObservabilityPipelineTls and assigns it to the Tls field.
-func (o *ObservabilityPipelineSyslogNgSource) SetTls(v ObservabilityPipelineTls) {
+// SetTls gets a reference to the given ObservabilityPipelineMtlsServerTls and assigns it to the Tls field.
+func (o *ObservabilityPipelineSyslogNgSource) SetTls(v ObservabilityPipelineMtlsServerTls) {
 	o.Tls = &v
 }
 
@@ -204,7 +204,7 @@ func (o *ObservabilityPipelineSyslogNgSource) UnmarshalJSON(bytes []byte) (err e
 		AddressKey *string                                  `json:"address_key,omitempty"`
 		Id         *string                                  `json:"id"`
 		Mode       *ObservabilityPipelineSyslogSourceMode   `json:"mode"`
-		Tls        *ObservabilityPipelineTls                `json:"tls,omitempty"`
+		Tls        *ObservabilityPipelineMtlsServerTls      `json:"tls,omitempty"`
 		Type       *ObservabilityPipelineSyslogNgSourceType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -220,7 +220,7 @@ func (o *ObservabilityPipelineSyslogNgSource) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"address_key", "id", "mode", "tls", "type"})
 	} else {
 		return err

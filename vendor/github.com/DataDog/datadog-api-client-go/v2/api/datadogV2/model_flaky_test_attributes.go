@@ -733,7 +733,7 @@ func (o *FlakyTestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attempt_to_fix_id", "codeowners", "envs", "first_flaked_branch", "first_flaked_sha", "first_flaked_ts", "flaky_category", "flaky_state", "history", "last_flaked_branch", "last_flaked_sha", "last_flaked_ts", "module", "name", "pipeline_stats", "services", "suite", "test_run_metadata", "test_stats"})
 	} else {
 		return err

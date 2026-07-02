@@ -800,7 +800,7 @@ func (o *CIAppPipelineEventStep) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field status missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"end", "error", "git", "id", "job_id", "job_name", "level", "metrics", "name", "node", "parameters", "pipeline_name", "pipeline_unique_id", "stage_id", "stage_name", "start", "status", "tags", "url"})
 	} else {
 		return err

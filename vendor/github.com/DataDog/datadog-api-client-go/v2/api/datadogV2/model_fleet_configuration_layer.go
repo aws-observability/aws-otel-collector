@@ -257,7 +257,7 @@ func (o *FleetConfigurationLayer) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"compiled_configuration", "env_configuration", "file_configuration", "parsed_configuration", "remote_configuration", "runtime_configuration"})
 	} else {
 		return err

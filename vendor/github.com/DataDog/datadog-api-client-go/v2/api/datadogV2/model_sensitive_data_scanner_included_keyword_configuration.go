@@ -157,7 +157,7 @@ func (o *SensitiveDataScannerIncludedKeywordConfiguration) UnmarshalJSON(bytes [
 		return fmt.Errorf("required field keywords missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"character_count", "keywords", "use_recommended_keywords"})
 	} else {
 		return err

@@ -86,7 +86,7 @@ func (o *UpdateDeploymentGateParamsDataAttributes) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field dry_run missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"dry_run"})
 	} else {
 		return err

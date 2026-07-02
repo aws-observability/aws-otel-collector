@@ -573,7 +573,7 @@ func (o *SnapshotDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"application_id", "created_at", "created_by", "created_by_handle", "created_by_user_id", "device_type", "event_id", "is_device_type_selected_by_user", "modified_at", "org_id", "session_id", "snapshot_name", "start", "view_id", "view_name"})
 	} else {
 		return err

@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CaseTypeResource The definition of `CaseType` object.
+// CaseTypeResource A case type that defines a classification category for cases. Each case type can have its own custom attributes, statuses, and automation rules.
 type CaseTypeResource struct {
-	// Case Type resource attributes
+	// Attributes of a case type, which define a classification category for cases. Organizations use case types to model different workflows (for example, Security Incident, Bug Report, Change Request).
 	Attributes *CaseTypeResourceAttributes `json:"attributes,omitempty"`
 	// Case type's identifier
 	Id *string `json:"id,omitempty"`
-	// Case type resource type
+	// JSON:API resource type for case types.
 	Type *CaseTypeResourceType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -159,7 +159,7 @@ func (o *CaseTypeResource) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err

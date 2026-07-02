@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimeRestrictions Holds time zone information and a list of time restrictions for a routing rule.
+// TimeRestrictions Time restrictions during which the routing rule is active. Outside of these hours, the rule does not match and routing continues to subsequent rules. This is mutually exclusive with the action-level `support_hours` field.
 type TimeRestrictions struct {
 	// Defines the list of time-based restrictions.
 	Restrictions []TimeRestriction `json:"restrictions"`
@@ -117,7 +117,7 @@ func (o *TimeRestrictions) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field time_zone missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"restrictions", "time_zone"})
 	} else {
 		return err

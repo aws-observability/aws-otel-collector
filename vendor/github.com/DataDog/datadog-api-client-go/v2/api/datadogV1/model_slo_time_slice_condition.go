@@ -185,7 +185,7 @@ func (o *SLOTimeSliceCondition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field threshold missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"comparator", "query", "query_interval_seconds", "threshold"})
 	} else {
 		return err

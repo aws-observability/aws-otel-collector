@@ -495,7 +495,7 @@ func (o *SyntheticsMobileStepParams) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"check", "delay", "direction", "element", "enabled", "maxScrolls", "positions", "subtestPublicId", "value", "variable", "withEnter", "x", "y"})
 	} else {
 		return err

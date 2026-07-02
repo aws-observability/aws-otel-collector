@@ -18,6 +18,8 @@ type DegradationDataAttributes struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// Description of the degradation.
 	Description *string `json:"description,omitempty"`
+	// Whether the degradation was backfilled.
+	IsBackfilled *bool `json:"is_backfilled,omitempty"`
 	// Timestamp of when the degradation was last modified.
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// The source of the degradation.
@@ -132,6 +134,34 @@ func (o *DegradationDataAttributes) HasDescription() bool {
 // SetDescription gets a reference to the given string and assigns it to the Description field.
 func (o *DegradationDataAttributes) SetDescription(v string) {
 	o.Description = &v
+}
+
+// GetIsBackfilled returns the IsBackfilled field value if set, zero value otherwise.
+func (o *DegradationDataAttributes) GetIsBackfilled() bool {
+	if o == nil || o.IsBackfilled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsBackfilled
+}
+
+// GetIsBackfilledOk returns a tuple with the IsBackfilled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DegradationDataAttributes) GetIsBackfilledOk() (*bool, bool) {
+	if o == nil || o.IsBackfilled == nil {
+		return nil, false
+	}
+	return o.IsBackfilled, true
+}
+
+// HasIsBackfilled returns a boolean if a field has been set.
+func (o *DegradationDataAttributes) HasIsBackfilled() bool {
+	return o != nil && o.IsBackfilled != nil
+}
+
+// SetIsBackfilled gets a reference to the given bool and assigns it to the IsBackfilled field.
+func (o *DegradationDataAttributes) SetIsBackfilled(v bool) {
+	o.IsBackfilled = &v
 }
 
 // GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
@@ -293,6 +323,9 @@ func (o DegradationDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
+	if o.IsBackfilled != nil {
+		toSerialize["is_backfilled"] = o.IsBackfilled
+	}
 	if o.ModifiedAt != nil {
 		if o.ModifiedAt.Nanosecond() == 0 {
 			toSerialize["modified_at"] = o.ModifiedAt.Format("2006-01-02T15:04:05Z07:00")
@@ -325,6 +358,7 @@ func (o *DegradationDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		ComponentsAffected []DegradationDataAttributesComponentsAffectedItems `json:"components_affected,omitempty"`
 		CreatedAt          *time.Time                                         `json:"created_at,omitempty"`
 		Description        *string                                            `json:"description,omitempty"`
+		IsBackfilled       *bool                                              `json:"is_backfilled,omitempty"`
 		ModifiedAt         *time.Time                                         `json:"modified_at,omitempty"`
 		Source             *DegradationDataAttributesSource                   `json:"source,omitempty"`
 		Status             *CreateDegradationRequestDataAttributesStatus      `json:"status,omitempty"`
@@ -335,8 +369,8 @@ func (o *DegradationDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"components_affected", "created_at", "description", "modified_at", "source", "status", "title", "updates"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"components_affected", "created_at", "description", "is_backfilled", "modified_at", "source", "status", "title", "updates"})
 	} else {
 		return err
 	}
@@ -345,6 +379,7 @@ func (o *DegradationDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.ComponentsAffected = all.ComponentsAffected
 	o.CreatedAt = all.CreatedAt
 	o.Description = all.Description
+	o.IsBackfilled = all.IsBackfilled
 	o.ModifiedAt = all.ModifiedAt
 	if all.Source != nil && all.Source.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

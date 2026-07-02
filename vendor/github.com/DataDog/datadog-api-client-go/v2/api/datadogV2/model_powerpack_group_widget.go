@@ -154,7 +154,7 @@ func (o *PowerpackGroupWidget) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field definition missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"definition", "layout", "live_span"})
 	} else {
 		return err

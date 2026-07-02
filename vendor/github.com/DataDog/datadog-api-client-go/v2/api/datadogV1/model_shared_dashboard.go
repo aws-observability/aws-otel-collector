@@ -726,7 +726,7 @@ func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field dashboard_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"author", "created", "dashboard_id", "dashboard_type", "embeddable_domains", "expiration", "global_time", "global_time_selectable_enabled", "invitees", "last_accessed", "public_url", "selectable_template_vars", "share_list", "share_type", "status", "title", "token", "viewing_preferences"})
 	} else {
 		return err

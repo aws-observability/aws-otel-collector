@@ -220,7 +220,7 @@ func (o *SecurityMonitoringCriticalAssetCreateAttributes) UnmarshalJSON(bytes []
 		return fmt.Errorf("required field severity missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "query", "rule_query", "severity", "tags"})
 	} else {
 		return err

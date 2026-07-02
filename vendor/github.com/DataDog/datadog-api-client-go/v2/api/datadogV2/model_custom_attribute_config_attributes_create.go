@@ -10,17 +10,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomAttributeConfigAttributesCreate Custom attribute config resource attributes
+// CustomAttributeConfigAttributesCreate Attributes required to create a custom attribute configuration.
 type CustomAttributeConfigAttributesCreate struct {
-	// Custom attribute description.
+	// A description explaining the purpose and expected values for this custom attribute.
 	Description *string `json:"description,omitempty"`
-	// Custom attribute name.
+	// The human-readable label shown in the Case Management UI for this custom attribute.
 	DisplayName string `json:"display_name"`
-	// Whether multiple values can be set
+	// If `true`, this attribute accepts an array of values. If `false`, only a single value is allowed.
 	IsMulti bool `json:"is_multi"`
-	// Custom attribute key. This will be the value use to search on this custom attribute
+	// The programmatic key used to reference this custom attribute in search queries and API calls.
 	Key string `json:"key"`
-	// Custom attributes type
+	// The data type of the custom attribute, which determines the allowed values and UI input control.
 	Type CustomAttributeType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -213,7 +213,7 @@ func (o *CustomAttributeConfigAttributesCreate) UnmarshalJSON(bytes []byte) (err
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "display_name", "is_multi", "key", "type"})
 	} else {
 		return err

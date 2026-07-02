@@ -704,8 +704,8 @@ func (a *FeatureFlagsApi) GetFeatureFlagsEnvironment(ctx _context.Context, envir
 type ListFeatureFlagsOptionalParameters struct {
 	Key        *string
 	IsArchived *bool
-	Limit      *int32
-	Offset     *int32
+	Limit      *int64
+	Offset     *int64
 }
 
 // NewListFeatureFlagsOptionalParameters creates an empty struct for parameters.
@@ -727,13 +727,13 @@ func (r *ListFeatureFlagsOptionalParameters) WithIsArchived(isArchived bool) *Li
 }
 
 // WithLimit sets the corresponding parameter name and returns the struct.
-func (r *ListFeatureFlagsOptionalParameters) WithLimit(limit int32) *ListFeatureFlagsOptionalParameters {
+func (r *ListFeatureFlagsOptionalParameters) WithLimit(limit int64) *ListFeatureFlagsOptionalParameters {
 	r.Limit = &limit
 	return r
 }
 
 // WithOffset sets the corresponding parameter name and returns the struct.
-func (r *ListFeatureFlagsOptionalParameters) WithOffset(offset int32) *ListFeatureFlagsOptionalParameters {
+func (r *ListFeatureFlagsOptionalParameters) WithOffset(offset int64) *ListFeatureFlagsOptionalParameters {
 	r.Offset = &offset
 	return r
 }
@@ -840,8 +840,8 @@ func (a *FeatureFlagsApi) ListFeatureFlags(ctx _context.Context, o ...ListFeatur
 type ListFeatureFlagsEnvironmentsOptionalParameters struct {
 	Name   *string
 	Key    *string
-	Limit  *int32
-	Offset *int32
+	Limit  *int64
+	Offset *int64
 }
 
 // NewListFeatureFlagsEnvironmentsOptionalParameters creates an empty struct for parameters.
@@ -863,13 +863,13 @@ func (r *ListFeatureFlagsEnvironmentsOptionalParameters) WithKey(key string) *Li
 }
 
 // WithLimit sets the corresponding parameter name and returns the struct.
-func (r *ListFeatureFlagsEnvironmentsOptionalParameters) WithLimit(limit int32) *ListFeatureFlagsEnvironmentsOptionalParameters {
+func (r *ListFeatureFlagsEnvironmentsOptionalParameters) WithLimit(limit int64) *ListFeatureFlagsEnvironmentsOptionalParameters {
 	r.Limit = &limit
 	return r
 }
 
 // WithOffset sets the corresponding parameter name and returns the struct.
-func (r *ListFeatureFlagsEnvironmentsOptionalParameters) WithOffset(offset int32) *ListFeatureFlagsEnvironmentsOptionalParameters {
+func (r *ListFeatureFlagsEnvironmentsOptionalParameters) WithOffset(offset int64) *ListFeatureFlagsEnvironmentsOptionalParameters {
 	r.Offset = &offset
 	return r
 }

@@ -495,7 +495,7 @@ func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"datadog_link", "description", "evaluation", "evaluation_changed_at", "external_id", "mute", "resource", "resource_discovery_date", "resource_type", "rule", "status", "tags", "vulnerability_type"})
 	} else {
 		return err

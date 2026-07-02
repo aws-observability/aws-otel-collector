@@ -573,7 +573,7 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"color_preference", "count", "description", "display_format", "hide_zero_counts", "query", "show_last_triggered", "show_priority", "sort", "start", "summary_type", "title", "title_align", "title_size", "type"})
 	} else {
 		return err

@@ -166,7 +166,7 @@ type ZoneListOpts struct {
 	Sort []string
 }
 
-func (l ZoneListOpts) values() url.Values {
+func (l ZoneListOpts) Values() url.Values {
 	result := l.ListOpts.Values()
 	if l.Name != "" {
 		result.Add("name", l.Name)
@@ -187,7 +187,7 @@ func (c *ZoneClient) List(ctx context.Context, opts ZoneListOpts) ([]*Zone, *Res
 	const opPath = "/zones?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.ZoneListResponse](ctx, c.client, reqPath)
 	if err != nil {

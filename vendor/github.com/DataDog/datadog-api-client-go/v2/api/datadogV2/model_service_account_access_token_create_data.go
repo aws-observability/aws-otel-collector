@@ -14,8 +14,8 @@ import (
 type ServiceAccountAccessTokenCreateData struct {
 	// Attributes used to create a service account access token.
 	Attributes ServiceAccountAccessTokenCreateAttributes `json:"attributes"`
-	// Personal access tokens resource type.
-	Type PersonalAccessTokensType `json:"type"`
+	// Service access tokens resource type.
+	Type ServiceAccessTokensType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,7 +25,7 @@ type ServiceAccountAccessTokenCreateData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewServiceAccountAccessTokenCreateData(attributes ServiceAccountAccessTokenCreateAttributes, typeVar PersonalAccessTokensType) *ServiceAccountAccessTokenCreateData {
+func NewServiceAccountAccessTokenCreateData(attributes ServiceAccountAccessTokenCreateAttributes, typeVar ServiceAccessTokensType) *ServiceAccountAccessTokenCreateData {
 	this := ServiceAccountAccessTokenCreateData{}
 	this.Attributes = attributes
 	this.Type = typeVar
@@ -37,7 +37,7 @@ func NewServiceAccountAccessTokenCreateData(attributes ServiceAccountAccessToken
 // but it doesn't guarantee that properties required by API are set.
 func NewServiceAccountAccessTokenCreateDataWithDefaults() *ServiceAccountAccessTokenCreateData {
 	this := ServiceAccountAccessTokenCreateData{}
-	var typeVar PersonalAccessTokensType = PERSONALACCESSTOKENSTYPE_PERSONAL_ACCESS_TOKENS
+	var typeVar ServiceAccessTokensType = SERVICEACCESSTOKENSTYPE_SERVICE_ACCESS_TOKENS
 	this.Type = typeVar
 	return &this
 }
@@ -66,9 +66,9 @@ func (o *ServiceAccountAccessTokenCreateData) SetAttributes(v ServiceAccountAcce
 }
 
 // GetType returns the Type field value.
-func (o *ServiceAccountAccessTokenCreateData) GetType() PersonalAccessTokensType {
+func (o *ServiceAccountAccessTokenCreateData) GetType() ServiceAccessTokensType {
 	if o == nil {
-		var ret PersonalAccessTokensType
+		var ret ServiceAccessTokensType
 		return ret
 	}
 	return o.Type
@@ -76,7 +76,7 @@ func (o *ServiceAccountAccessTokenCreateData) GetType() PersonalAccessTokensType
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ServiceAccountAccessTokenCreateData) GetTypeOk() (*PersonalAccessTokensType, bool) {
+func (o *ServiceAccountAccessTokenCreateData) GetTypeOk() (*ServiceAccessTokensType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,7 +84,7 @@ func (o *ServiceAccountAccessTokenCreateData) GetTypeOk() (*PersonalAccessTokens
 }
 
 // SetType sets field value.
-func (o *ServiceAccountAccessTokenCreateData) SetType(v PersonalAccessTokensType) {
+func (o *ServiceAccountAccessTokenCreateData) SetType(v ServiceAccessTokensType) {
 	o.Type = v
 }
 
@@ -107,7 +107,7 @@ func (o ServiceAccountAccessTokenCreateData) MarshalJSON() ([]byte, error) {
 func (o *ServiceAccountAccessTokenCreateData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *ServiceAccountAccessTokenCreateAttributes `json:"attributes"`
-		Type       *PersonalAccessTokensType                  `json:"type"`
+		Type       *ServiceAccessTokensType                   `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -119,7 +119,7 @@ func (o *ServiceAccountAccessTokenCreateData) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err

@@ -86,7 +86,7 @@ func (o *TriggerInvestigationRequestDataAttributes) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field trigger missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"trigger"})
 	} else {
 		return err

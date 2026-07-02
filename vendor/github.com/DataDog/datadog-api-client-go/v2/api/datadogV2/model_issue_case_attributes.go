@@ -30,6 +30,8 @@ type IssueCaseAttributes struct {
 	JiraIssue *IssueCaseJiraIssue `json:"jira_issue,omitempty"`
 	// Key of the case.
 	Key *string `json:"key,omitempty"`
+	// Linear issue of the case.
+	LinearIssue *IssueCaseLinearIssue `json:"linear_issue,omitempty"`
 	// Timestamp of when the case was last modified.
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Case priority
@@ -319,6 +321,34 @@ func (o *IssueCaseAttributes) SetKey(v string) {
 	o.Key = &v
 }
 
+// GetLinearIssue returns the LinearIssue field value if set, zero value otherwise.
+func (o *IssueCaseAttributes) GetLinearIssue() IssueCaseLinearIssue {
+	if o == nil || o.LinearIssue == nil {
+		var ret IssueCaseLinearIssue
+		return ret
+	}
+	return *o.LinearIssue
+}
+
+// GetLinearIssueOk returns a tuple with the LinearIssue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssueCaseAttributes) GetLinearIssueOk() (*IssueCaseLinearIssue, bool) {
+	if o == nil || o.LinearIssue == nil {
+		return nil, false
+	}
+	return o.LinearIssue, true
+}
+
+// HasLinearIssue returns a boolean if a field has been set.
+func (o *IssueCaseAttributes) HasLinearIssue() bool {
+	return o != nil && o.LinearIssue != nil
+}
+
+// SetLinearIssue gets a reference to the given IssueCaseLinearIssue and assigns it to the LinearIssue field.
+func (o *IssueCaseAttributes) SetLinearIssue(v IssueCaseLinearIssue) {
+	o.LinearIssue = &v
+}
+
 // GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
 func (o *IssueCaseAttributes) GetModifiedAt() time.Time {
 	if o == nil || o.ModifiedAt == nil {
@@ -507,6 +537,9 @@ func (o IssueCaseAttributes) MarshalJSON() ([]byte, error) {
 	if o.Key != nil {
 		toSerialize["key"] = o.Key
 	}
+	if o.LinearIssue != nil {
+		toSerialize["linear_issue"] = o.LinearIssue
+	}
 	if o.ModifiedAt != nil {
 		if o.ModifiedAt.Nanosecond() == 0 {
 			toSerialize["modified_at"] = o.ModifiedAt.Format("2006-01-02T15:04:05Z07:00")
@@ -536,27 +569,28 @@ func (o IssueCaseAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *IssueCaseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ArchivedAt     *time.Time          `json:"archived_at,omitempty"`
-		ClosedAt       *time.Time          `json:"closed_at,omitempty"`
-		CreatedAt      *time.Time          `json:"created_at,omitempty"`
-		CreationSource *string             `json:"creation_source,omitempty"`
-		Description    *string             `json:"description,omitempty"`
-		DueDate        *string             `json:"due_date,omitempty"`
-		Insights       []IssueCaseInsight  `json:"insights,omitempty"`
-		JiraIssue      *IssueCaseJiraIssue `json:"jira_issue,omitempty"`
-		Key            *string             `json:"key,omitempty"`
-		ModifiedAt     *time.Time          `json:"modified_at,omitempty"`
-		Priority       *CasePriority       `json:"priority,omitempty"`
-		Status         *CaseStatus         `json:"status,omitempty"`
-		Title          *string             `json:"title,omitempty"`
-		Type           *string             `json:"type,omitempty"`
+		ArchivedAt     *time.Time            `json:"archived_at,omitempty"`
+		ClosedAt       *time.Time            `json:"closed_at,omitempty"`
+		CreatedAt      *time.Time            `json:"created_at,omitempty"`
+		CreationSource *string               `json:"creation_source,omitempty"`
+		Description    *string               `json:"description,omitempty"`
+		DueDate        *string               `json:"due_date,omitempty"`
+		Insights       []IssueCaseInsight    `json:"insights,omitempty"`
+		JiraIssue      *IssueCaseJiraIssue   `json:"jira_issue,omitempty"`
+		Key            *string               `json:"key,omitempty"`
+		LinearIssue    *IssueCaseLinearIssue `json:"linear_issue,omitempty"`
+		ModifiedAt     *time.Time            `json:"modified_at,omitempty"`
+		Priority       *CasePriority         `json:"priority,omitempty"`
+		Status         *CaseStatus           `json:"status,omitempty"`
+		Title          *string               `json:"title,omitempty"`
+		Type           *string               `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "closed_at", "created_at", "creation_source", "description", "due_date", "insights", "jira_issue", "key", "modified_at", "priority", "status", "title", "type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "closed_at", "created_at", "creation_source", "description", "due_date", "insights", "jira_issue", "key", "linear_issue", "modified_at", "priority", "status", "title", "type"})
 	} else {
 		return err
 	}
@@ -574,6 +608,10 @@ func (o *IssueCaseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.JiraIssue = all.JiraIssue
 	o.Key = all.Key
+	if all.LinearIssue != nil && all.LinearIssue.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.LinearIssue = all.LinearIssue
 	o.ModifiedAt = all.ModifiedAt
 	if all.Priority != nil && !all.Priority.IsValid() {
 		hasInvalidField = true

@@ -25,10 +25,10 @@ import (
 )
 
 const (
-	exportersCount  = 16
+	exportersCount  = 18
 	receiversCount  = 11
 	extensionsCount = 7
-	processorCount  = 16
+	processorCount  = 18
 )
 
 // Assert that the components behind feature gate are not in the default

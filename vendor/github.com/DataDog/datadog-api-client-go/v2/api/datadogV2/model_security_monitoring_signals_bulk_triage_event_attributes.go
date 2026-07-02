@@ -383,7 +383,7 @@ func (o *SecurityMonitoringSignalsBulkTriageEventAttributes) UnmarshalJSON(bytes
 		return fmt.Errorf("required field state missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"archive_comment", "archive_comment_timestamp", "archive_comment_user", "archive_reason", "assignee", "id", "incident_ids", "state", "state_update_timestamp", "state_update_user"})
 	} else {
 		return err

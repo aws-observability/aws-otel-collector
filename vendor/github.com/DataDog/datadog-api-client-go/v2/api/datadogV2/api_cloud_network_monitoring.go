@@ -21,6 +21,7 @@ type GetAggregatedConnectionsOptionalParameters struct {
 	To      *int64
 	GroupBy *string
 	Tags    *string
+	Query   *string
 	Limit   *int32
 }
 
@@ -51,6 +52,12 @@ func (r *GetAggregatedConnectionsOptionalParameters) WithGroupBy(groupBy string)
 // WithTags sets the corresponding parameter name and returns the struct.
 func (r *GetAggregatedConnectionsOptionalParameters) WithTags(tags string) *GetAggregatedConnectionsOptionalParameters {
 	r.Tags = &tags
+	return r
+}
+
+// WithQuery sets the corresponding parameter name and returns the struct.
+func (r *GetAggregatedConnectionsOptionalParameters) WithQuery(query string) *GetAggregatedConnectionsOptionalParameters {
+	r.Query = &query
 	return r
 }
 
@@ -98,6 +105,9 @@ func (a *CloudNetworkMonitoringApi) GetAggregatedConnections(ctx _context.Contex
 	}
 	if optionalParams.Tags != nil {
 		localVarQueryParams.Add("tags", datadog.ParameterToString(*optionalParams.Tags, ""))
+	}
+	if optionalParams.Query != nil {
+		localVarQueryParams.Add("query", datadog.ParameterToString(*optionalParams.Query, ""))
 	}
 	if optionalParams.Limit != nil {
 		localVarQueryParams.Add("limit", datadog.ParameterToString(*optionalParams.Limit, ""))
@@ -166,6 +176,7 @@ type GetAggregatedDnsOptionalParameters struct {
 	To      *int64
 	GroupBy *string
 	Tags    *string
+	Query   *string
 	Limit   *int32
 }
 
@@ -196,6 +207,12 @@ func (r *GetAggregatedDnsOptionalParameters) WithGroupBy(groupBy string) *GetAgg
 // WithTags sets the corresponding parameter name and returns the struct.
 func (r *GetAggregatedDnsOptionalParameters) WithTags(tags string) *GetAggregatedDnsOptionalParameters {
 	r.Tags = &tags
+	return r
+}
+
+// WithQuery sets the corresponding parameter name and returns the struct.
+func (r *GetAggregatedDnsOptionalParameters) WithQuery(query string) *GetAggregatedDnsOptionalParameters {
+	r.Query = &query
 	return r
 }
 
@@ -243,6 +260,9 @@ func (a *CloudNetworkMonitoringApi) GetAggregatedDns(ctx _context.Context, o ...
 	}
 	if optionalParams.Tags != nil {
 		localVarQueryParams.Add("tags", datadog.ParameterToString(*optionalParams.Tags, ""))
+	}
+	if optionalParams.Query != nil {
+		localVarQueryParams.Add("query", datadog.ParameterToString(*optionalParams.Query, ""))
 	}
 	if optionalParams.Limit != nil {
 		localVarQueryParams.Add("limit", datadog.ParameterToString(*optionalParams.Limit, ""))

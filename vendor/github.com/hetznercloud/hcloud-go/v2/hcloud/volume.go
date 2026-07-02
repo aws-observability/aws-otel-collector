@@ -99,7 +99,7 @@ type VolumeListOpts struct {
 	Sort   []string
 }
 
-func (l VolumeListOpts) values() url.Values {
+func (l VolumeListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -121,7 +121,7 @@ func (c *VolumeClient) List(ctx context.Context, opts VolumeListOpts) ([]*Volume
 	const opPath = "/volumes?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.VolumeListResponse](ctx, c.client, reqPath)
 	if err != nil {

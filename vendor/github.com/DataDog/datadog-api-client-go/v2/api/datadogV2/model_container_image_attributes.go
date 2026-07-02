@@ -634,7 +634,7 @@ func (o *ContainerImageAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"container_count", "image_flavors", "image_tags", "images_built_at", "name", "os_architectures", "os_names", "os_versions", "published_at", "registry", "repo_digest", "repository", "short_image", "sizes", "sources", "tags", "vulnerability_count"})
 	} else {
 		return err

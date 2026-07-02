@@ -359,7 +359,7 @@ func (o *MetricsQueryResponse) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"error", "from_date", "group_by", "message", "query", "res_type", "series", "status", "to_date"})
 	} else {
 		return err

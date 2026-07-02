@@ -151,7 +151,7 @@ func (o *JsonPatchOperation) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field path missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"op", "path", "value"})
 	} else {
 		return err

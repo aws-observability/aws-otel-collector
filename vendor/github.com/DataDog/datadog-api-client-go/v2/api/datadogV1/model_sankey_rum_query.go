@@ -10,17 +10,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SankeyRumQuery Sankey widget with RUM data source query.
+// SankeyRumQuery Query configuration for Product Analytics or RUM Sankey widget.
 type SankeyRumQuery struct {
 	// Product Analytics/RUM audience filters.
 	AudienceFilters *ProductAnalyticsAudienceFilters `json:"audience_filters,omitempty"`
-	// Sankey widget with RUM data source.
+	// Product Analytics or RUM data source type.
 	DataSource SankeyRumDataSource `json:"data_source"`
 	// Entries per step.
 	EntriesPerStep *int64 `json:"entries_per_step,omitempty"`
 	// Join keys.
 	JoinKeys *SankeyJoinKeys `json:"join_keys,omitempty"`
-	// Sankey mode for RUM queries.
+	// Sankey mode for Product Analytics or RUM queries.
 	Mode SankeyRumQueryMode `json:"mode"`
 	// Number of steps.
 	NumberOfSteps *int64 `json:"number_of_steps,omitempty"`
@@ -55,7 +55,7 @@ func NewSankeyRumQuery(dataSource SankeyRumDataSource, mode SankeyRumQueryMode, 
 // but it doesn't guarantee that properties required by API are set.
 func NewSankeyRumQueryWithDefaults() *SankeyRumQuery {
 	this := SankeyRumQuery{}
-	var dataSource SankeyRumDataSource = SANKEYRUMDATASOURCE_RUM
+	var dataSource SankeyRumDataSource = SANKEYRUMDATASOURCE_PRODUCT_ANALYTICS
 	this.DataSource = dataSource
 	var mode SankeyRumQueryMode = SANKEYRUMQUERYMODE_SOURCE
 	this.Mode = mode

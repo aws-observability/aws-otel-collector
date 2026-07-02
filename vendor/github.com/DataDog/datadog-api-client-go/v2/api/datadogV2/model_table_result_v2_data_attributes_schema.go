@@ -117,7 +117,7 @@ func (o *TableResultV2DataAttributesSchema) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field primary_keys missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"fields", "primary_keys"})
 	} else {
 		return err

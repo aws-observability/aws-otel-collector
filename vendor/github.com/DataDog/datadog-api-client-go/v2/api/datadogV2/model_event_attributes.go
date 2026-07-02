@@ -749,7 +749,7 @@ func (o *EventAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation_key", "date_happened", "device_name", "duration", "event_object", "evt", "hostname", "monitor", "monitor_groups", "monitor_id", "priority", "related_event_id", "service", "source_type_name", "sourcecategory", "status", "tags", "timestamp", "title"})
 	} else {
 		return err

@@ -47,11 +47,19 @@ type InferenceCreateUpdateReq struct {
 	Label string `json:"label,omitempty"`
 }
 
-// InferenceChatUsage represents chat/embeddings usage details for a Serverless Inference subscription
-type InferenceChatUsage struct {
-	CurrentTokens    int `json:"current_tokens"`
-	MonthlyAllotment int `json:"monthly_allotment"`
-	Overage          int `json:"overage"`
+// InferenceModelUsage represents per model usage details for a Serverless Inference subscription
+type InferenceModelUsage struct {
+	Model       string `json:"model"`
+	Tokens      int    `json:"tokens"`
+	InputTokens int    `json:"input_tokens"`
+	OutputPrice int    `json:"output_price"`
+	InputPrice  int    `json:"input_price"`
+}
+
+// InferenceChatByModelUsage represents granular chat usage details Serverless Inference subscription
+type InferenceChatByModelUsage struct {
+	CurrentMonth  []InferenceModelUsage `json:"current_month"`
+	PreviousMonth []InferenceModelUsage `json:"previous_month"`
 }
 
 // InferenceAudioUsage represents audio generation details for a Serverless Inference subscription
@@ -60,10 +68,33 @@ type InferenceAudioUsage struct {
 	TTSSMCharacters int `json:"tts_sm_characters"`
 }
 
+// InferenceImageUsage represents image generation details for a Serverless Inference subscription
+type InferenceImageUsage struct {
+	Megapixels   float32 `json:"megapixels"`
+	SMMegapixels float32 `json:"sm_megapixels"`
+}
+
+// InferenceChatUsage represents chat/embeddings usage details for a Serverless Inference subscription
+type InferenceChatUsage struct {
+	CompletionTokens int     `json:"completion_tokens"`
+	Cost             float32 `json:"cost"`
+	InputTokens      int     `json:"input_tokens"`
+	InputCost        float32 `json:"input_cost"`
+	// Deprecated: CurrentTokens is no longer supported
+	CurrentTokens int `json:"current_tokens"`
+	// Deprecated: MonthlyAllotment is no longer supported
+	MonthlyAllotment int `json:"monthly_allotment"`
+	// Deprecated: Overage is no longer supported
+	Overage int `json:"overage"`
+}
+
 // InferenceUsage represents chat/embeddings and audio usage for a Serverless Inference subscription
 type InferenceUsage struct {
-	Chat  InferenceChatUsage  `json:"chat"`
-	Audio InferenceAudioUsage `json:"audio"`
+	ChatByModel InferenceChatByModelUsage `json:"chat_by_model"`
+	Audio       InferenceAudioUsage       `json:"audio"`
+	Image       InferenceImageUsage       `json:"image"`
+	// Deprecated: Chat is no longer supported
+	Chat InferenceChatUsage `json:"chat"`
 }
 
 // inferenceUsageBase represents a migration status object API response for a Serverless Inference subscription

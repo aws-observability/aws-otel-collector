@@ -216,7 +216,7 @@ func (o *ProductAnalyticsAnalyticsRequestAttributes) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field to missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"enforced_execution_type", "from", "query", "request_id", "to"})
 	} else {
 		return err

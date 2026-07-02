@@ -29,8 +29,10 @@ type SLOCorrectionResponseAttributes struct {
 	// The recurrence rules as defined in the iCalendar RFC 5545. The supported rules for SLO corrections
 	// are `FREQ`, `INTERVAL`, `COUNT`, `UNTIL` and `BYDAY`.
 	Rrule datadog.NullableString `json:"rrule,omitempty"`
-	// ID of the SLO that this correction applies to.
-	SloId *string `json:"slo_id,omitempty"`
+	// ID of the single SLO that this correction applies to.
+	SloId datadog.NullableString `json:"slo_id,omitempty"`
+	// Query that matches the SLOs this correction applies to.
+	SloQuery datadog.NullableString `json:"slo_query,omitempty"`
 	// Starting time of the correction in epoch seconds.
 	Start *int64 `json:"start,omitempty"`
 	// The timezone to display in the UI for the correction times (defaults to "UTC").
@@ -375,32 +377,82 @@ func (o *SLOCorrectionResponseAttributes) UnsetRrule() {
 	o.Rrule.Unset()
 }
 
-// GetSloId returns the SloId field value if set, zero value otherwise.
+// GetSloId returns the SloId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SLOCorrectionResponseAttributes) GetSloId() string {
-	if o == nil || o.SloId == nil {
+	if o == nil || o.SloId.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.SloId
+	return *o.SloId.Get()
 }
 
 // GetSloIdOk returns a tuple with the SloId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
 func (o *SLOCorrectionResponseAttributes) GetSloIdOk() (*string, bool) {
-	if o == nil || o.SloId == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.SloId, true
+	return o.SloId.Get(), o.SloId.IsSet()
 }
 
 // HasSloId returns a boolean if a field has been set.
 func (o *SLOCorrectionResponseAttributes) HasSloId() bool {
-	return o != nil && o.SloId != nil
+	return o != nil && o.SloId.IsSet()
 }
 
-// SetSloId gets a reference to the given string and assigns it to the SloId field.
+// SetSloId gets a reference to the given datadog.NullableString and assigns it to the SloId field.
 func (o *SLOCorrectionResponseAttributes) SetSloId(v string) {
-	o.SloId = &v
+	o.SloId.Set(&v)
+}
+
+// SetSloIdNil sets the value for SloId to be an explicit nil.
+func (o *SLOCorrectionResponseAttributes) SetSloIdNil() {
+	o.SloId.Set(nil)
+}
+
+// UnsetSloId ensures that no value is present for SloId, not even an explicit nil.
+func (o *SLOCorrectionResponseAttributes) UnsetSloId() {
+	o.SloId.Unset()
+}
+
+// GetSloQuery returns the SloQuery field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SLOCorrectionResponseAttributes) GetSloQuery() string {
+	if o == nil || o.SloQuery.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.SloQuery.Get()
+}
+
+// GetSloQueryOk returns a tuple with the SloQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *SLOCorrectionResponseAttributes) GetSloQueryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SloQuery.Get(), o.SloQuery.IsSet()
+}
+
+// HasSloQuery returns a boolean if a field has been set.
+func (o *SLOCorrectionResponseAttributes) HasSloQuery() bool {
+	return o != nil && o.SloQuery.IsSet()
+}
+
+// SetSloQuery gets a reference to the given datadog.NullableString and assigns it to the SloQuery field.
+func (o *SLOCorrectionResponseAttributes) SetSloQuery(v string) {
+	o.SloQuery.Set(&v)
+}
+
+// SetSloQueryNil sets the value for SloQuery to be an explicit nil.
+func (o *SLOCorrectionResponseAttributes) SetSloQueryNil() {
+	o.SloQuery.Set(nil)
+}
+
+// UnsetSloQuery ensures that no value is present for SloQuery, not even an explicit nil.
+func (o *SLOCorrectionResponseAttributes) UnsetSloQuery() {
+	o.SloQuery.Unset()
 }
 
 // GetStart returns the Start field value if set, zero value otherwise.
@@ -492,8 +544,11 @@ func (o SLOCorrectionResponseAttributes) MarshalJSON() ([]byte, error) {
 	if o.Rrule.IsSet() {
 		toSerialize["rrule"] = o.Rrule.Get()
 	}
-	if o.SloId != nil {
-		toSerialize["slo_id"] = o.SloId
+	if o.SloId.IsSet() {
+		toSerialize["slo_id"] = o.SloId.Get()
+	}
+	if o.SloQuery.IsSet() {
+		toSerialize["slo_query"] = o.SloQuery.Get()
 	}
 	if o.Start != nil {
 		toSerialize["start"] = o.Start
@@ -520,7 +575,8 @@ func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 		ModifiedAt  datadog.NullableInt64                           `json:"modified_at,omitempty"`
 		Modifier    NullableSLOCorrectionResponseAttributesModifier `json:"modifier,omitempty"`
 		Rrule       datadog.NullableString                          `json:"rrule,omitempty"`
-		SloId       *string                                         `json:"slo_id,omitempty"`
+		SloId       datadog.NullableString                          `json:"slo_id,omitempty"`
+		SloQuery    datadog.NullableString                          `json:"slo_query,omitempty"`
 		Start       *int64                                          `json:"start,omitempty"`
 		Timezone    *string                                         `json:"timezone,omitempty"`
 	}{}
@@ -528,8 +584,8 @@ func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "creator", "description", "duration", "end", "modified_at", "modifier", "rrule", "slo_id", "start", "timezone"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "creator", "description", "duration", "end", "modified_at", "modifier", "rrule", "slo_id", "slo_query", "start", "timezone"})
 	} else {
 		return err
 	}
@@ -552,6 +608,7 @@ func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 	o.Modifier = all.Modifier
 	o.Rrule = all.Rrule
 	o.SloId = all.SloId
+	o.SloQuery = all.SloQuery
 	o.Start = all.Start
 	o.Timezone = all.Timezone
 

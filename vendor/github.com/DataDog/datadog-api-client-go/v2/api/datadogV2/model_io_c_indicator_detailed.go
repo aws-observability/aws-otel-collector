@@ -72,6 +72,14 @@ type IoCIndicatorDetailed struct {
 	SuspiciousSources []IoCSource `json:"suspicious_sources,omitempty"`
 	// Tags associated with the indicator.
 	Tags []string `json:"tags,omitempty"`
+	// Full triage history timeline. Returned only when `include_triage_history` is true.
+	TriageHistory []IoCTriageEvent `json:"triage_history,omitempty"`
+	// Current triage state of the indicator.
+	TriageState *IoCTriageState `json:"triage_state,omitempty"`
+	// Timestamp when the indicator was last triaged.
+	TriagedAt *time.Time `json:"triaged_at,omitempty"`
+	// UUID of the user who last triaged the indicator.
+	TriagedBy *string `json:"triaged_by,omitempty"`
 	// Users associated with this indicator, grouped by category.
 	Users map[string][]string `json:"users,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -939,6 +947,118 @@ func (o *IoCIndicatorDetailed) SetTags(v []string) {
 	o.Tags = v
 }
 
+// GetTriageHistory returns the TriageHistory field value if set, zero value otherwise.
+func (o *IoCIndicatorDetailed) GetTriageHistory() []IoCTriageEvent {
+	if o == nil || o.TriageHistory == nil {
+		var ret []IoCTriageEvent
+		return ret
+	}
+	return o.TriageHistory
+}
+
+// GetTriageHistoryOk returns a tuple with the TriageHistory field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IoCIndicatorDetailed) GetTriageHistoryOk() (*[]IoCTriageEvent, bool) {
+	if o == nil || o.TriageHistory == nil {
+		return nil, false
+	}
+	return &o.TriageHistory, true
+}
+
+// HasTriageHistory returns a boolean if a field has been set.
+func (o *IoCIndicatorDetailed) HasTriageHistory() bool {
+	return o != nil && o.TriageHistory != nil
+}
+
+// SetTriageHistory gets a reference to the given []IoCTriageEvent and assigns it to the TriageHistory field.
+func (o *IoCIndicatorDetailed) SetTriageHistory(v []IoCTriageEvent) {
+	o.TriageHistory = v
+}
+
+// GetTriageState returns the TriageState field value if set, zero value otherwise.
+func (o *IoCIndicatorDetailed) GetTriageState() IoCTriageState {
+	if o == nil || o.TriageState == nil {
+		var ret IoCTriageState
+		return ret
+	}
+	return *o.TriageState
+}
+
+// GetTriageStateOk returns a tuple with the TriageState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IoCIndicatorDetailed) GetTriageStateOk() (*IoCTriageState, bool) {
+	if o == nil || o.TriageState == nil {
+		return nil, false
+	}
+	return o.TriageState, true
+}
+
+// HasTriageState returns a boolean if a field has been set.
+func (o *IoCIndicatorDetailed) HasTriageState() bool {
+	return o != nil && o.TriageState != nil
+}
+
+// SetTriageState gets a reference to the given IoCTriageState and assigns it to the TriageState field.
+func (o *IoCIndicatorDetailed) SetTriageState(v IoCTriageState) {
+	o.TriageState = &v
+}
+
+// GetTriagedAt returns the TriagedAt field value if set, zero value otherwise.
+func (o *IoCIndicatorDetailed) GetTriagedAt() time.Time {
+	if o == nil || o.TriagedAt == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.TriagedAt
+}
+
+// GetTriagedAtOk returns a tuple with the TriagedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IoCIndicatorDetailed) GetTriagedAtOk() (*time.Time, bool) {
+	if o == nil || o.TriagedAt == nil {
+		return nil, false
+	}
+	return o.TriagedAt, true
+}
+
+// HasTriagedAt returns a boolean if a field has been set.
+func (o *IoCIndicatorDetailed) HasTriagedAt() bool {
+	return o != nil && o.TriagedAt != nil
+}
+
+// SetTriagedAt gets a reference to the given time.Time and assigns it to the TriagedAt field.
+func (o *IoCIndicatorDetailed) SetTriagedAt(v time.Time) {
+	o.TriagedAt = &v
+}
+
+// GetTriagedBy returns the TriagedBy field value if set, zero value otherwise.
+func (o *IoCIndicatorDetailed) GetTriagedBy() string {
+	if o == nil || o.TriagedBy == nil {
+		var ret string
+		return ret
+	}
+	return *o.TriagedBy
+}
+
+// GetTriagedByOk returns a tuple with the TriagedBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IoCIndicatorDetailed) GetTriagedByOk() (*string, bool) {
+	if o == nil || o.TriagedBy == nil {
+		return nil, false
+	}
+	return o.TriagedBy, true
+}
+
+// HasTriagedBy returns a boolean if a field has been set.
+func (o *IoCIndicatorDetailed) HasTriagedBy() bool {
+	return o != nil && o.TriagedBy != nil
+}
+
+// SetTriagedBy gets a reference to the given string and assigns it to the TriagedBy field.
+func (o *IoCIndicatorDetailed) SetTriagedBy(v string) {
+	o.TriagedBy = &v
+}
+
 // GetUsers returns the Users field value if set, zero value otherwise.
 func (o *IoCIndicatorDetailed) GetUsers() map[string][]string {
 	if o == nil || o.Users == nil {
@@ -1071,6 +1191,22 @@ func (o IoCIndicatorDetailed) MarshalJSON() ([]byte, error) {
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
+	if o.TriageHistory != nil {
+		toSerialize["triage_history"] = o.TriageHistory
+	}
+	if o.TriageState != nil {
+		toSerialize["triage_state"] = o.TriageState
+	}
+	if o.TriagedAt != nil {
+		if o.TriagedAt.Nanosecond() == 0 {
+			toSerialize["triaged_at"] = o.TriagedAt.Format("2006-01-02T15:04:05Z07:00")
+		} else {
+			toSerialize["triaged_at"] = o.TriagedAt.Format("2006-01-02T15:04:05.000Z07:00")
+		}
+	}
+	if o.TriagedBy != nil {
+		toSerialize["triaged_by"] = o.TriagedBy
+	}
 	if o.Users != nil {
 		toSerialize["users"] = o.Users
 	}
@@ -1114,14 +1250,18 @@ func (o *IoCIndicatorDetailed) UnmarshalJSON(bytes []byte) (err error) {
 		SignalTier        *int64                   `json:"signal_tier,omitempty"`
 		SuspiciousSources []IoCSource              `json:"suspicious_sources,omitempty"`
 		Tags              []string                 `json:"tags,omitempty"`
+		TriageHistory     []IoCTriageEvent         `json:"triage_history,omitempty"`
+		TriageState       *IoCTriageState          `json:"triage_state,omitempty"`
+		TriagedAt         *time.Time               `json:"triaged_at,omitempty"`
+		TriagedBy         *string                  `json:"triaged_by,omitempty"`
 		Users             map[string][]string      `json:"users,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"additional_data", "as_cidr_block", "as_geo", "as_number", "as_organization", "as_type", "benign_sources", "categories", "critical_assets", "first_seen", "hosts", "id", "indicator", "indicator_type", "last_seen", "log_matches", "log_sources", "m_as_type", "m_persistence", "m_signal", "m_sources", "malicious_sources", "max_trust_score", "score", "services", "signal_matches", "signal_severity", "signal_tier", "suspicious_sources", "tags", "users"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"additional_data", "as_cidr_block", "as_geo", "as_number", "as_organization", "as_type", "benign_sources", "categories", "critical_assets", "first_seen", "hosts", "id", "indicator", "indicator_type", "last_seen", "log_matches", "log_sources", "m_as_type", "m_persistence", "m_signal", "m_sources", "malicious_sources", "max_trust_score", "score", "services", "signal_matches", "signal_severity", "signal_tier", "suspicious_sources", "tags", "triage_history", "triage_state", "triaged_at", "triaged_by", "users"})
 	} else {
 		return err
 	}
@@ -1180,6 +1320,14 @@ func (o *IoCIndicatorDetailed) UnmarshalJSON(bytes []byte) (err error) {
 	o.SignalTier = all.SignalTier
 	o.SuspiciousSources = all.SuspiciousSources
 	o.Tags = all.Tags
+	o.TriageHistory = all.TriageHistory
+	if all.TriageState != nil && !all.TriageState.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TriageState = all.TriageState
+	}
+	o.TriagedAt = all.TriagedAt
+	o.TriagedBy = all.TriagedBy
 	o.Users = all.Users
 
 	if len(additionalProperties) > 0 {

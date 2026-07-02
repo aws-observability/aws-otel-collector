@@ -117,7 +117,7 @@ func (o *RulesetRespDataAttributesRulesItemsReferenceTableFieldPairsItems) Unmar
 		return fmt.Errorf("required field output_key missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"input_column", "output_key"})
 	} else {
 		return err

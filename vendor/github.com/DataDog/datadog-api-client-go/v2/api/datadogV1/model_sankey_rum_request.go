@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SankeyRumRequest Sankey widget with RUM data source.
+// SankeyRumRequest Sankey widget request for Product Analytics or RUM data source.
 type SankeyRumRequest struct {
-	// Sankey widget with RUM data source query.
+	// Query configuration for Product Analytics or RUM Sankey widget.
 	Query SankeyRumQuery `json:"query"`
 	// Type of the Sankey widget.
 	RequestType SankeyWidgetDefinitionType `json:"request_type"`

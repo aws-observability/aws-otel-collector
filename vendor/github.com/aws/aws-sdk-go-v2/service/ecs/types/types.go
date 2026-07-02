@@ -834,6 +834,9 @@ type Container struct {
 	// The network interfaces associated with the container.
 	NetworkInterfaces []NetworkInterface
 
+	// The IDs of each Neuron device assigned to the container.
+	NeuronDeviceIds []string
+
 	// A short (1024 max characters) human-readable string to provide additional
 	// details about a running or stopped container.
 	Reason *string
@@ -1310,8 +1313,8 @@ type ContainerDefinition struct {
 	// The private repository authentication credentials to use.
 	RepositoryCredentials *RepositoryCredentials
 
-	// The type and amount of a resource to assign to a container. The only supported
-	// resource is a GPU.
+	// The type and amount of a resource to assign to a container. The supported
+	// resources are GPUs and Neuron devices.
 	ResourceRequirements []ResourceRequirement
 
 	// The restart policy for a container. When you set up a restart policy, Amazon
@@ -1753,7 +1756,8 @@ type ContainerOverride struct {
 	Name *string
 
 	// The type and amount of a resource to assign to a container, instead of the
-	// default value from the task definition. The only supported resource is a GPU.
+	// default value from the task definition. The supported resources are GPUs and
+	// Neuron devices.
 	ResourceRequirements []ResourceRequirement
 
 	noSmithyDocumentSerde
@@ -2385,8 +2389,26 @@ type DaemonTaskDefinition struct {
 	// The name of a family that this daemon task definition is registered to.
 	Family *string
 
+	// The IPC namespace mode for the daemon. The valid values are none and shared .
+	// The default is none .
+	//
+	// If none is specified or no value is provided, the daemon runs with its own IPC
+	// namespace, isolated from other tasks. If shared is specified, the daemon joins
+	// the host IPC namespace, making it accessible to non-daemon tasks that use
+	// ipcMode: "host" or other daemons that use ipcMode: "shared" .
+	IpcMode DaemonIpcMode
+
 	// The amount of memory (in MiB) used by the daemon task.
 	Memory *string
+
+	// The PID namespace mode for the daemon. The valid values are none and shared .
+	// The default is none .
+	//
+	// If none is specified or no value is provided, the daemon runs with its own PID
+	// namespace, isolated from other tasks. If shared is specified, the daemon joins
+	// the host PID namespace, making it accessible to non-daemon tasks that use
+	// pidMode: "host" or other daemons that use pidMode: "shared" .
+	PidMode DaemonPidMode
 
 	// The Unix timestamp for the time when the daemon task definition was registered.
 	RegisteredAt *time.Time
@@ -2683,8 +2705,8 @@ type DeploymentConfiguration struct {
 	// [Rolling update]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html
 	DeploymentCircuitBreaker *DeploymentCircuitBreaker
 
-	// An array of deployment lifecycle hook objects to run custom logic at specific
-	// stages of the deployment lifecycle.
+	// An array of deployment lifecycle hook objects to run custom logic or pause the
+	// deployment at specific stages of the deployment lifecycle.
 	LifecycleHooks []DeploymentLifecycleHook
 
 	// Configuration for linear deployment strategy. Only valid when the deployment
@@ -2927,8 +2949,9 @@ type DeploymentEphemeralStorage struct {
 	noSmithyDocumentSerde
 }
 
-// A deployment lifecycle hook runs custom logic at specific stages of the
-// deployment process. Currently, you can use Lambda functions as hook targets.
+// A deployment lifecycle hook runs custom logic or pauses the deployment at
+// specific stages of the deployment process. You can use Lambda functions or pause
+// hooks as hook targets.
 //
 // For more information, see [Lifecycle hooks for Amazon ECS service deployments] in the Amazon Elastic Container Service Developer
 // Guide.
@@ -2936,14 +2959,14 @@ type DeploymentEphemeralStorage struct {
 // [Lifecycle hooks for Amazon ECS service deployments]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-lifecycle-hooks.html
 type DeploymentLifecycleHook struct {
 
-	// Use this field to specify custom parameters that Amazon ECS will pass to your
-	// hook target invocations (such as a Lambda function).
+	// Use this field to specify custom parameters that Amazon ECS passes to your
+	// Lambda function on each invocation. This field is not used for PAUSE hooks.
 	HookDetails document.Interface
 
-	// The Amazon Resource Name (ARN) of the hook target. Currently, only Lambda
-	// function ARNs are supported.
+	// The Amazon Resource Name (ARN) of the hook target. For AWS_LAMBDA hooks, this
+	// is the Lambda function ARN. This field is not applicable for PAUSE hooks.
 	//
-	// You must provide this parameter when configuring a deployment lifecycle hook.
+	// You must provide this parameter when configuring an AWS_LAMBDA lifecycle hook.
 	HookTargetArn *string
 
 	// The lifecycle stages at which to run the hook. Choose from these valid values:
@@ -2984,10 +3007,18 @@ type DeploymentLifecycleHook struct {
 	//
 	// You can use a lifecycle hook for this stage.
 	//
+	//   - PRE_PRODUCTION_TRAFFIC_SHIFT
+	//
+	// Occurs before production traffic shift. For linear and canary deployments, this
+	//   stage is invoked before every traffic shift step.
+	//
+	// You can use a lifecycle hook for this stage.
+	//
 	//   - PRODUCTION_TRAFFIC_SHIFT
 	//
 	// Production traffic is shifting to the green service revision. The green service
-	//   revision is migrating from 0% to 100% of production traffic.
+	//   revision is migrating from 0% to 100% of production traffic. For linear and
+	//   canary deployments, this stage is invoked at every traffic shift step.
 	//
 	// You can use a lifecycle hook for this stage.
 	//
@@ -2996,6 +3027,10 @@ type DeploymentLifecycleHook struct {
 	// The production traffic shift is complete.
 	//
 	// You can use a lifecycle hook for this stage.
+	//
+	// PAUSE hooks cannot be configured at TEST_TRAFFIC_SHIFT or
+	// PRODUCTION_TRAFFIC_SHIFT stages. These stages are only valid for AWS_LAMBDA
+	// hooks.
 	//
 	// You must provide this parameter when configuring a deployment lifecycle hook.
 	LifecycleStages []DeploymentLifecycleHookStage
@@ -3008,6 +3043,78 @@ type DeploymentLifecycleHook struct {
 	//
 	// [Permissions required for Lambda functions in Amazon ECS blue/green deployments]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-permissions.html
 	RoleArn *string
+
+	// The type of action the lifecycle hook performs. Valid values are:
+	//
+	//   - AWS_LAMBDA - Invokes a Lambda function at the specified lifecycle stage.
+	//   This is the default value.
+	//
+	//   - PAUSE - Pauses the deployment at the specified lifecycle stage until you
+	//   call ContinueServiceDeployment to continue or roll back.
+	//
+	// This field is optional. If not specified, the default value is AWS_LAMBDA .
+	TargetType DeploymentLifecycleHookTargetType
+
+	// The timeout configuration for the lifecycle hook. This specifies how long
+	// Amazon ECS waits before taking the timeout action if the hook is not resolved.
+	TimeoutConfiguration *DeploymentLifecycleHookTimeoutConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The details of a deployment lifecycle hook that is active during a service
+// deployment.
+//
+// You can view lifecycle hook details by calling [DescribeServiceDeployments].
+//
+// [DescribeServiceDeployments]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServiceDeployments.html
+type DeploymentLifecycleHookDetail struct {
+
+	// The time when the lifecycle hook times out. If the hook has not been completed
+	// by this time, Amazon ECS takes the timeout action.
+	ExpiresAt *time.Time
+
+	// The ID of the lifecycle hook. Use this value when calling
+	// ContinueServiceDeployment to continue or roll back a paused deployment.
+	HookId *string
+
+	// The status of the lifecycle hook. Valid values include AWAITING_ACTION ,
+	// IN_PROGRESS , SUCCEEDED , FAILED , and TIMED_OUT .
+	Status DeploymentLifecycleHookStatus
+
+	// The Amazon Resource Name (ARN) of the hook target. For AWS_LAMBDA hooks, this
+	// is the Lambda function ARN. For PAUSE hooks, this field is not set.
+	TargetArn *string
+
+	// The type of action the lifecycle hook performs, such as AWS_LAMBDA or PAUSE .
+	TargetType DeploymentLifecycleHookTargetType
+
+	// The action Amazon ECS takes when the lifecycle hook times out. Valid values are
+	// CONTINUE and ROLLBACK .
+	TimeoutAction DeploymentLifecycleHookAction
+
+	noSmithyDocumentSerde
+}
+
+// The timeout configuration for a deployment lifecycle hook. This determines how
+// long Amazon ECS waits for the hook to complete before taking the specified
+// timeout action.
+type DeploymentLifecycleHookTimeoutConfiguration struct {
+
+	// The action Amazon ECS takes when the lifecycle hook times out. Valid values are:
+	//
+	//   - CONTINUE - Proceeds the deployment to the next lifecycle stage.
+	//
+	//   - ROLLBACK - Rolls back the deployment to the previous service revision.
+	//
+	// Default: ROLLBACK
+	Action DeploymentLifecycleHookAction
+
+	// The number of minutes Amazon ECS waits for the lifecycle hook to complete
+	// before taking the timeout action.
+	//
+	// Default: 1440 (24 hours)
+	TimeoutInMinutes *int32
 
 	noSmithyDocumentSerde
 }
@@ -3491,6 +3598,11 @@ type ExpressGatewayServiceConfiguration struct {
 
 	// The ARN of the service revision.
 	ServiceRevisionArn *string
+
+	// The ARN of the task definition used by this service revision. This is present
+	// for all Express services and reflects the task definition in use, whether
+	// managed by Amazon ECS or provided by the customer.
+	TaskDefinitionArn *string
 
 	// The ARN of the task role for the service revision.
 	TaskRoleArn *string
@@ -5346,6 +5458,36 @@ type MemoryMiBRequest struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration for a specific set of metrics to collect for a service.
+type MetricConfiguration struct {
+
+	// The list of metric names to configure. The supported metric names are
+	// CPUUtilization and MemoryUtilization .
+	//
+	// This member is required.
+	MetricNames []string
+
+	// The resolution, in seconds, at which to collect the metrics. The valid values
+	// are 20 and 60 .
+	//
+	// This member is required.
+	ResolutionSeconds *int32
+
+	noSmithyDocumentSerde
+}
+
+// The optional monitoring configuration for a service, which defines the
+// resolution for the service-level CPUUtilization and MemoryUtilization Amazon
+// CloudWatch metrics. When not specified, Amazon ECS uses the default resolution
+// of 60 seconds.
+type MonitoringConfiguration struct {
+
+	// The list of metric configurations for the service monitoring.
+	MetricConfigurations []MetricConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // The details for a volume mount point that's used in a container definition.
 type MountPoint struct {
 
@@ -5552,19 +5694,20 @@ type PlacementStrategy struct {
 	noSmithyDocumentSerde
 }
 
-// The devices that are available on the container instance. The only supported
-// device type is a GPU.
+// The devices that are available on the container instance. The supported device
+// types are GPUs and Neuron devices.
 type PlatformDevice struct {
 
-	// The ID for the GPUs on the container instance. The available GPU IDs can also
-	// be obtained on the container instance in the
-	// /var/lib/ecs/gpu/nvidia_gpu_info.json file.
+	// The ID for the GPU or Neuron device on the container instance. For GPUs, the
+	// available GPU IDs can also be obtained on the container instance in the
+	// /var/lib/ecs/gpu/nvidia_gpu_info.json file. For Neuron devices, the ID
+	// corresponds to the device index (for example, 0 for /dev/neuron0 ).
 	//
 	// This member is required.
 	Id *string
 
-	// The type of device that's available on the container instance. The only
-	// supported value is GPU .
+	// The type of device that's available on the container instance. The supported
+	// values are GPU and NEURON_DEVICE .
 	//
 	// This member is required.
 	Type PlatformDeviceType
@@ -5872,8 +6015,9 @@ type Resource struct {
 }
 
 // The type and amount of a resource to assign to a container. The supported
-// resource types are GPUs and Elastic Inference accelerators. For more
-// information, see [Working with GPUs on Amazon ECS]or [Working with Amazon Elastic Inference on Amazon ECS] in the Amazon Elastic Container Service Developer Guide
+// resource types are GPUs, Neuron devices, and Elastic Inference accelerators. For
+// more information, see [Working with GPUs on Amazon ECS]or [Working with Amazon Elastic Inference on Amazon ECS] in the Amazon Elastic Container Service Developer
+// Guide
 //
 // [Working with Amazon Elastic Inference on Amazon ECS]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html
 // [Working with GPUs on Amazon ECS]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-gpu.html
@@ -5889,7 +6033,13 @@ type ResourceRequirement struct {
 	// When the type is GPU , the value is the number of physical GPUs the Amazon ECS
 	// container agent reserves for the container. The number of GPUs that's reserved
 	// for all containers in a task can't exceed the number of available GPUs on the
-	// container instance that the task is launched on.
+	// container instance that the task is launched on. You can also specify ALL to
+	// allocate all available GPUs on the instance to the container.
+	//
+	// When the type is NeuronDevice , the value must be ALL . This allocates all
+	// available Neuron devices on the instance to the container. Only one container in
+	// a task can specify NeuronDevice resources. This resource type is only supported
+	// on Managed Instances.
 	//
 	// When the type is InferenceAccelerator , the value matches the deviceName for an [InferenceAccelerator]
 	// specified in a task definition.
@@ -5943,11 +6093,11 @@ type RuntimePlatform struct {
 // for task storage. For more information, see [Amazon S3 Files volumes]in the Amazon Elastic Container
 // Service Developer Guide.
 //
-// Your task definition must include a Task IAM Role. See [IAM role for attaching your file system to AWS compute resources] for required
+// Your task definition must include a Task IAM Role. See [IAM role for attaching your file system to Amazon Web Services compute resources] for required
 // permissions.
 //
 // [Amazon S3 Files volumes]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/s3files-volumes.html
-// [IAM role for attaching your file system to AWS compute resources]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-files-prereq-policies.html#s3-files-prereq-iam-compute-role
+// [IAM role for attaching your file system to Amazon Web Services compute resources]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-files-prereq-policies.html#s3-files-prereq-iam-compute-role
 type S3FilesVolumeConfiguration struct {
 
 	// The full ARN of the S3 Files file system to mount.
@@ -6659,6 +6809,9 @@ type ServiceDeployment struct {
 	// HH:mm:ss.SSSSSS.
 	FinishedAt *time.Time
 
+	// The details of the lifecycle hooks for the current service deployment.
+	LifecycleHookDetails []DeploymentLifecycleHookDetail
+
 	// The current lifecycle stage of the deployment. Possible values include:
 	//
 	//   - RECONCILE_SERVICE
@@ -6692,10 +6845,16 @@ type ServiceDeployment struct {
 	// The test traffic shift is complete. The green service revision handles 100% of
 	//   the test traffic.
 	//
+	//   - PRE_PRODUCTION_TRAFFIC_SHIFT
+	//
+	// Occurs before production traffic shift. For linear and canary deployments, this
+	//   stage is invoked before every traffic shift step.
+	//
 	//   - PRODUCTION_TRAFFIC_SHIFT
 	//
 	// Production traffic is shifting to the green service revision. The green service
-	//   revision is migrating from 0% to 100% of production traffic.
+	//   revision is migrating from 0% to 100% of production traffic. For linear and
+	//   canary deployments, this stage is invoked at every traffic shift step.
 	//
 	//   - POST_PRODUCTION_TRAFFIC_SHIFT
 	//
@@ -7107,6 +7266,12 @@ type ServiceRevision struct {
 
 	// The load balancers the service revision uses.
 	LoadBalancers []LoadBalancer
+
+	// The optional monitoring configuration for the service, which defines the
+	// resolution for the service-level CPUUtilization and MemoryUtilization Amazon
+	// CloudWatch metrics. When not specified, Amazon ECS uses the default resolution
+	// of 60 seconds.
+	Monitoring *MonitoringConfiguration
 
 	// The network configuration for a task or service.
 	NetworkConfiguration *NetworkConfiguration

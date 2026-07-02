@@ -182,7 +182,7 @@ func (o *JiraIssueCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field project_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"fields", "issue_type_id", "jira_account_id", "project_id"})
 	} else {
 		return err

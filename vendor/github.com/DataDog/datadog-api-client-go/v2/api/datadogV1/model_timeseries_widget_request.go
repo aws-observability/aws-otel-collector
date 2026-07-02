@@ -635,7 +635,7 @@ func (o *TimeseriesWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "audit_query", "display_type", "event_query", "formulas", "log_query", "metadata", "network_query", "on_right_yaxis", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "style"})
 	} else {
 		return err
