@@ -104,21 +104,23 @@ jobs:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
-      - name: Cache aotutil
-        id: cached_aotutil
-        uses: actions/cache@v3
-        with:
-          key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
-          path: testing-framework/cmd/aotutil/aotutil
       - name: Set up Go 1.x
-        if: steps.cached_aotutil.outputs.cache-hit != 'true'
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: testing-framework/cmd/aotutil/go.sum
       - name: Build aotutil
-        if: steps.cached_aotutil.outputs.cache-hit != 'true'
         run: cd testing-framework/cmd/aotutil && make build
+      # Share the binary via a run-scoped artifact instead of actions/cache.
+      # Caches are branch-scoped and LRU-evicted, so run-batch-job on a feature
+      # branch frequently missed the cache and left aotutil absent; artifacts are
+      # visible to every job in the same run regardless of branch.
+      - name: Upload aotutil
+        uses: actions/upload-artifact@v4
+        with:
+          name: aotutil
+          path: testing-framework/cmd/aotutil/aotutil
+          retention-days: 1
 
   build:
     runs-on: ${{ vars.ADOTLARGERUNNERS || 'ubuntu-22.04' }}
@@ -723,11 +725,13 @@ jobs:
         id: date
         run: echo "ttldate=$(date -u -d "+7 days" +%s)" >> $GITHUB_OUTPUT
 
-      - name: Restore aotutil
-        uses: actions/cache@v3
+      - name: Download aotutil
+        uses: actions/download-artifact@v4
         with:
-          key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
-          path: testing-framework/cmd/aotutil/aotutil
+          name: aotutil
+          path: testing-framework/cmd/aotutil
+      - name: Make aotutil executable
+        run: chmod +x testing-framework/cmd/aotutil/aotutil
 
       - name: Get runner IP
         id: runner_ip
