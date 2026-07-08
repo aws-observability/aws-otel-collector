@@ -15,16 +15,23 @@ import (
 	"go.opentelemetry.io/collector/pdata/ptrace"
 )
 
-// getAvailablePort asks the kernel for a free TCP port and returns it. It
-// replaces the contrib testbed helper for constructing senders and receivers,
-// which no longer exposes the port-picking helpers used here.
-func getAvailablePort(t *testing.T) int {
+// getAvailablePorts returns n distinct free TCP ports, holding all listeners
+// open at once so the ports are guaranteed to differ before closing them.
+// Replaces the contrib testbed port helper removed upstream in v0.154.
+func getAvailablePorts(t *testing.T, n int) []int {
 	t.Helper()
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
-	require.NoError(t, err)
-	port := ln.Addr().(*net.TCPAddr).Port
-	require.NoError(t, ln.Close())
-	return port
+	listeners := make([]net.Listener, 0, n)
+	ports := make([]int, 0, n)
+	for i := 0; i < n; i++ {
+		ln, err := net.Listen("tcp", "127.0.0.1:0")
+		require.NoError(t, err)
+		listeners = append(listeners, ln)
+		ports = append(ports, ln.Addr().(*net.TCPAddr).Port)
+	}
+	for _, ln := range listeners {
+		require.NoError(t, ln.Close())
+	}
+	return ports
 }
 
 type NoopTestSummary struct{}
@@ -117,8 +124,9 @@ func testWithSampledData(
 	customizer sampledSpanCustomizerFunc,
 ) {
 	var resourceSpec testbed.ResourceSpec
-	sender := testbed.NewOTLPTraceDataSender(testbed.DefaultHost, getAvailablePort(t))
-	receiver := testbed.NewOTLPDataReceiver(getAvailablePort(t))
+	ports := getAvailablePorts(t, 2)
+	sender := testbed.NewOTLPTraceDataSender(testbed.DefaultHost, ports[0])
+	receiver := testbed.NewOTLPDataReceiver(ports[1])
 
 	spanCustomizer := WithSampledSpanCustomizer(customizer)
 	dataProvider := NewSamplingDataProvider(spanCustomizer)
