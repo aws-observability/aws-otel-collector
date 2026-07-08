@@ -76,16 +76,25 @@ jobs:
         run: |
           ref=terraform
           encoded_ref="${REF_NAME//\//%2F}"
+          fw_has() { gh api repos/${{ env.TESTING_FRAMEWORK_REPO }}/branches/"$1" --silent 2>/dev/null; }
           if [[ $REF_NAME == release/v* ]]; then
-            if ! gh api repos/${{ env.TESTING_FRAMEWORK_REPO }}/branches/$encoded_ref --silent 2>/dev/null; then
+            if ! fw_has "$encoded_ref"; then
               echo "::error::Release branch '$REF_NAME' not found in ${{ env.TESTING_FRAMEWORK_REPO }}"
               exit 1
             fi
             ref=$REF_NAME
-          elif [[ $REF_NAME == test/* ]] && \
-              gh api repos/${{ env.TESTING_FRAMEWORK_REPO }}/branches/$encoded_ref \
-              --silent 2>/dev/null; then
-            ref=$REF_NAME
+          elif [[ $REF_NAME == test/* ]]; then
+            if fw_has "$encoded_ref"; then
+              # Same-named framework branch wins.
+              ref=$REF_NAME
+            else
+              # Else match the framework branch to the PR's release base.
+              base=$(gh pr list --repo ${{ github.repository }} --head "$REF_NAME" \
+                --state open --json baseRefName --jq '.[0].baseRefName' 2>/dev/null)
+              if [[ $base == release/v* ]] && fw_has "${base//\//%2F}"; then
+                ref=$base
+              fi
+            fi
           fi
           if [[ $ref == terraform ]]; then
             echo "::notice::Using default 'terraform' branch for test framework"
