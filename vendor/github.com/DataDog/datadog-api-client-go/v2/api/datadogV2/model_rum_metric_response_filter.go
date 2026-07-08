@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// RumMetricResponseFilter The rum-based metric filter. RUM events matching this filter will be aggregated in this metric.
+// RumMetricResponseFilter The RUM-based metric filter. RUM events matching this filter will be aggregated in this metric.
 type RumMetricResponseFilter struct {
 	// The search query - following the RUM search syntax.
 	Query *string `json:"query,omitempty"`
@@ -87,7 +87,7 @@ func (o *RumMetricResponseFilter) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"query"})
 	} else {
 		return err

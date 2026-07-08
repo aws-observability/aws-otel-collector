@@ -133,7 +133,7 @@ func NewWriterLevelDict(w io.Writer, level int, dict []byte) *Writer {
 		err = getError(int(C.ZSTD_CCtx_setParameter(ctx, C.ZSTD_c_compressionLevel, C.int(level))))
 	}
 
-	return &Writer{
+	writer := &Writer{
 		CompressionLevel: level,
 		ctx:              ctx,
 		dict:             dict,
@@ -141,6 +141,14 @@ func NewWriterLevelDict(w io.Writer, level int, dict []byte) *Writer {
 		firstError:       err,
 		underlyingWriter: w,
 		resultBuffer:     new(C.compressStream2_result),
+	}
+	runtime.SetFinalizer(writer, finalizeWriter)
+	return writer
+}
+
+func finalizeWriter(w *Writer) {
+	if w.ctx != nil {
+		C.ZSTD_freeCStream(w.ctx)
 	}
 }
 
@@ -247,7 +255,16 @@ func (w *Writer) Flush() error {
 // Close closes the Writer, flushing any unwritten data to the underlying
 // io.Writer and freeing objects, but does not close the underlying io.Writer.
 func (w *Writer) Close() error {
+	if w.ctx == nil {
+		if w.firstError != nil {
+			return w.firstError
+		}
+		return nil
+	}
+
 	if w.firstError != nil {
+		C.ZSTD_freeCStream(w.ctx)
+		w.ctx = nil
 		return w.firstError
 	}
 
@@ -263,12 +280,15 @@ func (w *Writer) Close() error {
 		)
 		ret = int(w.resultBuffer.return_code)
 		if err := getError(ret); err != nil {
+			C.ZSTD_freeCStream(w.ctx)
+			w.ctx = nil
 			return err
 		}
 		written := int(w.resultBuffer.bytes_written)
 		_, err := w.underlyingWriter.Write(w.dstBuffer[:written])
 		if err != nil {
 			C.ZSTD_freeCStream(w.ctx)
+			w.ctx = nil
 			return err
 		}
 
@@ -280,7 +300,9 @@ func (w *Writer) Close() error {
 		}
 	}
 
-	return getError(int(C.ZSTD_freeCStream(w.ctx)))
+	err := getError(int(C.ZSTD_freeCStream(w.ctx)))
+	w.ctx = nil
+	return err
 }
 
 // Set the number of workers to run the compression in parallel using multiple threads
@@ -355,6 +377,7 @@ type reader struct {
 	decompressionBuffer []byte
 	decompOff           int
 	decompSize          int
+	remainingBytes      int
 	dict                []byte
 	firstError          error
 	recommendedSrcSize  int
@@ -389,7 +412,7 @@ func NewReaderDict(r io.Reader, dict []byte) io.ReadCloser {
 	}
 	compressionBufferP := cPool.Get().(*[]byte)
 	decompressionBufferP := dPool.Get().(*[]byte)
-	return &reader{
+	rd := &reader{
 		ctx:                 ctx,
 		dict:                dict,
 		compressionBuffer:   *compressionBufferP,
@@ -399,11 +422,28 @@ func NewReaderDict(r io.Reader, dict []byte) io.ReadCloser {
 		resultBuffer:        new(C.decompressStream2_result),
 		underlyingReader:    r,
 	}
+	runtime.SetFinalizer(rd, finalizeReader)
+	return rd
+}
+
+func finalizeReader(r *reader) {
+	if r.ctx != nil {
+		C.ZSTD_freeDStream(r.ctx)
+	}
 }
 
 // Close frees the allocated C objects
 func (r *reader) Close() error {
+	if r.ctx == nil {
+		if r.firstError != nil {
+			return r.firstError
+		}
+		return nil
+	}
+
 	if r.firstError != nil {
+		C.ZSTD_freeDStream(r.ctx)
+		r.ctx = nil
 		return r.firstError
 	}
 
@@ -416,7 +456,9 @@ func (r *reader) Close() error {
 
 	cPool.Put(&cb)
 	dPool.Put(&db)
-	return getError(int(C.ZSTD_freeDStream(r.ctx)))
+	err := getError(int(C.ZSTD_freeDStream(r.ctx)))
+	r.ctx = nil
+	return err
 }
 
 func (r *reader) Read(p []byte) (int, error) {
@@ -447,12 +489,12 @@ func (r *reader) Read(p []byte) (int, error) {
 	// at least one zstd block, so that we don't block if the
 	// other end has flushed a block.
 	for {
-		// - If the last decompression didn't entirely fill the decompression buffer,
-		//   zstd flushed all it could, and needs new data. In that case, do 1 Read.
-		// - If the last decompression did entirely fill the decompression buffer,
-		//   it might have needed more room to decompress the input. In that case,
-		//   don't do any unnecessary Read that might block.
-		needsData := r.decompSize < len(r.decompressionBuffer)
+		// Do a read only when zstd doesn't have any pending output. When zstd could
+		// not finish writing output, it will keep input buffer non-empty.
+		// https://github.com/facebook/zstd/commit/b3060f7a9ea3555c6045606be58dddc86bbb099b
+		// > when all compressed frame is consumed, it means decompression is completed,
+		// > with regenerated data fully flushed.
+		needsData := r.compressionLeft == 0
 
 		var src []byte
 		if !needsData {
@@ -468,16 +510,16 @@ func (r *reader) Read(p []byte) (int, error) {
 			if err != nil && err != io.EOF { // Handle underlying reader errors first
 				return 0, fmt.Errorf("failed to read from underlying reader: %w", err)
 			}
-			if n == 0 {
-				// Ideally, we'd return with ErrUnexpectedEOF in all cases where the stream was unexpectedly EOF'd
-				// during a block or frame, i.e. when there are incomplete, pending compression data.
-				// However, it's hard to detect those cases with zstd. Namely, there is no way to know the size of
-				// the current buffered compression data in the zstd stream internal buffers.
-				// Best effort: throw ErrUnexpectedEOF if we still have some pending buffered compression data that
-				// zstd doesn't want to accept.
-				// If we don't have any buffered compression data but zstd still has some in its internal buffers,
-				// we will return with EOF instead.
-				if r.compressionLeft > 0 {
+
+			// Only return EOF when we have no more compressed data to
+			// decompress and no more input is coming.
+			// From ZSTD_decompressStream docs:
+			// If `input.pos < input.size`, some input has not been consumed.
+			// It's up to the caller to present again remaining data.
+			if n == 0 && r.compressionLeft == 0 {
+				// Last call to ZSTD_decompressStream indicated that
+				// it needs more data, but we're not getting any.
+				if r.remainingBytes > 0 {
 					return 0, io.ErrUnexpectedEOF
 				}
 				return 0, io.EOF
@@ -516,7 +558,7 @@ func (r *reader) Read(p []byte) (int, error) {
 		r.compressionLeft = len(src) - bytesConsumed
 		r.decompSize = int(r.resultBuffer.bytes_written)
 		r.decompOff = copy(p, r.decompressionBuffer[:r.decompSize])
-
+		r.remainingBytes = retCode
 		// Resize buffers
 		nsize := retCode // Hint for next src buffer size
 		if nsize <= 0 {

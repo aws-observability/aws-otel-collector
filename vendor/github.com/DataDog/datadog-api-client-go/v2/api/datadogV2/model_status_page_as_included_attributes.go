@@ -36,6 +36,10 @@ type StatusPageAsIncludedAttributes struct {
 	Name *string `json:"name,omitempty"`
 	// The url that the status page is accessible at.
 	PageUrl *string `json:"page_url,omitempty"`
+	// The Slack app icon URL for the status page.
+	SlackAppIcon *string `json:"slack_app_icon,omitempty"`
+	// Whether Slack subscriptions are enabled for the status page.
+	SlackSubscriptionsEnabled *bool `json:"slack_subscriptions_enabled,omitempty"`
 	// Whether users can subscribe to the status page.
 	SubscriptionsEnabled *bool `json:"subscriptions_enabled,omitempty"`
 	// The type of the status page controlling how the status page is accessed.
@@ -400,6 +404,62 @@ func (o *StatusPageAsIncludedAttributes) SetPageUrl(v string) {
 	o.PageUrl = &v
 }
 
+// GetSlackAppIcon returns the SlackAppIcon field value if set, zero value otherwise.
+func (o *StatusPageAsIncludedAttributes) GetSlackAppIcon() string {
+	if o == nil || o.SlackAppIcon == nil {
+		var ret string
+		return ret
+	}
+	return *o.SlackAppIcon
+}
+
+// GetSlackAppIconOk returns a tuple with the SlackAppIcon field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StatusPageAsIncludedAttributes) GetSlackAppIconOk() (*string, bool) {
+	if o == nil || o.SlackAppIcon == nil {
+		return nil, false
+	}
+	return o.SlackAppIcon, true
+}
+
+// HasSlackAppIcon returns a boolean if a field has been set.
+func (o *StatusPageAsIncludedAttributes) HasSlackAppIcon() bool {
+	return o != nil && o.SlackAppIcon != nil
+}
+
+// SetSlackAppIcon gets a reference to the given string and assigns it to the SlackAppIcon field.
+func (o *StatusPageAsIncludedAttributes) SetSlackAppIcon(v string) {
+	o.SlackAppIcon = &v
+}
+
+// GetSlackSubscriptionsEnabled returns the SlackSubscriptionsEnabled field value if set, zero value otherwise.
+func (o *StatusPageAsIncludedAttributes) GetSlackSubscriptionsEnabled() bool {
+	if o == nil || o.SlackSubscriptionsEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.SlackSubscriptionsEnabled
+}
+
+// GetSlackSubscriptionsEnabledOk returns a tuple with the SlackSubscriptionsEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StatusPageAsIncludedAttributes) GetSlackSubscriptionsEnabledOk() (*bool, bool) {
+	if o == nil || o.SlackSubscriptionsEnabled == nil {
+		return nil, false
+	}
+	return o.SlackSubscriptionsEnabled, true
+}
+
+// HasSlackSubscriptionsEnabled returns a boolean if a field has been set.
+func (o *StatusPageAsIncludedAttributes) HasSlackSubscriptionsEnabled() bool {
+	return o != nil && o.SlackSubscriptionsEnabled != nil
+}
+
+// SetSlackSubscriptionsEnabled gets a reference to the given bool and assigns it to the SlackSubscriptionsEnabled field.
+func (o *StatusPageAsIncludedAttributes) SetSlackSubscriptionsEnabled(v bool) {
+	o.SlackSubscriptionsEnabled = &v
+}
+
 // GetSubscriptionsEnabled returns the SubscriptionsEnabled field value if set, zero value otherwise.
 func (o *StatusPageAsIncludedAttributes) GetSubscriptionsEnabled() bool {
 	if o == nil || o.SubscriptionsEnabled == nil {
@@ -534,6 +594,12 @@ func (o StatusPageAsIncludedAttributes) MarshalJSON() ([]byte, error) {
 	if o.PageUrl != nil {
 		toSerialize["page_url"] = o.PageUrl
 	}
+	if o.SlackAppIcon != nil {
+		toSerialize["slack_app_icon"] = o.SlackAppIcon
+	}
+	if o.SlackSubscriptionsEnabled != nil {
+		toSerialize["slack_subscriptions_enabled"] = o.SlackSubscriptionsEnabled
+	}
 	if o.SubscriptionsEnabled != nil {
 		toSerialize["subscriptions_enabled"] = o.SubscriptionsEnabled
 	}
@@ -553,28 +619,30 @@ func (o StatusPageAsIncludedAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *StatusPageAsIncludedAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CompanyLogo          *string                                                 `json:"company_logo,omitempty"`
-		Components           []StatusPageAsIncludedAttributesComponentsItems         `json:"components,omitempty"`
-		CreatedAt            *time.Time                                              `json:"created_at,omitempty"`
-		CustomDomain         *string                                                 `json:"custom_domain,omitempty"`
-		CustomDomainEnabled  *bool                                                   `json:"custom_domain_enabled,omitempty"`
-		DomainPrefix         *string                                                 `json:"domain_prefix,omitempty"`
-		EmailHeaderImage     *string                                                 `json:"email_header_image,omitempty"`
-		Enabled              *bool                                                   `json:"enabled,omitempty"`
-		Favicon              *string                                                 `json:"favicon,omitempty"`
-		ModifiedAt           *time.Time                                              `json:"modified_at,omitempty"`
-		Name                 *string                                                 `json:"name,omitempty"`
-		PageUrl              *string                                                 `json:"page_url,omitempty"`
-		SubscriptionsEnabled *bool                                                   `json:"subscriptions_enabled,omitempty"`
-		Type                 *CreateStatusPageRequestDataAttributesType              `json:"type,omitempty"`
-		VisualizationType    *CreateStatusPageRequestDataAttributesVisualizationType `json:"visualization_type,omitempty"`
+		CompanyLogo               *string                                                 `json:"company_logo,omitempty"`
+		Components                []StatusPageAsIncludedAttributesComponentsItems         `json:"components,omitempty"`
+		CreatedAt                 *time.Time                                              `json:"created_at,omitempty"`
+		CustomDomain              *string                                                 `json:"custom_domain,omitempty"`
+		CustomDomainEnabled       *bool                                                   `json:"custom_domain_enabled,omitempty"`
+		DomainPrefix              *string                                                 `json:"domain_prefix,omitempty"`
+		EmailHeaderImage          *string                                                 `json:"email_header_image,omitempty"`
+		Enabled                   *bool                                                   `json:"enabled,omitempty"`
+		Favicon                   *string                                                 `json:"favicon,omitempty"`
+		ModifiedAt                *time.Time                                              `json:"modified_at,omitempty"`
+		Name                      *string                                                 `json:"name,omitempty"`
+		PageUrl                   *string                                                 `json:"page_url,omitempty"`
+		SlackAppIcon              *string                                                 `json:"slack_app_icon,omitempty"`
+		SlackSubscriptionsEnabled *bool                                                   `json:"slack_subscriptions_enabled,omitempty"`
+		SubscriptionsEnabled      *bool                                                   `json:"subscriptions_enabled,omitempty"`
+		Type                      *CreateStatusPageRequestDataAttributesType              `json:"type,omitempty"`
+		VisualizationType         *CreateStatusPageRequestDataAttributesVisualizationType `json:"visualization_type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"company_logo", "components", "created_at", "custom_domain", "custom_domain_enabled", "domain_prefix", "email_header_image", "enabled", "favicon", "modified_at", "name", "page_url", "subscriptions_enabled", "type", "visualization_type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"company_logo", "components", "created_at", "custom_domain", "custom_domain_enabled", "domain_prefix", "email_header_image", "enabled", "favicon", "modified_at", "name", "page_url", "slack_app_icon", "slack_subscriptions_enabled", "subscriptions_enabled", "type", "visualization_type"})
 	} else {
 		return err
 	}
@@ -592,6 +660,8 @@ func (o *StatusPageAsIncludedAttributes) UnmarshalJSON(bytes []byte) (err error)
 	o.ModifiedAt = all.ModifiedAt
 	o.Name = all.Name
 	o.PageUrl = all.PageUrl
+	o.SlackAppIcon = all.SlackAppIcon
+	o.SlackSubscriptionsEnabled = all.SlackSubscriptionsEnabled
 	o.SubscriptionsEnabled = all.SubscriptionsEnabled
 	if all.Type != nil && !all.Type.IsValid() {
 		hasInvalidField = true

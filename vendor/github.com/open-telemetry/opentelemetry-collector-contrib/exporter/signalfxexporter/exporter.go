@@ -22,6 +22,7 @@ import (
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/dimensions"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/hostmetadata"
+	componentmetadata "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/metadata"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/internal/gopsutilenv"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk"
@@ -85,7 +86,6 @@ func newSignalFxExporter(
 		config.IncludeMetrics,
 		config.NonAlphanumericDimensionChars,
 		config.DropHistogramBuckets,
-		!config.SendOTLPHistograms, // if SendOTLPHistograms is true, do not process histograms when converting to SFx
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create metric converter: %w", err)
@@ -126,7 +126,6 @@ func (se *signalfxExporter) start(ctx context.Context, host component.Host) (err
 		logger:                 se.logger,
 		accessTokenPassthrough: se.config.AccessTokenPassthrough,
 		converter:              se.converter,
-		sendOTLPHistograms:     se.config.SendOTLPHistograms,
 	}
 
 	if err := se.startDimensionClient(ctx); err != nil {
@@ -223,7 +222,7 @@ func (se *signalfxExporter) startLogs(ctx context.Context, host component.Host) 
 	}
 
 	// Initialize dimension client for entity event processing if entity events processing is enabled.
-	if entityEventsFeatureGate.IsEnabled() {
+	if componentmetadata.ExporterSignalfxConsumeEntityEventsFeatureGate.IsEnabled() {
 		if err := se.startDimensionClient(ctx); err != nil {
 			return err
 		}
@@ -261,7 +260,7 @@ func (se *signalfxExporter) pushLogs(ctx context.Context, ld plog.Logs) error {
 			sl := ills.At(j)
 
 			// Process logs that represent entity events and skip regular event conversion
-			if entityEventsFeatureGate.IsEnabled() && isEntityEventScope(sl) {
+			if componentmetadata.ExporterSignalfxConsumeEntityEventsFeatureGate.IsEnabled() && isEntityEventScope(sl) {
 				err := se.processEntityEvents(sl.LogRecords())
 				if err != nil {
 					return fmt.Errorf("failed to process entity events: %w", err)

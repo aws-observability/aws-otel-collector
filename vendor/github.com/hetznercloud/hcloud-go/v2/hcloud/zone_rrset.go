@@ -123,7 +123,7 @@ type ZoneRRSetListOpts struct {
 	Sort []string
 }
 
-func (l ZoneRRSetListOpts) values() url.Values {
+func (l ZoneRRSetListOpts) Values() url.Values {
 	result := l.ListOpts.Values()
 	if l.Name != "" {
 		result.Add("name", l.Name)
@@ -149,7 +149,7 @@ func (c *ZoneClient) ListRRSets(ctx context.Context, zone *Zone, opts ZoneRRSetL
 		return nil, nil, invalidArgument("zone", zone, err)
 	}
 
-	reqPath := fmt.Sprintf(opPath, zoneIDOrName, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, zoneIDOrName, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.ZoneRRSetListResponse](ctx, c.client, reqPath)
 	if err != nil {

@@ -1623,7 +1623,6 @@ type ListOrgGroupsOptionalParameters struct {
 	PageNumber *int64
 	PageSize   *int64
 	Sort       *OrgGroupSortOption
-	Include    *[]OrgGroupIncludeOption
 }
 
 // NewListOrgGroupsOptionalParameters creates an empty struct for parameters.
@@ -1647,12 +1646,6 @@ func (r *ListOrgGroupsOptionalParameters) WithPageSize(pageSize int64) *ListOrgG
 // WithSort sets the corresponding parameter name and returns the struct.
 func (r *ListOrgGroupsOptionalParameters) WithSort(sort OrgGroupSortOption) *ListOrgGroupsOptionalParameters {
 	r.Sort = &sort
-	return r
-}
-
-// WithInclude sets the corresponding parameter name and returns the struct.
-func (r *ListOrgGroupsOptionalParameters) WithInclude(include []OrgGroupIncludeOption) *ListOrgGroupsOptionalParameters {
-	r.Include = &include
 	return r
 }
 
@@ -1700,9 +1693,6 @@ func (a *OrgGroupsApi) ListOrgGroups(ctx _context.Context, o ...ListOrgGroupsOpt
 	}
 	if optionalParams.Sort != nil {
 		localVarQueryParams.Add("sort", datadog.ParameterToString(*optionalParams.Sort, ""))
-	}
-	if optionalParams.Include != nil {
-		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, "csv"))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 

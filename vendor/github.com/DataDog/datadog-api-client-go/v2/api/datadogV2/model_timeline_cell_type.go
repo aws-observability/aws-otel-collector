@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimelineCellType Timeline cell content type
+// TimelineCellType The type of content in the timeline cell. Currently only `COMMENT` is supported in this endpoint.
 type TimelineCellType string
 
 // List of TimelineCellType.

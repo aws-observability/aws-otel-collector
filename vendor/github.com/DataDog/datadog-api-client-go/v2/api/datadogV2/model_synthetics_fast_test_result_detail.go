@@ -700,7 +700,7 @@ func (o *SyntheticsFastTestResultDetail) UnmarshalJSON(bytes []byte) (err error)
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assertions", "call_type", "cert", "duration", "failure", "finished_at", "id", "is_fast_retry", "request", "resolved_ip", "response", "run_type", "started_at", "status", "steps", "timings", "traceroute", "triggered_at", "tunnel"})
 	} else {
 		return err

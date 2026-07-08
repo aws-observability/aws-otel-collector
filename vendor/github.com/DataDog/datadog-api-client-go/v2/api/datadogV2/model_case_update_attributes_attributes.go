@@ -12,7 +12,7 @@ import (
 
 // CaseUpdateAttributesAttributes Case update attributes attributes
 type CaseUpdateAttributesAttributes struct {
-	// The definition of `CaseObjectAttributes` object.
+	// Key-value pairs of case attributes. Each key maps to an array of string values, used for flexible metadata such as labels or tags.
 	Attributes map[string][]string `json:"attributes"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -86,7 +86,7 @@ func (o *CaseUpdateAttributesAttributes) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field attributes missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes"})
 	} else {
 		return err

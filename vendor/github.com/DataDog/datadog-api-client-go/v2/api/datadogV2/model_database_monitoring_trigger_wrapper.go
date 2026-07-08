@@ -120,7 +120,7 @@ func (o *DatabaseMonitoringTriggerWrapper) UnmarshalJSON(bytes []byte) (err erro
 		return fmt.Errorf("required field databaseMonitoringTrigger missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"databaseMonitoringTrigger", "startStepNames"})
 	} else {
 		return err

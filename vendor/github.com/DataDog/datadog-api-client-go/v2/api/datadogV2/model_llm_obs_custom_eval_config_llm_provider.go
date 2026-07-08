@@ -223,7 +223,7 @@ func (o *LLMObsCustomEvalConfigLLMProvider) UnmarshalJSON(bytes []byte) (err err
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"bedrock", "integration_account_id", "integration_provider", "model_name", "vertex_ai"})
 	} else {
 		return err

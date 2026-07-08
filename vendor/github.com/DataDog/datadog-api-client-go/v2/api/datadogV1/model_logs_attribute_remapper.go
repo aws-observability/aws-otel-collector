@@ -412,7 +412,7 @@ func (o *LogsAttributeRemapper) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_enabled", "name", "override_on_conflict", "preserve_source", "source_type", "sources", "target", "target_format", "target_type", "type"})
 	} else {
 		return err

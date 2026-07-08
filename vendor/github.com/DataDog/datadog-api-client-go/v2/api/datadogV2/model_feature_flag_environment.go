@@ -36,10 +36,6 @@ type FeatureFlagEnvironment struct {
 	PendingSuggestionId datadog.NullableString `json:"pending_suggestion_id,omitempty"`
 	// Indicates whether feature flag changes require approval in this environment.
 	RequireFeatureFlagApproval *bool `json:"require_feature_flag_approval,omitempty"`
-	// Rollout percentage for this environment.
-	RolloutPercentage *int64 `json:"rollout_percentage,omitempty"`
-	// Environment targeting rules for this feature flag.
-	Rules []map[string]interface{} `json:"rules,omitempty"`
 	// The status of a feature flag in an environment.
 	Status FeatureFlagStatus `json:"status"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -403,62 +399,6 @@ func (o *FeatureFlagEnvironment) SetRequireFeatureFlagApproval(v bool) {
 	o.RequireFeatureFlagApproval = &v
 }
 
-// GetRolloutPercentage returns the RolloutPercentage field value if set, zero value otherwise.
-func (o *FeatureFlagEnvironment) GetRolloutPercentage() int64 {
-	if o == nil || o.RolloutPercentage == nil {
-		var ret int64
-		return ret
-	}
-	return *o.RolloutPercentage
-}
-
-// GetRolloutPercentageOk returns a tuple with the RolloutPercentage field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FeatureFlagEnvironment) GetRolloutPercentageOk() (*int64, bool) {
-	if o == nil || o.RolloutPercentage == nil {
-		return nil, false
-	}
-	return o.RolloutPercentage, true
-}
-
-// HasRolloutPercentage returns a boolean if a field has been set.
-func (o *FeatureFlagEnvironment) HasRolloutPercentage() bool {
-	return o != nil && o.RolloutPercentage != nil
-}
-
-// SetRolloutPercentage gets a reference to the given int64 and assigns it to the RolloutPercentage field.
-func (o *FeatureFlagEnvironment) SetRolloutPercentage(v int64) {
-	o.RolloutPercentage = &v
-}
-
-// GetRules returns the Rules field value if set, zero value otherwise.
-func (o *FeatureFlagEnvironment) GetRules() []map[string]interface{} {
-	if o == nil || o.Rules == nil {
-		var ret []map[string]interface{}
-		return ret
-	}
-	return o.Rules
-}
-
-// GetRulesOk returns a tuple with the Rules field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FeatureFlagEnvironment) GetRulesOk() (*[]map[string]interface{}, bool) {
-	if o == nil || o.Rules == nil {
-		return nil, false
-	}
-	return &o.Rules, true
-}
-
-// HasRules returns a boolean if a field has been set.
-func (o *FeatureFlagEnvironment) HasRules() bool {
-	return o != nil && o.Rules != nil
-}
-
-// SetRules gets a reference to the given []map[string]interface{} and assigns it to the Rules field.
-func (o *FeatureFlagEnvironment) SetRules(v []map[string]interface{}) {
-	o.Rules = v
-}
-
 // GetStatus returns the Status field value.
 func (o *FeatureFlagEnvironment) GetStatus() FeatureFlagStatus {
 	if o == nil {
@@ -519,12 +459,6 @@ func (o FeatureFlagEnvironment) MarshalJSON() ([]byte, error) {
 	if o.RequireFeatureFlagApproval != nil {
 		toSerialize["require_feature_flag_approval"] = o.RequireFeatureFlagApproval
 	}
-	if o.RolloutPercentage != nil {
-		toSerialize["rollout_percentage"] = o.RolloutPercentage
-	}
-	if o.Rules != nil {
-		toSerialize["rules"] = o.Rules
-	}
 	toSerialize["status"] = o.Status
 
 	for key, value := range o.AdditionalProperties {
@@ -536,20 +470,18 @@ func (o FeatureFlagEnvironment) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FeatureFlagEnvironment) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Allocations                map[string]interface{}   `json:"allocations,omitempty"`
-		DefaultAllocationKey       *string                  `json:"default_allocation_key,omitempty"`
-		DefaultVariantId           datadog.NullableString   `json:"default_variant_id,omitempty"`
-		EnvironmentId              *uuid.UUID               `json:"environment_id"`
-		EnvironmentName            *string                  `json:"environment_name,omitempty"`
-		EnvironmentQueries         []string                 `json:"environment_queries,omitempty"`
-		IsProduction               *bool                    `json:"is_production,omitempty"`
-		OverrideAllocationKey      *string                  `json:"override_allocation_key,omitempty"`
-		OverrideVariantId          datadog.NullableString   `json:"override_variant_id,omitempty"`
-		PendingSuggestionId        datadog.NullableString   `json:"pending_suggestion_id,omitempty"`
-		RequireFeatureFlagApproval *bool                    `json:"require_feature_flag_approval,omitempty"`
-		RolloutPercentage          *int64                   `json:"rollout_percentage,omitempty"`
-		Rules                      []map[string]interface{} `json:"rules,omitempty"`
-		Status                     *FeatureFlagStatus       `json:"status"`
+		Allocations                map[string]interface{} `json:"allocations,omitempty"`
+		DefaultAllocationKey       *string                `json:"default_allocation_key,omitempty"`
+		DefaultVariantId           datadog.NullableString `json:"default_variant_id,omitempty"`
+		EnvironmentId              *uuid.UUID             `json:"environment_id"`
+		EnvironmentName            *string                `json:"environment_name,omitempty"`
+		EnvironmentQueries         []string               `json:"environment_queries,omitempty"`
+		IsProduction               *bool                  `json:"is_production,omitempty"`
+		OverrideAllocationKey      *string                `json:"override_allocation_key,omitempty"`
+		OverrideVariantId          datadog.NullableString `json:"override_variant_id,omitempty"`
+		PendingSuggestionId        datadog.NullableString `json:"pending_suggestion_id,omitempty"`
+		RequireFeatureFlagApproval *bool                  `json:"require_feature_flag_approval,omitempty"`
+		Status                     *FeatureFlagStatus     `json:"status"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -561,8 +493,8 @@ func (o *FeatureFlagEnvironment) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field status missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"allocations", "default_allocation_key", "default_variant_id", "environment_id", "environment_name", "environment_queries", "is_production", "override_allocation_key", "override_variant_id", "pending_suggestion_id", "require_feature_flag_approval", "rollout_percentage", "rules", "status"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"allocations", "default_allocation_key", "default_variant_id", "environment_id", "environment_name", "environment_queries", "is_production", "override_allocation_key", "override_variant_id", "pending_suggestion_id", "require_feature_flag_approval", "status"})
 	} else {
 		return err
 	}
@@ -579,8 +511,6 @@ func (o *FeatureFlagEnvironment) UnmarshalJSON(bytes []byte) (err error) {
 	o.OverrideVariantId = all.OverrideVariantId
 	o.PendingSuggestionId = all.PendingSuggestionId
 	o.RequireFeatureFlagApproval = all.RequireFeatureFlagApproval
-	o.RolloutPercentage = all.RolloutPercentage
-	o.Rules = all.Rules
 	if !all.Status.IsValid() {
 		hasInvalidField = true
 	} else {

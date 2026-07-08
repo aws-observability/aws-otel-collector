@@ -291,7 +291,7 @@ func (o *CustomCostsFileLineItem) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"BilledCost", "BillingCurrency", "ChargeDescription", "ChargePeriodEnd", "ChargePeriodStart", "ProviderName", "Tags"})
 	} else {
 		return err

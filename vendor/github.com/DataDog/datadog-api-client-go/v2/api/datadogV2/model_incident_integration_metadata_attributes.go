@@ -18,6 +18,7 @@ type IncidentIntegrationMetadataAttributes struct {
 	// UUID of the incident this integration metadata is connected to.
 	IncidentId *string `json:"incident_id,omitempty"`
 	// A number indicating the type of integration this metadata is for. 1 indicates Slack;
+	// 7 indicates Microsoft Teams;
 	// 8 indicates Jira.
 	IntegrationType int32 `json:"integration_type"`
 	// Incident integration metadata's metadata attribute.
@@ -265,7 +266,7 @@ func (o *IncidentIntegrationMetadataAttributes) UnmarshalJSON(bytes []byte) (err
 		return fmt.Errorf("required field metadata missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created", "incident_id", "integration_type", "metadata", "modified", "status"})
 	} else {
 		return err

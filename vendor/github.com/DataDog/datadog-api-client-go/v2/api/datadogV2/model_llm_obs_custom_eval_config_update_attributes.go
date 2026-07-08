@@ -222,7 +222,7 @@ func (o *LLMObsCustomEvalConfigUpdateAttributes) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field target missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"category", "eval_name", "llm_judge_config", "llm_provider", "target"})
 	} else {
 		return err

@@ -151,7 +151,7 @@ func (o *ObservabilityPipelineOcsfMappingCustomMetadata) UnmarshalJSON(bytes []b
 		return fmt.Errorf("required field version missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"class", "profiles", "version"})
 	} else {
 		return err

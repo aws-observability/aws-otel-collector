@@ -221,7 +221,7 @@ func (o *WatcherDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field watch_count missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"handle", "icon", "last_watched_at", "name", "watch_count"})
 	} else {
 		return err

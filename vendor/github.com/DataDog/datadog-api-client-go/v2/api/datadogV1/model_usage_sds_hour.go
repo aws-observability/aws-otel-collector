@@ -386,7 +386,7 @@ func (o *UsageSDSHour) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"apm_scanned_bytes", "events_scanned_bytes", "hour", "logs_scanned_bytes", "org_name", "public_id", "rum_scanned_bytes", "total_scanned_bytes"})
 	} else {
 		return err

@@ -298,11 +298,22 @@ type ConfigurationTemplate struct {
 	// to.
 	DeliveryDestinationType DeliveryDestinationType
 
+	// The schema of the delivery source configuration that is available for this log
+	// type. Each element describes a configuration that can be set when calling [PutDeliverySource],
+	// including the configuration name, type, and default value.
+	//
+	// [PutDeliverySource]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html
+	DeliverySourceConfiguration []DeliverySourceConfigurationSchema
+
 	// A string specifying which log type this configuration template applies to.
 	LogType *string
 
 	// A string specifying which resource type this configuration template applies to.
 	ResourceType *string
+
+	// The S3 Tables integration configuration for this configuration template,
+	// including the datasource name and type.
+	S3TablesIntegration *S3TablesIntegration
 
 	// A string specifying which service this configuration template applies to. For
 	// more information about supported services see [Enable logging from Amazon Web Services services.].
@@ -659,6 +670,9 @@ type DeliverySource struct {
 	// The Amazon Resource Name (ARN) that uniquely identifies this delivery source.
 	Arn *string
 
+	// The map of key-value pairs that configure the delivery source.
+	DeliverySourceConfiguration map[string]string
+
 	// The type of log that the source is sending. For valid values for this
 	// parameter, see the documentation for the source service.
 	LogType *string
@@ -674,8 +688,55 @@ type DeliverySource struct {
 	// The Amazon Web Services service that is sending logs.
 	Service *string
 
+	// The status of the delivery source. A delivery source can have the status ACTIVE
+	// or INACTIVE . Note: This value is defined for selective log types.
+	Status DeliverySourceStatus
+
+	// The reason for the status of the delivery source. A status reason of
+	// RESOURCE_DELETED indicates that the resource associated with the delivery source
+	// has been deleted. Note: This value is defined for selective log types.
+	StatusReason DeliverySourceStatusReason
+
 	// The tags that have been assigned to this delivery source.
 	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that describes a single configuration for a log type, including its
+// name, value type, default value, and the range of supported values.
+type DeliverySourceConfigurationSchema struct {
+
+	// The default value of the configuration that is used when a value is not
+	// specified in a [PutDeliverySource]request.
+	//
+	// [PutDeliverySource]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html
+	//
+	// This member is required.
+	DefaultValue *string
+
+	// The name of the configuration.
+	//
+	// This member is required.
+	KeyName *string
+
+	// The data type of the configuration value. Valid values are string , boolean ,
+	// int , double , and long .
+	//
+	// This member is required.
+	ValueType DeliverySourceConfigurationSchemaValueType
+
+	// The maximum numeric value allowed for the configuration. This applies only when
+	// the valueType is a numeric type.
+	MaxValue *float64
+
+	// The minimum numeric value allowed for the configuration. This applies only when
+	// the valueType is a numeric type.
+	MinValue *float64
+
+	// The list of allowed values for the configuration. Empty for free-form
+	// configuration.
+	SupportedValues []string
 
 	noSmithyDocumentSerde
 }
@@ -2730,6 +2791,19 @@ type S3TableIntegrationSource struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about the S3 Tables integration configuration for a
+// configuration template.
+type S3TablesIntegration struct {
+
+	// The name of the S3 Tables datasource.
+	DatasourceName *string
+
+	// The type of the S3 Tables datasource.
+	DatasourceType *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about a destination where scheduled query results are processed,
 // including processing status and any error messages.
 type ScheduledQueryDestination struct {
@@ -2776,6 +2850,10 @@ type ScheduledQuerySummary struct {
 
 	// The cron expression that defines when the scheduled query runs.
 	ScheduleExpression *string
+
+	// The schedule type of the scheduled query. Valid values are CUSTOMER_MANAGED and
+	// AWS_MANAGED .
+	ScheduleType ScheduleType
 
 	// The ARN of the scheduled query.
 	ScheduledQueryArn *string
@@ -2975,6 +3053,55 @@ type SuppressionPeriod struct {
 	// Specifies the number of seconds, minutes or hours to suppress this anomaly.
 	// There is no maximum.
 	Value int32
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a syslog configuration associated with a log group.
+type SyslogConfiguration struct {
+
+	// The time when the syslog configuration was created, expressed as the number of
+	// milliseconds after Jan 1, 1970 00:00:00 UTC .
+	CreatedAt *int64
+
+	// The ARN of the log group associated with this syslog configuration.
+	LogGroupArn *string
+
+	// The source type for the syslog configuration.
+	SourceType SyslogSourceType
+
+	// The ID of the VPC endpoint used for syslog ingestion.
+	VpcEndpointId *string
+
+	noSmithyDocumentSerde
+}
+
+// A tag filter that specifies a tag key and optional tag values for filtering log
+// groups by tags.
+type TagFilter struct {
+
+	// The tag key to filter on.
+	//
+	// This member is required.
+	Key *string
+
+	// An optional list of tag values to filter on.
+	//
+	//   - If you specify a filter that contains more than one value for a key, the
+	//   response returns log groups that match any of the specified values for that key.
+	//
+	//   - If you don't specify values, the response returns all log groups that are
+	//   tagged with that key, with any or no value.
+	//
+	//   - Use * for wildcard matching. For example, prod* matches values that start
+	//   with prod .
+	//
+	//   - Use ! as a prefix for negation. For example, !prod matches values that are
+	//   not prod .
+	//
+	//   - Exact matching and negation are case-sensitive. Wildcard matching is
+	//   case-insensitive.
+	Values []string
 
 	noSmithyDocumentSerde
 }

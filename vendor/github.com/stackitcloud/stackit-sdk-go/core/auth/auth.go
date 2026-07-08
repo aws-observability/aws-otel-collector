@@ -54,7 +54,7 @@ func SetupAuth(cfg *config.Configuration) (rt http.RoundTripper, err error) {
 	} else if cfg.WorkloadIdentityFederation {
 		wifRoundTripper, err := WorkloadIdentityFederationAuth(cfg)
 		if err != nil {
-			return nil, fmt.Errorf("configuring no auth client: %w", err)
+			return nil, fmt.Errorf("configuring workload identity federation client: %w", err)
 		}
 		return wifRoundTripper, nil
 	} else if cfg.ServiceAccountKey != "" || cfg.ServiceAccountKeyPath != "" {
@@ -278,7 +278,7 @@ func readCredentialsFile(path string) (*Credentials, error) {
 	var credentials Credentials
 	err = json.Unmarshal(credentialsRaw, &credentials)
 	if err != nil {
-		return nil, fmt.Errorf("unmaPrivateKeyrshalling credentials: %w", err)
+		return nil, fmt.Errorf("unmarshalling credentials: %w", err)
 	}
 	return &credentials, nil
 }

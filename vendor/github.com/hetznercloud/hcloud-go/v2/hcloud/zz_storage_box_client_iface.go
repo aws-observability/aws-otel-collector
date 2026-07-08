@@ -175,7 +175,7 @@ type IStorageBoxClient interface {
 	//
 	// See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccount-actions-update-access-settings
 	UpdateSubaccountAccessSettings(ctx context.Context, subaccount *StorageBoxSubaccount, opts StorageBoxSubaccountUpdateAccessSettingsOpts) (*Action, *Response, error)
-	// UpdateSubaccountAccessSettings changes the home directory of a [StorageBoxSubaccount].
+	// ChangeSubaccountHomeDirectory changes the home directory of a [StorageBoxSubaccount].
 	//
 	// See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccount-actions-change-home-directory
 	ChangeSubaccountHomeDirectory(ctx context.Context, subaccount *StorageBoxSubaccount, opts StorageBoxSubaccountChangeHomeDirectoryOpts) (*Action, *Response, error)

@@ -33,6 +33,7 @@ type WidgetDefinition struct {
 	MonitorSummaryWidgetDefinition         *MonitorSummaryWidgetDefinition
 	NoteWidgetDefinition                   *NoteWidgetDefinition
 	PowerpackWidgetDefinition              *PowerpackWidgetDefinition
+	PointPlotWidgetDefinition              *PointPlotWidgetDefinition
 	QueryValueWidgetDefinition             *QueryValueWidgetDefinition
 	RetentionCurveWidgetDefinition         *RetentionCurveWidgetDefinition
 	RunWorkflowWidgetDefinition            *RunWorkflowWidgetDefinition
@@ -168,6 +169,11 @@ func NoteWidgetDefinitionAsWidgetDefinition(v *NoteWidgetDefinition) WidgetDefin
 // PowerpackWidgetDefinitionAsWidgetDefinition is a convenience function that returns PowerpackWidgetDefinition wrapped in WidgetDefinition.
 func PowerpackWidgetDefinitionAsWidgetDefinition(v *PowerpackWidgetDefinition) WidgetDefinition {
 	return WidgetDefinition{PowerpackWidgetDefinition: v}
+}
+
+// PointPlotWidgetDefinitionAsWidgetDefinition is a convenience function that returns PointPlotWidgetDefinition wrapped in WidgetDefinition.
+func PointPlotWidgetDefinitionAsWidgetDefinition(v *PointPlotWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{PointPlotWidgetDefinition: v}
 }
 
 // QueryValueWidgetDefinitionAsWidgetDefinition is a convenience function that returns QueryValueWidgetDefinition wrapped in WidgetDefinition.
@@ -650,6 +656,23 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.PowerpackWidgetDefinition = nil
 	}
 
+	// try to unmarshal data into PointPlotWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.PointPlotWidgetDefinition)
+	if err == nil {
+		if obj.PointPlotWidgetDefinition != nil && obj.PointPlotWidgetDefinition.UnparsedObject == nil {
+			jsonPointPlotWidgetDefinition, _ := datadog.Marshal(obj.PointPlotWidgetDefinition)
+			if string(jsonPointPlotWidgetDefinition) == "{}" { // empty struct
+				obj.PointPlotWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.PointPlotWidgetDefinition = nil
+		}
+	} else {
+		obj.PointPlotWidgetDefinition = nil
+	}
+
 	// try to unmarshal data into QueryValueWidgetDefinition
 	err = datadog.Unmarshal(data, &obj.QueryValueWidgetDefinition)
 	if err == nil {
@@ -964,6 +987,7 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.MonitorSummaryWidgetDefinition = nil
 		obj.NoteWidgetDefinition = nil
 		obj.PowerpackWidgetDefinition = nil
+		obj.PointPlotWidgetDefinition = nil
 		obj.QueryValueWidgetDefinition = nil
 		obj.RetentionCurveWidgetDefinition = nil
 		obj.RunWorkflowWidgetDefinition = nil
@@ -1078,6 +1102,10 @@ func (obj WidgetDefinition) MarshalJSON() ([]byte, error) {
 
 	if obj.PowerpackWidgetDefinition != nil {
 		return datadog.Marshal(&obj.PowerpackWidgetDefinition)
+	}
+
+	if obj.PointPlotWidgetDefinition != nil {
+		return datadog.Marshal(&obj.PointPlotWidgetDefinition)
 	}
 
 	if obj.QueryValueWidgetDefinition != nil {
@@ -1246,6 +1274,10 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 
 	if obj.PowerpackWidgetDefinition != nil {
 		return obj.PowerpackWidgetDefinition
+	}
+
+	if obj.PointPlotWidgetDefinition != nil {
+		return obj.PointPlotWidgetDefinition
 	}
 
 	if obj.QueryValueWidgetDefinition != nil {

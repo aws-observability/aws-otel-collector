@@ -11,7 +11,7 @@ import (
 // ProjectNotificationSettings Project notification settings.
 type ProjectNotificationSettings struct {
 	// Notification destinations (1=email, 2=slack, 3=in-app).
-	Destinations []int32 `json:"destinations,omitempty"`
+	Destinations []int64 `json:"destinations,omitempty"`
 	// Whether notifications are enabled.
 	Enabled *bool `json:"enabled,omitempty"`
 	// Whether to send a notification when a case is assigned.
@@ -51,9 +51,9 @@ func NewProjectNotificationSettingsWithDefaults() *ProjectNotificationSettings {
 }
 
 // GetDestinations returns the Destinations field value if set, zero value otherwise.
-func (o *ProjectNotificationSettings) GetDestinations() []int32 {
+func (o *ProjectNotificationSettings) GetDestinations() []int64 {
 	if o == nil || o.Destinations == nil {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Destinations
@@ -61,7 +61,7 @@ func (o *ProjectNotificationSettings) GetDestinations() []int32 {
 
 // GetDestinationsOk returns a tuple with the Destinations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ProjectNotificationSettings) GetDestinationsOk() (*[]int32, bool) {
+func (o *ProjectNotificationSettings) GetDestinationsOk() (*[]int64, bool) {
 	if o == nil || o.Destinations == nil {
 		return nil, false
 	}
@@ -73,8 +73,8 @@ func (o *ProjectNotificationSettings) HasDestinations() bool {
 	return o != nil && o.Destinations != nil
 }
 
-// SetDestinations gets a reference to the given []int32 and assigns it to the Destinations field.
-func (o *ProjectNotificationSettings) SetDestinations(v []int32) {
+// SetDestinations gets a reference to the given []int64 and assigns it to the Destinations field.
+func (o *ProjectNotificationSettings) SetDestinations(v []int64) {
 	o.Destinations = v
 }
 
@@ -345,7 +345,7 @@ func (o ProjectNotificationSettings) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ProjectNotificationSettings) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Destinations               []int32 `json:"destinations,omitempty"`
+		Destinations               []int64 `json:"destinations,omitempty"`
 		Enabled                    *bool   `json:"enabled,omitempty"`
 		NotifyOnCaseAssignment     *bool   `json:"notify_on_case_assignment,omitempty"`
 		NotifyOnCaseClosed         *bool   `json:"notify_on_case_closed,omitempty"`
@@ -359,7 +359,7 @@ func (o *ProjectNotificationSettings) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"destinations", "enabled", "notify_on_case_assignment", "notify_on_case_closed", "notify_on_case_comment", "notify_on_case_comment_mention", "notify_on_case_priority_change", "notify_on_case_status_change", "notify_on_case_unassignment"})
 	} else {
 		return err

@@ -1,6 +1,9 @@
 package schema
 
 // Datacenter defines the schema of a datacenter.
+//
+// Deprecated: [Datacenter] is deprecated and will be removed after the 2026-10-01. See
+// https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
 type Datacenter struct {
 	ID          int64    `json:"id"`
 	Name        string   `json:"name"`
@@ -23,11 +26,17 @@ type DatacenterServerTypes struct {
 }
 
 // DatacenterGetResponse defines the schema of the response when retrieving a single datacenter.
+//
+// Deprecated: [Datacenter] is deprecated and will be removed after the 2026-10-01. See
+// https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
 type DatacenterGetResponse struct {
 	Datacenter Datacenter `json:"datacenter"`
 }
 
 // DatacenterListResponse defines the schema of the response when listing datacenters.
+//
+// Deprecated: [Datacenter] is deprecated and will be removed after the 2026-10-01. See
+// https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated.
 type DatacenterListResponse struct {
 	Datacenters []Datacenter `json:"datacenters"`
 }

@@ -6,6 +6,8 @@ package datadogV2
 
 import (
 	_context "context"
+	_fmt "fmt"
+	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
 	"reflect"
@@ -752,8 +754,8 @@ func (a *KeyManagementApi) GetCurrentUserApplicationKey(ctx _context.Context, ap
 }
 
 // GetPersonalAccessToken Get a personal access token.
-// Get a specific personal access token by its UUID.
-func (a *KeyManagementApi) GetPersonalAccessToken(ctx _context.Context, patId string) (PersonalAccessTokenResponse, *_nethttp.Response, error) {
+// Get a specific personal access token by its ID.
+func (a *KeyManagementApi) GetPersonalAccessToken(ctx _context.Context, tokenId string) (PersonalAccessTokenResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
 		localVarPostBody    interface{}
@@ -765,8 +767,8 @@ func (a *KeyManagementApi) GetPersonalAccessToken(ctx _context.Context, patId st
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v2/personal_access_tokens/{pat_id}"
-	localVarPath = datadog.ReplacePathParameter(localVarPath, "{pat_id}", _neturl.PathEscape(datadog.ParameterToString(patId, "")))
+	localVarPath := localBasePath + "/api/v2/personal_access_tokens/{token_id}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token_id}", _neturl.PathEscape(datadog.ParameterToString(tokenId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1042,6 +1044,7 @@ type ListApplicationKeysOptionalParameters struct {
 	Filter               *string
 	FilterCreatedAtStart *string
 	FilterCreatedAtEnd   *string
+	FilterOwnedBy        *string
 	Include              *string
 }
 
@@ -1084,6 +1087,12 @@ func (r *ListApplicationKeysOptionalParameters) WithFilterCreatedAtStart(filterC
 // WithFilterCreatedAtEnd sets the corresponding parameter name and returns the struct.
 func (r *ListApplicationKeysOptionalParameters) WithFilterCreatedAtEnd(filterCreatedAtEnd string) *ListApplicationKeysOptionalParameters {
 	r.FilterCreatedAtEnd = &filterCreatedAtEnd
+	return r
+}
+
+// WithFilterOwnedBy sets the corresponding parameter name and returns the struct.
+func (r *ListApplicationKeysOptionalParameters) WithFilterOwnedBy(filterOwnedBy string) *ListApplicationKeysOptionalParameters {
+	r.FilterOwnedBy = &filterOwnedBy
 	return r
 }
 
@@ -1137,6 +1146,9 @@ func (a *KeyManagementApi) ListApplicationKeys(ctx _context.Context, o ...ListAp
 	}
 	if optionalParams.FilterCreatedAtEnd != nil {
 		localVarQueryParams.Add("filter[created_at][end]", datadog.ParameterToString(*optionalParams.FilterCreatedAtEnd, ""))
+	}
+	if optionalParams.FilterOwnedBy != nil {
+		localVarQueryParams.Add("filter[owned_by]", datadog.ParameterToString(*optionalParams.FilterOwnedBy, ""))
 	}
 	if optionalParams.Include != nil {
 		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
@@ -1366,11 +1378,11 @@ func (a *KeyManagementApi) ListCurrentUserApplicationKeys(ctx _context.Context, 
 
 // ListPersonalAccessTokensOptionalParameters holds optional parameters for ListPersonalAccessTokens.
 type ListPersonalAccessTokensOptionalParameters struct {
-	PageSize        *int64
-	PageNumber      *int64
-	Sort            *PersonalAccessTokensSort
-	Filter          *string
-	FilterOwnerUuid *[]string
+	PageSize      *int64
+	PageNumber    *int64
+	Sort          *PersonalAccessTokensSort
+	Filter        *string
+	FilterOwnedBy *[]string
 }
 
 // NewListPersonalAccessTokensOptionalParameters creates an empty struct for parameters.
@@ -1403,14 +1415,14 @@ func (r *ListPersonalAccessTokensOptionalParameters) WithFilter(filter string) *
 	return r
 }
 
-// WithFilterOwnerUuid sets the corresponding parameter name and returns the struct.
-func (r *ListPersonalAccessTokensOptionalParameters) WithFilterOwnerUuid(filterOwnerUuid []string) *ListPersonalAccessTokensOptionalParameters {
-	r.FilterOwnerUuid = &filterOwnerUuid
+// WithFilterOwnedBy sets the corresponding parameter name and returns the struct.
+func (r *ListPersonalAccessTokensOptionalParameters) WithFilterOwnedBy(filterOwnedBy []string) *ListPersonalAccessTokensOptionalParameters {
+	r.FilterOwnedBy = &filterOwnedBy
 	return r
 }
 
-// ListPersonalAccessTokens Get all personal access tokens.
-// List all personal access tokens for the organization.
+// ListPersonalAccessTokens Get all access tokens.
+// List all access tokens for the organization.
 func (a *KeyManagementApi) ListPersonalAccessTokens(ctx _context.Context, o ...ListPersonalAccessTokensOptionalParameters) (ListPersonalAccessTokensResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -1448,15 +1460,15 @@ func (a *KeyManagementApi) ListPersonalAccessTokens(ctx _context.Context, o ...L
 	if optionalParams.Filter != nil {
 		localVarQueryParams.Add("filter", datadog.ParameterToString(*optionalParams.Filter, ""))
 	}
-	if optionalParams.FilterOwnerUuid != nil {
-		t := *optionalParams.FilterOwnerUuid
+	if optionalParams.FilterOwnedBy != nil {
+		t := *optionalParams.FilterOwnedBy
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				localVarQueryParams.Add("filter[owner_uuid]", datadog.ParameterToString(s.Index(i), "multi"))
+				localVarQueryParams.Add("filter[owned_by]", datadog.ParameterToString(s.Index(i), "multi"))
 			}
 		} else {
-			localVarQueryParams.Add("filter[owner_uuid]", datadog.ParameterToString(t, "multi"))
+			localVarQueryParams.Add("filter[owned_by]", datadog.ParameterToString(t, "multi"))
 		}
 	}
 	localVarHeaderParams["Accept"] = "application/json"
@@ -1519,7 +1531,7 @@ func (a *KeyManagementApi) ListPersonalAccessTokens(ctx _context.Context, o ...L
 
 // RevokePersonalAccessToken Revoke a personal access token.
 // Revoke a specific personal access token.
-func (a *KeyManagementApi) RevokePersonalAccessToken(ctx _context.Context, patId string) (*_nethttp.Response, error) {
+func (a *KeyManagementApi) RevokePersonalAccessToken(ctx _context.Context, tokenId string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
 		localVarPostBody   interface{}
@@ -1530,8 +1542,8 @@ func (a *KeyManagementApi) RevokePersonalAccessToken(ctx _context.Context, patId
 		return nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v2/personal_access_tokens/{pat_id}"
-	localVarPath = datadog.ReplacePathParameter(localVarPath, "{pat_id}", _neturl.PathEscape(datadog.ParameterToString(patId, "")))
+	localVarPath := localBasePath + "/api/v2/personal_access_tokens/{token_id}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token_id}", _neturl.PathEscape(datadog.ParameterToString(tokenId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1831,7 +1843,7 @@ func (a *KeyManagementApi) UpdateCurrentUserApplicationKey(ctx _context.Context,
 
 // UpdatePersonalAccessToken Update a personal access token.
 // Update a specific personal access token.
-func (a *KeyManagementApi) UpdatePersonalAccessToken(ctx _context.Context, patId string, body PersonalAccessTokenUpdateRequest) (PersonalAccessTokenResponse, *_nethttp.Response, error) {
+func (a *KeyManagementApi) UpdatePersonalAccessToken(ctx _context.Context, tokenId string, body PersonalAccessTokenUpdateRequest) (PersonalAccessTokenResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch
 		localVarPostBody    interface{}
@@ -1843,8 +1855,8 @@ func (a *KeyManagementApi) UpdatePersonalAccessToken(ctx _context.Context, patId
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v2/personal_access_tokens/{pat_id}"
-	localVarPath = datadog.ReplacePathParameter(localVarPath, "{pat_id}", _neturl.PathEscape(datadog.ParameterToString(patId, "")))
+	localVarPath := localBasePath + "/api/v2/personal_access_tokens/{token_id}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token_id}", _neturl.PathEscape(datadog.ParameterToString(tokenId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1888,6 +1900,174 @@ func (a *KeyManagementApi) UpdatePersonalAccessToken(ctx _context.Context, patId
 			ErrorMessage: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// Validate Validate API key.
+// Check if the API key is valid. Returns the organization UUID, API key ID, and associated scopes.
+func (a *KeyManagementApi) Validate(ctx _context.Context) (ValidateV2Response, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ValidateV2Response
+	)
+
+	operationId := "v2.Validate"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.KeyManagementApi.Validate")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/validate"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+	)
+
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v JSONAPIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ValidateAPIKey Validate API and application keys.
+// Check that the API key and application key used for the request are both valid.
+// Returns `{"status": "ok"}` on success, `401` or `403` otherwise. Useful as a
+// lightweight authentication probe before issuing other API calls that require
+// full credentials.
+func (a *KeyManagementApi) ValidateAPIKey(ctx _context.Context) (ValidateAPIKeyResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ValidateAPIKeyResponse
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.KeyManagementApi.ValidateAPIKey")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/validate_keys"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
 			var v APIErrorResponse
 			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

@@ -14,6 +14,8 @@ type PatchNotificationRuleParametersDataAttributes struct {
 	Enabled *bool `json:"enabled,omitempty"`
 	// Name of the notification rule.
 	Name *string `json:"name,omitempty"`
+	// Routing configuration for the notification rule.
+	Routing *NotificationRuleRouting `json:"routing,omitempty"`
 	// Selectors are used to filter security issues for which notifications should be generated.
 	// Users can specify rule severities, rule types, a query to filter security issues on tags and attributes, and the trigger source.
 	// Only the trigger_source field is required.
@@ -106,6 +108,34 @@ func (o *PatchNotificationRuleParametersDataAttributes) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *PatchNotificationRuleParametersDataAttributes) SetName(v string) {
 	o.Name = &v
+}
+
+// GetRouting returns the Routing field value if set, zero value otherwise.
+func (o *PatchNotificationRuleParametersDataAttributes) GetRouting() NotificationRuleRouting {
+	if o == nil || o.Routing == nil {
+		var ret NotificationRuleRouting
+		return ret
+	}
+	return *o.Routing
+}
+
+// GetRoutingOk returns a tuple with the Routing field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PatchNotificationRuleParametersDataAttributes) GetRoutingOk() (*NotificationRuleRouting, bool) {
+	if o == nil || o.Routing == nil {
+		return nil, false
+	}
+	return o.Routing, true
+}
+
+// HasRouting returns a boolean if a field has been set.
+func (o *PatchNotificationRuleParametersDataAttributes) HasRouting() bool {
+	return o != nil && o.Routing != nil
+}
+
+// SetRouting gets a reference to the given NotificationRuleRouting and assigns it to the Routing field.
+func (o *PatchNotificationRuleParametersDataAttributes) SetRouting(v NotificationRuleRouting) {
+	o.Routing = &v
 }
 
 // GetSelectors returns the Selectors field value if set, zero value otherwise.
@@ -232,6 +262,9 @@ func (o PatchNotificationRuleParametersDataAttributes) MarshalJSON() ([]byte, er
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.Routing != nil {
+		toSerialize["routing"] = o.Routing
+	}
 	if o.Selectors != nil {
 		toSerialize["selectors"] = o.Selectors
 	}
@@ -254,19 +287,20 @@ func (o PatchNotificationRuleParametersDataAttributes) MarshalJSON() ([]byte, er
 // UnmarshalJSON deserializes the given payload.
 func (o *PatchNotificationRuleParametersDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled         *bool      `json:"enabled,omitempty"`
-		Name            *string    `json:"name,omitempty"`
-		Selectors       *Selectors `json:"selectors,omitempty"`
-		Targets         []string   `json:"targets,omitempty"`
-		TimeAggregation *int64     `json:"time_aggregation,omitempty"`
-		Version         *int64     `json:"version,omitempty"`
+		Enabled         *bool                    `json:"enabled,omitempty"`
+		Name            *string                  `json:"name,omitempty"`
+		Routing         *NotificationRuleRouting `json:"routing,omitempty"`
+		Selectors       *Selectors               `json:"selectors,omitempty"`
+		Targets         []string                 `json:"targets,omitempty"`
+		TimeAggregation *int64                   `json:"time_aggregation,omitempty"`
+		Version         *int64                   `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "name", "selectors", "targets", "time_aggregation", "version"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "name", "routing", "selectors", "targets", "time_aggregation", "version"})
 	} else {
 		return err
 	}
@@ -274,6 +308,10 @@ func (o *PatchNotificationRuleParametersDataAttributes) UnmarshalJSON(bytes []by
 	hasInvalidField := false
 	o.Enabled = all.Enabled
 	o.Name = all.Name
+	if all.Routing != nil && all.Routing.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Routing = all.Routing
 	if all.Selectors != nil && all.Selectors.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

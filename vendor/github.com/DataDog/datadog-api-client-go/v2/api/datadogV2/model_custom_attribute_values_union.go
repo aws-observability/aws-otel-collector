@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomAttributeValuesUnion - Union of supported value for a custom attribute
+// CustomAttributeValuesUnion - The value of a custom attribute. The accepted format depends on the attribute's type and whether it accepts multiple values.
 type CustomAttributeValuesUnion struct {
 	CustomAttributeStringValue      *string
 	CustomAttributeMultiStringValue *[]string

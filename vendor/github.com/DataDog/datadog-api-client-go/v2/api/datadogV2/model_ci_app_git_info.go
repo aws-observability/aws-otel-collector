@@ -554,7 +554,7 @@ func (o *CIAppGitInfo) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field sha missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"author_email", "author_name", "author_time", "branch", "commit_time", "committer_email", "committer_name", "default_branch", "message", "repository_url", "sha", "tag"})
 	} else {
 		return err

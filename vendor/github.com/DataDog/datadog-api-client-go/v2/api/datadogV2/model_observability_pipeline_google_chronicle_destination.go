@@ -353,7 +353,7 @@ func (o *ObservabilityPipelineGoogleChronicleDestination) UnmarshalJSON(bytes []
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"auth", "buffer", "customer_id", "encoding", "endpoint_url_key", "id", "inputs", "log_type", "type"})
 	} else {
 		return err

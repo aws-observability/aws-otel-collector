@@ -708,7 +708,7 @@ func (o *CsmAgentsAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"agent_version", "aws_fargate", "cluster_name", "datadog_agent", "ecs_fargate_task_arn", "envs", "host_id", "hostname", "install_method_installer_version", "install_method_tool", "is_csm_vm_containers_enabled", "is_csm_vm_hosts_enabled", "is_cspm_enabled", "is_cws_enabled", "is_cws_remote_configuration_enabled", "is_remote_configuration_enabled", "os"})
 	} else {
 		return err

@@ -16,7 +16,7 @@ repos:
     # types: ["file", "go"]
     pass_filenames: false
     additional_dependencies:
-      - golang.org/x/tools/cmd/goimports@latest
+      - golang.org/x/tools/cmd/goimports@v0.30.0
   - id: generate-doc
     name: Doc generation
     stages: [manual]

@@ -347,7 +347,7 @@ func (o *IncidentUserDefinedFieldAttributesUpdateRequest) UnmarshalJSON(bytes []
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"category", "collected", "default_value", "display_name", "ordinal", "required", "valid_values"})
 	} else {
 		return err

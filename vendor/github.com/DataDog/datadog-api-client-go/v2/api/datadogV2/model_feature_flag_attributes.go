@@ -37,6 +37,8 @@ type FeatureFlagAttributes struct {
 	Name string `json:"name"`
 	// Indicates whether this feature flag requires approval for changes.
 	RequireApproval *bool `json:"require_approval,omitempty"`
+	// Indicates the whether a feature flag is stale or not.
+	StalenessStatus *string `json:"staleness_status,omitempty"`
 	// Tags associated with the feature flag.
 	Tags []string `json:"tags,omitempty"`
 	// The timestamp when the feature flag was last updated.
@@ -387,6 +389,34 @@ func (o *FeatureFlagAttributes) SetRequireApproval(v bool) {
 	o.RequireApproval = &v
 }
 
+// GetStalenessStatus returns the StalenessStatus field value if set, zero value otherwise.
+func (o *FeatureFlagAttributes) GetStalenessStatus() string {
+	if o == nil || o.StalenessStatus == nil {
+		var ret string
+		return ret
+	}
+	return *o.StalenessStatus
+}
+
+// GetStalenessStatusOk returns a tuple with the StalenessStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FeatureFlagAttributes) GetStalenessStatusOk() (*string, bool) {
+	if o == nil || o.StalenessStatus == nil {
+		return nil, false
+	}
+	return o.StalenessStatus, true
+}
+
+// HasStalenessStatus returns a boolean if a field has been set.
+func (o *FeatureFlagAttributes) HasStalenessStatus() bool {
+	return o != nil && o.StalenessStatus != nil
+}
+
+// SetStalenessStatus gets a reference to the given string and assigns it to the StalenessStatus field.
+func (o *FeatureFlagAttributes) SetStalenessStatus(v string) {
+	o.StalenessStatus = &v
+}
+
 // GetTags returns the Tags field value if set, zero value otherwise.
 func (o *FeatureFlagAttributes) GetTags() []string {
 	if o == nil || o.Tags == nil {
@@ -526,6 +556,9 @@ func (o FeatureFlagAttributes) MarshalJSON() ([]byte, error) {
 	if o.RequireApproval != nil {
 		toSerialize["require_approval"] = o.RequireApproval
 	}
+	if o.StalenessStatus != nil {
+		toSerialize["staleness_status"] = o.StalenessStatus
+	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
@@ -559,6 +592,7 @@ func (o *FeatureFlagAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		LastUpdatedBy           *uuid.UUID               `json:"last_updated_by,omitempty"`
 		Name                    *string                  `json:"name"`
 		RequireApproval         *bool                    `json:"require_approval,omitempty"`
+		StalenessStatus         *string                  `json:"staleness_status,omitempty"`
 		Tags                    []string                 `json:"tags,omitempty"`
 		UpdatedAt               *time.Time               `json:"updated_at,omitempty"`
 		ValueType               *ValueType               `json:"value_type"`
@@ -583,8 +617,8 @@ func (o *FeatureFlagAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field variants missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "created_at", "created_by", "description", "distribution_channel", "feature_flag_environments", "json_schema", "key", "last_updated_by", "name", "require_approval", "tags", "updated_at", "value_type", "variants"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "created_at", "created_by", "description", "distribution_channel", "feature_flag_environments", "json_schema", "key", "last_updated_by", "name", "require_approval", "staleness_status", "tags", "updated_at", "value_type", "variants"})
 	} else {
 		return err
 	}
@@ -601,6 +635,7 @@ func (o *FeatureFlagAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.LastUpdatedBy = all.LastUpdatedBy
 	o.Name = *all.Name
 	o.RequireApproval = all.RequireApproval
+	o.StalenessStatus = all.StalenessStatus
 	o.Tags = all.Tags
 	o.UpdatedAt = all.UpdatedAt
 	if !all.ValueType.IsValid() {

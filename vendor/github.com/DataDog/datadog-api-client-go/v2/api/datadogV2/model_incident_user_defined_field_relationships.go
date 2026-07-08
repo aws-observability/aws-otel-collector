@@ -148,7 +148,7 @@ func (o *IncidentUserDefinedFieldRelationships) UnmarshalJSON(bytes []byte) (err
 		return fmt.Errorf("required field last_modified_by_user missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_by_user", "incident_type", "last_modified_by_user"})
 	} else {
 		return err

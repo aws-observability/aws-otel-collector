@@ -256,7 +256,7 @@ func (o *ObservabilityPipelineOcsfMappingCustomFieldMapping) UnmarshalJSON(bytes
 		return fmt.Errorf("required field dest missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"default", "dest", "lookup", "source", "sources", "value"})
 	} else {
 		return err

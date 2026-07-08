@@ -10,21 +10,21 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// PersonalAccessTokenAttributes Attributes of a personal access token.
+// PersonalAccessTokenAttributes Attributes of an access token.
 type PersonalAccessTokenAttributes struct {
-	// Creation date of the personal access token.
+	// Creation date of the access token.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
-	// Expiration date of the personal access token.
+	// Expiration date of the access token.
 	ExpiresAt datadog.NullableTime `json:"expires_at,omitempty"`
-	// Date the personal access token was last used.
+	// Date the access token was last used.
 	LastUsedAt datadog.NullableTime `json:"last_used_at,omitempty"`
-	// Date of last modification of the personal access token.
+	// Date of last modification of the access token.
 	ModifiedAt datadog.NullableTime `json:"modified_at,omitempty"`
-	// Name of the personal access token.
+	// Name of the access token.
 	Name *string `json:"name,omitempty"`
-	// The public portion of the personal access token.
+	// The public portion of the access token.
 	PublicPortion *string `json:"public_portion,omitempty"`
-	// Array of scopes granted to the personal access token.
+	// Array of scopes granted to the access token.
 	Scopes []string `json:"scopes,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -330,7 +330,7 @@ func (o *PersonalAccessTokenAttributes) UnmarshalJSON(bytes []byte) (err error) 
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "expires_at", "last_used_at", "modified_at", "name", "public_portion", "scopes"})
 	} else {
 		return err

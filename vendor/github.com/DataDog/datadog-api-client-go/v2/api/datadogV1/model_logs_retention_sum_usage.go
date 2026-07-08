@@ -189,7 +189,7 @@ func (o *LogsRetentionSumUsage) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"logs_indexed_logs_usage_sum", "logs_live_indexed_logs_usage_sum", "logs_rehydrated_indexed_logs_usage_sum", "retention"})
 	} else {
 		return err

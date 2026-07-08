@@ -57,6 +57,7 @@ var commands = []string{
 	"STRAIGHT_JOIN",
 	"USE",
 	"CLONE",
+	"VACUUM",
 }
 
 var tableIndicatorCommands = []string{
@@ -105,6 +106,7 @@ var keywords = []string{
 	"INTO",
 	"IS",
 	"KEY",
+	"LATERAL",
 	"LEFT",
 	"LIKE",
 	"LIMIT",
@@ -134,7 +136,6 @@ var keywords = []string{
 	"ROLLUP",
 	"LITERAL",
 	"WINDOW",
-	"VACCUM",
 	"ANALYZE",
 	"ILIKE",
 	"USING",
@@ -178,12 +179,115 @@ var (
 	alias = []string{
 		"AS",
 	}
+
+	// extractFieldKeywords is the set of PostgreSQL EXTRACT field names
+	// (https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-EXTRACT).
+	// They appear as unquoted identifiers in `EXTRACT(field FROM source)` and must be
+	// obfuscated to a placeholder so signatures match the pg_stat_statements form
+	// `EXTRACT($1 FROM source)`. Stored as a flat slice so isExtractFieldKeyword can
+	// use strings.EqualFold without allocating a folded copy of the input.
+	extractFieldKeywords = [...]string{
+		"CENTURY",
+		"DAY",
+		"DECADE",
+		"DOW",
+		"DOY",
+		"EPOCH",
+		"HOUR",
+		"ISODOW",
+		"ISOYEAR",
+		"JULIAN",
+		"MICROSECONDS",
+		"MILLENNIUM",
+		"MILLISECONDS",
+		"MINUTE",
+		"MONTH",
+		"QUARTER",
+		"SECOND",
+		"TIMEZONE",
+		"TIMEZONE_HOUR",
+		"TIMEZONE_MINUTE",
+		"WEEK",
+		"YEAR",
+	}
 )
+
+// isExtractFieldKeyword reports whether value is a known PostgreSQL EXTRACT field
+// keyword (case-insensitive).
+func isExtractFieldKeyword(value string) bool {
+	for _, kw := range extractFieldKeywords {
+		if strings.EqualFold(value, kw) {
+			return true
+		}
+	}
+	return false
+}
+
+// extractContext tracks the two most recent non-whitespace, non-comment tokens
+// so callers can detect when the current token is the field argument of an
+// `EXTRACT(field FROM ...)` call. The zero value is ready to use.
+type extractContext struct {
+	prevType   TokenType
+	prevValue  string
+	prev2Type  TokenType
+	prev2Value string
+}
+
+// maybeReplaceExtractField rewrites token.Value to StringPlaceholder when the
+// token is the field argument of an EXTRACT(...) call (i.e. preceded by
+// FUNCTION "EXTRACT" then PUNCTUATION "(") and matches a known field name.
+// This converges the obfuscated form of `EXTRACT(epoch FROM x)` with the
+// pg_stat_statements form `EXTRACT($1 FROM x)`.
+func (c *extractContext) maybeReplaceExtractField(token *Token) {
+	if token.Type != IDENT && token.Type != KEYWORD {
+		return
+	}
+	if c.prevType != PUNCTUATION || c.prevValue != "(" {
+		return
+	}
+	if c.prev2Type != FUNCTION || !strings.EqualFold(c.prev2Value, "EXTRACT") {
+		return
+	}
+	if !isExtractFieldKeyword(token.Value) {
+		return
+	}
+	token.Value = StringPlaceholder
+}
+
+// update advances the rolling window of recent tokens, ignoring whitespace and
+// comments so they don't break the EXTRACT( ... ) adjacency check.
+func (c *extractContext) update(token *Token) {
+	if token.Type == SPACE || token.Type == COMMENT || token.Type == MULTILINE_COMMENT {
+		return
+	}
+	c.prev2Type, c.prev2Value = c.prevType, c.prevValue
+	c.prevType, c.prevValue = token.Type, token.Value
+}
+
+// trieNode represents a node in the keyword trie.
+type trieNode struct {
+	children         [27]*trieNode // 0-25 for A-Z, 26 for underscore
+	isEnd            bool
+	tokenType        TokenType
+	isTableIndicator bool
+}
+
+// trieIndex returns the array index for a character (0-25 for A-Z, 26 for underscore).
+// Returns -1 for invalid characters.
+func trieIndex(ch rune) int {
+	if ch >= 'A' && ch <= 'Z' {
+		return int(ch - 'A')
+	}
+	if ch == '_' {
+		return 26
+	}
+	return -1
+}
 
 // buildCombinedTrie combines all types of SQL keywords into a single trie
 // This trie is used for efficient case-insensitive keyword matching during lexing
 func buildCombinedTrie() *trieNode {
-	root := &trieNode{children: make(map[rune]*trieNode)}
+	root := &trieNode{}
 
 	// Add all types of keywords
 	addToTrie(root, commands, COMMAND, false)
@@ -204,11 +308,16 @@ func addToTrie(root *trieNode, words []string, tokenType TokenType, isTableIndic
 		node := root
 		// Convert to uppercase for case-insensitive matching
 		for _, ch := range strings.ToUpper(word) {
-			if next, exists := node.children[ch]; exists {
+			idx := trieIndex(ch)
+			if idx < 0 {
+				// Skip characters that aren't valid trie indices
+				continue
+			}
+			if next := node.children[idx]; next != nil {
 				node = next
 			} else {
-				next = &trieNode{children: make(map[rune]*trieNode)}
-				node.children[ch] = next
+				next := &trieNode{}
+				node.children[idx] = next
 				node = next
 			}
 		}

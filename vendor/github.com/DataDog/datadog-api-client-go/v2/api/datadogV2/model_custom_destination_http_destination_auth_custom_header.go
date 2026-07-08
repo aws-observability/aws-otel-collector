@@ -150,7 +150,7 @@ func (o *CustomDestinationHttpDestinationAuthCustomHeader) UnmarshalJSON(bytes [
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"header_name", "header_value", "type"})
 	} else {
 		return err

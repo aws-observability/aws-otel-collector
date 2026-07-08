@@ -365,7 +365,7 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"min_failure_duration", "min_location_failed", "monitor_name", "monitor_options", "monitor_priority", "restricted_roles", "retry", "scheduling", "tick_every"})
 	} else {
 		return err

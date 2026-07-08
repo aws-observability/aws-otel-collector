@@ -393,7 +393,7 @@ func (o *FleetIntegrationDetails) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data_type", "error_messages", "init_config", "instance_config", "is_custom_check", "log_config", "name", "source_index", "source_path", "type"})
 	} else {
 		return err

@@ -112,7 +112,7 @@ type VLANInterface struct {
 }
 
 type LinodeInterfaceCreateOptions struct {
-	FirewallID   **int                         `json:"firewall_id,omitempty"`
+	FirewallID   *int                          `json:"firewall_id,omitempty"`
 	DefaultRoute *InterfaceDefaultRoute        `json:"default_route,omitempty"`
 	Public       *PublicInterfaceCreateOptions `json:"public,omitempty"`
 	VPC          *VPCInterfaceCreateOptions    `json:"vpc,omitempty"`

@@ -12,11 +12,11 @@ import (
 
 // SecurityEntityRiskScore An entity risk score containing security risk assessment information
 type SecurityEntityRiskScore struct {
-	// Attributes of an entity risk score
+	// Attributes of an entity risk score.
 	Attributes SecurityEntityRiskScoreAttributes `json:"attributes"`
 	// Unique identifier for the entity
 	Id string `json:"id"`
-	// Resource type
+	// Resource type.
 	Type SecurityEntityRiskScoreType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -148,7 +148,7 @@ func (o *SecurityEntityRiskScore) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err

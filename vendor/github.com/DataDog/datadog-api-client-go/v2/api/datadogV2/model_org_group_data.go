@@ -18,8 +18,6 @@ type OrgGroupData struct {
 	Attributes OrgGroupAttributes `json:"attributes"`
 	// The ID of the org group.
 	Id uuid.UUID `json:"id"`
-	// Relationships of an org group.
-	Relationships *OrgGroupRelationships `json:"relationships,omitempty"`
 	// Org groups resource type.
 	Type OrgGroupType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -93,34 +91,6 @@ func (o *OrgGroupData) SetId(v uuid.UUID) {
 	o.Id = v
 }
 
-// GetRelationships returns the Relationships field value if set, zero value otherwise.
-func (o *OrgGroupData) GetRelationships() OrgGroupRelationships {
-	if o == nil || o.Relationships == nil {
-		var ret OrgGroupRelationships
-		return ret
-	}
-	return *o.Relationships
-}
-
-// GetRelationshipsOk returns a tuple with the Relationships field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *OrgGroupData) GetRelationshipsOk() (*OrgGroupRelationships, bool) {
-	if o == nil || o.Relationships == nil {
-		return nil, false
-	}
-	return o.Relationships, true
-}
-
-// HasRelationships returns a boolean if a field has been set.
-func (o *OrgGroupData) HasRelationships() bool {
-	return o != nil && o.Relationships != nil
-}
-
-// SetRelationships gets a reference to the given OrgGroupRelationships and assigns it to the Relationships field.
-func (o *OrgGroupData) SetRelationships(v OrgGroupRelationships) {
-	o.Relationships = &v
-}
-
 // GetType returns the Type field value.
 func (o *OrgGroupData) GetType() OrgGroupType {
 	if o == nil {
@@ -152,9 +122,6 @@ func (o OrgGroupData) MarshalJSON() ([]byte, error) {
 	}
 	toSerialize["attributes"] = o.Attributes
 	toSerialize["id"] = o.Id
-	if o.Relationships != nil {
-		toSerialize["relationships"] = o.Relationships
-	}
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -166,10 +133,9 @@ func (o OrgGroupData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *OrgGroupData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Attributes    *OrgGroupAttributes    `json:"attributes"`
-		Id            *uuid.UUID             `json:"id"`
-		Relationships *OrgGroupRelationships `json:"relationships,omitempty"`
-		Type          *OrgGroupType          `json:"type"`
+		Attributes *OrgGroupAttributes `json:"attributes"`
+		Id         *uuid.UUID          `json:"id"`
+		Type       *OrgGroupType       `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -184,8 +150,8 @@ func (o *OrgGroupData) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "relationships", "type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err
 	}
@@ -196,10 +162,6 @@ func (o *OrgGroupData) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Attributes = *all.Attributes
 	o.Id = *all.Id
-	if all.Relationships != nil && all.Relationships.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
-	o.Relationships = all.Relationships
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

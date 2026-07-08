@@ -353,7 +353,7 @@ func (o *SimpleMonitorUserTemplate) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created", "description", "id", "monitor_definition", "tags", "template_variables", "title", "version"})
 	} else {
 		return err

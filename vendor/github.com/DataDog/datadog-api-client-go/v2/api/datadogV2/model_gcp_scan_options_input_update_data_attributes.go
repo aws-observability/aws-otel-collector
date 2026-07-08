@@ -10,6 +10,8 @@ import (
 
 // GcpScanOptionsInputUpdateDataAttributes Attributes for updating GCP scan options configuration.
 type GcpScanOptionsInputUpdateDataAttributes struct {
+	// Indicates whether host compliance scanning is enabled.
+	ComplianceHost *bool `json:"compliance_host,omitempty"`
 	// Indicates if scanning for vulnerabilities in containers is enabled.
 	VulnContainersOs *bool `json:"vuln_containers_os,omitempty"`
 	// Indicates if scanning for vulnerabilities in hosts is enabled.
@@ -34,6 +36,34 @@ func NewGcpScanOptionsInputUpdateDataAttributes() *GcpScanOptionsInputUpdateData
 func NewGcpScanOptionsInputUpdateDataAttributesWithDefaults() *GcpScanOptionsInputUpdateDataAttributes {
 	this := GcpScanOptionsInputUpdateDataAttributes{}
 	return &this
+}
+
+// GetComplianceHost returns the ComplianceHost field value if set, zero value otherwise.
+func (o *GcpScanOptionsInputUpdateDataAttributes) GetComplianceHost() bool {
+	if o == nil || o.ComplianceHost == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ComplianceHost
+}
+
+// GetComplianceHostOk returns a tuple with the ComplianceHost field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GcpScanOptionsInputUpdateDataAttributes) GetComplianceHostOk() (*bool, bool) {
+	if o == nil || o.ComplianceHost == nil {
+		return nil, false
+	}
+	return o.ComplianceHost, true
+}
+
+// HasComplianceHost returns a boolean if a field has been set.
+func (o *GcpScanOptionsInputUpdateDataAttributes) HasComplianceHost() bool {
+	return o != nil && o.ComplianceHost != nil
+}
+
+// SetComplianceHost gets a reference to the given bool and assigns it to the ComplianceHost field.
+func (o *GcpScanOptionsInputUpdateDataAttributes) SetComplianceHost(v bool) {
+	o.ComplianceHost = &v
 }
 
 // GetVulnContainersOs returns the VulnContainersOs field value if set, zero value otherwise.
@@ -98,6 +128,9 @@ func (o GcpScanOptionsInputUpdateDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ComplianceHost != nil {
+		toSerialize["compliance_host"] = o.ComplianceHost
+	}
 	if o.VulnContainersOs != nil {
 		toSerialize["vuln_containers_os"] = o.VulnContainersOs
 	}
@@ -114,6 +147,7 @@ func (o GcpScanOptionsInputUpdateDataAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *GcpScanOptionsInputUpdateDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		ComplianceHost   *bool `json:"compliance_host,omitempty"`
 		VulnContainersOs *bool `json:"vuln_containers_os,omitempty"`
 		VulnHostOs       *bool `json:"vuln_host_os,omitempty"`
 	}{}
@@ -121,11 +155,12 @@ func (o *GcpScanOptionsInputUpdateDataAttributes) UnmarshalJSON(bytes []byte) (e
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"vuln_containers_os", "vuln_host_os"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"compliance_host", "vuln_containers_os", "vuln_host_os"})
 	} else {
 		return err
 	}
+	o.ComplianceHost = all.ComplianceHost
 	o.VulnContainersOs = all.VulnContainersOs
 	o.VulnHostOs = all.VulnHostOs
 

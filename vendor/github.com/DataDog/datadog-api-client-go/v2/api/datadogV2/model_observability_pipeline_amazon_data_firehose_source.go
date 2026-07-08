@@ -224,7 +224,7 @@ func (o *ObservabilityPipelineAmazonDataFirehoseSource) UnmarshalJSON(bytes []by
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"address_key", "auth", "id", "tls", "type"})
 	} else {
 		return err

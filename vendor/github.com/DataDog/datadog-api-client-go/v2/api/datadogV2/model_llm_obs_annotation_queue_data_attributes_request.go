@@ -12,6 +12,8 @@ import (
 
 // LLMObsAnnotationQueueDataAttributesRequest Attributes for creating an LLM Observability annotation queue.
 type LLMObsAnnotationQueueDataAttributesRequest struct {
+	// Schema defining the labels for an annotation queue.
+	AnnotationSchema *LLMObsAnnotationSchema `json:"annotation_schema,omitempty"`
 	// Description of the annotation queue.
 	Description *string `json:"description,omitempty"`
 	// Name of the annotation queue.
@@ -40,6 +42,34 @@ func NewLLMObsAnnotationQueueDataAttributesRequest(name string, projectId string
 func NewLLMObsAnnotationQueueDataAttributesRequestWithDefaults() *LLMObsAnnotationQueueDataAttributesRequest {
 	this := LLMObsAnnotationQueueDataAttributesRequest{}
 	return &this
+}
+
+// GetAnnotationSchema returns the AnnotationSchema field value if set, zero value otherwise.
+func (o *LLMObsAnnotationQueueDataAttributesRequest) GetAnnotationSchema() LLMObsAnnotationSchema {
+	if o == nil || o.AnnotationSchema == nil {
+		var ret LLMObsAnnotationSchema
+		return ret
+	}
+	return *o.AnnotationSchema
+}
+
+// GetAnnotationSchemaOk returns a tuple with the AnnotationSchema field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsAnnotationQueueDataAttributesRequest) GetAnnotationSchemaOk() (*LLMObsAnnotationSchema, bool) {
+	if o == nil || o.AnnotationSchema == nil {
+		return nil, false
+	}
+	return o.AnnotationSchema, true
+}
+
+// HasAnnotationSchema returns a boolean if a field has been set.
+func (o *LLMObsAnnotationQueueDataAttributesRequest) HasAnnotationSchema() bool {
+	return o != nil && o.AnnotationSchema != nil
+}
+
+// SetAnnotationSchema gets a reference to the given LLMObsAnnotationSchema and assigns it to the AnnotationSchema field.
+func (o *LLMObsAnnotationQueueDataAttributesRequest) SetAnnotationSchema(v LLMObsAnnotationSchema) {
+	o.AnnotationSchema = &v
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -122,6 +152,9 @@ func (o LLMObsAnnotationQueueDataAttributesRequest) MarshalJSON() ([]byte, error
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AnnotationSchema != nil {
+		toSerialize["annotation_schema"] = o.AnnotationSchema
+	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
@@ -137,9 +170,10 @@ func (o LLMObsAnnotationQueueDataAttributesRequest) MarshalJSON() ([]byte, error
 // UnmarshalJSON deserializes the given payload.
 func (o *LLMObsAnnotationQueueDataAttributesRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Description *string `json:"description,omitempty"`
-		Name        *string `json:"name"`
-		ProjectId   *string `json:"project_id"`
+		AnnotationSchema *LLMObsAnnotationSchema `json:"annotation_schema,omitempty"`
+		Description      *string                 `json:"description,omitempty"`
+		Name             *string                 `json:"name"`
+		ProjectId        *string                 `json:"project_id"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -151,17 +185,27 @@ func (o *LLMObsAnnotationQueueDataAttributesRequest) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field project_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "name", "project_id"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"annotation_schema", "description", "name", "project_id"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	if all.AnnotationSchema != nil && all.AnnotationSchema.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.AnnotationSchema = all.AnnotationSchema
 	o.Description = all.Description
 	o.Name = *all.Name
 	o.ProjectId = *all.ProjectId
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

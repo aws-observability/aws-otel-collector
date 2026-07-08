@@ -14,8 +14,11 @@ import (
 type CommitCoverageSummaryRequestAttributes struct {
 	// The commit SHA (40-character hexadecimal string).
 	CommitSha string `json:"commit_sha"`
-	// The repository identifier.
-	RepositoryId string `json:"repository_id"`
+	// Deprecated: use `repository_url` instead. The repository URL.
+	// Deprecated
+	RepositoryId *string `json:"repository_id,omitempty"`
+	// The repository URL. Accepts a full URL with or without a scheme (for example, `https://github.com/org/repo` or `github.com/org/repo`).
+	RepositoryUrl *string `json:"repository_url,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,10 +28,9 @@ type CommitCoverageSummaryRequestAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCommitCoverageSummaryRequestAttributes(commitSha string, repositoryId string) *CommitCoverageSummaryRequestAttributes {
+func NewCommitCoverageSummaryRequestAttributes(commitSha string) *CommitCoverageSummaryRequestAttributes {
 	this := CommitCoverageSummaryRequestAttributes{}
 	this.CommitSha = commitSha
-	this.RepositoryId = repositoryId
 	return &this
 }
 
@@ -63,27 +65,63 @@ func (o *CommitCoverageSummaryRequestAttributes) SetCommitSha(v string) {
 	o.CommitSha = v
 }
 
-// GetRepositoryId returns the RepositoryId field value.
+// GetRepositoryId returns the RepositoryId field value if set, zero value otherwise.
+// Deprecated
 func (o *CommitCoverageSummaryRequestAttributes) GetRepositoryId() string {
-	if o == nil {
+	if o == nil || o.RepositoryId == nil {
 		var ret string
 		return ret
 	}
-	return o.RepositoryId
+	return *o.RepositoryId
 }
 
-// GetRepositoryIdOk returns a tuple with the RepositoryId field value
+// GetRepositoryIdOk returns a tuple with the RepositoryId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *CommitCoverageSummaryRequestAttributes) GetRepositoryIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.RepositoryId == nil {
 		return nil, false
 	}
-	return &o.RepositoryId, true
+	return o.RepositoryId, true
 }
 
-// SetRepositoryId sets field value.
+// HasRepositoryId returns a boolean if a field has been set.
+func (o *CommitCoverageSummaryRequestAttributes) HasRepositoryId() bool {
+	return o != nil && o.RepositoryId != nil
+}
+
+// SetRepositoryId gets a reference to the given string and assigns it to the RepositoryId field.
+// Deprecated
 func (o *CommitCoverageSummaryRequestAttributes) SetRepositoryId(v string) {
-	o.RepositoryId = v
+	o.RepositoryId = &v
+}
+
+// GetRepositoryUrl returns the RepositoryUrl field value if set, zero value otherwise.
+func (o *CommitCoverageSummaryRequestAttributes) GetRepositoryUrl() string {
+	if o == nil || o.RepositoryUrl == nil {
+		var ret string
+		return ret
+	}
+	return *o.RepositoryUrl
+}
+
+// GetRepositoryUrlOk returns a tuple with the RepositoryUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommitCoverageSummaryRequestAttributes) GetRepositoryUrlOk() (*string, bool) {
+	if o == nil || o.RepositoryUrl == nil {
+		return nil, false
+	}
+	return o.RepositoryUrl, true
+}
+
+// HasRepositoryUrl returns a boolean if a field has been set.
+func (o *CommitCoverageSummaryRequestAttributes) HasRepositoryUrl() bool {
+	return o != nil && o.RepositoryUrl != nil
+}
+
+// SetRepositoryUrl gets a reference to the given string and assigns it to the RepositoryUrl field.
+func (o *CommitCoverageSummaryRequestAttributes) SetRepositoryUrl(v string) {
+	o.RepositoryUrl = &v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -93,7 +131,12 @@ func (o CommitCoverageSummaryRequestAttributes) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["commit_sha"] = o.CommitSha
-	toSerialize["repository_id"] = o.RepositoryId
+	if o.RepositoryId != nil {
+		toSerialize["repository_id"] = o.RepositoryId
+	}
+	if o.RepositoryUrl != nil {
+		toSerialize["repository_url"] = o.RepositoryUrl
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -104,8 +147,9 @@ func (o CommitCoverageSummaryRequestAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CommitCoverageSummaryRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CommitSha    *string `json:"commit_sha"`
-		RepositoryId *string `json:"repository_id"`
+		CommitSha     *string `json:"commit_sha"`
+		RepositoryId  *string `json:"repository_id,omitempty"`
+		RepositoryUrl *string `json:"repository_url,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -113,17 +157,15 @@ func (o *CommitCoverageSummaryRequestAttributes) UnmarshalJSON(bytes []byte) (er
 	if all.CommitSha == nil {
 		return fmt.Errorf("required field commit_sha missing")
 	}
-	if all.RepositoryId == nil {
-		return fmt.Errorf("required field repository_id missing")
-	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"commit_sha", "repository_id"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"commit_sha", "repository_id", "repository_url"})
 	} else {
 		return err
 	}
 	o.CommitSha = *all.CommitSha
-	o.RepositoryId = *all.RepositoryId
+	o.RepositoryId = all.RepositoryId
+	o.RepositoryUrl = all.RepositoryUrl
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

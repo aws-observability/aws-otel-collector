@@ -431,7 +431,7 @@ func (o *CreateTenancyConfigDataAttributes) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field user_ocid missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"auth_credentials", "config_version", "cost_collection_enabled", "dd_compartment_id", "dd_stack_id", "home_region", "logs_config", "metrics_config", "regions_config", "resource_collection_enabled", "user_ocid"})
 	} else {
 		return err

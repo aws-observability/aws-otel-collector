@@ -310,7 +310,7 @@ func (o *CustomDestinationCreateRequestAttributes) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "forward_tags", "forward_tags_restriction_list", "forward_tags_restriction_list_type", "forwarder_destination", "name", "query"})
 	} else {
 		return err

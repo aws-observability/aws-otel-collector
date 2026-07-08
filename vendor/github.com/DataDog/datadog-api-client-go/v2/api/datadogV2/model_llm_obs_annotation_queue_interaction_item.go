@@ -5,139 +5,101 @@
 package datadogV2
 
 import (
-	"fmt"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// LLMObsAnnotationQueueInteractionItem A single interaction to add to an annotation queue.
+// LLMObsAnnotationQueueInteractionItem - A single interaction to add to an annotation queue.
 type LLMObsAnnotationQueueInteractionItem struct {
-	// Identifier of the content (such as trace ID) for this interaction.
-	ContentId string `json:"content_id"`
-	// Type of interaction in an annotation queue.
-	Type LLMObsInteractionType `json:"type"`
+	LLMObsTraceInteractionItem        *LLMObsTraceInteractionItem
+	LLMObsDisplayBlockInteractionItem *LLMObsDisplayBlockInteractionItem
+
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
-	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	UnparsedObject interface{}
 }
 
-// NewLLMObsAnnotationQueueInteractionItem instantiates a new LLMObsAnnotationQueueInteractionItem object.
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed.
-func NewLLMObsAnnotationQueueInteractionItem(contentId string, typeVar LLMObsInteractionType) *LLMObsAnnotationQueueInteractionItem {
-	this := LLMObsAnnotationQueueInteractionItem{}
-	this.ContentId = contentId
-	this.Type = typeVar
-	return &this
+// LLMObsTraceInteractionItemAsLLMObsAnnotationQueueInteractionItem is a convenience function that returns LLMObsTraceInteractionItem wrapped in LLMObsAnnotationQueueInteractionItem.
+func LLMObsTraceInteractionItemAsLLMObsAnnotationQueueInteractionItem(v *LLMObsTraceInteractionItem) LLMObsAnnotationQueueInteractionItem {
+	return LLMObsAnnotationQueueInteractionItem{LLMObsTraceInteractionItem: v}
 }
 
-// NewLLMObsAnnotationQueueInteractionItemWithDefaults instantiates a new LLMObsAnnotationQueueInteractionItem object.
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set.
-func NewLLMObsAnnotationQueueInteractionItemWithDefaults() *LLMObsAnnotationQueueInteractionItem {
-	this := LLMObsAnnotationQueueInteractionItem{}
-	return &this
+// LLMObsDisplayBlockInteractionItemAsLLMObsAnnotationQueueInteractionItem is a convenience function that returns LLMObsDisplayBlockInteractionItem wrapped in LLMObsAnnotationQueueInteractionItem.
+func LLMObsDisplayBlockInteractionItemAsLLMObsAnnotationQueueInteractionItem(v *LLMObsDisplayBlockInteractionItem) LLMObsAnnotationQueueInteractionItem {
+	return LLMObsAnnotationQueueInteractionItem{LLMObsDisplayBlockInteractionItem: v}
 }
 
-// GetContentId returns the ContentId field value.
-func (o *LLMObsAnnotationQueueInteractionItem) GetContentId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-	return o.ContentId
-}
-
-// GetContentIdOk returns a tuple with the ContentId field value
-// and a boolean to check if the value has been set.
-func (o *LLMObsAnnotationQueueInteractionItem) GetContentIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.ContentId, true
-}
-
-// SetContentId sets field value.
-func (o *LLMObsAnnotationQueueInteractionItem) SetContentId(v string) {
-	o.ContentId = v
-}
-
-// GetType returns the Type field value.
-func (o *LLMObsAnnotationQueueInteractionItem) GetType() LLMObsInteractionType {
-	if o == nil {
-		var ret LLMObsInteractionType
-		return ret
-	}
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LLMObsAnnotationQueueInteractionItem) GetTypeOk() (*LLMObsInteractionType, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value.
-func (o *LLMObsAnnotationQueueInteractionItem) SetType(v LLMObsInteractionType) {
-	o.Type = v
-}
-
-// MarshalJSON serializes the struct using spec logic.
-func (o LLMObsAnnotationQueueInteractionItem) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.UnparsedObject != nil {
-		return datadog.Marshal(o.UnparsedObject)
-	}
-	toSerialize["content_id"] = o.ContentId
-	toSerialize["type"] = o.Type
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
-	return datadog.Marshal(toSerialize)
-}
-
-// UnmarshalJSON deserializes the given payload.
-func (o *LLMObsAnnotationQueueInteractionItem) UnmarshalJSON(bytes []byte) (err error) {
-	all := struct {
-		ContentId *string                `json:"content_id"`
-		Type      *LLMObsInteractionType `json:"type"`
-	}{}
-	if err = datadog.Unmarshal(bytes, &all); err != nil {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.ContentId == nil {
-		return fmt.Errorf("required field content_id missing")
-	}
-	if all.Type == nil {
-		return fmt.Errorf("required field type missing")
-	}
-	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"content_id", "type"})
+// UnmarshalJSON turns data into one of the pointers in the struct.
+func (obj *LLMObsAnnotationQueueInteractionItem) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into LLMObsTraceInteractionItem
+	err = datadog.Unmarshal(data, &obj.LLMObsTraceInteractionItem)
+	if err == nil {
+		if obj.LLMObsTraceInteractionItem != nil && obj.LLMObsTraceInteractionItem.UnparsedObject == nil {
+			jsonLLMObsTraceInteractionItem, _ := datadog.Marshal(obj.LLMObsTraceInteractionItem)
+			if string(jsonLLMObsTraceInteractionItem) == "{}" { // empty struct
+				obj.LLMObsTraceInteractionItem = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.LLMObsTraceInteractionItem = nil
+		}
 	} else {
-		return err
+		obj.LLMObsTraceInteractionItem = nil
 	}
 
-	hasInvalidField := false
-	o.ContentId = *all.ContentId
-	if !all.Type.IsValid() {
-		hasInvalidField = true
+	// try to unmarshal data into LLMObsDisplayBlockInteractionItem
+	err = datadog.Unmarshal(data, &obj.LLMObsDisplayBlockInteractionItem)
+	if err == nil {
+		if obj.LLMObsDisplayBlockInteractionItem != nil && obj.LLMObsDisplayBlockInteractionItem.UnparsedObject == nil {
+			jsonLLMObsDisplayBlockInteractionItem, _ := datadog.Marshal(obj.LLMObsDisplayBlockInteractionItem)
+			if string(jsonLLMObsDisplayBlockInteractionItem) == "{}" { // empty struct
+				obj.LLMObsDisplayBlockInteractionItem = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.LLMObsDisplayBlockInteractionItem = nil
+		}
 	} else {
-		o.Type = *all.Type
+		obj.LLMObsDisplayBlockInteractionItem = nil
 	}
 
-	if len(additionalProperties) > 0 {
-		o.AdditionalProperties = additionalProperties
+	if match != 1 { // more than 1 match
+		// reset to nil
+		obj.LLMObsTraceInteractionItem = nil
+		obj.LLMObsDisplayBlockInteractionItem = nil
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
+	}
+	return nil // exactly one match
+}
+
+// MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
+func (obj LLMObsAnnotationQueueInteractionItem) MarshalJSON() ([]byte, error) {
+	if obj.LLMObsTraceInteractionItem != nil {
+		return datadog.Marshal(&obj.LLMObsTraceInteractionItem)
 	}
 
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	if obj.LLMObsDisplayBlockInteractionItem != nil {
+		return datadog.Marshal(&obj.LLMObsDisplayBlockInteractionItem)
 	}
 
+	if obj.UnparsedObject != nil {
+		return datadog.Marshal(obj.UnparsedObject)
+	}
+	return nil, nil // no data in oneOf schemas
+}
+
+// GetActualInstance returns the actual instance.
+func (obj *LLMObsAnnotationQueueInteractionItem) GetActualInstance() interface{} {
+	if obj.LLMObsTraceInteractionItem != nil {
+		return obj.LLMObsTraceInteractionItem
+	}
+
+	if obj.LLMObsDisplayBlockInteractionItem != nil {
+		return obj.LLMObsDisplayBlockInteractionItem
+	}
+
+	// all schemas are nil
 	return nil
 }

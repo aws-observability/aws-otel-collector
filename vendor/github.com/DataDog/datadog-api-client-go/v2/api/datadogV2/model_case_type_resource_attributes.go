@@ -11,15 +11,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CaseTypeResourceAttributes Case Type resource attributes
+// CaseTypeResourceAttributes Attributes of a case type, which define a classification category for cases. Organizations use case types to model different workflows (for example, Security Incident, Bug Report, Change Request).
 type CaseTypeResourceAttributes struct {
-	// Timestamp of when the case type was deleted
+	// Timestamp when the case type was marked as deleted. A null value indicates the case type is active.
 	DeletedAt datadog.NullableTime `json:"deleted_at,omitempty"`
-	// Case type description.
+	// A detailed description explaining when this case type should be used.
 	Description *string `json:"description,omitempty"`
-	// Case type emoji.
+	// An emoji icon representing the case type in the UI.
 	Emoji *string `json:"emoji,omitempty"`
-	// Case type name.
+	// The display name of the case type, shown in the Case Management UI when creating or viewing cases.
 	Name string `json:"name"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -200,7 +200,7 @@ func (o *CaseTypeResourceAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"deleted_at", "description", "emoji", "name"})
 	} else {
 		return err

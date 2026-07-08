@@ -117,7 +117,7 @@ func (o *SecurityMonitoringContentPackStateMeta) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field sku missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"cloud_siem_index_incorrect", "sku"})
 	} else {
 		return err

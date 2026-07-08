@@ -8,14 +8,14 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// RumMetricResponseCompute The compute rule to compute the rum-based metric.
+// RumMetricResponseCompute The compute rule to compute the RUM-based metric.
 type RumMetricResponseCompute struct {
 	// The type of aggregation to use.
 	AggregationType *RumMetricComputeAggregationType `json:"aggregation_type,omitempty"`
 	// Toggle to include or exclude percentile aggregations for distribution metrics.
 	// Only present when `aggregation_type` is `distribution`.
 	IncludePercentiles *bool `json:"include_percentiles,omitempty"`
-	// The path to the value the rum-based metric will aggregate on.
+	// The path to the value the RUM-based metric will aggregate on.
 	// Only present when `aggregation_type` is `distribution`.
 	Path *string `json:"path,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -157,7 +157,7 @@ func (o *RumMetricResponseCompute) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation_type", "include_percentiles", "path"})
 	} else {
 		return err

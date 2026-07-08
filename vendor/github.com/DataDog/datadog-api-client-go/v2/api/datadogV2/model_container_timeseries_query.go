@@ -12,6 +12,8 @@ import (
 
 // ContainerTimeseriesQuery A query for container-level metrics such as CPU and memory usage.
 type ContainerTimeseriesQuery struct {
+	// Organization UUIDs to query when using [cross-organization visibility](/account_management/org_settings/cross_org_visibility/). Limited to one organization UUID.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// A data source for container-level infrastructure metrics.
 	DataSource ContainerDataSource `json:"data_source"`
 	// Whether CPU metrics should be normalized by core count.
@@ -57,6 +59,34 @@ func NewContainerTimeseriesQueryWithDefaults() *ContainerTimeseriesQuery {
 	var sort QuerySortOrder = QUERYSORTORDER_DESC
 	this.Sort = &sort
 	return &this
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *ContainerTimeseriesQuery) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerTimeseriesQuery) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *ContainerTimeseriesQuery) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *ContainerTimeseriesQuery) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -274,6 +304,9 @@ func (o ContainerTimeseriesQuery) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.IsNormalizedCpu != nil {
 		toSerialize["is_normalized_cpu"] = o.IsNormalizedCpu
@@ -302,6 +335,7 @@ func (o ContainerTimeseriesQuery) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ContainerTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		CrossOrgUuids   []string             `json:"cross_org_uuids,omitempty"`
 		DataSource      *ContainerDataSource `json:"data_source"`
 		IsNormalizedCpu *bool                `json:"is_normalized_cpu,omitempty"`
 		Limit           *int64               `json:"limit,omitempty"`
@@ -324,13 +358,14 @@ func (o *ContainerTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "is_normalized_cpu", "limit", "metric", "name", "sort", "tag_filters", "text_filter"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"cross_org_uuids", "data_source", "is_normalized_cpu", "limit", "metric", "name", "sort", "tag_filters", "text_filter"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

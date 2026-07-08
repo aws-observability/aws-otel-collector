@@ -1191,6 +1191,192 @@ func (a *ScorecardsApi) ListScorecardRulesWithPagination(ctx _context.Context, o
 	return items, cancel
 }
 
+// ListScorecardScoresOptionalParameters holds optional parameters for ListScorecardScores.
+type ListScorecardScoresOptionalParameters struct {
+	FilterRuleId          *string
+	FilterRuleName        *string
+	FilterRuleLevel       *string
+	FilterRuleScorecardId *string
+	FilterRuleIsCustom    *bool
+	FilterRuleIsEnabled   *bool
+	Sort                  *string
+	PageOffset            *int64
+	PageLimit             *int64
+}
+
+// NewListScorecardScoresOptionalParameters creates an empty struct for parameters.
+func NewListScorecardScoresOptionalParameters() *ListScorecardScoresOptionalParameters {
+	this := ListScorecardScoresOptionalParameters{}
+	return &this
+}
+
+// WithFilterRuleId sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithFilterRuleId(filterRuleId string) *ListScorecardScoresOptionalParameters {
+	r.FilterRuleId = &filterRuleId
+	return r
+}
+
+// WithFilterRuleName sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithFilterRuleName(filterRuleName string) *ListScorecardScoresOptionalParameters {
+	r.FilterRuleName = &filterRuleName
+	return r
+}
+
+// WithFilterRuleLevel sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithFilterRuleLevel(filterRuleLevel string) *ListScorecardScoresOptionalParameters {
+	r.FilterRuleLevel = &filterRuleLevel
+	return r
+}
+
+// WithFilterRuleScorecardId sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithFilterRuleScorecardId(filterRuleScorecardId string) *ListScorecardScoresOptionalParameters {
+	r.FilterRuleScorecardId = &filterRuleScorecardId
+	return r
+}
+
+// WithFilterRuleIsCustom sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithFilterRuleIsCustom(filterRuleIsCustom bool) *ListScorecardScoresOptionalParameters {
+	r.FilterRuleIsCustom = &filterRuleIsCustom
+	return r
+}
+
+// WithFilterRuleIsEnabled sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithFilterRuleIsEnabled(filterRuleIsEnabled bool) *ListScorecardScoresOptionalParameters {
+	r.FilterRuleIsEnabled = &filterRuleIsEnabled
+	return r
+}
+
+// WithSort sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithSort(sort string) *ListScorecardScoresOptionalParameters {
+	r.Sort = &sort
+	return r
+}
+
+// WithPageOffset sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithPageOffset(pageOffset int64) *ListScorecardScoresOptionalParameters {
+	r.PageOffset = &pageOffset
+	return r
+}
+
+// WithPageLimit sets the corresponding parameter name and returns the struct.
+func (r *ListScorecardScoresOptionalParameters) WithPageLimit(pageLimit int64) *ListScorecardScoresOptionalParameters {
+	r.PageLimit = &pageLimit
+	return r
+}
+
+// ListScorecardScores List all scores.
+// Returns a list of scorecard scores for each aggregation type, with score breakdowns.
+func (a *ScorecardsApi) ListScorecardScores(ctx _context.Context, aggregation ScorecardScoresAggregation, o ...ListScorecardScoresOptionalParameters) (ListScorecardScoresResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ListScorecardScoresResponse
+		optionalParams      ListScorecardScoresOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListScorecardScoresOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.ScorecardsApi.ListScorecardScores")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/scorecard/scores/{aggregation}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{aggregation}", _neturl.PathEscape(datadog.ParameterToString(aggregation, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.FilterRuleId != nil {
+		localVarQueryParams.Add("filter[rule][id]", datadog.ParameterToString(*optionalParams.FilterRuleId, ""))
+	}
+	if optionalParams.FilterRuleName != nil {
+		localVarQueryParams.Add("filter[rule][name]", datadog.ParameterToString(*optionalParams.FilterRuleName, ""))
+	}
+	if optionalParams.FilterRuleLevel != nil {
+		localVarQueryParams.Add("filter[rule][level]", datadog.ParameterToString(*optionalParams.FilterRuleLevel, ""))
+	}
+	if optionalParams.FilterRuleScorecardId != nil {
+		localVarQueryParams.Add("filter[rule][scorecard_id]", datadog.ParameterToString(*optionalParams.FilterRuleScorecardId, ""))
+	}
+	if optionalParams.FilterRuleIsCustom != nil {
+		localVarQueryParams.Add("filter[rule][is_custom]", datadog.ParameterToString(*optionalParams.FilterRuleIsCustom, ""))
+	}
+	if optionalParams.FilterRuleIsEnabled != nil {
+		localVarQueryParams.Add("filter[rule][is_enabled]", datadog.ParameterToString(*optionalParams.FilterRuleIsEnabled, ""))
+	}
+	if optionalParams.Sort != nil {
+		localVarQueryParams.Add("sort", datadog.ParameterToString(*optionalParams.Sort, ""))
+	}
+	if optionalParams.PageOffset != nil {
+		localVarQueryParams.Add("page[offset]", datadog.ParameterToString(*optionalParams.PageOffset, ""))
+	}
+	if optionalParams.PageLimit != nil {
+		localVarQueryParams.Add("page[limit]", datadog.ParameterToString(*optionalParams.PageLimit, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // ListScorecardsOptionalParameters holds optional parameters for ListScorecards.
 type ListScorecardsOptionalParameters struct {
 	PageOffset                 *int64

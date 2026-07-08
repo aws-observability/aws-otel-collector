@@ -368,7 +368,7 @@ func (o *FlakyTestHistoryPolicyMetaConfig) UnmarshalJSON(bytes []byte) (err erro
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"branches", "days_active", "failure_rate", "forget_branches", "required_runs", "state", "test_services"})
 	} else {
 		return err

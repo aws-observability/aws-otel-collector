@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomAttributeConfigsResponse Custom attribute configs response.
+// CustomAttributeConfigsResponse Response containing a list of custom attribute configurations.
 type CustomAttributeConfigsResponse struct {
 	// List of custom attribute configs of case type
 	Data []CustomAttributeConfig `json:"data,omitempty"`
@@ -87,7 +87,7 @@ func (o *CustomAttributeConfigsResponse) UnmarshalJSON(bytes []byte) (err error)
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
 	} else {
 		return err

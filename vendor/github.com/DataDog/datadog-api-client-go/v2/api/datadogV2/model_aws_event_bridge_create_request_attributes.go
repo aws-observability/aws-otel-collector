@@ -185,7 +185,7 @@ func (o *AWSEventBridgeCreateRequestAttributes) UnmarshalJSON(bytes []byte) (err
 		return fmt.Errorf("required field region missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "create_event_bus", "event_generator_name", "region"})
 	} else {
 		return err

@@ -462,7 +462,7 @@ func (o *SyntheticsBrowserTestResultData) UnmarshalJSON(bytes []byte) (err error
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"browserType", "browserVersion", "device", "duration", "error", "failure", "passed", "receivedEmailCount", "startUrl", "stepDetails", "thumbnailsBucketKey", "timeToInteractive"})
 	} else {
 		return err

@@ -378,7 +378,7 @@ func (o *MicrosoftSentinelDestination) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"buffer", "client_id", "client_secret_key", "dce_uri_key", "dcr_immutable_id", "id", "inputs", "table", "tenant_id", "type"})
 	} else {
 		return err

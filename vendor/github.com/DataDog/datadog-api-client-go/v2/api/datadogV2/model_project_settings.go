@@ -325,7 +325,7 @@ func (o *ProjectSettings) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"auto_close_inactive_cases", "auto_transition_assigned_cases", "integration_incident", "integration_jira", "integration_monitor", "integration_on_call", "integration_service_now", "notification"})
 	} else {
 		return err

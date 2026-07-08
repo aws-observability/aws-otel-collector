@@ -120,7 +120,7 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessorCustomPatternOptions)
 		return fmt.Errorf("required field rule missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "rule"})
 	} else {
 		return err

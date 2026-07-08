@@ -117,6 +117,42 @@ func (k Key) StringSlice(v []string) KeyValue {
 	}
 }
 
+// ByteSlice creates a KeyValue instance with a BYTESLICE Value.
+//
+// If creating both a key and value at the same time, use the provided
+// convenience function instead -- ByteSlice(name, value).
+func (k Key) ByteSlice(v []byte) KeyValue {
+	return KeyValue{
+		Key:   k,
+		Value: ByteSliceValue(v),
+	}
+}
+
+// Slice creates a KeyValue instance with a SLICE Value.
+//
+// If creating both a key and value at the same time, use the provided
+// convenience function instead -- Slice(name, values...).
+func (k Key) Slice(v ...Value) KeyValue {
+	return KeyValue{
+		Key:   k,
+		Value: SliceValue(v...),
+	}
+}
+
+// Map creates a KeyValue instance with a MAP Value.
+//
+// Users should avoid providing duplicate keys; many receivers handle maps
+// containing duplicate keys unpredictably.
+//
+// If creating both a key and value at the same time, use the provided
+// convenience function instead -- Map(name, values...).
+func (k Key) Map(v ...KeyValue) KeyValue {
+	return KeyValue{
+		Key:   k,
+		Value: MapValue(v...),
+	}
+}
+
 // Defined reports whether the key is not empty.
 func (k Key) Defined() bool {
 	return len(k) != 0

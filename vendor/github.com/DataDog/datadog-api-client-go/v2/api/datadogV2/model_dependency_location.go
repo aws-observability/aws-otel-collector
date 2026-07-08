@@ -210,7 +210,7 @@ func (o *DependencyLocation) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field line_start missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"column_end", "column_start", "file_name", "line_end", "line_start"})
 	} else {
 		return err

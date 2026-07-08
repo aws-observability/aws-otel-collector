@@ -117,7 +117,7 @@ func (o *DORAGitInfo) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field repository_url missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"commit_sha", "repository_url"})
 	} else {
 		return err

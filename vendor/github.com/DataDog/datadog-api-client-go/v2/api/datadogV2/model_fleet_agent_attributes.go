@@ -801,7 +801,7 @@ func (o *FleetAgentAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"agent_version", "api_key_name", "api_key_uuid", "cloud_provider", "cluster_name", "datadog_agent_key", "enabled_products", "envs", "first_seen_at", "hostname", "ip_addresses", "is_single_step_instrumentation_enabled", "last_restart_at", "os", "otel_collector_version", "otel_collector_versions", "pod_name", "remote_agent_management", "remote_config_status", "services", "tags", "team"})
 	} else {
 		return err

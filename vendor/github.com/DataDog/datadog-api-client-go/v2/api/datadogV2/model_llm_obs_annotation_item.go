@@ -21,7 +21,7 @@ type LLMObsAnnotationItem struct {
 	Id string `json:"id"`
 	// Identifier of the interaction this annotation belongs to.
 	InteractionId string `json:"interaction_id"`
-	// The label values for this annotation.
+	// Label values for this annotation.
 	LabelValues map[string]interface{} `json:"label_values"`
 	// Timestamp when the annotation was last modified.
 	ModifiedAt time.Time `json:"modified_at"`
@@ -281,7 +281,7 @@ func (o *LLMObsAnnotationItem) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field modified_by missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "created_by", "id", "interaction_id", "label_values", "modified_at", "modified_by"})
 	} else {
 		return err

@@ -359,7 +359,7 @@ func (o *SecretRuleDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"default_included_keywords", "description", "license", "match_validation", "name", "pattern", "priority", "sds_id", "validators"})
 	} else {
 		return err

@@ -117,7 +117,7 @@ func (o *CreateCaseRequestDataRelationships) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field project missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"findings", "project"})
 	} else {
 		return err

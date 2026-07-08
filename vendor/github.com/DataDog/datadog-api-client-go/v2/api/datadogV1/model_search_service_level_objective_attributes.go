@@ -666,7 +666,7 @@ func (o *SearchServiceLevelObjectiveAttributes) UnmarshalJSON(bytes []byte) (err
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"all_tags", "created_at", "creator", "description", "env_tags", "groups", "modified_at", "monitor_ids", "name", "overall_status", "query", "service_tags", "slo_type", "status", "team_tags", "thresholds"})
 	} else {
 		return err

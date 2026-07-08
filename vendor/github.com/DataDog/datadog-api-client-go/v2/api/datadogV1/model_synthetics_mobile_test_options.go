@@ -629,7 +629,7 @@ func (o *SyntheticsMobileTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field tick_every missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"allowApplicationCrash", "bindings", "ci", "defaultStepTimeout", "device_ids", "disableAutoAcceptAlert", "min_failure_duration", "mobileApplication", "monitor_name", "monitor_options", "monitor_priority", "noScreenshot", "restricted_roles", "retry", "scheduling", "tick_every", "verbosity"})
 	} else {
 		return err

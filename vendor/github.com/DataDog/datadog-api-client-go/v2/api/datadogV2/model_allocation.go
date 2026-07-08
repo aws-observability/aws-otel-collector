@@ -489,7 +489,7 @@ func (o *Allocation) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field variant_weights missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "environment_ids", "experiment_id", "exposure_schedule", "guardrail_metrics", "id", "key", "name", "order_position", "targeting_rules", "type", "updated_at", "variant_weights"})
 	} else {
 		return err

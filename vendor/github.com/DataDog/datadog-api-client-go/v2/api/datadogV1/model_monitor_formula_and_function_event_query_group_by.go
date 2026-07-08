@@ -18,6 +18,8 @@ type MonitorFormulaAndFunctionEventQueryGroupBy struct {
 	Limit *int64 `json:"limit,omitempty"`
 	// Options for sorting group by results.
 	Sort *MonitorFormulaAndFunctionEventQueryGroupBySort `json:"sort,omitempty"`
+	// Source reference for composite query payloads.
+	Source *string `json:"source,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -120,6 +122,34 @@ func (o *MonitorFormulaAndFunctionEventQueryGroupBy) SetSort(v MonitorFormulaAnd
 	o.Sort = &v
 }
 
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *MonitorFormulaAndFunctionEventQueryGroupBy) GetSource() string {
+	if o == nil || o.Source == nil {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorFormulaAndFunctionEventQueryGroupBy) GetSourceOk() (*string, bool) {
+	if o == nil || o.Source == nil {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *MonitorFormulaAndFunctionEventQueryGroupBy) HasSource() bool {
+	return o != nil && o.Source != nil
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *MonitorFormulaAndFunctionEventQueryGroupBy) SetSource(v string) {
+	o.Source = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o MonitorFormulaAndFunctionEventQueryGroupBy) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -133,6 +163,9 @@ func (o MonitorFormulaAndFunctionEventQueryGroupBy) MarshalJSON() ([]byte, error
 	if o.Sort != nil {
 		toSerialize["sort"] = o.Sort
 	}
+	if o.Source != nil {
+		toSerialize["source"] = o.Source
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -143,9 +176,10 @@ func (o MonitorFormulaAndFunctionEventQueryGroupBy) MarshalJSON() ([]byte, error
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorFormulaAndFunctionEventQueryGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Facet *string                                         `json:"facet"`
-		Limit *int64                                          `json:"limit,omitempty"`
-		Sort  *MonitorFormulaAndFunctionEventQueryGroupBySort `json:"sort,omitempty"`
+		Facet  *string                                         `json:"facet"`
+		Limit  *int64                                          `json:"limit,omitempty"`
+		Sort   *MonitorFormulaAndFunctionEventQueryGroupBySort `json:"sort,omitempty"`
+		Source *string                                         `json:"source,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -154,8 +188,8 @@ func (o *MonitorFormulaAndFunctionEventQueryGroupBy) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field facet missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"facet", "limit", "sort"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"facet", "limit", "sort", "source"})
 	} else {
 		return err
 	}
@@ -167,6 +201,7 @@ func (o *MonitorFormulaAndFunctionEventQueryGroupBy) UnmarshalJSON(bytes []byte)
 		hasInvalidField = true
 	}
 	o.Sort = all.Sort
+	o.Source = all.Source
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

@@ -117,7 +117,7 @@ func (o *SyntheticsTestFileMultipartPresignedUrlsPart) UnmarshalJSON(bytes []byt
 		return fmt.Errorf("required field partNumber missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"md5", "partNumber"})
 	} else {
 		return err

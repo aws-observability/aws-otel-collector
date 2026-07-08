@@ -148,7 +148,7 @@ func (o *RolloutOptions) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field strategy missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"autostart", "selection_interval_ms", "strategy"})
 	} else {
 		return err

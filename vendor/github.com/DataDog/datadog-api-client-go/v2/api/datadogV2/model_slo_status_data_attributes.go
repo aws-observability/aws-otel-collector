@@ -210,7 +210,7 @@ func (o *SloStatusDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field state missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"error_budget_remaining", "raw_error_budget_remaining", "sli", "span_precision", "state"})
 	} else {
 		return err

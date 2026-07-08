@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimelineCell timeline cell
+// TimelineCell Attributes of a timeline cell, representing a single event in a case's chronological activity log (for example, a comment, status change, or assignment update).
 type TimelineCell struct {
-	// author of the timeline cell
+	// The author of the timeline cell. Currently only user authors are supported.
 	Author *TimelineCellAuthor `json:"author,omitempty"`
-	// timeline cell content
+	// The content payload of a timeline cell, varying by cell type.
 	CellContent *TimelineCellContent `json:"cell_content,omitempty"`
 	// Timestamp of when the cell was created
 	CreatedAt *time.Time `json:"created_at,omitempty"`
@@ -22,7 +22,7 @@ type TimelineCell struct {
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	// Timestamp of when the cell was last modified
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
-	// Timeline cell content type
+	// The type of content in the timeline cell. Currently only `COMMENT` is supported in this endpoint.
 	Type *TimelineCellType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -271,7 +271,7 @@ func (o *TimelineCell) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"author", "cell_content", "created_at", "deleted_at", "modified_at", "type"})
 	} else {
 		return err

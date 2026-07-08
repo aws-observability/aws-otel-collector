@@ -588,7 +588,7 @@ func (o *CustomRuleRevisionInputAttributes) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field tree_sitter_query missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"arguments", "category", "code", "creation_message", "cve", "cwe", "description", "documentation_url", "is_published", "is_testing", "language", "severity", "short_description", "should_use_ai_fix", "tags", "tests", "tree_sitter_query"})
 	} else {
 		return err

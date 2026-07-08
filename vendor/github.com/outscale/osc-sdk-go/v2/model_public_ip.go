@@ -1,9 +1,9 @@
 /*
  * 3DS OUTSCALE API
  *
- * Welcome to the OUTSCALE API documentation.<br /> The OUTSCALE API enables you to manage your resources in the OUTSCALE Cloud. This documentation describes the different actions available along with code examples.<br /><br /> Throttling: To protect against overloads, the number of identical requests allowed in a given time period is limited.<br /> Brute force: To protect against brute force attacks, the number of failed authentication attempts in a given time period is limited.<br /><br /> Note that the OUTSCALE Cloud is compatible with Amazon Web Services (AWS) APIs, but there are [differences in resource names](https://docs.outscale.com/en/userguide/About-the-APIs.html) between AWS and the OUTSCALE API.<br /> You can also manage your resources using the [Cockpit](https://docs.outscale.com/en/userguide/About-Cockpit.html) web interface.<br /><br /> An OpenAPI description of this API is also available for download: <button>[GitHub repository](https://github.com/outscale/osc-api)</button><br /> # Authentication Schemes ### Access Key/Secret Key The main way to authenticate your requests to the OUTSCALE API is to use an access key and a secret key.<br /> The mechanism behind this is based on AWS Signature Version 4, whose technical implementation details are described in [Signature of API Requests](https://docs.outscale.com/en/userguide/Signature-of-API-Requests.html).<br /><br /> In practice, the way to specify your access key and secret key depends on the tool or SDK you want to use to interact with the API.<br />  > For example, if you use OSC CLI: > 1. You need to create an **~/.osc/config.json** file to specify your access key, secret key, and the Region of your account. > 2. You then specify the `--profile` option when executing OSC CLI commands. > > For more information, see [Installing and Configuring OSC CLI](https://docs.outscale.com/en/userguide/Installing-and-Configuring-OSC-CLI.html).  See the code samples in each section of this documentation for specific examples in different programming languages.<br /> For more information about access keys, see [About Access Keys](https://docs.outscale.com/en/userguide/About-Access-Keys.html).  > If you try to sign requests with an invalid access key four times in a row, further authentication attempts will be prevented for 1 minute. This lockout time increases 1 minute every four failed attempts, for up to 10 minutes.  ### Login/Password For certain API actions, you can also use basic authentication with the login (email address) and password of your TINA account.<br /> This is useful only in special circumstances, for example if you do not know your access key/secret key and want to retrieve them programmatically.<br /> In most cases, however, you can use the Cockpit web interface to retrieve them.<br />  > For example, if you use OSC CLI: > 1. You need to create an **~/.osc/config.json** file to specify the Region of your account, but you leave the access key value and secret key value empty (`&quot;&quot;`). > 2. You then specify the `--profile`, `--authentication-method`, `--login`, and `--password` options when executing OSC CLI commands.  See the code samples in each section of this documentation for specific examples in different programming languages.  > If you try to sign requests with an invalid password four times in a row, further authentication attempts will be prevented for 1 minute. This lockout time increases 1 minute every four failed attempts, for up to 10 minutes.  ### No Authentication A few API actions do not require any authentication. They are indicated as such in this documentation.<br /> ### Other Security Mechanisms In parallel with the authentication schemes, you can add other security mechanisms to your OUTSCALE account, for example to restrict API requests by IP or other criteria.<br /> For more information, see [Managing Your API Accesses](https://docs.outscale.com/en/userguide/Managing-Your-API-Accesses.html). # Pagination Tutorial You can learn more about the pagination methods for read calls in the dedicated [pagination tutorial](https://docs.outscale.com/en/userguide/Tutorial-Paginating-an-API-Request.html). # Error Codes Reference You can learn more about errors returned by the API in the dedicated [errors page](api-errors.html).
+ * Welcome to the OUTSCALE API documentation.<br /> The OUTSCALE API enables you to manage your resources in the OUTSCALE Cloud. This documentation describes the different actions available along with code examples.<br /><br /> Throttling: To protect against overloads, the number of identical requests allowed in a given time period is limited.<br /> Brute force: To protect against brute force attacks, the number of failed authentication attempts in a given time period is limited.<br /><br /> Note that the OUTSCALE Cloud is compatible with Amazon Web Services (AWS) APIs, but there are [differences in resource names](https://docs.outscale.com/en/userguide/About-the-APIs.html) between AWS and the OUTSCALE API.<br /> You can also manage your resources using the [Cockpit](https://docs.outscale.com/en/userguide/About-Cockpit.html) web interface.<br /><br /> An OpenAPI description of this API is also available for download: <button>[GitHub repository](https://github.com/outscale/osc-api)</button><br /> # Authentication Schemes ### Access Key/Secret Key The main way to authenticate your requests to the OUTSCALE API is to use an access key and a secret key.<br /> The mechanism behind this is based on AWS Signature Version 4, whose technical implementation details are described in [Signature of API Requests](https://docs.outscale.com/en/userguide/Signature-of-API-Requests.html).<br /><br /> In practice, the way to specify your access key and secret key depends on the tool or SDK you want to use to interact with the API.<br />  > For example, if you use OSC CLI: > 1. You need to create an **~/.osc/config.json** file to specify your access key, secret key, and the Region of your account. > 2. You then specify the `--profile` option when executing OSC CLI commands. > > For more information, see [Installing and Configuring OSC CLI](https://docs.outscale.com/en/userguide/Installing-and-Configuring-OSC-CLI.html).  See the code samples in each section of this documentation for specific examples in different programming languages.<br /> For more information about access keys, see [About Access Keys](https://docs.outscale.com/en/userguide/About-Access-Keys.html).  > If you try to sign requests with an invalid access key four times in a row, further authentication attempts will be prevented for 1 minute. This lockout time increases 1 minute every four failed attempts, for up to 10 minutes.  ### Login/Password For certain API actions, you can also use basic authentication with the login (email address) and password of your OUTSCALE account.<br /> This is useful only in special circumstances, for example if you do not know your access key/secret key and want to retrieve them programmatically.<br /> In most cases, however, you can use the Cockpit web interface to retrieve them.<br />  > For example, if you use OSC CLI: > 1. You need to create an **~/.osc/config.json** file to specify the Region of your account, but you leave the access key value and secret key value empty (`&quot;&quot;`). > 2. You then specify the `--profile`, `--authentication-method`, `--login`, and `--password` options when executing OSC CLI commands.  See the code samples in each section of this documentation for specific examples in different programming languages.  > If you try to sign requests with an invalid password four times in a row, further authentication attempts will be prevented for 1 minute. This lockout time increases 1 minute every four failed attempts, for up to 10 minutes.  ### No Authentication A few API actions do not require any authentication. They are indicated as such in this documentation.<br /> ### Other Security Mechanisms In parallel with the authentication schemes, you can add other security mechanisms to your OUTSCALE account, for example to restrict API requests by IP or other criteria.<br /> For more information, see [Managing Your API Accesses](https://docs.outscale.com/en/userguide/Managing-Your-API-Accesses.html). # Pagination Tutorial You can learn more about the pagination methods for read calls in the dedicated [pagination tutorial](https://docs.outscale.com/en/userguide/Tutorial-Paginating-an-API-Request.html). # Error Codes Reference You can learn more about errors returned by the API in the dedicated [errors page](api-errors.html).
  *
- * API version: 1.39.1
+ * API version: 1.41.0
  * Contact: support@outscale.com
  */
 
@@ -19,12 +19,16 @@ import (
 type PublicIp struct {
 	// (Required in a Net) The ID representing the association of the public IP with the VM or the NIC.
 	LinkPublicIpId *string `json:"LinkPublicIpId,omitempty"`
-	// The account ID of the owner of the NIC.
-	NicAccountId *string `json:"NicAccountId,omitempty"`
+	// The ID of the NAT service associated with the public IP (if any).
+	NatServiceId NullableString `json:"NatServiceId,omitempty"`
+	// The IDs of the Net access points associated with the public IP (if any).
+	NetAccessPointIds []string `json:"NetAccessPointIds,omitempty"`
+	// The OUTSCALE account ID of the owner of the NIC.
+	NicAccountId NullableString `json:"NicAccountId,omitempty"`
 	// The ID of the NIC the public IP is associated with (if any).
-	NicId *string `json:"NicId,omitempty"`
-	// The private IP associated with the public IP.
-	PrivateIp *string `json:"PrivateIp,omitempty"`
+	NicId NullableString `json:"NicId,omitempty"`
+	// The private IP associated with the NIC or load balancer.
+	PrivateIp NullableString `json:"PrivateIp,omitempty"`
 	// The public IP.
 	PublicIp *string `json:"PublicIp,omitempty"`
 	// The allocation ID of the public IP.
@@ -32,7 +36,7 @@ type PublicIp struct {
 	// One or more tags associated with the public IP.
 	Tags *[]ResourceTag `json:"Tags,omitempty"`
 	// The ID of the VM the public IP is associated with (if any).
-	VmId *string `json:"VmId,omitempty"`
+	VmId NullableString `json:"VmId,omitempty"`
 }
 
 // NewPublicIp instantiates a new PublicIp object
@@ -84,100 +88,209 @@ func (o *PublicIp) SetLinkPublicIpId(v string) {
 	o.LinkPublicIpId = &v
 }
 
-// GetNicAccountId returns the NicAccountId field value if set, zero value otherwise.
-func (o *PublicIp) GetNicAccountId() string {
-	if o == nil || o.NicAccountId == nil {
+// GetNatServiceId returns the NatServiceId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PublicIp) GetNatServiceId() string {
+	if o == nil || o.NatServiceId.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.NicAccountId
+	return *o.NatServiceId.Get()
+}
+
+// GetNatServiceIdOk returns a tuple with the NatServiceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PublicIp) GetNatServiceIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NatServiceId.Get(), o.NatServiceId.IsSet()
+}
+
+// HasNatServiceId returns a boolean if a field has been set.
+func (o *PublicIp) HasNatServiceId() bool {
+	if o != nil && o.NatServiceId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNatServiceId gets a reference to the given NullableString and assigns it to the NatServiceId field.
+func (o *PublicIp) SetNatServiceId(v string) {
+	o.NatServiceId.Set(&v)
+}
+
+// SetNatServiceIdNil sets the value for NatServiceId to be an explicit nil
+func (o *PublicIp) SetNatServiceIdNil() {
+	o.NatServiceId.Set(nil)
+}
+
+// UnsetNatServiceId ensures that no value is present for NatServiceId, not even an explicit nil
+func (o *PublicIp) UnsetNatServiceId() {
+	o.NatServiceId.Unset()
+}
+
+// GetNetAccessPointIds returns the NetAccessPointIds field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PublicIp) GetNetAccessPointIds() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.NetAccessPointIds
+}
+
+// GetNetAccessPointIdsOk returns a tuple with the NetAccessPointIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PublicIp) GetNetAccessPointIdsOk() (*[]string, bool) {
+	if o == nil || o.NetAccessPointIds == nil {
+		return nil, false
+	}
+	return &o.NetAccessPointIds, true
+}
+
+// HasNetAccessPointIds returns a boolean if a field has been set.
+func (o *PublicIp) HasNetAccessPointIds() bool {
+	if o != nil && o.NetAccessPointIds != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetNetAccessPointIds gets a reference to the given []string and assigns it to the NetAccessPointIds field.
+func (o *PublicIp) SetNetAccessPointIds(v []string) {
+	o.NetAccessPointIds = v
+}
+
+// GetNicAccountId returns the NicAccountId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PublicIp) GetNicAccountId() string {
+	if o == nil || o.NicAccountId.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.NicAccountId.Get()
 }
 
 // GetNicAccountIdOk returns a tuple with the NicAccountId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PublicIp) GetNicAccountIdOk() (*string, bool) {
-	if o == nil || o.NicAccountId == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.NicAccountId, true
+	return o.NicAccountId.Get(), o.NicAccountId.IsSet()
 }
 
 // HasNicAccountId returns a boolean if a field has been set.
 func (o *PublicIp) HasNicAccountId() bool {
-	if o != nil && o.NicAccountId != nil {
+	if o != nil && o.NicAccountId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetNicAccountId gets a reference to the given string and assigns it to the NicAccountId field.
+// SetNicAccountId gets a reference to the given NullableString and assigns it to the NicAccountId field.
 func (o *PublicIp) SetNicAccountId(v string) {
-	o.NicAccountId = &v
+	o.NicAccountId.Set(&v)
 }
 
-// GetNicId returns the NicId field value if set, zero value otherwise.
+// SetNicAccountIdNil sets the value for NicAccountId to be an explicit nil
+func (o *PublicIp) SetNicAccountIdNil() {
+	o.NicAccountId.Set(nil)
+}
+
+// UnsetNicAccountId ensures that no value is present for NicAccountId, not even an explicit nil
+func (o *PublicIp) UnsetNicAccountId() {
+	o.NicAccountId.Unset()
+}
+
+// GetNicId returns the NicId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PublicIp) GetNicId() string {
-	if o == nil || o.NicId == nil {
+	if o == nil || o.NicId.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.NicId
+	return *o.NicId.Get()
 }
 
 // GetNicIdOk returns a tuple with the NicId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PublicIp) GetNicIdOk() (*string, bool) {
-	if o == nil || o.NicId == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.NicId, true
+	return o.NicId.Get(), o.NicId.IsSet()
 }
 
 // HasNicId returns a boolean if a field has been set.
 func (o *PublicIp) HasNicId() bool {
-	if o != nil && o.NicId != nil {
+	if o != nil && o.NicId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetNicId gets a reference to the given string and assigns it to the NicId field.
+// SetNicId gets a reference to the given NullableString and assigns it to the NicId field.
 func (o *PublicIp) SetNicId(v string) {
-	o.NicId = &v
+	o.NicId.Set(&v)
 }
 
-// GetPrivateIp returns the PrivateIp field value if set, zero value otherwise.
+// SetNicIdNil sets the value for NicId to be an explicit nil
+func (o *PublicIp) SetNicIdNil() {
+	o.NicId.Set(nil)
+}
+
+// UnsetNicId ensures that no value is present for NicId, not even an explicit nil
+func (o *PublicIp) UnsetNicId() {
+	o.NicId.Unset()
+}
+
+// GetPrivateIp returns the PrivateIp field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PublicIp) GetPrivateIp() string {
-	if o == nil || o.PrivateIp == nil {
+	if o == nil || o.PrivateIp.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.PrivateIp
+	return *o.PrivateIp.Get()
 }
 
 // GetPrivateIpOk returns a tuple with the PrivateIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PublicIp) GetPrivateIpOk() (*string, bool) {
-	if o == nil || o.PrivateIp == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.PrivateIp, true
+	return o.PrivateIp.Get(), o.PrivateIp.IsSet()
 }
 
 // HasPrivateIp returns a boolean if a field has been set.
 func (o *PublicIp) HasPrivateIp() bool {
-	if o != nil && o.PrivateIp != nil {
+	if o != nil && o.PrivateIp.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPrivateIp gets a reference to the given string and assigns it to the PrivateIp field.
+// SetPrivateIp gets a reference to the given NullableString and assigns it to the PrivateIp field.
 func (o *PublicIp) SetPrivateIp(v string) {
-	o.PrivateIp = &v
+	o.PrivateIp.Set(&v)
+}
+
+// SetPrivateIpNil sets the value for PrivateIp to be an explicit nil
+func (o *PublicIp) SetPrivateIpNil() {
+	o.PrivateIp.Set(nil)
+}
+
+// UnsetPrivateIp ensures that no value is present for PrivateIp, not even an explicit nil
+func (o *PublicIp) UnsetPrivateIp() {
+	o.PrivateIp.Unset()
 }
 
 // GetPublicIp returns the PublicIp field value if set, zero value otherwise.
@@ -276,36 +389,47 @@ func (o *PublicIp) SetTags(v []ResourceTag) {
 	o.Tags = &v
 }
 
-// GetVmId returns the VmId field value if set, zero value otherwise.
+// GetVmId returns the VmId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PublicIp) GetVmId() string {
-	if o == nil || o.VmId == nil {
+	if o == nil || o.VmId.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.VmId
+	return *o.VmId.Get()
 }
 
 // GetVmIdOk returns a tuple with the VmId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PublicIp) GetVmIdOk() (*string, bool) {
-	if o == nil || o.VmId == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.VmId, true
+	return o.VmId.Get(), o.VmId.IsSet()
 }
 
 // HasVmId returns a boolean if a field has been set.
 func (o *PublicIp) HasVmId() bool {
-	if o != nil && o.VmId != nil {
+	if o != nil && o.VmId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetVmId gets a reference to the given string and assigns it to the VmId field.
+// SetVmId gets a reference to the given NullableString and assigns it to the VmId field.
 func (o *PublicIp) SetVmId(v string) {
-	o.VmId = &v
+	o.VmId.Set(&v)
+}
+
+// SetVmIdNil sets the value for VmId to be an explicit nil
+func (o *PublicIp) SetVmIdNil() {
+	o.VmId.Set(nil)
+}
+
+// UnsetVmId ensures that no value is present for VmId, not even an explicit nil
+func (o *PublicIp) UnsetVmId() {
+	o.VmId.Unset()
 }
 
 func (o PublicIp) MarshalJSON() ([]byte, error) {
@@ -313,14 +437,20 @@ func (o PublicIp) MarshalJSON() ([]byte, error) {
 	if o.LinkPublicIpId != nil {
 		toSerialize["LinkPublicIpId"] = o.LinkPublicIpId
 	}
-	if o.NicAccountId != nil {
-		toSerialize["NicAccountId"] = o.NicAccountId
+	if o.NatServiceId.IsSet() {
+		toSerialize["NatServiceId"] = o.NatServiceId.Get()
 	}
-	if o.NicId != nil {
-		toSerialize["NicId"] = o.NicId
+	if o.NetAccessPointIds != nil {
+		toSerialize["NetAccessPointIds"] = o.NetAccessPointIds
 	}
-	if o.PrivateIp != nil {
-		toSerialize["PrivateIp"] = o.PrivateIp
+	if o.NicAccountId.IsSet() {
+		toSerialize["NicAccountId"] = o.NicAccountId.Get()
+	}
+	if o.NicId.IsSet() {
+		toSerialize["NicId"] = o.NicId.Get()
+	}
+	if o.PrivateIp.IsSet() {
+		toSerialize["PrivateIp"] = o.PrivateIp.Get()
 	}
 	if o.PublicIp != nil {
 		toSerialize["PublicIp"] = o.PublicIp
@@ -331,8 +461,8 @@ func (o PublicIp) MarshalJSON() ([]byte, error) {
 	if o.Tags != nil {
 		toSerialize["Tags"] = o.Tags
 	}
-	if o.VmId != nil {
-		toSerialize["VmId"] = o.VmId
+	if o.VmId.IsSet() {
+		toSerialize["VmId"] = o.VmId.Get()
 	}
 	return json.Marshal(toSerialize)
 }

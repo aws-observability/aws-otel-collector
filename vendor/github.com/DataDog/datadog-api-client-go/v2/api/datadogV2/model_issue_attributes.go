@@ -32,6 +32,8 @@ type IssueAttributes struct {
 	LastSeenVersion *string `json:"last_seen_version,omitempty"`
 	// Platform associated with the issue.
 	Platform *IssuePlatform `json:"platform,omitempty"`
+	// Regression information for an issue that was previously resolved and then reopened.
+	Regression *IssueRegression `json:"regression,omitempty"`
 	// Service name.
 	Service *string `json:"service,omitempty"`
 	// State of the issue
@@ -366,6 +368,34 @@ func (o *IssueAttributes) SetPlatform(v IssuePlatform) {
 	o.Platform = &v
 }
 
+// GetRegression returns the Regression field value if set, zero value otherwise.
+func (o *IssueAttributes) GetRegression() IssueRegression {
+	if o == nil || o.Regression == nil {
+		var ret IssueRegression
+		return ret
+	}
+	return *o.Regression
+}
+
+// GetRegressionOk returns a tuple with the Regression field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssueAttributes) GetRegressionOk() (*IssueRegression, bool) {
+	if o == nil || o.Regression == nil {
+		return nil, false
+	}
+	return o.Regression, true
+}
+
+// HasRegression returns a boolean if a field has been set.
+func (o *IssueAttributes) HasRegression() bool {
+	return o != nil && o.Regression != nil
+}
+
+// SetRegression gets a reference to the given IssueRegression and assigns it to the Regression field.
+func (o *IssueAttributes) SetRegression(v IssueRegression) {
+	o.Regression = &v
+}
+
 // GetService returns the Service field value if set, zero value otherwise.
 func (o *IssueAttributes) GetService() string {
 	if o == nil || o.Service == nil {
@@ -461,6 +491,9 @@ func (o IssueAttributes) MarshalJSON() ([]byte, error) {
 	if o.Platform != nil {
 		toSerialize["platform"] = o.Platform
 	}
+	if o.Regression != nil {
+		toSerialize["regression"] = o.Regression
+	}
 	if o.Service != nil {
 		toSerialize["service"] = o.Service
 	}
@@ -477,26 +510,27 @@ func (o IssueAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *IssueAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ErrorMessage     *string         `json:"error_message,omitempty"`
-		ErrorType        *string         `json:"error_type,omitempty"`
-		FilePath         *string         `json:"file_path,omitempty"`
-		FirstSeen        *int64          `json:"first_seen,omitempty"`
-		FirstSeenVersion *string         `json:"first_seen_version,omitempty"`
-		FunctionName     *string         `json:"function_name,omitempty"`
-		IsCrash          *bool           `json:"is_crash,omitempty"`
-		Languages        []IssueLanguage `json:"languages,omitempty"`
-		LastSeen         *int64          `json:"last_seen,omitempty"`
-		LastSeenVersion  *string         `json:"last_seen_version,omitempty"`
-		Platform         *IssuePlatform  `json:"platform,omitempty"`
-		Service          *string         `json:"service,omitempty"`
-		State            *IssueState     `json:"state,omitempty"`
+		ErrorMessage     *string          `json:"error_message,omitempty"`
+		ErrorType        *string          `json:"error_type,omitempty"`
+		FilePath         *string          `json:"file_path,omitempty"`
+		FirstSeen        *int64           `json:"first_seen,omitempty"`
+		FirstSeenVersion *string          `json:"first_seen_version,omitempty"`
+		FunctionName     *string          `json:"function_name,omitempty"`
+		IsCrash          *bool            `json:"is_crash,omitempty"`
+		Languages        []IssueLanguage  `json:"languages,omitempty"`
+		LastSeen         *int64           `json:"last_seen,omitempty"`
+		LastSeenVersion  *string          `json:"last_seen_version,omitempty"`
+		Platform         *IssuePlatform   `json:"platform,omitempty"`
+		Regression       *IssueRegression `json:"regression,omitempty"`
+		Service          *string          `json:"service,omitempty"`
+		State            *IssueState      `json:"state,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"error_message", "error_type", "file_path", "first_seen", "first_seen_version", "function_name", "is_crash", "languages", "last_seen", "last_seen_version", "platform", "service", "state"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"error_message", "error_type", "file_path", "first_seen", "first_seen_version", "function_name", "is_crash", "languages", "last_seen", "last_seen_version", "platform", "regression", "service", "state"})
 	} else {
 		return err
 	}
@@ -517,6 +551,10 @@ func (o *IssueAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Platform = all.Platform
 	}
+	if all.Regression != nil && all.Regression.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Regression = all.Regression
 	o.Service = all.Service
 	if all.State != nil && !all.State.IsValid() {
 		hasInvalidField = true

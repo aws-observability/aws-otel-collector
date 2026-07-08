@@ -323,7 +323,7 @@ func (o *FlakyTestRunMetadata) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"duration_ms", "error_message", "error_stack", "source_end", "source_file", "source_start"})
 	} else {
 		return err

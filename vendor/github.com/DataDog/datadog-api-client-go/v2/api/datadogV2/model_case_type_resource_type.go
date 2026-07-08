@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CaseTypeResourceType Case type resource type
+// CaseTypeResourceType JSON:API resource type for case types.
 type CaseTypeResourceType string
 
 // List of CaseTypeResourceType.

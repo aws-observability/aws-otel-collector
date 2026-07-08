@@ -1309,7 +1309,7 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "device_ids", "enable_logs_sample", "enable_samples", "escalation_message", "evaluation_delay", "group_retention_duration", "groupby_simple_monitor", "include_tags", "locked", "min_failure_duration", "min_location_failed", "new_group_delay", "new_host_delay", "no_data_timeframe", "notification_preset_name", "notify_audit", "notify_by", "notify_no_data", "on_missing_data", "renotify_interval", "renotify_occurrences", "renotify_statuses", "require_full_window", "scheduling_options", "silenced", "synthetics_check_id", "threshold_windows", "thresholds", "timeout_h", "variables"})
 	} else {
 		return err

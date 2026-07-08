@@ -307,7 +307,7 @@ func (o *IncidentImportRequestAttributes) UnmarshalJSON(bytes []byte) (err error
 		return fmt.Errorf("required field title missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"declared", "detected", "fields", "incident_type_uuid", "resolved", "title", "visibility"})
 	} else {
 		return err

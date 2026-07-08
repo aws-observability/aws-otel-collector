@@ -179,7 +179,7 @@ func (o *MicrosoftTeamsTenantBasedHandleRequestAttributes) UnmarshalJSON(bytes [
 		return fmt.Errorf("required field tenant_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"channel_id", "name", "team_id", "tenant_id"})
 	} else {
 		return err

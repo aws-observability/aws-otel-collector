@@ -214,7 +214,7 @@ func (o *WidgetLayout) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field y missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"height", "is_column_break", "width", "x", "y"})
 	} else {
 		return err

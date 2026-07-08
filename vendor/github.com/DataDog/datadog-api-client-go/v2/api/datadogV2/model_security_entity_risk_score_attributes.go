@@ -10,35 +10,39 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityEntityRiskScoreAttributes Attributes of an entity risk score
+// SecurityEntityRiskScoreAttributes Attributes of an entity risk score.
 type SecurityEntityRiskScoreAttributes struct {
+	// Cloud account IDs associated with the entity.
+	AccountIds []string `json:"accountIds"`
 	// Configuration risks associated with the entity
 	ConfigRisks SecurityEntityConfigRisks `json:"configRisks"`
-	// Unique identifier for the entity
-	EntityId string `json:"entityID"`
 	// Metadata about the entity from cloud providers
 	EntityMetadata SecurityEntityMetadata `json:"entityMetadata"`
-	// Human-readable name of the entity
+	// Human-readable name of the entity.
 	EntityName *string `json:"entityName,omitempty"`
-	// Cloud providers associated with the entity
+	// Cloud providers associated with the entity.
 	EntityProviders []string `json:"entityProviders"`
-	// Roles associated with the entity
+	// Roles associated with the entity.
 	EntityRoles []string `json:"entityRoles,omitempty"`
-	// Type of the entity (e.g., aws_iam_user, aws_ec2_instance)
-	EntityType string `json:"entityType"`
-	// Timestamp when the entity was first detected (Unix milliseconds)
+	// Sub-types associated with the entity.
+	EntitySubTypes []string `json:"entitySubTypes"`
+	// Type of the entity (for example, aws_iam_user, aws_ec2_instance).
+	EntityType *string `json:"entityType,omitempty"`
+	// All types associated with the entity.
+	EntityTypes []string `json:"entityTypes,omitempty"`
+	// Timestamp when the entity was first detected (Unix milliseconds).
 	FirstDetected int64 `json:"firstDetected"`
-	// Title of the most recent signal detected for this entity
+	// Title of the most recent signal detected for this entity.
 	LastActivityTitle string `json:"lastActivityTitle"`
-	// Timestamp when the entity was last detected (Unix milliseconds)
+	// Timestamp when the entity was last detected (Unix milliseconds).
 	LastDetected int64 `json:"lastDetected"`
-	// Current risk score for the entity
-	RiskScore float64 `json:"riskScore"`
-	// Change in risk score compared to previous period
-	RiskScoreEvolution float64 `json:"riskScoreEvolution"`
+	// Current risk score for the entity.
+	RiskScore int64 `json:"riskScore"`
+	// Change in risk score compared to previous period.
+	RiskScoreEvolution int64 `json:"riskScoreEvolution"`
 	// Severity level based on risk score
 	Severity SecurityEntityRiskScoreAttributesSeverity `json:"severity"`
-	// Number of security signals detected for this entity
+	// Number of security signals detected for this entity.
 	SignalsDetected int64 `json:"signalsDetected"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -49,13 +53,13 @@ type SecurityEntityRiskScoreAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSecurityEntityRiskScoreAttributes(configRisks SecurityEntityConfigRisks, entityId string, entityMetadata SecurityEntityMetadata, entityProviders []string, entityType string, firstDetected int64, lastActivityTitle string, lastDetected int64, riskScore float64, riskScoreEvolution float64, severity SecurityEntityRiskScoreAttributesSeverity, signalsDetected int64) *SecurityEntityRiskScoreAttributes {
+func NewSecurityEntityRiskScoreAttributes(accountIds []string, configRisks SecurityEntityConfigRisks, entityMetadata SecurityEntityMetadata, entityProviders []string, entitySubTypes []string, firstDetected int64, lastActivityTitle string, lastDetected int64, riskScore int64, riskScoreEvolution int64, severity SecurityEntityRiskScoreAttributesSeverity, signalsDetected int64) *SecurityEntityRiskScoreAttributes {
 	this := SecurityEntityRiskScoreAttributes{}
+	this.AccountIds = accountIds
 	this.ConfigRisks = configRisks
-	this.EntityId = entityId
 	this.EntityMetadata = entityMetadata
 	this.EntityProviders = entityProviders
-	this.EntityType = entityType
+	this.EntitySubTypes = entitySubTypes
 	this.FirstDetected = firstDetected
 	this.LastActivityTitle = lastActivityTitle
 	this.LastDetected = lastDetected
@@ -72,6 +76,29 @@ func NewSecurityEntityRiskScoreAttributes(configRisks SecurityEntityConfigRisks,
 func NewSecurityEntityRiskScoreAttributesWithDefaults() *SecurityEntityRiskScoreAttributes {
 	this := SecurityEntityRiskScoreAttributes{}
 	return &this
+}
+
+// GetAccountIds returns the AccountIds field value.
+func (o *SecurityEntityRiskScoreAttributes) GetAccountIds() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.AccountIds
+}
+
+// GetAccountIdsOk returns a tuple with the AccountIds field value
+// and a boolean to check if the value has been set.
+func (o *SecurityEntityRiskScoreAttributes) GetAccountIdsOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.AccountIds, true
+}
+
+// SetAccountIds sets field value.
+func (o *SecurityEntityRiskScoreAttributes) SetAccountIds(v []string) {
+	o.AccountIds = v
 }
 
 // GetConfigRisks returns the ConfigRisks field value.
@@ -95,29 +122,6 @@ func (o *SecurityEntityRiskScoreAttributes) GetConfigRisksOk() (*SecurityEntityC
 // SetConfigRisks sets field value.
 func (o *SecurityEntityRiskScoreAttributes) SetConfigRisks(v SecurityEntityConfigRisks) {
 	o.ConfigRisks = v
-}
-
-// GetEntityId returns the EntityId field value.
-func (o *SecurityEntityRiskScoreAttributes) GetEntityId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-	return o.EntityId
-}
-
-// GetEntityIdOk returns a tuple with the EntityId field value
-// and a boolean to check if the value has been set.
-func (o *SecurityEntityRiskScoreAttributes) GetEntityIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.EntityId, true
-}
-
-// SetEntityId sets field value.
-func (o *SecurityEntityRiskScoreAttributes) SetEntityId(v string) {
-	o.EntityId = v
 }
 
 // GetEntityMetadata returns the EntityMetadata field value.
@@ -222,27 +226,83 @@ func (o *SecurityEntityRiskScoreAttributes) SetEntityRoles(v []string) {
 	o.EntityRoles = v
 }
 
-// GetEntityType returns the EntityType field value.
-func (o *SecurityEntityRiskScoreAttributes) GetEntityType() string {
+// GetEntitySubTypes returns the EntitySubTypes field value.
+func (o *SecurityEntityRiskScoreAttributes) GetEntitySubTypes() []string {
 	if o == nil {
-		var ret string
+		var ret []string
 		return ret
 	}
-	return o.EntityType
+	return o.EntitySubTypes
 }
 
-// GetEntityTypeOk returns a tuple with the EntityType field value
+// GetEntitySubTypesOk returns a tuple with the EntitySubTypes field value
 // and a boolean to check if the value has been set.
-func (o *SecurityEntityRiskScoreAttributes) GetEntityTypeOk() (*string, bool) {
+func (o *SecurityEntityRiskScoreAttributes) GetEntitySubTypesOk() (*[]string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.EntityType, true
+	return &o.EntitySubTypes, true
 }
 
-// SetEntityType sets field value.
+// SetEntitySubTypes sets field value.
+func (o *SecurityEntityRiskScoreAttributes) SetEntitySubTypes(v []string) {
+	o.EntitySubTypes = v
+}
+
+// GetEntityType returns the EntityType field value if set, zero value otherwise.
+func (o *SecurityEntityRiskScoreAttributes) GetEntityType() string {
+	if o == nil || o.EntityType == nil {
+		var ret string
+		return ret
+	}
+	return *o.EntityType
+}
+
+// GetEntityTypeOk returns a tuple with the EntityType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityEntityRiskScoreAttributes) GetEntityTypeOk() (*string, bool) {
+	if o == nil || o.EntityType == nil {
+		return nil, false
+	}
+	return o.EntityType, true
+}
+
+// HasEntityType returns a boolean if a field has been set.
+func (o *SecurityEntityRiskScoreAttributes) HasEntityType() bool {
+	return o != nil && o.EntityType != nil
+}
+
+// SetEntityType gets a reference to the given string and assigns it to the EntityType field.
 func (o *SecurityEntityRiskScoreAttributes) SetEntityType(v string) {
-	o.EntityType = v
+	o.EntityType = &v
+}
+
+// GetEntityTypes returns the EntityTypes field value if set, zero value otherwise.
+func (o *SecurityEntityRiskScoreAttributes) GetEntityTypes() []string {
+	if o == nil || o.EntityTypes == nil {
+		var ret []string
+		return ret
+	}
+	return o.EntityTypes
+}
+
+// GetEntityTypesOk returns a tuple with the EntityTypes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityEntityRiskScoreAttributes) GetEntityTypesOk() (*[]string, bool) {
+	if o == nil || o.EntityTypes == nil {
+		return nil, false
+	}
+	return &o.EntityTypes, true
+}
+
+// HasEntityTypes returns a boolean if a field has been set.
+func (o *SecurityEntityRiskScoreAttributes) HasEntityTypes() bool {
+	return o != nil && o.EntityTypes != nil
+}
+
+// SetEntityTypes gets a reference to the given []string and assigns it to the EntityTypes field.
+func (o *SecurityEntityRiskScoreAttributes) SetEntityTypes(v []string) {
+	o.EntityTypes = v
 }
 
 // GetFirstDetected returns the FirstDetected field value.
@@ -315,9 +375,9 @@ func (o *SecurityEntityRiskScoreAttributes) SetLastDetected(v int64) {
 }
 
 // GetRiskScore returns the RiskScore field value.
-func (o *SecurityEntityRiskScoreAttributes) GetRiskScore() float64 {
+func (o *SecurityEntityRiskScoreAttributes) GetRiskScore() int64 {
 	if o == nil {
-		var ret float64
+		var ret int64
 		return ret
 	}
 	return o.RiskScore
@@ -325,7 +385,7 @@ func (o *SecurityEntityRiskScoreAttributes) GetRiskScore() float64 {
 
 // GetRiskScoreOk returns a tuple with the RiskScore field value
 // and a boolean to check if the value has been set.
-func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreOk() (*float64, bool) {
+func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -333,14 +393,14 @@ func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreOk() (*float64, bool) {
 }
 
 // SetRiskScore sets field value.
-func (o *SecurityEntityRiskScoreAttributes) SetRiskScore(v float64) {
+func (o *SecurityEntityRiskScoreAttributes) SetRiskScore(v int64) {
 	o.RiskScore = v
 }
 
 // GetRiskScoreEvolution returns the RiskScoreEvolution field value.
-func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreEvolution() float64 {
+func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreEvolution() int64 {
 	if o == nil {
-		var ret float64
+		var ret int64
 		return ret
 	}
 	return o.RiskScoreEvolution
@@ -348,7 +408,7 @@ func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreEvolution() float64 {
 
 // GetRiskScoreEvolutionOk returns a tuple with the RiskScoreEvolution field value
 // and a boolean to check if the value has been set.
-func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreEvolutionOk() (*float64, bool) {
+func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreEvolutionOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -356,7 +416,7 @@ func (o *SecurityEntityRiskScoreAttributes) GetRiskScoreEvolutionOk() (*float64,
 }
 
 // SetRiskScoreEvolution sets field value.
-func (o *SecurityEntityRiskScoreAttributes) SetRiskScoreEvolution(v float64) {
+func (o *SecurityEntityRiskScoreAttributes) SetRiskScoreEvolution(v int64) {
 	o.RiskScoreEvolution = v
 }
 
@@ -412,8 +472,8 @@ func (o SecurityEntityRiskScoreAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	toSerialize["accountIds"] = o.AccountIds
 	toSerialize["configRisks"] = o.ConfigRisks
-	toSerialize["entityID"] = o.EntityId
 	toSerialize["entityMetadata"] = o.EntityMetadata
 	if o.EntityName != nil {
 		toSerialize["entityName"] = o.EntityName
@@ -422,7 +482,13 @@ func (o SecurityEntityRiskScoreAttributes) MarshalJSON() ([]byte, error) {
 	if o.EntityRoles != nil {
 		toSerialize["entityRoles"] = o.EntityRoles
 	}
-	toSerialize["entityType"] = o.EntityType
+	toSerialize["entitySubTypes"] = o.EntitySubTypes
+	if o.EntityType != nil {
+		toSerialize["entityType"] = o.EntityType
+	}
+	if o.EntityTypes != nil {
+		toSerialize["entityTypes"] = o.EntityTypes
+	}
 	toSerialize["firstDetected"] = o.FirstDetected
 	toSerialize["lastActivityTitle"] = o.LastActivityTitle
 	toSerialize["lastDetected"] = o.LastDetected
@@ -440,29 +506,31 @@ func (o SecurityEntityRiskScoreAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityEntityRiskScoreAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		AccountIds         *[]string                                  `json:"accountIds"`
 		ConfigRisks        *SecurityEntityConfigRisks                 `json:"configRisks"`
-		EntityId           *string                                    `json:"entityID"`
 		EntityMetadata     *SecurityEntityMetadata                    `json:"entityMetadata"`
 		EntityName         *string                                    `json:"entityName,omitempty"`
 		EntityProviders    *[]string                                  `json:"entityProviders"`
 		EntityRoles        []string                                   `json:"entityRoles,omitempty"`
-		EntityType         *string                                    `json:"entityType"`
+		EntitySubTypes     *[]string                                  `json:"entitySubTypes"`
+		EntityType         *string                                    `json:"entityType,omitempty"`
+		EntityTypes        []string                                   `json:"entityTypes,omitempty"`
 		FirstDetected      *int64                                     `json:"firstDetected"`
 		LastActivityTitle  *string                                    `json:"lastActivityTitle"`
 		LastDetected       *int64                                     `json:"lastDetected"`
-		RiskScore          *float64                                   `json:"riskScore"`
-		RiskScoreEvolution *float64                                   `json:"riskScoreEvolution"`
+		RiskScore          *int64                                     `json:"riskScore"`
+		RiskScoreEvolution *int64                                     `json:"riskScoreEvolution"`
 		Severity           *SecurityEntityRiskScoreAttributesSeverity `json:"severity"`
 		SignalsDetected    *int64                                     `json:"signalsDetected"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
+	if all.AccountIds == nil {
+		return fmt.Errorf("required field accountIds missing")
+	}
 	if all.ConfigRisks == nil {
 		return fmt.Errorf("required field configRisks missing")
-	}
-	if all.EntityId == nil {
-		return fmt.Errorf("required field entityID missing")
 	}
 	if all.EntityMetadata == nil {
 		return fmt.Errorf("required field entityMetadata missing")
@@ -470,8 +538,8 @@ func (o *SecurityEntityRiskScoreAttributes) UnmarshalJSON(bytes []byte) (err err
 	if all.EntityProviders == nil {
 		return fmt.Errorf("required field entityProviders missing")
 	}
-	if all.EntityType == nil {
-		return fmt.Errorf("required field entityType missing")
+	if all.EntitySubTypes == nil {
+		return fmt.Errorf("required field entitySubTypes missing")
 	}
 	if all.FirstDetected == nil {
 		return fmt.Errorf("required field firstDetected missing")
@@ -495,18 +563,18 @@ func (o *SecurityEntityRiskScoreAttributes) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field signalsDetected missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"configRisks", "entityID", "entityMetadata", "entityName", "entityProviders", "entityRoles", "entityType", "firstDetected", "lastActivityTitle", "lastDetected", "riskScore", "riskScoreEvolution", "severity", "signalsDetected"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"accountIds", "configRisks", "entityMetadata", "entityName", "entityProviders", "entityRoles", "entitySubTypes", "entityType", "entityTypes", "firstDetected", "lastActivityTitle", "lastDetected", "riskScore", "riskScoreEvolution", "severity", "signalsDetected"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AccountIds = *all.AccountIds
 	if all.ConfigRisks.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
 	o.ConfigRisks = *all.ConfigRisks
-	o.EntityId = *all.EntityId
 	if all.EntityMetadata.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
@@ -514,7 +582,9 @@ func (o *SecurityEntityRiskScoreAttributes) UnmarshalJSON(bytes []byte) (err err
 	o.EntityName = all.EntityName
 	o.EntityProviders = *all.EntityProviders
 	o.EntityRoles = all.EntityRoles
-	o.EntityType = *all.EntityType
+	o.EntitySubTypes = *all.EntitySubTypes
+	o.EntityType = all.EntityType
+	o.EntityTypes = all.EntityTypes
 	o.FirstDetected = *all.FirstDetected
 	o.LastActivityTitle = *all.LastActivityTitle
 	o.LastDetected = *all.LastDetected

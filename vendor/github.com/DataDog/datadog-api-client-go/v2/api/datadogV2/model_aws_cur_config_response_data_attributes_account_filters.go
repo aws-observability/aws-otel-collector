@@ -166,7 +166,7 @@ func (o *AwsCurConfigResponseDataAttributesAccountFilters) UnmarshalJSON(bytes [
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"excluded_accounts", "include_new_accounts", "included_accounts"})
 	} else {
 		return err

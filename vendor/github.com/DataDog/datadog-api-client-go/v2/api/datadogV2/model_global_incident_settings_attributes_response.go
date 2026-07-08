@@ -157,7 +157,7 @@ func (o *GlobalIncidentSettingsAttributesResponse) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field modified missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"analytics_dashboard_id", "created", "modified"})
 	} else {
 		return err

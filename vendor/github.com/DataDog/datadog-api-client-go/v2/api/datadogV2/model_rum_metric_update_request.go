@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// RumMetricUpdateRequest The new rum-based metric body.
+// RumMetricUpdateRequest The new RUM-based metric body.
 type RumMetricUpdateRequest struct {
-	// The new rum-based metric properties.
+	// The new RUM-based metric properties.
 	Data RumMetricUpdateData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -86,7 +86,7 @@ func (o *RumMetricUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field data missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
 	} else {
 		return err

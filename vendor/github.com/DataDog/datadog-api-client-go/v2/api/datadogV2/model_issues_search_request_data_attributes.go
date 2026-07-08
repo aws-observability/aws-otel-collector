@@ -24,6 +24,8 @@ type IssuesSearchRequestDataAttributes struct {
 	Persona *IssuesSearchRequestDataAttributesPersona `json:"persona,omitempty"`
 	// Search query following the event search syntax.
 	Query string `json:"query"`
+	// Filter issues by state. Multiple values are combined with OR logic.
+	States []IssueState `json:"states,omitempty"`
 	// Filter issues by team IDs. Multiple values are combined with OR logic.
 	TeamIds []uuid.UUID `json:"team_ids,omitempty"`
 	// End date (exclusive) of the query in milliseconds since the Unix epoch.
@@ -185,6 +187,34 @@ func (o *IssuesSearchRequestDataAttributes) SetQuery(v string) {
 	o.Query = v
 }
 
+// GetStates returns the States field value if set, zero value otherwise.
+func (o *IssuesSearchRequestDataAttributes) GetStates() []IssueState {
+	if o == nil || o.States == nil {
+		var ret []IssueState
+		return ret
+	}
+	return o.States
+}
+
+// GetStatesOk returns a tuple with the States field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssuesSearchRequestDataAttributes) GetStatesOk() (*[]IssueState, bool) {
+	if o == nil || o.States == nil {
+		return nil, false
+	}
+	return &o.States, true
+}
+
+// HasStates returns a boolean if a field has been set.
+func (o *IssuesSearchRequestDataAttributes) HasStates() bool {
+	return o != nil && o.States != nil
+}
+
+// SetStates gets a reference to the given []IssueState and assigns it to the States field.
+func (o *IssuesSearchRequestDataAttributes) SetStates(v []IssueState) {
+	o.States = v
+}
+
 // GetTeamIds returns the TeamIds field value if set, zero value otherwise.
 func (o *IssuesSearchRequestDataAttributes) GetTeamIds() []uuid.UUID {
 	if o == nil || o.TeamIds == nil {
@@ -281,6 +311,9 @@ func (o IssuesSearchRequestDataAttributes) MarshalJSON() ([]byte, error) {
 		toSerialize["persona"] = o.Persona
 	}
 	toSerialize["query"] = o.Query
+	if o.States != nil {
+		toSerialize["states"] = o.States
+	}
 	if o.TeamIds != nil {
 		toSerialize["team_ids"] = o.TeamIds
 	}
@@ -303,6 +336,7 @@ func (o *IssuesSearchRequestDataAttributes) UnmarshalJSON(bytes []byte) (err err
 		OrderBy     *IssuesSearchRequestDataAttributesOrderBy `json:"order_by,omitempty"`
 		Persona     *IssuesSearchRequestDataAttributesPersona `json:"persona,omitempty"`
 		Query       *string                                   `json:"query"`
+		States      []IssueState                              `json:"states,omitempty"`
 		TeamIds     []uuid.UUID                               `json:"team_ids,omitempty"`
 		To          *int64                                    `json:"to"`
 		Track       *IssuesSearchRequestDataAttributesTrack   `json:"track,omitempty"`
@@ -320,8 +354,8 @@ func (o *IssuesSearchRequestDataAttributes) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field to missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"assignee_ids", "from", "order_by", "persona", "query", "team_ids", "to", "track"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"assignee_ids", "from", "order_by", "persona", "query", "states", "team_ids", "to", "track"})
 	} else {
 		return err
 	}
@@ -340,6 +374,7 @@ func (o *IssuesSearchRequestDataAttributes) UnmarshalJSON(bytes []byte) (err err
 		o.Persona = all.Persona
 	}
 	o.Query = *all.Query
+	o.States = all.States
 	o.TeamIds = all.TeamIds
 	o.To = *all.To
 	if all.Track != nil && !all.Track.IsValid() {

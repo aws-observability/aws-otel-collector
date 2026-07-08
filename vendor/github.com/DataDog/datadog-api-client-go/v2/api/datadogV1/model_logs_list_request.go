@@ -261,7 +261,7 @@ func (o *LogsListRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field time missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"index", "limit", "query", "sort", "startAt", "time"})
 	} else {
 		return err

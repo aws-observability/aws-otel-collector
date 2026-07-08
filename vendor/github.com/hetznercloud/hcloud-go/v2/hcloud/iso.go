@@ -86,7 +86,7 @@ type ISOListOpts struct {
 	IncludeArchitectureWildcard bool
 }
 
-func (l ISOListOpts) values() url.Values {
+func (l ISOListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -111,7 +111,7 @@ func (c *ISOClient) List(ctx context.Context, opts ISOListOpts) ([]*ISO, *Respon
 	const opPath = "/isos?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.ISOListResponse](ctx, c.client, reqPath)
 	if err != nil {

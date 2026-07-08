@@ -91,6 +91,7 @@ func (o *Obfuscator) Obfuscate(input string, lexerOpts ...lexerOption) string {
 	)
 
 	var lastValueToken *LastValueToken
+	var ec extractContext
 
 	for {
 		token := lexer.Scan()
@@ -98,10 +99,13 @@ func (o *Obfuscator) Obfuscate(input string, lexerOpts ...lexerOption) string {
 			break
 		}
 		o.ObfuscateTokenValue(token, lastValueToken, lexerOpts...)
+		ec.maybeReplaceExtractField(token)
+
 		obfuscatedSQL.WriteString(token.Value)
 		if isValueToken(token) {
 			lastValueToken = token.getLastValueToken()
 		}
+		ec.update(token)
 	}
 
 	return strings.Clone(strings.TrimSpace(obfuscatedSQL.String()))

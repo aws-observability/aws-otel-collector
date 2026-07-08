@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SankeyRumDataSource Sankey widget with RUM data source.
+// SankeyRumDataSource Product Analytics or RUM data source type.
 type SankeyRumDataSource string
 
 // List of SankeyRumDataSource.

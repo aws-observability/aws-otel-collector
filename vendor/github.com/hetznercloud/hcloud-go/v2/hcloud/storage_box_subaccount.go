@@ -119,7 +119,7 @@ type StorageBoxSubaccountListOpts struct {
 	Sort          []string
 }
 
-func (o StorageBoxSubaccountListOpts) values() url.Values {
+func (o StorageBoxSubaccountListOpts) Values() url.Values {
 	vals := url.Values{}
 	if o.Name != "" {
 		vals.Add("name", o.Name)
@@ -147,7 +147,7 @@ func (c *StorageBoxClient) ListSubaccounts(
 	const opPath = "/storage_boxes/%d/subaccounts?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, storageBox.ID, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, storageBox.ID, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.StorageBoxSubaccountListResponse](ctx, c.client, reqPath)
 	if err != nil {
@@ -191,7 +191,7 @@ type StorageBoxSubaccountCreateOpts struct {
 	Labels         map[string]string
 }
 
-// StorageBoxSubaccountAccessSettingsOpts represents the options for [StorageBoxSubaccountAccessSettings] of a [StorageBoxSubaccount].
+// StorageBoxSubaccountCreateOptsAccessSettings represents the options for [StorageBoxSubaccountCreateOpts.AccessSettings].
 type StorageBoxSubaccountCreateOptsAccessSettings struct {
 	ReachableExternally *bool
 	Readonly            *bool
@@ -353,7 +353,7 @@ type StorageBoxSubaccountChangeHomeDirectoryOpts struct {
 	HomeDirectory string
 }
 
-// UpdateSubaccountAccessSettings changes the home directory of a [StorageBoxSubaccount].
+// ChangeSubaccountHomeDirectory changes the home directory of a [StorageBoxSubaccount].
 //
 // See https://docs.hetzner.cloud/reference/hetzner#storage-box-subaccount-actions-change-home-directory
 func (c *StorageBoxClient) ChangeSubaccountHomeDirectory(

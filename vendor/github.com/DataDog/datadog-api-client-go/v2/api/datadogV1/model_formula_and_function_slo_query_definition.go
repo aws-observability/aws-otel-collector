@@ -318,7 +318,7 @@ func (o *FormulaAndFunctionSLOQueryDefinition) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field slo_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "cross_org_uuids", "data_source", "group_mode", "measure", "name", "slo_id", "slo_query_type"})
 	} else {
 		return err

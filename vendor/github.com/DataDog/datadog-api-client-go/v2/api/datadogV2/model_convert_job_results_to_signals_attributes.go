@@ -12,8 +12,6 @@ import (
 
 // ConvertJobResultsToSignalsAttributes Attributes for converting historical job results to signals.
 type ConvertJobResultsToSignalsAttributes struct {
-	// Request ID.
-	Id *string `json:"id,omitempty"`
 	// Job result IDs.
 	JobResultIds []string `json:"jobResultIds"`
 	// Notifications sent.
@@ -46,34 +44,6 @@ func NewConvertJobResultsToSignalsAttributes(jobResultIds []string, notification
 func NewConvertJobResultsToSignalsAttributesWithDefaults() *ConvertJobResultsToSignalsAttributes {
 	this := ConvertJobResultsToSignalsAttributes{}
 	return &this
-}
-
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *ConvertJobResultsToSignalsAttributes) GetId() string {
-	if o == nil || o.Id == nil {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConvertJobResultsToSignalsAttributes) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
-		return nil, false
-	}
-	return o.Id, true
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *ConvertJobResultsToSignalsAttributes) HasId() bool {
-	return o != nil && o.Id != nil
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *ConvertJobResultsToSignalsAttributes) SetId(v string) {
-	o.Id = &v
 }
 
 // GetJobResultIds returns the JobResultIds field value.
@@ -174,9 +144,6 @@ func (o ConvertJobResultsToSignalsAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
-	}
 	toSerialize["jobResultIds"] = o.JobResultIds
 	toSerialize["notifications"] = o.Notifications
 	toSerialize["signalMessage"] = o.SignalMessage
@@ -191,7 +158,6 @@ func (o ConvertJobResultsToSignalsAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ConvertJobResultsToSignalsAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id             *string                         `json:"id,omitempty"`
 		JobResultIds   *[]string                       `json:"jobResultIds"`
 		Notifications  *[]string                       `json:"notifications"`
 		SignalMessage  *string                         `json:"signalMessage"`
@@ -213,14 +179,13 @@ func (o *ConvertJobResultsToSignalsAttributes) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field signalSeverity missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "jobResultIds", "notifications", "signalMessage", "signalSeverity"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"jobResultIds", "notifications", "signalMessage", "signalSeverity"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
-	o.Id = all.Id
 	o.JobResultIds = *all.JobResultIds
 	o.Notifications = *all.Notifications
 	o.SignalMessage = *all.SignalMessage

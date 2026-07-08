@@ -356,7 +356,7 @@ func (o *MetricSeries) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field points missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"interval", "metadata", "metric", "points", "resources", "source_type_name", "tags", "type", "unit"})
 	} else {
 		return err

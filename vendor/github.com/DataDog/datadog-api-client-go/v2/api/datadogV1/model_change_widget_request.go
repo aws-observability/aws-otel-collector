@@ -669,7 +669,7 @@ func (o *ChangeWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "change_type", "compare_to", "event_query", "formulas", "increase_good", "log_query", "network_query", "order_by", "order_dir", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "show_present"})
 	} else {
 		return err

@@ -23,7 +23,7 @@ type ApplicationSecurityWafCustomRuleAttributes struct {
 	Enabled bool `json:"enabled"`
 	// Metadata associated with the WAF Custom Rule.
 	Metadata *ApplicationSecurityWafCustomRuleMetadata `json:"metadata,omitempty"`
-	// The Name of the WAF custom rule.
+	// The name of the WAF custom rule.
 	Name string `json:"name"`
 	// The path glob for the WAF custom rule.
 	PathGlob *string `json:"path_glob,omitempty"`
@@ -348,7 +348,7 @@ func (o *ApplicationSecurityWafCustomRuleAttributes) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field tags missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"action", "blocking", "conditions", "enabled", "metadata", "name", "path_glob", "scope", "tags"})
 	} else {
 		return err

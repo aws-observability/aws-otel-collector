@@ -301,7 +301,7 @@ func (o *RestrictionQueryAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "last_modifier_email", "last_modifier_name", "modified_at", "restriction_query", "role_count", "user_count"})
 	} else {
 		return err

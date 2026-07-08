@@ -639,6 +639,50 @@ func (DaemonDeploymentStatus) Values() []DaemonDeploymentStatus {
 	}
 }
 
+type DaemonIpcMode string
+
+// Enum values for DaemonIpcMode
+const (
+	// The daemon gets its own isolated IPC namespace.
+	DaemonIpcModeNone DaemonIpcMode = "none"
+	// The daemon shares the IPC namespace with co-located tasks on the same container
+	// instance.
+	DaemonIpcModeShared DaemonIpcMode = "shared"
+)
+
+// Values returns all known values for DaemonIpcMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonIpcMode) Values() []DaemonIpcMode {
+	return []DaemonIpcMode{
+		"none",
+		"shared",
+	}
+}
+
+type DaemonPidMode string
+
+// Enum values for DaemonPidMode
+const (
+	// The daemon gets its own isolated PID namespace.
+	DaemonPidModeNone DaemonPidMode = "none"
+	// The daemon shares the PID namespace with co-located tasks on the same container
+	// instance.
+	DaemonPidModeShared DaemonPidMode = "shared"
+)
+
+// Values returns all known values for DaemonPidMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DaemonPidMode) Values() []DaemonPidMode {
+	return []DaemonPidMode{
+		"none",
+		"shared",
+	}
+}
+
 type DaemonPropagateTags string
 
 // Enum values for DaemonPropagateTags
@@ -759,6 +803,26 @@ func (DeploymentControllerType) Values() []DeploymentControllerType {
 	}
 }
 
+type DeploymentLifecycleHookAction string
+
+// Enum values for DeploymentLifecycleHookAction
+const (
+	DeploymentLifecycleHookActionRollback DeploymentLifecycleHookAction = "ROLLBACK"
+	DeploymentLifecycleHookActionContinue DeploymentLifecycleHookAction = "CONTINUE"
+)
+
+// Values returns all known values for DeploymentLifecycleHookAction. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeploymentLifecycleHookAction) Values() []DeploymentLifecycleHookAction {
+	return []DeploymentLifecycleHookAction{
+		"ROLLBACK",
+		"CONTINUE",
+	}
+}
+
 type DeploymentLifecycleHookStage string
 
 // Enum values for DeploymentLifecycleHookStage
@@ -768,6 +832,7 @@ const (
 	DeploymentLifecycleHookStagePostScaleUp                DeploymentLifecycleHookStage = "POST_SCALE_UP"
 	DeploymentLifecycleHookStageTestTrafficShift           DeploymentLifecycleHookStage = "TEST_TRAFFIC_SHIFT"
 	DeploymentLifecycleHookStagePostTestTrafficShift       DeploymentLifecycleHookStage = "POST_TEST_TRAFFIC_SHIFT"
+	DeploymentLifecycleHookStagePreProductionTrafficShift  DeploymentLifecycleHookStage = "PRE_PRODUCTION_TRAFFIC_SHIFT"
 	DeploymentLifecycleHookStageProductionTrafficShift     DeploymentLifecycleHookStage = "PRODUCTION_TRAFFIC_SHIFT"
 	DeploymentLifecycleHookStagePostProductionTrafficShift DeploymentLifecycleHookStage = "POST_PRODUCTION_TRAFFIC_SHIFT"
 )
@@ -784,8 +849,55 @@ func (DeploymentLifecycleHookStage) Values() []DeploymentLifecycleHookStage {
 		"POST_SCALE_UP",
 		"TEST_TRAFFIC_SHIFT",
 		"POST_TEST_TRAFFIC_SHIFT",
+		"PRE_PRODUCTION_TRAFFIC_SHIFT",
 		"PRODUCTION_TRAFFIC_SHIFT",
 		"POST_PRODUCTION_TRAFFIC_SHIFT",
+	}
+}
+
+type DeploymentLifecycleHookStatus string
+
+// Enum values for DeploymentLifecycleHookStatus
+const (
+	DeploymentLifecycleHookStatusAwaitingAction DeploymentLifecycleHookStatus = "AWAITING_ACTION"
+	DeploymentLifecycleHookStatusInProgress     DeploymentLifecycleHookStatus = "IN_PROGRESS"
+	DeploymentLifecycleHookStatusSucceeded      DeploymentLifecycleHookStatus = "SUCCEEDED"
+	DeploymentLifecycleHookStatusFailed         DeploymentLifecycleHookStatus = "FAILED"
+	DeploymentLifecycleHookStatusTimedOut       DeploymentLifecycleHookStatus = "TIMED_OUT"
+)
+
+// Values returns all known values for DeploymentLifecycleHookStatus. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeploymentLifecycleHookStatus) Values() []DeploymentLifecycleHookStatus {
+	return []DeploymentLifecycleHookStatus{
+		"AWAITING_ACTION",
+		"IN_PROGRESS",
+		"SUCCEEDED",
+		"FAILED",
+		"TIMED_OUT",
+	}
+}
+
+type DeploymentLifecycleHookTargetType string
+
+// Enum values for DeploymentLifecycleHookTargetType
+const (
+	DeploymentLifecycleHookTargetTypeAwsLambda DeploymentLifecycleHookTargetType = "AWS_LAMBDA"
+	DeploymentLifecycleHookTargetTypePause     DeploymentLifecycleHookTargetType = "PAUSE"
+)
+
+// Values returns all known values for DeploymentLifecycleHookTargetType. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeploymentLifecycleHookTargetType) Values() []DeploymentLifecycleHookTargetType {
+	return []DeploymentLifecycleHookTargetType{
+		"AWS_LAMBDA",
+		"PAUSE",
 	}
 }
 
@@ -1489,7 +1601,8 @@ type PlatformDeviceType string
 
 // Enum values for PlatformDeviceType
 const (
-	PlatformDeviceTypeGpu PlatformDeviceType = "GPU"
+	PlatformDeviceTypeGpu          PlatformDeviceType = "GPU"
+	PlatformDeviceTypeNeuronDevice PlatformDeviceType = "NEURON_DEVICE"
 )
 
 // Values returns all known values for PlatformDeviceType. Note that this can be
@@ -1499,6 +1612,7 @@ const (
 func (PlatformDeviceType) Values() []PlatformDeviceType {
 	return []PlatformDeviceType{
 		"GPU",
+		"NEURON_DEVICE",
 	}
 }
 
@@ -1584,6 +1698,7 @@ type ResourceType string
 const (
 	ResourceTypeGpu                  ResourceType = "GPU"
 	ResourceTypeInferenceAccelerator ResourceType = "InferenceAccelerator"
+	ResourceTypeNeuronDevice         ResourceType = "NeuronDevice"
 )
 
 // Values returns all known values for ResourceType. Note that this can be
@@ -1594,6 +1709,7 @@ func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"GPU",
 		"InferenceAccelerator",
+		"NeuronDevice",
 	}
 }
 
@@ -2091,6 +2207,35 @@ func (TaskStopCode) Values() []TaskStopCode {
 		"ServiceSchedulerInitiated",
 		"SpotInterruption",
 		"TerminationNotice",
+	}
+}
+
+type ThresholdType string
+
+// Enum values for ThresholdType
+const (
+	// Amazon ECS uses the integer provided in value directly as the failure threshold.
+	ThresholdTypeCount ThresholdType = "COUNT"
+	// Amazon ECS calculates the failure threshold by multiplying value by the latest
+	// service desired count, then clamps the result to a minimum of 3 and a maximum
+	// of 200 . This is the default threshold type.
+	ThresholdTypeBoundedPercent ThresholdType = "BOUNDED_PERCENT"
+	// Amazon ECS calculates the failure threshold by multiplying value by the latest
+	// service desired count, without applying the 3 -to- 200 bounds. Use this when
+	// the desired count is large enough that the calculated threshold should be
+	// allowed to exceed 200 .
+	ThresholdTypeUnboundedPercent ThresholdType = "UNBOUNDED_PERCENT"
+)
+
+// Values returns all known values for ThresholdType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ThresholdType) Values() []ThresholdType {
+	return []ThresholdType{
+		"COUNT",
+		"BOUNDED_PERCENT",
+		"UNBOUNDED_PERCENT",
 	}
 }
 

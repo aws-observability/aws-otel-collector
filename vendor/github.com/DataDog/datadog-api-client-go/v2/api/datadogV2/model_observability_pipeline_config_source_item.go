@@ -26,6 +26,7 @@ type ObservabilityPipelineConfigSourceItem struct {
 	ObservabilityPipelineSplunkTcpSource          *ObservabilityPipelineSplunkTcpSource
 	ObservabilityPipelineSumoLogicSource          *ObservabilityPipelineSumoLogicSource
 	ObservabilityPipelineSyslogNgSource           *ObservabilityPipelineSyslogNgSource
+	ObservabilityPipelineWebsocketSource          *ObservabilityPipelineWebsocketSource
 	ObservabilityPipelineOpentelemetrySource      *ObservabilityPipelineOpentelemetrySource
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -110,6 +111,11 @@ func ObservabilityPipelineSumoLogicSourceAsObservabilityPipelineConfigSourceItem
 // ObservabilityPipelineSyslogNgSourceAsObservabilityPipelineConfigSourceItem is a convenience function that returns ObservabilityPipelineSyslogNgSource wrapped in ObservabilityPipelineConfigSourceItem.
 func ObservabilityPipelineSyslogNgSourceAsObservabilityPipelineConfigSourceItem(v *ObservabilityPipelineSyslogNgSource) ObservabilityPipelineConfigSourceItem {
 	return ObservabilityPipelineConfigSourceItem{ObservabilityPipelineSyslogNgSource: v}
+}
+
+// ObservabilityPipelineWebsocketSourceAsObservabilityPipelineConfigSourceItem is a convenience function that returns ObservabilityPipelineWebsocketSource wrapped in ObservabilityPipelineConfigSourceItem.
+func ObservabilityPipelineWebsocketSourceAsObservabilityPipelineConfigSourceItem(v *ObservabilityPipelineWebsocketSource) ObservabilityPipelineConfigSourceItem {
+	return ObservabilityPipelineConfigSourceItem{ObservabilityPipelineWebsocketSource: v}
 }
 
 // ObservabilityPipelineOpentelemetrySourceAsObservabilityPipelineConfigSourceItem is a convenience function that returns ObservabilityPipelineOpentelemetrySource wrapped in ObservabilityPipelineConfigSourceItem.
@@ -393,6 +399,23 @@ func (obj *ObservabilityPipelineConfigSourceItem) UnmarshalJSON(data []byte) err
 		obj.ObservabilityPipelineSyslogNgSource = nil
 	}
 
+	// try to unmarshal data into ObservabilityPipelineWebsocketSource
+	err = datadog.Unmarshal(data, &obj.ObservabilityPipelineWebsocketSource)
+	if err == nil {
+		if obj.ObservabilityPipelineWebsocketSource != nil && obj.ObservabilityPipelineWebsocketSource.UnparsedObject == nil {
+			jsonObservabilityPipelineWebsocketSource, _ := datadog.Marshal(obj.ObservabilityPipelineWebsocketSource)
+			if string(jsonObservabilityPipelineWebsocketSource) == "{}" { // empty struct
+				obj.ObservabilityPipelineWebsocketSource = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.ObservabilityPipelineWebsocketSource = nil
+		}
+	} else {
+		obj.ObservabilityPipelineWebsocketSource = nil
+	}
+
 	// try to unmarshal data into ObservabilityPipelineOpentelemetrySource
 	err = datadog.Unmarshal(data, &obj.ObservabilityPipelineOpentelemetrySource)
 	if err == nil {
@@ -428,6 +451,7 @@ func (obj *ObservabilityPipelineConfigSourceItem) UnmarshalJSON(data []byte) err
 		obj.ObservabilityPipelineSplunkTcpSource = nil
 		obj.ObservabilityPipelineSumoLogicSource = nil
 		obj.ObservabilityPipelineSyslogNgSource = nil
+		obj.ObservabilityPipelineWebsocketSource = nil
 		obj.ObservabilityPipelineOpentelemetrySource = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
@@ -498,6 +522,10 @@ func (obj ObservabilityPipelineConfigSourceItem) MarshalJSON() ([]byte, error) {
 
 	if obj.ObservabilityPipelineSyslogNgSource != nil {
 		return datadog.Marshal(&obj.ObservabilityPipelineSyslogNgSource)
+	}
+
+	if obj.ObservabilityPipelineWebsocketSource != nil {
+		return datadog.Marshal(&obj.ObservabilityPipelineWebsocketSource)
 	}
 
 	if obj.ObservabilityPipelineOpentelemetrySource != nil {
@@ -574,6 +602,10 @@ func (obj *ObservabilityPipelineConfigSourceItem) GetActualInstance() interface{
 
 	if obj.ObservabilityPipelineSyslogNgSource != nil {
 		return obj.ObservabilityPipelineSyslogNgSource
+	}
+
+	if obj.ObservabilityPipelineWebsocketSource != nil {
+		return obj.ObservabilityPipelineWebsocketSource
 	}
 
 	if obj.ObservabilityPipelineOpentelemetrySource != nil {

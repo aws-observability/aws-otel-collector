@@ -221,7 +221,7 @@ func (o *CreateAppsDatastoreRequestDataAttributes) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field primary_column_name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "name", "org_access", "primary_column_name", "primary_key_generation_strategy"})
 	} else {
 		return err

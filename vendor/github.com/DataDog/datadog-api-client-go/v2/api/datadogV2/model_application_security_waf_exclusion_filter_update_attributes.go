@@ -321,7 +321,7 @@ func (o *ApplicationSecurityWafExclusionFilterUpdateAttributes) UnmarshalJSON(by
 		return fmt.Errorf("required field enabled missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "enabled", "ip_list", "on_match", "parameters", "path_glob", "rules_target", "scope"})
 	} else {
 		return err

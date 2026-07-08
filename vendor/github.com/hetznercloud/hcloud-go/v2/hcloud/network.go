@@ -28,13 +28,13 @@ type NetworkSubnetType string
 
 // List of available network subnet types.
 const (
-	// Used to connect cloud servers and load balancers.
+	// NetworkSubnetTypeCloud is used to connect cloud servers and load balancers.
 	NetworkSubnetTypeCloud NetworkSubnetType = "cloud"
-	// Used to connect cloud servers and load balancers.
+	// NetworkSubnetTypeServer is used to connect cloud servers and load balancers.
 	//
 	// Deprecated: Use [NetworkSubnetTypeCloud] instead.
 	NetworkSubnetTypeServer NetworkSubnetType = "server"
-	// Used to connect cloud servers and load balancers with dedicated servers.
+	// NetworkSubnetTypeVSwitch is used to connect cloud servers and load balancers with dedicated servers.
 	//
 	// See https://docs.hetzner.com/networking/networks/connect-dedi-vswitch/
 	NetworkSubnetTypeVSwitch NetworkSubnetType = "vswitch"
@@ -128,7 +128,7 @@ type NetworkListOpts struct {
 	Sort []string
 }
 
-func (l NetworkListOpts) values() url.Values {
+func (l NetworkListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -147,7 +147,7 @@ func (c *NetworkClient) List(ctx context.Context, opts NetworkListOpts) ([]*Netw
 	const opPath = "/networks?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.NetworkListResponse](ctx, c.client, reqPath)
 	if err != nil {

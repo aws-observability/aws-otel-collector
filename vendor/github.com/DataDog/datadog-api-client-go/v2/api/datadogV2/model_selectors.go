@@ -191,7 +191,7 @@ func (o *Selectors) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field trigger_source missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"query", "rule_types", "severities", "trigger_source"})
 	} else {
 		return err

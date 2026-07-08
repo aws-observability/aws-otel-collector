@@ -350,7 +350,7 @@ func (o *SyntheticsNetworkTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field traceroute_queries missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"destination_service", "e2e_queries", "host", "max_ttl", "port", "source_service", "tcp_method", "timeout", "traceroute_queries"})
 	} else {
 		return err

@@ -337,7 +337,7 @@ func (o *RulesetRespDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field version missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created", "enabled", "last_modified_user_uuid", "modified", "name", "position", "processing_status", "rules", "version"})
 	} else {
 		return err

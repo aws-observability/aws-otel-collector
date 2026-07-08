@@ -170,6 +170,7 @@ func (n *Normalizer) normalizeToken(lexer *Lexer, normalizedSQLBuilder *strings.
 	var headState headState
 	var colonCtx colonContext
 	var ctes map[string]bool // Lazily initialized when first CTE is encountered
+	var inTableList bool
 
 	var lastValueToken *LastValueToken
 
@@ -180,7 +181,7 @@ func (n *Normalizer) normalizeToken(lexer *Lexer, normalizedSQLBuilder *strings.
 			preProcessToken(token, lastValueToken)
 		}
 		if n.shouldCollectMetadata() {
-			n.collectMetadata(token, lastValueToken, meta, statementMetadata, &ctes)
+			n.collectMetadata(token, lastValueToken, meta, statementMetadata, &ctes, &inTableList)
 		}
 		n.normalizeSQL(token, lastValueToken, normalizedSQLBuilder, &groupablePlaceholder, &headState, &colonCtx, lexerOpts...)
 		if token.Type == EOF {
@@ -232,15 +233,18 @@ func (n *Normalizer) shouldCollectMetadata() bool {
 	return n.config.CollectTables || n.config.CollectCommands || n.config.CollectComments || n.config.CollectProcedure
 }
 
-func (n *Normalizer) collectMetadata(token *Token, lastValueToken *LastValueToken, meta *metadataSet, statementMetadata *StatementMetadata, ctes *map[string]bool) {
+func (n *Normalizer) collectMetadata(token *Token, lastValueToken *LastValueToken, meta *metadataSet, statementMetadata *StatementMetadata, ctes *map[string]bool, inTableList *bool) {
 	if n.config.CollectComments && (token.Type == COMMENT || token.Type == MULTILINE_COMMENT) {
 		comment := token.Value
 		meta.addMetadata(comment, meta.commentsSet, &statementMetadata.Comments)
-	} else if token.Type == COMMAND {
-		if n.config.CollectCommands {
+	} else if token.Type == COMMAND || token.Type == KEYWORD {
+		*inTableList = false
+		if n.config.CollectCommands && token.Type == COMMAND {
 			command := strings.ToUpper(token.Value)
 			meta.addMetadata(command, meta.commandsSet, &statementMetadata.Commands)
 		}
+	} else if token.Type == PUNCTUATION && (token.Value == "(" || token.Value == ")") {
+		*inTableList = false
 	} else if token.Type == IDENT || token.Type == QUOTED_IDENT || token.Type == FUNCTION {
 		tokenVal := token.Value
 		if token.Type == QUOTED_IDENT {
@@ -261,7 +265,12 @@ func (n *Normalizer) collectMetadata(token *Token, lastValueToken *LastValueToke
 				}
 				(*ctes)[tokenVal] = true
 			} else if n.config.CollectTables && lastValueToken.isTableIndicator {
-				// Collect table names, excluding any CTEs
+				*inTableList = true
+				isCTE := *ctes != nil && (*ctes)[tokenVal]
+				if !isCTE {
+					meta.addMetadata(tokenVal, meta.tablesSet, &statementMetadata.Tables)
+				}
+			} else if n.config.CollectTables && *inTableList && lastValueToken.Type == PUNCTUATION && lastValueToken.Value == "," {
 				isCTE := *ctes != nil && (*ctes)[tokenVal]
 				if !isCTE {
 					meta.addMetadata(tokenVal, meta.tablesSet, &statementMetadata.Tables)

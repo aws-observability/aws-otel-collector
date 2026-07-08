@@ -32,6 +32,8 @@ type RUMApplicationAttributes struct {
 	OrgId int32 `json:"org_id"`
 	// Product Scales configuration for the RUM application.
 	ProductScales *RUMProductScales `json:"product_scales,omitempty"`
+	// ID of the RUM SDK remote configuration for the application, if one exists.
+	RemoteConfigId *string `json:"remote_config_id,omitempty"`
 	// Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.
 	Type string `json:"type"`
 	// Timestamp in ms of the last update date.
@@ -319,6 +321,34 @@ func (o *RUMApplicationAttributes) SetProductScales(v RUMProductScales) {
 	o.ProductScales = &v
 }
 
+// GetRemoteConfigId returns the RemoteConfigId field value if set, zero value otherwise.
+func (o *RUMApplicationAttributes) GetRemoteConfigId() string {
+	if o == nil || o.RemoteConfigId == nil {
+		var ret string
+		return ret
+	}
+	return *o.RemoteConfigId
+}
+
+// GetRemoteConfigIdOk returns a tuple with the RemoteConfigId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RUMApplicationAttributes) GetRemoteConfigIdOk() (*string, bool) {
+	if o == nil || o.RemoteConfigId == nil {
+		return nil, false
+	}
+	return o.RemoteConfigId, true
+}
+
+// HasRemoteConfigId returns a boolean if a field has been set.
+func (o *RUMApplicationAttributes) HasRemoteConfigId() bool {
+	return o != nil && o.RemoteConfigId != nil
+}
+
+// SetRemoteConfigId gets a reference to the given string and assigns it to the RemoteConfigId field.
+func (o *RUMApplicationAttributes) SetRemoteConfigId(v string) {
+	o.RemoteConfigId = &v
+}
+
 // GetType returns the Type field value.
 func (o *RUMApplicationAttributes) GetType() string {
 	if o == nil {
@@ -412,6 +442,9 @@ func (o RUMApplicationAttributes) MarshalJSON() ([]byte, error) {
 	if o.ProductScales != nil {
 		toSerialize["product_scales"] = o.ProductScales
 	}
+	if o.RemoteConfigId != nil {
+		toSerialize["remote_config_id"] = o.RemoteConfigId
+	}
 	toSerialize["type"] = o.Type
 	toSerialize["updated_at"] = o.UpdatedAt
 	toSerialize["updated_by_handle"] = o.UpdatedByHandle
@@ -435,6 +468,7 @@ func (o *RUMApplicationAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Name            *string           `json:"name"`
 		OrgId           *int32            `json:"org_id"`
 		ProductScales   *RUMProductScales `json:"product_scales,omitempty"`
+		RemoteConfigId  *string           `json:"remote_config_id,omitempty"`
 		Type            *string           `json:"type"`
 		UpdatedAt       *int64            `json:"updated_at"`
 		UpdatedByHandle *string           `json:"updated_by_handle"`
@@ -470,8 +504,8 @@ func (o *RUMApplicationAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field updated_by_handle missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"api_key_id", "application_id", "client_token", "created_at", "created_by_handle", "hash", "is_active", "name", "org_id", "product_scales", "type", "updated_at", "updated_by_handle"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"api_key_id", "application_id", "client_token", "created_at", "created_by_handle", "hash", "is_active", "name", "org_id", "product_scales", "remote_config_id", "type", "updated_at", "updated_by_handle"})
 	} else {
 		return err
 	}
@@ -490,6 +524,7 @@ func (o *RUMApplicationAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.ProductScales = all.ProductScales
+	o.RemoteConfigId = all.RemoteConfigId
 	o.Type = *all.Type
 	o.UpdatedAt = *all.UpdatedAt
 	o.UpdatedByHandle = *all.UpdatedByHandle

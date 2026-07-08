@@ -37,6 +37,8 @@ type SunburstWidgetRequest struct {
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
 	// The log query.
 	SecurityQuery *LogQueryDefinition `json:"security_query,omitempty"`
+	// The controls for sorting the widget.
+	Sort *WidgetSortBy `json:"sort,omitempty"`
 	// Widget style definition.
 	Style *WidgetStyle `json:"style,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -428,6 +430,34 @@ func (o *SunburstWidgetRequest) SetSecurityQuery(v LogQueryDefinition) {
 	o.SecurityQuery = &v
 }
 
+// GetSort returns the Sort field value if set, zero value otherwise.
+func (o *SunburstWidgetRequest) GetSort() WidgetSortBy {
+	if o == nil || o.Sort == nil {
+		var ret WidgetSortBy
+		return ret
+	}
+	return *o.Sort
+}
+
+// GetSortOk returns a tuple with the Sort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SunburstWidgetRequest) GetSortOk() (*WidgetSortBy, bool) {
+	if o == nil || o.Sort == nil {
+		return nil, false
+	}
+	return o.Sort, true
+}
+
+// HasSort returns a boolean if a field has been set.
+func (o *SunburstWidgetRequest) HasSort() bool {
+	return o != nil && o.Sort != nil
+}
+
+// SetSort gets a reference to the given WidgetSortBy and assigns it to the Sort field.
+func (o *SunburstWidgetRequest) SetSort(v WidgetSortBy) {
+	o.Sort = &v
+}
+
 // GetStyle returns the Style field value if set, zero value otherwise.
 func (o *SunburstWidgetRequest) GetStyle() WidgetStyle {
 	if o == nil || o.Style == nil {
@@ -501,6 +531,9 @@ func (o SunburstWidgetRequest) MarshalJSON() ([]byte, error) {
 	if o.SecurityQuery != nil {
 		toSerialize["security_query"] = o.SecurityQuery
 	}
+	if o.Sort != nil {
+		toSerialize["sort"] = o.Sort
+	}
 	if o.Style != nil {
 		toSerialize["style"] = o.Style
 	}
@@ -527,14 +560,15 @@ func (o *SunburstWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		ResponseFormat      *FormulaAndFunctionResponseFormat   `json:"response_format,omitempty"`
 		RumQuery            *LogQueryDefinition                 `json:"rum_query,omitempty"`
 		SecurityQuery       *LogQueryDefinition                 `json:"security_query,omitempty"`
+		Sort                *WidgetSortBy                       `json:"sort,omitempty"`
 		Style               *WidgetStyle                        `json:"style,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "audit_query", "event_query", "formulas", "log_query", "network_query", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "style"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "audit_query", "event_query", "formulas", "log_query", "network_query", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "sort", "style"})
 	} else {
 		return err
 	}
@@ -584,6 +618,10 @@ func (o *SunburstWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.SecurityQuery = all.SecurityQuery
+	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Sort = all.Sort
 	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

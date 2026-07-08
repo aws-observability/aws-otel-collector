@@ -117,7 +117,7 @@ func (o *GoogleChatCreateOrganizationHandleRequestAttributes) UnmarshalJSON(byte
 		return fmt.Errorf("required field space_resource_name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"name", "space_resource_name"})
 	} else {
 		return err

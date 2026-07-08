@@ -540,7 +540,7 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aliases", "apps", "aws_name", "host_name", "id", "is_muted", "last_reported_time", "meta", "metrics", "mute_timeout", "name", "sources", "tags_by_source", "up"})
 	} else {
 		return err

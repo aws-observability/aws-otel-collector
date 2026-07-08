@@ -12,7 +12,7 @@ import (
 type OrgGroupPolicyUpdateAttributes struct {
 	// The policy content as key-value pairs.
 	Content map[string]interface{} `json:"content,omitempty"`
-	// The enforcement tier of the policy. `DEFAULT` means the policy is set but member orgs may mutate it. `ENFORCE` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.
+	// The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.
 	EnforcementTier *OrgGroupPolicyEnforcementTier `json:"enforcement_tier,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -25,7 +25,7 @@ type OrgGroupPolicyUpdateAttributes struct {
 // will change when the set of required properties is changed.
 func NewOrgGroupPolicyUpdateAttributes() *OrgGroupPolicyUpdateAttributes {
 	this := OrgGroupPolicyUpdateAttributes{}
-	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_DEFAULT
+	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED
 	this.EnforcementTier = &enforcementTier
 	return &this
 }
@@ -35,7 +35,7 @@ func NewOrgGroupPolicyUpdateAttributes() *OrgGroupPolicyUpdateAttributes {
 // but it doesn't guarantee that properties required by API are set.
 func NewOrgGroupPolicyUpdateAttributesWithDefaults() *OrgGroupPolicyUpdateAttributes {
 	this := OrgGroupPolicyUpdateAttributes{}
-	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_DEFAULT
+	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED
 	this.EnforcementTier = &enforcementTier
 	return &this
 }
@@ -125,7 +125,7 @@ func (o *OrgGroupPolicyUpdateAttributes) UnmarshalJSON(bytes []byte) (err error)
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"content", "enforcement_tier"})
 	} else {
 		return err

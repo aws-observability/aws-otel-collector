@@ -151,7 +151,7 @@ func (o *SyntheticsAssertionJSONSchemaTarget) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"operator", "target", "type"})
 	} else {
 		return err

@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// RumMetricUpdateCompute The compute rule to compute the rum-based metric.
+// RumMetricUpdateCompute The compute rule to compute the RUM-based metric.
 type RumMetricUpdateCompute struct {
 	// Toggle to include or exclude percentile aggregations for distribution metrics.
 	// Only present when `aggregation_type` is `distribution`.
@@ -88,7 +88,7 @@ func (o *RumMetricUpdateCompute) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"include_percentiles"})
 	} else {
 		return err

@@ -257,7 +257,7 @@ func (o *ObservabilityPipelineOcsfMappingCustomLookupTableEntry) UnmarshalJSON(b
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"contains", "equals", "equals_source", "matches", "not_matches", "value"})
 	} else {
 		return err

@@ -86,7 +86,7 @@ func (o *ObservabilityPipelineDedupeProcessorCache) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field num_events missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"num_events"})
 	} else {
 		return err

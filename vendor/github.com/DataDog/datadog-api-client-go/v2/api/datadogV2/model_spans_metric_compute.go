@@ -155,7 +155,7 @@ func (o *SpansMetricCompute) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field aggregation_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation_type", "include_percentiles", "path"})
 	} else {
 		return err
