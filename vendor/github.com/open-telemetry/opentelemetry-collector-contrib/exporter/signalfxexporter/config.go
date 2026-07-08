@@ -148,6 +148,10 @@ type Config struct {
 	// Whether to drop histogram bucket metrics dispatched to Splunk Observability.
 	// Default value is set to false.
 	DropHistogramBuckets bool `mapstructure:"drop_histogram_buckets"`
+
+	// Whether to send histogram metrics in OTLP format to Splunk Observability.
+	// Default value is set to false.
+	SendOTLPHistograms bool `mapstructure:"send_otlp_histograms"`
 }
 
 type DimensionClientConfig struct {
