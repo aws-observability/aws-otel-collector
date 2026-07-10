@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimelineResponse Timeline response
+// TimelineResponse Response containing the chronological list of timeline cells for a case.
 type TimelineResponse struct {
 	// The `TimelineResponse` `data`.
 	Data []TimelineCellResource `json:"data,omitempty"`
@@ -87,7 +87,7 @@ func (o *TimelineResponse) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
 	} else {
 		return err

@@ -771,7 +771,7 @@ func (o *TableWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "alias", "apm_query", "apm_stats_query", "cell_display_mode", "conditional_formats", "event_query", "formulas", "limit", "log_query", "network_query", "order", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "sort", "text_formats"})
 	} else {
 		return err

@@ -122,6 +122,54 @@ func (AccountAttributeName) Values() []AccountAttributeName {
 	}
 }
 
+type AccountVpcEncryptionControlMode string
+
+// Enum values for AccountVpcEncryptionControlMode
+const (
+	AccountVpcEncryptionControlModeUnmanaged      AccountVpcEncryptionControlMode = "unmanaged"
+	AccountVpcEncryptionControlModeAttemptMonitor AccountVpcEncryptionControlMode = "attempt-monitor"
+	AccountVpcEncryptionControlModeAttemptEnforce AccountVpcEncryptionControlMode = "attempt-enforce"
+)
+
+// Values returns all known values for AccountVpcEncryptionControlMode. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AccountVpcEncryptionControlMode) Values() []AccountVpcEncryptionControlMode {
+	return []AccountVpcEncryptionControlMode{
+		"unmanaged",
+		"attempt-monitor",
+		"attempt-enforce",
+	}
+}
+
+type AccountVpcEncryptionControlState string
+
+// Enum values for AccountVpcEncryptionControlState
+const (
+	AccountVpcEncryptionControlStateDefaultState                   AccountVpcEncryptionControlState = "default-state"
+	AccountVpcEncryptionControlStateTransitionsInProgress          AccountVpcEncryptionControlState = "transitions-in-progress"
+	AccountVpcEncryptionControlStateTransitionsPartiallySuccessful AccountVpcEncryptionControlState = "transitions-partially-successful"
+	AccountVpcEncryptionControlStateTransitionsSuccessful          AccountVpcEncryptionControlState = "transitions-successful"
+	AccountVpcEncryptionControlStateTransitionsFailed              AccountVpcEncryptionControlState = "transitions-failed"
+)
+
+// Values returns all known values for AccountVpcEncryptionControlState. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AccountVpcEncryptionControlState) Values() []AccountVpcEncryptionControlState {
+	return []AccountVpcEncryptionControlState{
+		"default-state",
+		"transitions-in-progress",
+		"transitions-partially-successful",
+		"transitions-successful",
+		"transitions-failed",
+	}
+}
+
 type ActivityStatus string
 
 // Enum values for ActivityStatus
@@ -231,6 +279,7 @@ const (
 	AllocationStateReleased                 AllocationState = "released"
 	AllocationStateReleasedPermanentFailure AllocationState = "released-permanent-failure"
 	AllocationStatePending                  AllocationState = "pending"
+	AllocationStateConfiguring              AllocationState = "configuring"
 )
 
 // Values returns all known values for AllocationState. Note that this can be
@@ -245,6 +294,7 @@ func (AllocationState) Values() []AllocationState {
 		"released",
 		"released-permanent-failure",
 		"pending",
+		"configuring",
 	}
 }
 
@@ -277,8 +327,9 @@ type AllocationType string
 
 // Enum values for AllocationType
 const (
-	AllocationTypeUsed   AllocationType = "used"
-	AllocationTypeFuture AllocationType = "future"
+	AllocationTypeUsed       AllocationType = "used"
+	AllocationTypeFuture     AllocationType = "future"
+	AllocationTypeCancelling AllocationType = "cancelling"
 )
 
 // Values returns all known values for AllocationType. Note that this can be
@@ -289,6 +340,7 @@ func (AllocationType) Values() []AllocationType {
 	return []AllocationType{
 		"used",
 		"future",
+		"cancelling",
 	}
 }
 
@@ -349,6 +401,25 @@ func (AllowsMultipleInstanceTypes) Values() []AllowsMultipleInstanceTypes {
 	}
 }
 
+type AmdSevSnp string
+
+// Enum values for AmdSevSnp
+const (
+	AmdSevSnpEnabled  AmdSevSnp = "enabled"
+	AmdSevSnpDisabled AmdSevSnp = "disabled"
+)
+
+// Values returns all known values for AmdSevSnp. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AmdSevSnp) Values() []AmdSevSnp {
+	return []AmdSevSnp{
+		"enabled",
+		"disabled",
+	}
+}
+
 type AmdSevSnpSpecification string
 
 // Enum values for AmdSevSnpSpecification
@@ -405,6 +476,23 @@ func (ApplianceModeSupportValue) Values() []ApplianceModeSupportValue {
 	return []ApplianceModeSupportValue{
 		"enable",
 		"disable",
+	}
+}
+
+type ApplyCancellationCharges string
+
+// Enum values for ApplyCancellationCharges
+const (
+	ApplyCancellationChargesCommitmentWindDown ApplyCancellationCharges = "commitment-wind-down"
+)
+
+// Values returns all known values for ApplyCancellationCharges. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ApplyCancellationCharges) Values() []ApplyCancellationCharges {
+	return []ApplyCancellationCharges{
+		"commitment-wind-down",
 	}
 }
 
@@ -1232,6 +1320,28 @@ func (CapacityReservationBillingRequestStatus) Values() []CapacityReservationBil
 	}
 }
 
+type CapacityReservationCancellationQuoteState string
+
+// Enum values for CapacityReservationCancellationQuoteState
+const (
+	CapacityReservationCancellationQuoteStatePending CapacityReservationCancellationQuoteState = "pending"
+	CapacityReservationCancellationQuoteStateActive  CapacityReservationCancellationQuoteState = "active"
+	CapacityReservationCancellationQuoteStateExpired CapacityReservationCancellationQuoteState = "expired"
+)
+
+// Values returns all known values for CapacityReservationCancellationQuoteState.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CapacityReservationCancellationQuoteState) Values() []CapacityReservationCancellationQuoteState {
+	return []CapacityReservationCancellationQuoteState{
+		"pending",
+		"active",
+		"expired",
+	}
+}
+
 type CapacityReservationDeliveryPreference string
 
 // Enum values for CapacityReservationDeliveryPreference
@@ -1375,6 +1485,7 @@ const (
 	CapacityReservationStateAssessing      CapacityReservationState = "assessing"
 	CapacityReservationStateDelayed        CapacityReservationState = "delayed"
 	CapacityReservationStateUnsupported    CapacityReservationState = "unsupported"
+	CapacityReservationStateCancelling     CapacityReservationState = "cancelling"
 	CapacityReservationStateUnavailable    CapacityReservationState = "unavailable"
 )
 
@@ -1395,6 +1506,7 @@ func (CapacityReservationState) Values() []CapacityReservationState {
 		"assessing",
 		"delayed",
 		"unsupported",
+		"cancelling",
 		"unavailable",
 	}
 }
@@ -8905,6 +9017,42 @@ func (PayerResponsibility) Values() []PayerResponsibility {
 	}
 }
 
+type PayerResponsibilityScope string
+
+// Enum values for PayerResponsibilityScope
+const (
+	PayerResponsibilityScopeVpcEndpointCharges PayerResponsibilityScope = "vpc-endpoint-charges"
+)
+
+// Values returns all known values for PayerResponsibilityScope. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PayerResponsibilityScope) Values() []PayerResponsibilityScope {
+	return []PayerResponsibilityScope{
+		"vpc-endpoint-charges",
+	}
+}
+
+type PayerResponsibilityType string
+
+// Enum values for PayerResponsibilityType
+const (
+	PayerResponsibilityTypeVpcEndpointAccount        PayerResponsibilityType = "vpc-endpoint-account"
+	PayerResponsibilityTypeVpcEndpointServiceAccount PayerResponsibilityType = "vpc-endpoint-service-account"
+)
+
+// Values returns all known values for PayerResponsibilityType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PayerResponsibilityType) Values() []PayerResponsibilityType {
+	return []PayerResponsibilityType{
+		"vpc-endpoint-account",
+		"vpc-endpoint-service-account",
+	}
+}
+
 type PaymentOption string
 
 // Enum values for PaymentOption
@@ -9037,9 +9185,10 @@ type PlacementStrategy string
 
 // Enum values for PlacementStrategy
 const (
-	PlacementStrategyCluster   PlacementStrategy = "cluster"
-	PlacementStrategySpread    PlacementStrategy = "spread"
-	PlacementStrategyPartition PlacementStrategy = "partition"
+	PlacementStrategyCluster       PlacementStrategy = "cluster"
+	PlacementStrategySpread        PlacementStrategy = "spread"
+	PlacementStrategyPartition     PlacementStrategy = "partition"
+	PlacementStrategyPrecisionTime PlacementStrategy = "precision-time"
 )
 
 // Values returns all known values for PlacementStrategy. Note that this can be
@@ -9051,6 +9200,7 @@ func (PlacementStrategy) Values() []PlacementStrategy {
 		"cluster",
 		"spread",
 		"partition",
+		"precision-time",
 	}
 }
 
@@ -9617,6 +9767,8 @@ const (
 	ResourceTypeSecondarySubnet                                        ResourceType = "secondary-subnet"
 	ResourceTypeCapacityManagerDataExport                              ResourceType = "capacity-manager-data-export"
 	ResourceTypeVpnConcentrator                                        ResourceType = "vpn-concentrator"
+	ResourceTypeIpamPoolAllocation                                     ResourceType = "ipam-pool-allocation"
+	ResourceTypeCapacityReservationCancellationQuote                   ResourceType = "capacity-reservation-cancellation-quote"
 )
 
 // Values returns all known values for ResourceType. Note that this can be
@@ -9732,6 +9884,8 @@ func (ResourceType) Values() []ResourceType {
 		"secondary-subnet",
 		"capacity-manager-data-export",
 		"vpn-concentrator",
+		"ipam-pool-allocation",
+		"capacity-reservation-cancellation-quote",
 	}
 }
 
@@ -11056,6 +11210,27 @@ func (SupportedAdditionalProcessorFeature) Values() []SupportedAdditionalProcess
 	return []SupportedAdditionalProcessorFeature{
 		"amd-sev-snp",
 		"nested-virtualization",
+	}
+}
+
+type TaggableResourceType string
+
+// Enum values for TaggableResourceType
+const (
+	TaggableResourceTypeNetworkInterface TaggableResourceType = "network-interface"
+	TaggableResourceTypeInstance         TaggableResourceType = "instance"
+	TaggableResourceTypeAutoScalingGroup TaggableResourceType = "auto-scaling-group"
+)
+
+// Values returns all known values for TaggableResourceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TaggableResourceType) Values() []TaggableResourceType {
+	return []TaggableResourceType{
+		"network-interface",
+		"instance",
+		"auto-scaling-group",
 	}
 }
 

@@ -495,7 +495,7 @@ func (o *TenancyConfigDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"billing_plan_id", "config_version", "cost_collection_enabled", "dd_compartment_id", "dd_stack_id", "home_region", "logs_config", "metrics_config", "parent_tenancy_name", "regions_config", "resource_collection_enabled", "tenancy_name", "user_ocid"})
 	} else {
 		return err

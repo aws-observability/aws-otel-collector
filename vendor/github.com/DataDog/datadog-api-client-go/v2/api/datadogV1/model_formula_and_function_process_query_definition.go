@@ -390,7 +390,7 @@ func (o *FormulaAndFunctionProcessQueryDefinition) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "cross_org_uuids", "data_source", "is_normalized_cpu", "limit", "metric", "name", "sort", "tag_filters", "text_filter"})
 	} else {
 		return err

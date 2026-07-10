@@ -281,7 +281,7 @@ func (o *CoverageSummaryAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"codeowners", "evaluated_flags_count", "evaluated_reports_count", "patch_coverage", "services", "total_coverage"})
 	} else {
 		return err

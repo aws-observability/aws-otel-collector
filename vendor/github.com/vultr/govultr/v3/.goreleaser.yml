@@ -11,7 +11,7 @@ checksum:
   algorithm: sha256
 
 snapshot:
-  name_template: "{{ .ProjectName }}_v{{ .Version }}"
+  version_template: "{{ .ProjectName }}_v{{ .Version }}"
 
 changelog:
   sort: asc

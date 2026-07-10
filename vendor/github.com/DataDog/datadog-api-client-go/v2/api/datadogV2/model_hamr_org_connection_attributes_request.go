@@ -248,7 +248,7 @@ func (o *HamrOrgConnectionAttributesRequest) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field target_org_uuid missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"hamr_status", "is_primary", "modified_by", "target_org_datacenter", "target_org_name", "target_org_uuid"})
 	} else {
 		return err

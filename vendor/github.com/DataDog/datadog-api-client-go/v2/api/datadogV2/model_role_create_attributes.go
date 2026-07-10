@@ -199,7 +199,7 @@ func (o *RoleCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "modified_at", "name", "receives_permissions_from"})
 	} else {
 		return err

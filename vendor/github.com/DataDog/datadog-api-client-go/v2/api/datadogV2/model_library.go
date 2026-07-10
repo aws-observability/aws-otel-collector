@@ -154,7 +154,7 @@ func (o *Library) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"additional_names", "name", "version"})
 	} else {
 		return err

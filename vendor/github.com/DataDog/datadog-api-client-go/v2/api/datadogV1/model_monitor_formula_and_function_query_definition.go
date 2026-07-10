@@ -13,6 +13,7 @@ type MonitorFormulaAndFunctionQueryDefinition struct {
 	MonitorFormulaAndFunctionEventQueryDefinition              *MonitorFormulaAndFunctionEventQueryDefinition
 	MonitorFormulaAndFunctionCostQueryDefinition               *MonitorFormulaAndFunctionCostQueryDefinition
 	MonitorFormulaAndFunctionDataQualityQueryDefinition        *MonitorFormulaAndFunctionDataQualityQueryDefinition
+	MonitorFormulaAndFunctionDataJobsQueryDefinition           *MonitorFormulaAndFunctionDataJobsQueryDefinition
 	MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition *MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition
 	MonitorFormulaAndFunctionAggregateFilteredQueryDefinition  *MonitorFormulaAndFunctionAggregateFilteredQueryDefinition
 
@@ -33,6 +34,11 @@ func MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQuer
 // MonitorFormulaAndFunctionDataQualityQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition is a convenience function that returns MonitorFormulaAndFunctionDataQualityQueryDefinition wrapped in MonitorFormulaAndFunctionQueryDefinition.
 func MonitorFormulaAndFunctionDataQualityQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(v *MonitorFormulaAndFunctionDataQualityQueryDefinition) MonitorFormulaAndFunctionQueryDefinition {
 	return MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionDataQualityQueryDefinition: v}
+}
+
+// MonitorFormulaAndFunctionDataJobsQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition is a convenience function that returns MonitorFormulaAndFunctionDataJobsQueryDefinition wrapped in MonitorFormulaAndFunctionQueryDefinition.
+func MonitorFormulaAndFunctionDataJobsQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(v *MonitorFormulaAndFunctionDataJobsQueryDefinition) MonitorFormulaAndFunctionQueryDefinition {
+	return MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionDataJobsQueryDefinition: v}
 }
 
 // MonitorFormulaAndFunctionAggregateAugmentedQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition is a convenience function that returns MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition wrapped in MonitorFormulaAndFunctionQueryDefinition.
@@ -100,6 +106,23 @@ func (obj *MonitorFormulaAndFunctionQueryDefinition) UnmarshalJSON(data []byte) 
 		obj.MonitorFormulaAndFunctionDataQualityQueryDefinition = nil
 	}
 
+	// try to unmarshal data into MonitorFormulaAndFunctionDataJobsQueryDefinition
+	err = datadog.Unmarshal(data, &obj.MonitorFormulaAndFunctionDataJobsQueryDefinition)
+	if err == nil {
+		if obj.MonitorFormulaAndFunctionDataJobsQueryDefinition != nil && obj.MonitorFormulaAndFunctionDataJobsQueryDefinition.UnparsedObject == nil {
+			jsonMonitorFormulaAndFunctionDataJobsQueryDefinition, _ := datadog.Marshal(obj.MonitorFormulaAndFunctionDataJobsQueryDefinition)
+			if string(jsonMonitorFormulaAndFunctionDataJobsQueryDefinition) == "{}" { // empty struct
+				obj.MonitorFormulaAndFunctionDataJobsQueryDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.MonitorFormulaAndFunctionDataJobsQueryDefinition = nil
+		}
+	} else {
+		obj.MonitorFormulaAndFunctionDataJobsQueryDefinition = nil
+	}
+
 	// try to unmarshal data into MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition
 	err = datadog.Unmarshal(data, &obj.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition)
 	if err == nil {
@@ -139,6 +162,7 @@ func (obj *MonitorFormulaAndFunctionQueryDefinition) UnmarshalJSON(data []byte) 
 		obj.MonitorFormulaAndFunctionEventQueryDefinition = nil
 		obj.MonitorFormulaAndFunctionCostQueryDefinition = nil
 		obj.MonitorFormulaAndFunctionDataQualityQueryDefinition = nil
+		obj.MonitorFormulaAndFunctionDataJobsQueryDefinition = nil
 		obj.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition = nil
 		obj.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
@@ -158,6 +182,10 @@ func (obj MonitorFormulaAndFunctionQueryDefinition) MarshalJSON() ([]byte, error
 
 	if obj.MonitorFormulaAndFunctionDataQualityQueryDefinition != nil {
 		return datadog.Marshal(&obj.MonitorFormulaAndFunctionDataQualityQueryDefinition)
+	}
+
+	if obj.MonitorFormulaAndFunctionDataJobsQueryDefinition != nil {
+		return datadog.Marshal(&obj.MonitorFormulaAndFunctionDataJobsQueryDefinition)
 	}
 
 	if obj.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil {
@@ -186,6 +214,10 @@ func (obj *MonitorFormulaAndFunctionQueryDefinition) GetActualInstance() interfa
 
 	if obj.MonitorFormulaAndFunctionDataQualityQueryDefinition != nil {
 		return obj.MonitorFormulaAndFunctionDataQualityQueryDefinition
+	}
+
+	if obj.MonitorFormulaAndFunctionDataJobsQueryDefinition != nil {
+		return obj.MonitorFormulaAndFunctionDataJobsQueryDefinition
 	}
 
 	if obj.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil {

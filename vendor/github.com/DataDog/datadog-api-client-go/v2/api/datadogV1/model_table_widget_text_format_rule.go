@@ -226,7 +226,7 @@ func (o *TableWidgetTextFormatRule) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field match missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"custom_bg_color", "custom_fg_color", "match", "palette", "replace"})
 	} else {
 		return err

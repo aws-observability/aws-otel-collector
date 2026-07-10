@@ -10,12 +10,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityEntityRiskScoreType Resource type
+// SecurityEntityRiskScoreType Resource type.
 type SecurityEntityRiskScoreType string
 
 // List of SecurityEntityRiskScoreType.
 const (
-	SECURITYENTITYRISKSCORETYPE_SECURITY_ENTITY_RISK_SCORE SecurityEntityRiskScoreType = "security_entity_risk_score"
+	SECURITYENTITYRISKSCORETYPE_SECURITY_ENTITY_RISK_SCORE SecurityEntityRiskScoreType = "SecurityEntityRiskScore"
 )
 
 var allowedSecurityEntityRiskScoreTypeEnumValues = []SecurityEntityRiskScoreType{

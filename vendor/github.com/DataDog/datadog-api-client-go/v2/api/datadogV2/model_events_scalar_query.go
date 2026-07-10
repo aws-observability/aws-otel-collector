@@ -14,6 +14,8 @@ import (
 type EventsScalarQuery struct {
 	// The instructions for what to compute for this query.
 	Compute EventsCompute `json:"compute"`
+	// Organization UUIDs to query when using [cross-organization visibility](/account_management/org_settings/cross_org_visibility/). Limited to one organization UUID.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// A data source that is powered by the Events Platform.
 	DataSource EventsDataSource `json:"data_source"`
 	// The list of facets on which to split results.
@@ -71,6 +73,34 @@ func (o *EventsScalarQuery) GetComputeOk() (*EventsCompute, bool) {
 // SetCompute sets field value.
 func (o *EventsScalarQuery) SetCompute(v EventsCompute) {
 	o.Compute = v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *EventsScalarQuery) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EventsScalarQuery) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *EventsScalarQuery) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *EventsScalarQuery) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -215,6 +245,9 @@ func (o EventsScalarQuery) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["compute"] = o.Compute
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.GroupBy != nil {
 		toSerialize["group_by"] = o.GroupBy
@@ -238,12 +271,13 @@ func (o EventsScalarQuery) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *EventsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Compute    *EventsCompute    `json:"compute"`
-		DataSource *EventsDataSource `json:"data_source"`
-		GroupBy    []EventsGroupBy   `json:"group_by,omitempty"`
-		Indexes    []string          `json:"indexes,omitempty"`
-		Name       *string           `json:"name,omitempty"`
-		Search     *EventsSearch     `json:"search,omitempty"`
+		Compute       *EventsCompute    `json:"compute"`
+		CrossOrgUuids []string          `json:"cross_org_uuids,omitempty"`
+		DataSource    *EventsDataSource `json:"data_source"`
+		GroupBy       []EventsGroupBy   `json:"group_by,omitempty"`
+		Indexes       []string          `json:"indexes,omitempty"`
+		Name          *string           `json:"name,omitempty"`
+		Search        *EventsSearch     `json:"search,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -255,8 +289,8 @@ func (o *EventsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field data_source missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"compute", "data_source", "group_by", "indexes", "name", "search"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"compute", "cross_org_uuids", "data_source", "group_by", "indexes", "name", "search"})
 	} else {
 		return err
 	}
@@ -266,6 +300,7 @@ func (o *EventsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Compute = *all.Compute
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

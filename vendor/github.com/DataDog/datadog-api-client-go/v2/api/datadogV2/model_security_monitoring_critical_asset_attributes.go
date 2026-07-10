@@ -461,7 +461,7 @@ func (o *SecurityMonitoringCriticalAssetAttributes) UnmarshalJSON(bytes []byte) 
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"creation_author_id", "creation_date", "creator", "enabled", "query", "rule_query", "severity", "tags", "update_author_id", "update_date", "updater", "version"})
 	} else {
 		return err

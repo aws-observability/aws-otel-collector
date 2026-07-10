@@ -360,7 +360,7 @@ func (o *IncidentUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"customer_impact_end", "customer_impact_scope", "customer_impact_start", "customer_impacted", "detected", "fields", "notification_handles", "title"})
 	} else {
 		return err

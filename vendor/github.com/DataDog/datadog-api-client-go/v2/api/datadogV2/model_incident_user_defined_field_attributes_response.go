@@ -640,7 +640,7 @@ func (o *IncidentUserDefinedFieldAttributesResponse) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field valid_values missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attached_to", "category", "collected", "created", "default_value", "deleted", "display_name", "metadata", "modified", "name", "ordinal", "prerequisite", "required", "reserved", "table_id", "tag_key", "type", "valid_values"})
 	} else {
 		return err

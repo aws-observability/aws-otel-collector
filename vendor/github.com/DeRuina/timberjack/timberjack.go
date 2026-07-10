@@ -40,7 +40,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	"unicode"
 
 	"github.com/klauspost/compress/zstd"
 )
@@ -212,6 +211,7 @@ type Logger struct {
 	resolvedStat    func(string) (os.FileInfo, error)
 	resolvedRename  func(string, string) error
 	resolvedRemove  func(string) error
+	resolvedOpenFile func(string, int, os.FileMode) (*os.File, error)
 }
 
 var (
@@ -229,6 +229,10 @@ var (
 	osRename = os.Rename
 
 	osRemove = os.Remove
+
+	osOpenFile = os.OpenFile
+
+	osChmod = os.Chmod
 
 	// empty BackupTimeFormatField
 	ErrEmptyBackupTimeFormatField = errors.New("empty backupformat field")
@@ -255,6 +259,7 @@ func (l *Logger) resolveConfigLocked() {
 		l.resolvedStat = osStat
 		l.resolvedRename = osRename
 		l.resolvedRemove = osRemove
+		l.resolvedOpenFile = osOpenFile
 
 		// Freeze compression (prevents races if toggled later)
 		l.resolvedCompression = l.effectiveCompression()
@@ -280,7 +285,15 @@ func (l *Logger) Write(p []byte) (n int, err error) {
 		// The logger is closed. To ensure the write succeeds, we perform a
 		// single open-write-close cycle. This does not perform rotation
 		// and does not restart the background goroutines. l.file remains nil.
-		file, openErr := os.OpenFile(l.filename(), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+		writeLen := int64(len(p))
+		if writeLen > l.max() {
+			return 0, fmt.Errorf("write length %d exceeds maximum file size %d", writeLen, l.max())
+		}
+		mode := l.FileMode
+		if mode == 0 {
+			mode = os.FileMode(defaultFileMode)
+		}
+		file, openErr := l.resolvedOpenFile(l.filename(), os.O_CREATE|os.O_APPEND|os.O_WRONLY, mode)
 		if openErr != nil {
 			return 0, fmt.Errorf("timberjack: write on closed logger failed to open file: %w", openErr)
 		}
@@ -368,7 +381,7 @@ func (l *Logger) ValidateBackupTimeFormat() error {
 	// 2025-05-22 23:41:59.987654321 +0000 UTC
 	now := time.Date(2025, 5, 22, 23, 41, 59, 987_654_321, time.UTC)
 
-	layoutPrecision := countDigitsAfterDot(l.BackupTimeFormat)
+	layoutPrecision := fractionalSecondDigits(l.BackupTimeFormat)
 
 	now, err := truncateFractional(now, layoutPrecision)
 	if err != nil {
@@ -474,15 +487,16 @@ func (l *Logger) ensureScheduledRotationLoopRunning() {
 		slots := l.processedRotateAt
 		loc := l.location()
 		nowFn := l.resolvedTimeNow
+		filename := l.Filename
 
 		l.scheduledRotationWg.Add(1)
-		go l.runScheduledRotations(quitCh, slots, loc, nowFn)
+		go l.runScheduledRotations(quitCh, slots, loc, nowFn, filename)
 	})
 }
 
 // runScheduledRotations is the main loop for handling rotations at specific minute marks
 // as defined in RotateAtMinutes. It runs in a separate goroutine.
-func (l *Logger) runScheduledRotations(quit <-chan struct{}, slots []rotateAt, loc *time.Location, nowFn func() time.Time) {
+func (l *Logger) runScheduledRotations(quit <-chan struct{}, slots []rotateAt, loc *time.Location, nowFn func() time.Time, filename string) {
 	defer l.scheduledRotationWg.Done()
 
 	// No slots to process, exit immediately.
@@ -490,14 +504,10 @@ func (l *Logger) runScheduledRotations(quit <-chan struct{}, slots []rotateAt, l
 		return
 	}
 
-	timer := time.NewTimer(0) // Timer will be reset with the correct duration in the loop
-	if !timer.Stop() {
-		// Drain the channel if the timer fired prematurely (e.g., duration was 0 on first NewTimer)
-		select {
-		case <-timer.C:
-		default:
-		}
-	}
+	// Use a large initial duration so Stop() always wins the race against expiry.
+	// The timer is Reset with the correct duration at the top of each loop iteration.
+	timer := time.NewTimer(time.Hour)
+	timer.Stop()
 
 	for {
 		now := nowFn()
@@ -528,7 +538,7 @@ func (l *Logger) runScheduledRotations(quit <-chan struct{}, slots []rotateAt, l
 			// This should ideally not happen if processedRotateAt is valid and non-empty.
 			// Could occur if currentTime() is unreliable or jumps massively backward.
 			// Log an error and retry calculation after a fallback delay.
-			fmt.Fprintf(os.Stderr, "timberjack: [%s] Could not determine next scheduled rotation time for %v with marks %v. Retrying calculation in 1 minute.\n", l.Filename, nowInLocation, slots)
+			fmt.Fprintf(os.Stderr, "timberjack: [%s] Could not determine next scheduled rotation time for %v with marks %v. Retrying calculation in 1 minute.\n", filename, nowInLocation, slots)
 			select {
 			case <-time.After(time.Minute): // Wait a bit before retrying calculation
 				continue // Restart the outer loop to recalculate
@@ -548,9 +558,9 @@ func (l *Logger) runScheduledRotations(quit <-chan struct{}, slots []rotateAt, l
 			// very close to, but just before or at, this scheduled time for the same mark.
 			if l.lastRotationTime.Before(nextRotationAbsoluteTime) {
 				if err := l.rotate("time"); err != nil { // Scheduled rotations are "time" based for filename
-					fmt.Fprintf(os.Stderr, "timberjack: [%s] scheduled rotation failed: %v\n", l.Filename, err)
+					fmt.Fprintf(os.Stderr, "timberjack: [%s] scheduled rotation failed: %v\n", filename, err)
 				} else {
-					l.lastRotationTime = nowFn()
+					l.lastRotationTime = nextRotationAbsoluteTime
 				}
 			}
 			l.mu.Unlock()
@@ -734,6 +744,7 @@ func (l *Logger) openNew(reasonForBackup string) error {
 	}
 
 	var oldInfo os.FileInfo
+	var newname string // set when an existing file is renamed; used for rollback
 	info, err := l.resolvedStat(name)
 	if err == nil {
 		oldInfo = info
@@ -745,7 +756,7 @@ func (l *Logger) openNew(reasonForBackup string) error {
 		rotationTimeForBackup := l.resolvedTimeNow()
 
 		// Build the rotated name from the immutable snapshot (no public field writes).
-		newname := backupNameWithResolved(
+		newname = backupNameWithResolved(
 			name,
 			l.resolvedLocalTime,
 			reasonForBackup,
@@ -765,14 +776,27 @@ func (l *Logger) openNew(reasonForBackup string) error {
 		return fmt.Errorf("failed to stat log file %s: %w", name, err)
 	}
 
+	// rollback renames the backup file back to `name` if creating the new log
+	// file fails, restoring a consistent state.
+	rollback := func() {
+		if newname != "" {
+			if rbErr := l.resolvedRename(newname, name); rbErr != nil {
+				fmt.Fprintf(os.Stderr, "timberjack: [%s] rotation rollback failed: %v\n", l.Filename, rbErr)
+			}
+		}
+	}
+
 	// Create and open the new log file at path `name`.
-	f, err := os.OpenFile(name, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, finalMode)
+	f, err := osOpenFile(name, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, finalMode)
 	if err != nil {
+		rollback()
 		return fmt.Errorf("can't open new logfile %s: %s", name, err)
 	}
 	// Apply the exact mode via chmod so the process umask cannot mask bits.
-	if err := os.Chmod(name, finalMode); err != nil {
+	if err := osChmod(name, finalMode); err != nil {
 		closeErr := f.Close()
+		_ = osRemove(name) // remove the empty file so rollback can restore cleanly
+		rollback()
 		if closeErr != nil {
 			return fmt.Errorf("can't set mode on new logfile %s: %s (also failed to close: %v)", name, err, closeErr)
 		}
@@ -858,7 +882,7 @@ func (l *Logger) openExistingOrNew(writeLen int) error {
 	}
 
 	// Open existing file for appending.
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0)
+	file, err := osOpenFile(filename, os.O_APPEND|os.O_WRONLY, 0)
 	if err != nil {
 		// If opening existing fails (e.g., permissions, corruption), try to create a new one.
 		return l.openNew("initial") // Fallback if append fails
@@ -1153,28 +1177,41 @@ func (l *Logger) prefixAndExt() (prefix, ext string) {
 	return prefix, ext
 }
 
-// countDigitsAfterDot returns the number of consecutive digit characters
-// immediately following the first '.' in the input.
-// It skips all characters before the '.' and stops counting at the first non-digit
-// character after the '.'.
-
-// Example: `prefix.0012304123suffix` would return 10
-// Example: `prefix.0012304_middle_123_suffix` would return 7
-func countDigitsAfterDot(layout string) int {
-	for i, ch := range layout {
-		if ch == '.' {
-			count := 0
-			for _, c := range layout[i+1:] {
-				if unicode.IsDigit(c) {
-					count++
-				} else {
-					break
-				}
-			}
-			return count
+// fractionalSecondDigits returns the number of fractional-second digits in a Go
+// time layout. In a layout, fractional seconds are written as a '.' or ',' followed
+// by a run of '0's (fixed precision) or '9's (trailing zeros trimmed); any other '.'
+// (for example one used as a date or time separator) is a literal character and does
+// not denote fractional seconds.
+//
+// Examples:
+//
+//	"2006-01-02T15-04-05.000"  -> 3   (fractional seconds)
+//	"2006-01-02 15:04:05.999"  -> 3   (fractional seconds)
+//	"2006-01-02_15.04.05"      -> 0   ('.' used as a separator)
+//	"2006.01.02-15-04-05"      -> 0   ('.' used as a separator)
+func fractionalSecondDigits(layout string) int {
+	for i := 0; i < len(layout); i++ {
+		if layout[i] != '.' && layout[i] != ',' {
+			continue
 		}
+		j := i + 1
+		if j >= len(layout) || (layout[j] != '0' && layout[j] != '9') {
+			continue // not a fractional-second specifier
+		}
+		digit := layout[j]
+		n := 0
+		for j < len(layout) && layout[j] == digit {
+			n++
+			j++
+		}
+		// A genuine fractional run is a homogeneous run of '0's or '9's; if another
+		// digit follows immediately, this '.' is a literal separator (e.g. "15.04").
+		if j < len(layout) && layout[j] >= '0' && layout[j] <= '9' {
+			continue
+		}
+		return n
 	}
-	return 0 // no '.' found or no digits after dot
+	return 0
 }
 
 // truncateFractional truncates time t to n fractional digits of seconds.
@@ -1215,11 +1252,31 @@ func (l *Logger) compressLogFile(src, dst string) error {
 		return fmt.Errorf("failed to stat source log file %s: %v", src, err)
 	}
 
+	// If a non-empty compressed destination already exists, a previous cycle
+	// compressed successfully but failed to remove the source. Skip recompression
+	// and only remove the source to avoid clobbering the valid compressed backup.
+	// A zero-byte dst (e.g. from a previously crashed mid-write) is treated as
+	// absent so that compression retries correctly.
+	if dstInfo, statErr := l.resolvedStat(dst); statErr == nil && dstInfo.Size() > 0 {
+		if err := l.resolvedRemove(src); err != nil {
+			return fmt.Errorf("failed to remove original source log file %s after compression: %w", src, err)
+		}
+		return nil
+	}
+
 	// Write to a temp file so that dst only appears once fully written (atomic publish).
 	tmpDst := dst + ".tmp"
-	dstFile, err := os.OpenFile(tmpDst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, srcInfo.Mode())
+	dstFile, err := l.resolvedOpenFile(tmpDst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, srcInfo.Mode())
 	if err != nil {
 		return fmt.Errorf("failed to open destination compressed log file %s: %v", tmpDst, err)
+	}
+	// Apply the exact mode via chmod so the process umask cannot mask bits, mirroring openNew.
+	// Without this the compressed backup can end up with more restrictive permissions than the
+	// source log file whenever a non-zero umask is in effect.
+	if err := osChmod(tmpDst, srcInfo.Mode()); err != nil {
+		_ = dstFile.Close()
+		_ = os.Remove(tmpDst)
+		return fmt.Errorf("failed to set mode on compressed log file %s: %w", tmpDst, err)
 	}
 	// No `defer dstFile.Close()` here; explicit close ordering is critical.
 
@@ -1331,8 +1388,12 @@ func trimCompressionSuffix(name string) string {
 }
 
 // sanitizeReason turns an arbitrary string into a safe, short tag for filenames.
-// Allowed: [a-z0-9_-]. Everything else becomes '-'. Collapses repeats, trims edges.
-// Returns empty string if nothing usable remains.
+// Allowed: [a-z0-9_]. Everything else (including '-') becomes '_'. Collapses
+// repeats, trims edges. Returns empty string if nothing usable remains.
+//
+// '-' is intentionally excluded: timeFromName uses strings.LastIndex("-") to
+// split the timestamp from the reason, so a '-' inside the reason would corrupt
+// parsing and make the backup invisible to MaxBackups/MaxAge cleanup.
 func sanitizeReason(s string) string {
 	s = strings.TrimSpace(strings.ToLower(s))
 	if s == "" {
@@ -1341,24 +1402,24 @@ func sanitizeReason(s string) string {
 	const max = 32
 
 	var b strings.Builder
-	lastDash := false
+	lastSep := false
 	for _, r := range s {
-		ok := (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '-' || r == '_'
+		ok := (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '_'
 		if ok {
 			b.WriteRune(r)
-			lastDash = (r == '-')
+			lastSep = (r == '_')
 		} else {
-			// replace anything else (including whitespace) with a single '-'
-			if !lastDash && b.Len() > 0 {
-				b.WriteByte('-')
-				lastDash = true
+			// replace anything else (including '-' and whitespace) with a single '_'
+			if !lastSep && b.Len() > 0 {
+				b.WriteByte('_')
+				lastSep = true
 			}
 		}
 		if b.Len() >= max {
 			break
 		}
 	}
-	out := strings.Trim(b.String(), "-_")
+	out := strings.Trim(b.String(), "_")
 	return out
 }
 

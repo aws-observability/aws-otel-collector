@@ -224,7 +224,7 @@ func (o *OrgGroupPolicyOverrideAttributes) UnmarshalJSON(bytes []byte) (err erro
 		return fmt.Errorf("required field org_uuid missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"content", "created_at", "modified_at", "org_site", "org_uuid"})
 	} else {
 		return err

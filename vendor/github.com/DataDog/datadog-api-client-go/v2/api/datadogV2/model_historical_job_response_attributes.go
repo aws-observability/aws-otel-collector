@@ -26,6 +26,8 @@ type HistoricalJobResponseAttributes struct {
 	JobStatus *string `json:"jobStatus,omitempty"`
 	// Last modification time of the job.
 	ModifiedAt *string `json:"modifiedAt,omitempty"`
+	// Job execution progress as a value between 0 and 1. Available for ongoing jobs.
+	ProgressRate *float64 `json:"progressRate,omitempty"`
 	// Whether the job outputs signals.
 	SignalOutput *bool `json:"signalOutput,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -274,6 +276,34 @@ func (o *HistoricalJobResponseAttributes) SetModifiedAt(v string) {
 	o.ModifiedAt = &v
 }
 
+// GetProgressRate returns the ProgressRate field value if set, zero value otherwise.
+func (o *HistoricalJobResponseAttributes) GetProgressRate() float64 {
+	if o == nil || o.ProgressRate == nil {
+		var ret float64
+		return ret
+	}
+	return *o.ProgressRate
+}
+
+// GetProgressRateOk returns a tuple with the ProgressRate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HistoricalJobResponseAttributes) GetProgressRateOk() (*float64, bool) {
+	if o == nil || o.ProgressRate == nil {
+		return nil, false
+	}
+	return o.ProgressRate, true
+}
+
+// HasProgressRate returns a boolean if a field has been set.
+func (o *HistoricalJobResponseAttributes) HasProgressRate() bool {
+	return o != nil && o.ProgressRate != nil
+}
+
+// SetProgressRate gets a reference to the given float64 and assigns it to the ProgressRate field.
+func (o *HistoricalJobResponseAttributes) SetProgressRate(v float64) {
+	o.ProgressRate = &v
+}
+
 // GetSignalOutput returns the SignalOutput field value if set, zero value otherwise.
 func (o *HistoricalJobResponseAttributes) GetSignalOutput() bool {
 	if o == nil || o.SignalOutput == nil {
@@ -332,6 +362,9 @@ func (o HistoricalJobResponseAttributes) MarshalJSON() ([]byte, error) {
 	if o.ModifiedAt != nil {
 		toSerialize["modifiedAt"] = o.ModifiedAt
 	}
+	if o.ProgressRate != nil {
+		toSerialize["progressRate"] = o.ProgressRate
+	}
 	if o.SignalOutput != nil {
 		toSerialize["signalOutput"] = o.SignalOutput
 	}
@@ -353,14 +386,15 @@ func (o *HistoricalJobResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 		JobName           *string        `json:"jobName,omitempty"`
 		JobStatus         *string        `json:"jobStatus,omitempty"`
 		ModifiedAt        *string        `json:"modifiedAt,omitempty"`
+		ProgressRate      *float64       `json:"progressRate,omitempty"`
 		SignalOutput      *bool          `json:"signalOutput,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"createdAt", "createdByHandle", "createdByName", "createdFromRuleId", "jobDefinition", "jobName", "jobStatus", "modifiedAt", "signalOutput"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"createdAt", "createdByHandle", "createdByName", "createdFromRuleId", "jobDefinition", "jobName", "jobStatus", "modifiedAt", "progressRate", "signalOutput"})
 	} else {
 		return err
 	}
@@ -377,6 +411,7 @@ func (o *HistoricalJobResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 	o.JobName = all.JobName
 	o.JobStatus = all.JobStatus
 	o.ModifiedAt = all.ModifiedAt
+	o.ProgressRate = all.ProgressRate
 	o.SignalOutput = all.SignalOutput
 
 	if len(additionalProperties) > 0 {

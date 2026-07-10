@@ -187,7 +187,7 @@ func (o *WatchDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field timestamp missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"application_id", "data_source", "event_id", "timestamp"})
 	} else {
 		return err

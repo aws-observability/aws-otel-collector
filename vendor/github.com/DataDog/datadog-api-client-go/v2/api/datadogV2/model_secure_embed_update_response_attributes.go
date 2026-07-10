@@ -495,7 +495,7 @@ func (o *SecureEmbedUpdateResponseAttributes) UnmarshalJSON(bytes []byte) (err e
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "credential_suffix", "dashboard_id", "global_time", "global_time_selectable", "id", "selectable_template_vars", "share_type", "status", "title", "token", "url", "viewing_preferences"})
 	} else {
 		return err

@@ -13,6 +13,8 @@ import (
 
 // LLMObsAnnotationQueueDataAttributesResponse Attributes of an LLM Observability annotation queue.
 type LLMObsAnnotationQueueDataAttributesResponse struct {
+	// Schema defining the labels for an annotation queue.
+	AnnotationSchema *LLMObsAnnotationSchema `json:"annotation_schema,omitempty"`
 	// Timestamp when the queue was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Identifier of the user who created the queue.
@@ -57,6 +59,34 @@ func NewLLMObsAnnotationQueueDataAttributesResponse(createdAt time.Time, created
 func NewLLMObsAnnotationQueueDataAttributesResponseWithDefaults() *LLMObsAnnotationQueueDataAttributesResponse {
 	this := LLMObsAnnotationQueueDataAttributesResponse{}
 	return &this
+}
+
+// GetAnnotationSchema returns the AnnotationSchema field value if set, zero value otherwise.
+func (o *LLMObsAnnotationQueueDataAttributesResponse) GetAnnotationSchema() LLMObsAnnotationSchema {
+	if o == nil || o.AnnotationSchema == nil {
+		var ret LLMObsAnnotationSchema
+		return ret
+	}
+	return *o.AnnotationSchema
+}
+
+// GetAnnotationSchemaOk returns a tuple with the AnnotationSchema field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsAnnotationQueueDataAttributesResponse) GetAnnotationSchemaOk() (*LLMObsAnnotationSchema, bool) {
+	if o == nil || o.AnnotationSchema == nil {
+		return nil, false
+	}
+	return o.AnnotationSchema, true
+}
+
+// HasAnnotationSchema returns a boolean if a field has been set.
+func (o *LLMObsAnnotationQueueDataAttributesResponse) HasAnnotationSchema() bool {
+	return o != nil && o.AnnotationSchema != nil
+}
+
+// SetAnnotationSchema gets a reference to the given LLMObsAnnotationSchema and assigns it to the AnnotationSchema field.
+func (o *LLMObsAnnotationQueueDataAttributesResponse) SetAnnotationSchema(v LLMObsAnnotationSchema) {
+	o.AnnotationSchema = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value.
@@ -249,6 +279,9 @@ func (o LLMObsAnnotationQueueDataAttributesResponse) MarshalJSON() ([]byte, erro
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AnnotationSchema != nil {
+		toSerialize["annotation_schema"] = o.AnnotationSchema
+	}
 	if o.CreatedAt.Nanosecond() == 0 {
 		toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05Z07:00")
 	} else {
@@ -275,14 +308,15 @@ func (o LLMObsAnnotationQueueDataAttributesResponse) MarshalJSON() ([]byte, erro
 // UnmarshalJSON deserializes the given payload.
 func (o *LLMObsAnnotationQueueDataAttributesResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreatedAt   *time.Time `json:"created_at"`
-		CreatedBy   *string    `json:"created_by"`
-		Description *string    `json:"description"`
-		ModifiedAt  *time.Time `json:"modified_at"`
-		ModifiedBy  *string    `json:"modified_by"`
-		Name        *string    `json:"name"`
-		OwnedBy     *string    `json:"owned_by"`
-		ProjectId   *string    `json:"project_id"`
+		AnnotationSchema *LLMObsAnnotationSchema `json:"annotation_schema,omitempty"`
+		CreatedAt        *time.Time              `json:"created_at"`
+		CreatedBy        *string                 `json:"created_by"`
+		Description      *string                 `json:"description"`
+		ModifiedAt       *time.Time              `json:"modified_at"`
+		ModifiedBy       *string                 `json:"modified_by"`
+		Name             *string                 `json:"name"`
+		OwnedBy          *string                 `json:"owned_by"`
+		ProjectId        *string                 `json:"project_id"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -312,11 +346,17 @@ func (o *LLMObsAnnotationQueueDataAttributesResponse) UnmarshalJSON(bytes []byte
 		return fmt.Errorf("required field project_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "created_by", "description", "modified_at", "modified_by", "name", "owned_by", "project_id"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"annotation_schema", "created_at", "created_by", "description", "modified_at", "modified_by", "name", "owned_by", "project_id"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	if all.AnnotationSchema != nil && all.AnnotationSchema.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.AnnotationSchema = all.AnnotationSchema
 	o.CreatedAt = *all.CreatedAt
 	o.CreatedBy = *all.CreatedBy
 	o.Description = *all.Description
@@ -328,6 +368,10 @@ func (o *LLMObsAnnotationQueueDataAttributesResponse) UnmarshalJSON(bytes []byte
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

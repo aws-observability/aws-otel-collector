@@ -222,7 +222,7 @@ func (o *UpdateConnectionRequestDataAttributesFieldsToUpdateItems) UnmarshalJSON
 		return fmt.Errorf("required field field_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"field_id", "updated_description", "updated_display_name", "updated_field_id", "updated_groups"})
 	} else {
 		return err

@@ -8,6 +8,7 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
+	"reflect"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -594,6 +595,227 @@ func (a *WorkflowAutomationApi) ListWorkflowInstances(ctx _context.Context, work
 	}
 
 	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ListWorkflowsOptionalParameters holds optional parameters for ListWorkflows.
+type ListWorkflowsOptionalParameters struct {
+	Limit                    *int64
+	Page                     *int64
+	Sort                     *string
+	FilterQuery              *string
+	FilterTriggerIds         *[]string
+	FilterIncludeUnpublished *bool
+	FilterIncludeSpecs       *bool
+}
+
+// NewListWorkflowsOptionalParameters creates an empty struct for parameters.
+func NewListWorkflowsOptionalParameters() *ListWorkflowsOptionalParameters {
+	this := ListWorkflowsOptionalParameters{}
+	return &this
+}
+
+// WithLimit sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsOptionalParameters) WithLimit(limit int64) *ListWorkflowsOptionalParameters {
+	r.Limit = &limit
+	return r
+}
+
+// WithPage sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsOptionalParameters) WithPage(page int64) *ListWorkflowsOptionalParameters {
+	r.Page = &page
+	return r
+}
+
+// WithSort sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsOptionalParameters) WithSort(sort string) *ListWorkflowsOptionalParameters {
+	r.Sort = &sort
+	return r
+}
+
+// WithFilterQuery sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsOptionalParameters) WithFilterQuery(filterQuery string) *ListWorkflowsOptionalParameters {
+	r.FilterQuery = &filterQuery
+	return r
+}
+
+// WithFilterTriggerIds sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsOptionalParameters) WithFilterTriggerIds(filterTriggerIds []string) *ListWorkflowsOptionalParameters {
+	r.FilterTriggerIds = &filterTriggerIds
+	return r
+}
+
+// WithFilterIncludeUnpublished sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsOptionalParameters) WithFilterIncludeUnpublished(filterIncludeUnpublished bool) *ListWorkflowsOptionalParameters {
+	r.FilterIncludeUnpublished = &filterIncludeUnpublished
+	return r
+}
+
+// WithFilterIncludeSpecs sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsOptionalParameters) WithFilterIncludeSpecs(filterIncludeSpecs bool) *ListWorkflowsOptionalParameters {
+	r.FilterIncludeSpecs = &filterIncludeSpecs
+	return r
+}
+
+// ListWorkflows List workflows.
+// List all workflows in your organization. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key). Alternatively, you can configure these permissions [in the UI](https://docs.datadoghq.com/account_management/api-app-keys/#actions-api-access).
+func (a *WorkflowAutomationApi) ListWorkflows(ctx _context.Context, o ...ListWorkflowsOptionalParameters) (ListWorkflowsResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ListWorkflowsResponse
+		optionalParams      ListWorkflowsOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListWorkflowsOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.WorkflowAutomationApi.ListWorkflows")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/workflows"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.Limit != nil {
+		localVarQueryParams.Add("limit", datadog.ParameterToString(*optionalParams.Limit, ""))
+	}
+	if optionalParams.Page != nil {
+		localVarQueryParams.Add("page", datadog.ParameterToString(*optionalParams.Page, ""))
+	}
+	if optionalParams.Sort != nil {
+		localVarQueryParams.Add("sort", datadog.ParameterToString(*optionalParams.Sort, ""))
+	}
+	if optionalParams.FilterQuery != nil {
+		localVarQueryParams.Add("filter[query]", datadog.ParameterToString(*optionalParams.FilterQuery, ""))
+	}
+	if optionalParams.FilterTriggerIds != nil {
+		t := *optionalParams.FilterTriggerIds
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				localVarQueryParams.Add("filter[triggerIds]", datadog.ParameterToString(s.Index(i), "multi"))
+			}
+		} else {
+			localVarQueryParams.Add("filter[triggerIds]", datadog.ParameterToString(t, "multi"))
+		}
+	}
+	if optionalParams.FilterIncludeUnpublished != nil {
+		localVarQueryParams.Add("filter[includeUnpublished]", datadog.ParameterToString(*optionalParams.FilterIncludeUnpublished, ""))
+	}
+	if optionalParams.FilterIncludeSpecs != nil {
+		localVarQueryParams.Add("filter[includeSpecs]", datadog.ParameterToString(*optionalParams.FilterIncludeSpecs, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ListWorkflowsWithPagination provides a paginated version of ListWorkflows returning a channel with all items.
+func (a *WorkflowAutomationApi) ListWorkflowsWithPagination(ctx _context.Context, o ...ListWorkflowsOptionalParameters) (<-chan datadog.PaginationResult[WorkflowListItem], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(50)
+	if len(o) == 0 {
+		o = append(o, ListWorkflowsOptionalParameters{})
+	}
+	if o[0].Limit != nil {
+		pageSize_ = *o[0].Limit
+	}
+	o[0].Limit = &pageSize_
+	page_ := int64(0)
+	o[0].Page = &page_
+
+	items := make(chan datadog.PaginationResult[WorkflowListItem], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListWorkflows(ctx, o...)
+			if err != nil {
+				var returnItem WorkflowListItem
+				items <- datadog.PaginationResult[WorkflowListItem]{Item: returnItem, Error: err}
+				break
+			}
+			respData, ok := resp.GetDataOk()
+			if !ok {
+				break
+			}
+			results := *respData
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[WorkflowListItem]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			pageOffset_ := *o[0].Page + 1
+			o[0].Page = &pageOffset_
+		}
+		close(items)
+	}()
+	return items, cancel
 }
 
 // UpdateWorkflow Update an existing Workflow.

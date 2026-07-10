@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "create",
+    srcs = ["new.go"],
+    importpath = "github.com/DataDog/datadog-agent/pkg/config/create",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/config/buildschema",
+        "//pkg/config/model",
+        "//pkg/config/nodetreemodel",
+    ],
+)
+
+go_test(
+    name = "create_test",
+    srcs = ["new_test.go"],
+    embed = [":create"],
+    gotags = ["test"],
+    deps = [
+        "//pkg/config/nodetreemodel",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)

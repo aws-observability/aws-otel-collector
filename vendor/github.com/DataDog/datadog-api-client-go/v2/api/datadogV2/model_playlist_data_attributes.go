@@ -265,7 +265,7 @@ func (o *PlaylistDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "created_by", "description", "name", "session_count", "updated_at"})
 	} else {
 		return err

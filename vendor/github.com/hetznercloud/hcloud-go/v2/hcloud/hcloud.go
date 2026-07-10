@@ -72,6 +72,7 @@ When the API returned an HTTP error, with the status code:
 When the API returned an application error, with the code:
   - [ErrorCodeConflict]
   - [ErrorCodeRateLimitExceeded]
+  - [ErrorCodeBadGateway]
   - [ErrorCodeTimeout]
 
 Changes to the retry policy might occur between releases, and will not be considered
@@ -80,4 +81,4 @@ breaking changes.
 package hcloud
 
 // Version is the library's version following Semantic Versioning.
-const Version = "2.39.0" // x-releaser-pleaser-version
+const Version = "2.44.0" // x-releaser-pleaser-version

@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomAttributeType Custom attributes type
+// CustomAttributeType The data type of the custom attribute, which determines the allowed values and UI input control.
 type CustomAttributeType string
 
 // List of CustomAttributeType.

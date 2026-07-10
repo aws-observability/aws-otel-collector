@@ -86,7 +86,7 @@ func (o *ChangeRequestDecisionUpdateDataRelationships) UnmarshalJSON(bytes []byt
 		return fmt.Errorf("required field change_request_decisions missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"change_request_decisions"})
 	} else {
 		return err

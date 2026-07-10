@@ -77,13 +77,6 @@ func WithDBMS(dbms DBMSType) lexerOption {
 	}
 }
 
-type trieNode struct {
-	children         map[rune]*trieNode
-	isEnd            bool
-	tokenType        TokenType
-	isTableIndicator bool
-}
-
 // SQL Lexer inspired from Rob Pike's talk on Lexical Scanning in Go
 type Lexer struct {
 	src                string // the input src string
@@ -377,8 +370,17 @@ func (s *Lexer) scanIdentifier(ch rune) *Token {
 			upperCh -= 32
 		}
 
-		// Try to follow trie path
-		if next, exists := node.children[upperCh]; exists {
+		// Get array index for this character
+		idx := trieIndex(upperCh)
+		if idx < 0 {
+			// Invalid character for trie, break out
+			node = keywordRoot
+			ch = s.next()
+			break
+		}
+
+		// Try to follow trie path using direct array access
+		if next := node.children[idx]; next != nil {
 			node = next
 			pos = s.cursor
 			ch = s.next()
@@ -393,7 +395,7 @@ func (s *Lexer) scanIdentifier(ch rune) *Token {
 	}
 
 	// If we found a complete keyword and next char is whitespace
-	if node.isEnd && (isPunctuation(ch) || isSpace(ch) || isEOF(ch)) {
+	if node.isEnd && (isPunctuation(ch) || isSpace(ch) || isMultiLineComment(ch, s.lookAhead(1)) || isEOF(ch)) {
 		s.cursor = pos + 1 // Include the last matched character
 		s.isTableIndicator = node.isTableIndicator
 		return s.emit(node.tokenType)
@@ -459,9 +461,12 @@ func (s *Lexer) scanDoubleQuotedIdentifier(delimiter rune) *Token {
 				s.isSimpleIdentifier = false
 			}
 		}
-		ch = s.next()
+		// Advance by actual decoded rune size.
+		// This handles truncated UTF-8 sequences correctly.
+		_, size := utf8.DecodeRuneInString(s.src[s.cursor:])
+		ch = s.nextBy(size)
 	}
-	s.next() // consume the closing quote
+	s.next() // consume the closing quote (ASCII)
 	return s.emit(QUOTED_IDENT)
 }
 
@@ -633,9 +638,12 @@ func (s *Lexer) scanSystemVariable() *Token {
 }
 
 func (s *Lexer) scanUnknown() *Token {
-	// When we see an unknown token, we advance the cursor until we see something that looks like a token boundary.
+	// When we see an unknown token, we advance the cursor by the full rune length.
+	// This is important for multi-byte UTF-8 characters (e.g., full-width punctuation)
+	// to avoid splitting them into separate byte tokens.
 	s.start = s.cursor
-	s.next()
+	_, size := utf8.DecodeRuneInString(s.src[s.cursor:])
+	s.cursor += size
 	return s.emit(UNKNOWN)
 }
 

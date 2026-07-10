@@ -222,7 +222,7 @@ func (o *AssetRisks) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field in_production missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"has_access_to_sensitive_data", "has_privileged_access", "in_production", "is_publicly_accessible", "under_attack"})
 	} else {
 		return err

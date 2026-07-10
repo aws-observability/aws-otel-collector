@@ -166,7 +166,7 @@ func (a *RumReplayHeatmapsApi) DeleteReplayHeatmapSnapshot(ctx _context.Context,
 // ListReplayHeatmapSnapshotsOptionalParameters holds optional parameters for ListReplayHeatmapSnapshots.
 type ListReplayHeatmapSnapshotsOptionalParameters struct {
 	FilterDeviceType    *string
-	PageLimit           *int32
+	PageLimit           *int64
 	FilterApplicationId *string
 }
 
@@ -183,7 +183,7 @@ func (r *ListReplayHeatmapSnapshotsOptionalParameters) WithFilterDeviceType(filt
 }
 
 // WithPageLimit sets the corresponding parameter name and returns the struct.
-func (r *ListReplayHeatmapSnapshotsOptionalParameters) WithPageLimit(pageLimit int32) *ListReplayHeatmapSnapshotsOptionalParameters {
+func (r *ListReplayHeatmapSnapshotsOptionalParameters) WithPageLimit(pageLimit int64) *ListReplayHeatmapSnapshotsOptionalParameters {
 	r.PageLimit = &pageLimit
 	return r
 }

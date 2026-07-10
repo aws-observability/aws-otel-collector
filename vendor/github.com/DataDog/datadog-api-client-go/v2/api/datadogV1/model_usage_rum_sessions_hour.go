@@ -420,7 +420,7 @@ func (o *UsageRumSessionsHour) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"hour", "org_name", "public_id", "replay_session_count", "session_count", "session_count_android", "session_count_flutter", "session_count_ios", "session_count_reactnative"})
 	} else {
 		return err

@@ -154,7 +154,7 @@ func (o *DeploymentGateResponseDataAttributesCreatedBy) UnmarshalJSON(bytes []by
 		return fmt.Errorf("required field id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"handle", "id", "name"})
 	} else {
 		return err

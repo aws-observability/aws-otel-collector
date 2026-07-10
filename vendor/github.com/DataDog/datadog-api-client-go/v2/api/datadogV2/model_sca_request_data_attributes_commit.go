@@ -291,7 +291,7 @@ func (o *ScaRequestDataAttributesCommit) UnmarshalJSON(bytes []byte) (err error)
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"author_date", "author_email", "author_name", "branch", "committer_email", "committer_name", "sha"})
 	} else {
 		return err

@@ -210,7 +210,7 @@ func (o *LogsArrayProcessorOperationSelect) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field value_to_extract missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"filter", "source", "target", "type", "value_to_extract"})
 	} else {
 		return err

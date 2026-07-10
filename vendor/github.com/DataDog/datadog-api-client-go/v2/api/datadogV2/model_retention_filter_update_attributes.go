@@ -248,7 +248,7 @@ func (o *RetentionFilterUpdateAttributes) UnmarshalJSON(bytes []byte) (err error
 		return fmt.Errorf("required field rate missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "filter", "filter_type", "name", "rate", "trace_rate"})
 	} else {
 		return err

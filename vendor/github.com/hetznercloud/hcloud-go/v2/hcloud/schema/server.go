@@ -419,7 +419,7 @@ type ServerGetMetricsResponse struct {
 
 // ServerTimeSeriesVals contains the values for a Server time series.
 type ServerTimeSeriesVals struct {
-	Values []interface{} `json:"values"`
+	Values []any `json:"values"`
 }
 
 // ServerActionAddToPlacementGroupRequest defines the schema for the request to

@@ -252,7 +252,7 @@ type ServerListOpts struct {
 	Sort   []string
 }
 
-func (l ServerListOpts) values() url.Values {
+func (l ServerListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -274,7 +274,7 @@ func (c *ServerClient) List(ctx context.Context, opts ServerListOpts) ([]*Server
 	const opPath = "/servers?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.ServerListResponse](ctx, c.client, reqPath)
 	if err != nil {
@@ -1055,7 +1055,7 @@ func (o ServerGetMetricsOpts) Validate() error {
 	return nil
 }
 
-func (o ServerGetMetricsOpts) values() url.Values {
+func (o ServerGetMetricsOpts) Values() url.Values {
 	query := url.Values{}
 
 	for _, typ := range o.Types {
@@ -1099,14 +1099,14 @@ func (c *ServerClient) GetMetrics(ctx context.Context, server *Server, opts Serv
 		return nil, nil, err
 	}
 
-	reqPath := fmt.Sprintf(opPath, server.ID, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, server.ID, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.ServerGetMetricsResponse](ctx, c.client, reqPath)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	metrics, err := serverMetricsFromSchema(&respBody)
+	metrics, err := ServerMetricsFromSchema(&respBody)
 	if err != nil {
 		return nil, nil, fmt.Errorf("convert response body: %w", err)
 	}

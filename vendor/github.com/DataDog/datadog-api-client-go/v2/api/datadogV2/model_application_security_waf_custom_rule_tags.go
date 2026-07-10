@@ -118,7 +118,7 @@ func (o *ApplicationSecurityWafCustomRuleTags) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]string)
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"category", "type"})
 	} else {
 		return err

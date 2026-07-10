@@ -134,7 +134,7 @@ type FloatingIPListOpts struct {
 	Sort []string
 }
 
-func (l FloatingIPListOpts) values() url.Values {
+func (l FloatingIPListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -153,7 +153,7 @@ func (c *FloatingIPClient) List(ctx context.Context, opts FloatingIPListOpts) ([
 	const opPath = "/floating_ips?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.FloatingIPListResponse](ctx, c.client, reqPath)
 	if err != nil {

@@ -12,6 +12,8 @@ import (
 
 // ApmResourceStatsQuery A query for APM resource statistics such as latency, error rate, and hit count, grouped by resource name.
 type ApmResourceStatsQuery struct {
+	// Organization UUIDs to query when using [cross-organization visibility](/account_management/org_settings/cross_org_visibility/). Limited to one organization UUID.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// A data source for APM resource statistics queries.
 	DataSource ApmResourceStatsDataSource `json:"data_source"`
 	// The environment to query.
@@ -59,6 +61,34 @@ func NewApmResourceStatsQueryWithDefaults() *ApmResourceStatsQuery {
 	var dataSource ApmResourceStatsDataSource = APMRESOURCESTATSDATASOURCE_APM_RESOURCE_STATS
 	this.DataSource = dataSource
 	return &this
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *ApmResourceStatsQuery) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApmResourceStatsQuery) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *ApmResourceStatsQuery) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *ApmResourceStatsQuery) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -322,6 +352,9 @@ func (o ApmResourceStatsQuery) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	toSerialize["env"] = o.Env
 	if o.GroupBy != nil {
@@ -352,6 +385,7 @@ func (o ApmResourceStatsQuery) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ApmResourceStatsQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		CrossOrgUuids   []string                    `json:"cross_org_uuids,omitempty"`
 		DataSource      *ApmResourceStatsDataSource `json:"data_source"`
 		Env             *string                     `json:"env"`
 		GroupBy         []string                    `json:"group_by,omitempty"`
@@ -382,13 +416,14 @@ func (o *ApmResourceStatsQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field stat missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "env", "group_by", "name", "operation_name", "primary_tag_name", "primary_tag_value", "resource_name", "service", "stat"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"cross_org_uuids", "data_source", "env", "group_by", "name", "operation_name", "primary_tag_name", "primary_tag_value", "resource_name", "service", "stat"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

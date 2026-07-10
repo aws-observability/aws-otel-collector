@@ -216,7 +216,7 @@ func (o *FlakyTestHistory) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field timestamp missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"commit_sha", "policy_id", "policy_meta", "status", "timestamp"})
 	} else {
 		return err

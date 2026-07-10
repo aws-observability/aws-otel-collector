@@ -14,6 +14,7 @@ import (
 type TestOptimizationUpdateServiceSettingsRequestData struct {
 	// Attributes for updating Test Optimization service settings.
 	// All non-required fields are optional; only provided fields will be updated.
+	// Setting a field to `null` is a no-op. To reset a setting to inherit from the repository level, use the corresponding `<setting>_inherit` field.
 	Attributes TestOptimizationUpdateServiceSettingsRequestAttributes `json:"attributes"`
 	// JSON:API type for update service settings request.
 	// The value must always be `test_optimization_update_service_settings_request`.
@@ -119,7 +120,7 @@ func (o *TestOptimizationUpdateServiceSettingsRequestData) UnmarshalJSON(bytes [
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err

@@ -159,7 +159,7 @@ type ImageListOpts struct {
 	Architecture      []Architecture
 }
 
-func (l ImageListOpts) values() url.Values {
+func (l ImageListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	for _, typ := range l.Type {
 		vals.Add("type", string(typ))
@@ -193,7 +193,7 @@ func (c *ImageClient) List(ctx context.Context, opts ImageListOpts) ([]*Image, *
 	const opPath = "/images?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.ImageListResponse](ctx, c.client, reqPath)
 	if err != nil {

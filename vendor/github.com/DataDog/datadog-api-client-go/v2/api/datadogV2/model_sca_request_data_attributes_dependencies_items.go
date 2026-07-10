@@ -427,7 +427,7 @@ func (o *ScaRequestDataAttributesDependenciesItems) UnmarshalJSON(bytes []byte) 
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"exclusions", "group", "is_dev", "is_direct", "language", "locations", "name", "package_manager", "purl", "reachable_symbol_properties", "version"})
 	} else {
 		return err

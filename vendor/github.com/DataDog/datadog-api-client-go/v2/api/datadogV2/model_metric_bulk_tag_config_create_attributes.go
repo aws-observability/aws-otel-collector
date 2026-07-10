@@ -232,7 +232,7 @@ func (o *MetricBulkTagConfigCreateAttributes) UnmarshalJSON(bytes []byte) (err e
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"emails", "exclude_tags_mode", "include_actively_queried_tags_window", "override_existing_configurations", "tags"})
 	} else {
 		return err

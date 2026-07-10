@@ -93,7 +93,7 @@ type StorageBoxSnapshotListOpts struct {
 	Sort          []string
 }
 
-func (o StorageBoxSnapshotListOpts) values() url.Values {
+func (o StorageBoxSnapshotListOpts) Values() url.Values {
 	vals := url.Values{}
 	if o.LabelSelector != "" {
 		vals.Set("label_selector", o.LabelSelector)
@@ -123,7 +123,7 @@ func (c *StorageBoxClient) ListSnapshots(
 	const optPath = "/storage_boxes/%d/snapshots?%s"
 	ctx = ctxutil.SetOpPath(ctx, optPath)
 
-	reqPath := fmt.Sprintf(optPath, storageBox.ID, opts.values().Encode())
+	reqPath := fmt.Sprintf(optPath, storageBox.ID, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.StorageBoxSnapshotListResponse](ctx, c.client, reqPath)
 	if err != nil {

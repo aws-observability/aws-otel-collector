@@ -21,6 +21,10 @@ type SLOCorrectionUpdateRequestAttributes struct {
 	// The recurrence rules as defined in the iCalendar RFC 5545. The supported rules for SLO corrections
 	// are `FREQ`, `INTERVAL`, `COUNT`, `UNTIL` and `BYDAY`.
 	Rrule *string `json:"rrule,omitempty"`
+	// Query that matches the SLOs this correction applies to.
+	// The query uses the [Events search syntax](https://docs.datadoghq.com/events/explorer/searching/)
+	// and can filter SLOs by SLO tags.
+	SloQuery *string `json:"slo_query,omitempty"`
 	// Starting time of the correction in epoch seconds.
 	Start *int64 `json:"start,omitempty"`
 	// The timezone to display in the UI for the correction times (defaults to "UTC").
@@ -187,6 +191,34 @@ func (o *SLOCorrectionUpdateRequestAttributes) SetRrule(v string) {
 	o.Rrule = &v
 }
 
+// GetSloQuery returns the SloQuery field value if set, zero value otherwise.
+func (o *SLOCorrectionUpdateRequestAttributes) GetSloQuery() string {
+	if o == nil || o.SloQuery == nil {
+		var ret string
+		return ret
+	}
+	return *o.SloQuery
+}
+
+// GetSloQueryOk returns a tuple with the SloQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SLOCorrectionUpdateRequestAttributes) GetSloQueryOk() (*string, bool) {
+	if o == nil || o.SloQuery == nil {
+		return nil, false
+	}
+	return o.SloQuery, true
+}
+
+// HasSloQuery returns a boolean if a field has been set.
+func (o *SLOCorrectionUpdateRequestAttributes) HasSloQuery() bool {
+	return o != nil && o.SloQuery != nil
+}
+
+// SetSloQuery gets a reference to the given string and assigns it to the SloQuery field.
+func (o *SLOCorrectionUpdateRequestAttributes) SetSloQuery(v string) {
+	o.SloQuery = &v
+}
+
 // GetStart returns the Start field value if set, zero value otherwise.
 func (o *SLOCorrectionUpdateRequestAttributes) GetStart() int64 {
 	if o == nil || o.Start == nil {
@@ -264,6 +296,9 @@ func (o SLOCorrectionUpdateRequestAttributes) MarshalJSON() ([]byte, error) {
 	if o.Rrule != nil {
 		toSerialize["rrule"] = o.Rrule
 	}
+	if o.SloQuery != nil {
+		toSerialize["slo_query"] = o.SloQuery
+	}
 	if o.Start != nil {
 		toSerialize["start"] = o.Start
 	}
@@ -285,6 +320,7 @@ func (o *SLOCorrectionUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err 
 		Duration    *int64                 `json:"duration,omitempty"`
 		End         *int64                 `json:"end,omitempty"`
 		Rrule       *string                `json:"rrule,omitempty"`
+		SloQuery    *string                `json:"slo_query,omitempty"`
 		Start       *int64                 `json:"start,omitempty"`
 		Timezone    *string                `json:"timezone,omitempty"`
 	}{}
@@ -292,8 +328,8 @@ func (o *SLOCorrectionUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err 
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"category", "description", "duration", "end", "rrule", "start", "timezone"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"category", "description", "duration", "end", "rrule", "slo_query", "start", "timezone"})
 	} else {
 		return err
 	}
@@ -308,6 +344,7 @@ func (o *SLOCorrectionUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err 
 	o.Duration = all.Duration
 	o.End = all.End
 	o.Rrule = all.Rrule
+	o.SloQuery = all.SloQuery
 	o.Start = all.Start
 	o.Timezone = all.Timezone
 

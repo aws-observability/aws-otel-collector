@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CaseTypesResponse Case types response.
+// CaseTypesResponse Response containing a list of case types.
 type CaseTypesResponse struct {
 	// List of case types
 	Data []CaseTypeResource `json:"data,omitempty"`
@@ -87,7 +87,7 @@ func (o *CaseTypesResponse) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
 	} else {
 		return err

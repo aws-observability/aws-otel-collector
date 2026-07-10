@@ -305,7 +305,7 @@ func (o *LayerAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"effective_date", "end_date", "interval", "name", "restrictions", "rotation_start", "time_zone"})
 	} else {
 		return err

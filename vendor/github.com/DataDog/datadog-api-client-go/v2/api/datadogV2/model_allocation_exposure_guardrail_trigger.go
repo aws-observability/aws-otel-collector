@@ -283,7 +283,7 @@ func (o *AllocationExposureGuardrailTrigger) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field updated_at missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"allocation_exposure_schedule_id", "created_at", "flagging_variant_id", "id", "metric_id", "triggered_action", "updated_at"})
 	} else {
 		return err

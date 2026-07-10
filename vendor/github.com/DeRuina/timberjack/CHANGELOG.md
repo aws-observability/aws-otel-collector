@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.4.5](https://github.com/DeRuina/timberjack/compare/v1.4.4...v1.4.5) (2026-05-27)
+
+### Bug Fixes
+
+* re-release v1.4.4 as v1.4.5 to fix checksum mismatch in sum.golang.org caused by tag recreation; no code changes ([efcdf19](https://github.com/DeRuina/timberjack/commit/efcdf19))
+
+> **Note:** v1.4.4 should be skipped — its tag was force-pushed after `sum.golang.org` cached the original hash, causing `GOPROXY=direct` consumers to hit a permanent checksum mismatch error. v1.4.5 is identical in code and replaces it.
+
+## [1.4.4](https://github.com/DeRuina/timberjack/compare/v1.4.3...v1.4.4) (2026-05-27)
+
+### Bug Fixes
+
+* correct backup naming, compression recovery, goroutine race, and rotation rollback ([ed1192f](https://github.com/DeRuina/timberjack/commit/ed1192fe0e2df6b3b68fa1bc380b17f55465f215))
+
+## [1.4.3](https://github.com/DeRuina/timberjack/compare/v1.4.2...v1.4.3) (2026-05-26)
+
+### Bug Fixes
+
+* correct five bugs in write path, scheduled rotation, and sanitization ([52781cd](https://github.com/DeRuina/timberjack/commit/52781cd6784ad6570dd91bbcce605b6acb206597))
+* detect fractional seconds correctly when validating BackupTimeFormat ([#108](https://github.com/DeRuina/timberjack/pull/108)) ([654eefe](https://github.com/DeRuina/timberjack/commit/654eefe4daa476ffa53027508ac05365db04a3a6))
+* preserve source file mode on compressed backups under umask ([#107](https://github.com/DeRuina/timberjack/pull/107)) ([5f48af4](https://github.com/DeRuina/timberjack/commit/5f48af4f03391ecd8a5df0c22de42ab8b70bf38b))
+
 ## [1.4.2](https://github.com/DeRuina/timberjack/compare/v1.4.1...v1.4.2) (2026-04-21)
 
 ### Features

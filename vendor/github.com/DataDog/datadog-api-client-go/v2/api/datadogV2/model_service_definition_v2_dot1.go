@@ -459,7 +459,7 @@ func (o *ServiceDefinitionV2Dot1) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field schema-version missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"application", "contacts", "dd-service", "description", "extensions", "integrations", "lifecycle", "links", "schema-version", "tags", "team", "tier"})
 	} else {
 		return err

@@ -12,6 +12,8 @@ import (
 
 // MetricsTimeseriesQuery A query against Datadog custom metrics or Cloud Cost data sources.
 type MetricsTimeseriesQuery struct {
+	// Organization UUIDs to query when using [cross-organization visibility](/account_management/org_settings/cross_org_visibility/). Limited to one organization UUID.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// A data source that is powered by the Metrics platform.
 	DataSource MetricsDataSource `json:"data_source"`
 	// The variable name for use in formulas.
@@ -42,6 +44,34 @@ func NewMetricsTimeseriesQueryWithDefaults() *MetricsTimeseriesQuery {
 	var dataSource MetricsDataSource = METRICSDATASOURCE_METRICS
 	this.DataSource = dataSource
 	return &this
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *MetricsTimeseriesQuery) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricsTimeseriesQuery) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *MetricsTimeseriesQuery) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *MetricsTimeseriesQuery) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -124,6 +154,9 @@ func (o MetricsTimeseriesQuery) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
@@ -139,9 +172,10 @@ func (o MetricsTimeseriesQuery) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricsTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		DataSource *MetricsDataSource `json:"data_source"`
-		Name       *string            `json:"name,omitempty"`
-		Query      *string            `json:"query"`
+		CrossOrgUuids []string           `json:"cross_org_uuids,omitempty"`
+		DataSource    *MetricsDataSource `json:"data_source"`
+		Name          *string            `json:"name,omitempty"`
+		Query         *string            `json:"query"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -153,13 +187,14 @@ func (o *MetricsTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field query missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "name", "query"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"cross_org_uuids", "data_source", "name", "query"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

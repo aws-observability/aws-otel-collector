@@ -97,7 +97,7 @@ func (a *SeatsApi) AssignSeatsUser(ctx _context.Context, body AssignSeatsUserReq
 
 // GetSeatsUsersOptionalParameters holds optional parameters for GetSeatsUsers.
 type GetSeatsUsersOptionalParameters struct {
-	PageLimit  *int32
+	PageLimit  *int64
 	PageCursor *string
 }
 
@@ -108,7 +108,7 @@ func NewGetSeatsUsersOptionalParameters() *GetSeatsUsersOptionalParameters {
 }
 
 // WithPageLimit sets the corresponding parameter name and returns the struct.
-func (r *GetSeatsUsersOptionalParameters) WithPageLimit(pageLimit int32) *GetSeatsUsersOptionalParameters {
+func (r *GetSeatsUsersOptionalParameters) WithPageLimit(pageLimit int64) *GetSeatsUsersOptionalParameters {
 	r.PageLimit = &pageLimit
 	return r
 }

@@ -179,7 +179,7 @@ func (o *ObservabilityPipelineMetricTagsProcessorRule) UnmarshalJSON(bytes []byt
 		return fmt.Errorf("required field mode missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"action", "include", "keys", "mode"})
 	} else {
 		return err

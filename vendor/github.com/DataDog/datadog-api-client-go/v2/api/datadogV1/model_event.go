@@ -514,7 +514,7 @@ func (o *Event) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"alert_type", "date_happened", "device_name", "host", "id", "id_str", "payload", "priority", "source_type_name", "tags", "text", "title", "url"})
 	} else {
 		return err

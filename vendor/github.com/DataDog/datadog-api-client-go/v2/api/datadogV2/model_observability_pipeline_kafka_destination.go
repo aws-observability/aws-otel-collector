@@ -16,6 +16,8 @@ import (
 type ObservabilityPipelineKafkaDestination struct {
 	// Name of the environment variable or secret that holds the Kafka bootstrap servers list.
 	BootstrapServersKey *string `json:"bootstrap_servers_key,omitempty"`
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// Compression codec for Kafka messages.
 	Compression *ObservabilityPipelineKafkaDestinationCompression `json:"compression,omitempty"`
 	// Encoding format for log events.
@@ -101,6 +103,34 @@ func (o *ObservabilityPipelineKafkaDestination) HasBootstrapServersKey() bool {
 // SetBootstrapServersKey gets a reference to the given string and assigns it to the BootstrapServersKey field.
 func (o *ObservabilityPipelineKafkaDestination) SetBootstrapServersKey(v string) {
 	o.BootstrapServersKey = &v
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineKafkaDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineKafkaDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineKafkaDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineKafkaDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetCompression returns the Compression field value if set, zero value otherwise.
@@ -507,6 +537,9 @@ func (o ObservabilityPipelineKafkaDestination) MarshalJSON() ([]byte, error) {
 	if o.BootstrapServersKey != nil {
 		toSerialize["bootstrap_servers_key"] = o.BootstrapServersKey
 	}
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	if o.Compression != nil {
 		toSerialize["compression"] = o.Compression
 	}
@@ -553,6 +586,7 @@ func (o ObservabilityPipelineKafkaDestination) MarshalJSON() ([]byte, error) {
 func (o *ObservabilityPipelineKafkaDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		BootstrapServersKey   *string                                           `json:"bootstrap_servers_key,omitempty"`
+		Buffer                *ObservabilityPipelineBufferOptions               `json:"buffer,omitempty"`
 		Compression           *ObservabilityPipelineKafkaDestinationCompression `json:"compression,omitempty"`
 		Encoding              *ObservabilityPipelineKafkaDestinationEncoding    `json:"encoding"`
 		HeadersKey            *string                                           `json:"headers_key,omitempty"`
@@ -588,14 +622,15 @@ func (o *ObservabilityPipelineKafkaDestination) UnmarshalJSON(bytes []byte) (err
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"bootstrap_servers_key", "compression", "encoding", "headers_key", "id", "inputs", "key_field", "librdkafka_options", "message_timeout_ms", "rate_limit_duration_secs", "rate_limit_num", "sasl", "socket_timeout_ms", "tls", "topic", "type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"bootstrap_servers_key", "buffer", "compression", "encoding", "headers_key", "id", "inputs", "key_field", "librdkafka_options", "message_timeout_ms", "rate_limit_duration_secs", "rate_limit_num", "sasl", "socket_timeout_ms", "tls", "topic", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.BootstrapServersKey = all.BootstrapServersKey
+	o.Buffer = all.Buffer
 	if all.Compression != nil && !all.Compression.IsValid() {
 		hasInvalidField = true
 	} else {

@@ -325,7 +325,7 @@ func (o *SyntheticsTestResultTracerouteHop) UnmarshalJSON(bytes []byte) (err err
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"host", "latency", "packet_loss_percentage", "packet_size", "packets_received", "packets_sent", "resolved_ip", "routers"})
 	} else {
 		return err

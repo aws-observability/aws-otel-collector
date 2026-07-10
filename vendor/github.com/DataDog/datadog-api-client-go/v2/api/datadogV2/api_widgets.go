@@ -253,8 +253,8 @@ type SearchWidgetsOptionalParameters struct {
 	FilterTitle         *string
 	FilterTags          *string
 	Sort                *string
-	PageNumber          *int32
-	PageSize            *int32
+	PageNumber          *int64
+	PageSize            *int64
 }
 
 // NewSearchWidgetsOptionalParameters creates an empty struct for parameters.
@@ -300,19 +300,28 @@ func (r *SearchWidgetsOptionalParameters) WithSort(sort string) *SearchWidgetsOp
 }
 
 // WithPageNumber sets the corresponding parameter name and returns the struct.
-func (r *SearchWidgetsOptionalParameters) WithPageNumber(pageNumber int32) *SearchWidgetsOptionalParameters {
+func (r *SearchWidgetsOptionalParameters) WithPageNumber(pageNumber int64) *SearchWidgetsOptionalParameters {
 	r.PageNumber = &pageNumber
 	return r
 }
 
 // WithPageSize sets the corresponding parameter name and returns the struct.
-func (r *SearchWidgetsOptionalParameters) WithPageSize(pageSize int32) *SearchWidgetsOptionalParameters {
+func (r *SearchWidgetsOptionalParameters) WithPageSize(pageSize int64) *SearchWidgetsOptionalParameters {
 	r.PageSize = &pageSize
 	return r
 }
 
 // SearchWidgets Search widgets.
-// Search and list widgets for a given experience type. Supports filtering by widget type, creator, title, and tags, as well as sorting and pagination.
+// Search and list widgets for a given experience type, with filtering, sorting, and pagination.
+//
+// **Response meta** carries totals scoped to the current filter:
+// - `filtered_total` — widgets matching the filter.
+// - `created_by_you_total` — among the matches, how many the current user created.
+// - `favorited_by_you_total` — among the matches, how many the current user has favorited.
+// - `created_by_anyone_total` — total widgets in the experience type, ignoring filters.
+//
+// Each returned widget includes `is_favorited` reflecting the current user's favorite status.
+// Favoriting itself is performed through the shared favorites API, not this endpoint.
 func (a *WidgetsApi) SearchWidgets(ctx _context.Context, experienceType WidgetExperienceType, o ...SearchWidgetsOptionalParameters) (WidgetListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet

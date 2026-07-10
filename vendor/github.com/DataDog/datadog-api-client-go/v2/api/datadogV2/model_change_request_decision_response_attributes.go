@@ -254,7 +254,7 @@ func (o *ChangeRequestDecisionResponseAttributes) UnmarshalJSON(bytes []byte) (e
 		return fmt.Errorf("required field requested_at missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"change_request_status", "decided_at", "decision_reason", "deleted_at", "request_reason", "requested_at"})
 	} else {
 		return err

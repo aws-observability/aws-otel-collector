@@ -312,7 +312,7 @@ func (o *ArbitraryCostUpsertRequestDataAttributes) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"costs_to_allocate", "enabled", "order_id", "provider", "rejected", "rule_name", "strategy", "type"})
 	} else {
 		return err

@@ -8,10 +8,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// Metric Object for a single metric tag configuration.
+// Metric Object for a single metric.
 type Metric struct {
 	// The metric name for this resource.
 	Id *string `json:"id,omitempty"`
+	// Relationships for a metric.
+	Relationships *MetricRelationships `json:"relationships,omitempty"`
 	// The metric resource type.
 	Type *MetricType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -68,6 +70,34 @@ func (o *Metric) SetId(v string) {
 	o.Id = &v
 }
 
+// GetRelationships returns the Relationships field value if set, zero value otherwise.
+func (o *Metric) GetRelationships() MetricRelationships {
+	if o == nil || o.Relationships == nil {
+		var ret MetricRelationships
+		return ret
+	}
+	return *o.Relationships
+}
+
+// GetRelationshipsOk returns a tuple with the Relationships field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Metric) GetRelationshipsOk() (*MetricRelationships, bool) {
+	if o == nil || o.Relationships == nil {
+		return nil, false
+	}
+	return o.Relationships, true
+}
+
+// HasRelationships returns a boolean if a field has been set.
+func (o *Metric) HasRelationships() bool {
+	return o != nil && o.Relationships != nil
+}
+
+// SetRelationships gets a reference to the given MetricRelationships and assigns it to the Relationships field.
+func (o *Metric) SetRelationships(v MetricRelationships) {
+	o.Relationships = &v
+}
+
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *Metric) GetType() MetricType {
 	if o == nil || o.Type == nil {
@@ -105,6 +135,9 @@ func (o Metric) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
+	if o.Relationships != nil {
+		toSerialize["relationships"] = o.Relationships
+	}
 	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
@@ -118,21 +151,26 @@ func (o Metric) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *Metric) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string     `json:"id,omitempty"`
-		Type *MetricType `json:"type,omitempty"`
+		Id            *string              `json:"id,omitempty"`
+		Relationships *MetricRelationships `json:"relationships,omitempty"`
+		Type          *MetricType          `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"id", "relationships", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Id = all.Id
+	if all.Relationships != nil && all.Relationships.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Relationships = all.Relationships
 	if all.Type != nil && !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

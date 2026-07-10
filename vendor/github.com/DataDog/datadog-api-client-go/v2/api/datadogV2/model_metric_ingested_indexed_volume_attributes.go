@@ -10,9 +10,9 @@ import (
 
 // MetricIngestedIndexedVolumeAttributes Object containing the definition of a metric's ingested and indexed volume.
 type MetricIngestedIndexedVolumeAttributes struct {
-	// Indexed volume for the given metric.
+	// Estimated average hourly number of indexed time series for the given metric over the last hour. For organizations on Metric Name Pricing, this represents the estimated sum of indexed data points over the last hour.
 	IndexedVolume *int64 `json:"indexed_volume,omitempty"`
-	// Ingested volume for the given metric.
+	// Estimated average hourly number of ingested time series for the given metric over the last hour. This value is `0` for metrics not configured with Metrics Without Limits. For organizations on Metric Name Pricing, this represents the estimated sum of ingested data points over the last hour.
 	IngestedVolume *int64 `json:"ingested_volume,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -121,7 +121,7 @@ func (o *MetricIngestedIndexedVolumeAttributes) UnmarshalJSON(bytes []byte) (err
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"indexed_volume", "ingested_volume"})
 	} else {
 		return err

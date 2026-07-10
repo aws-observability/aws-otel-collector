@@ -15,7 +15,7 @@ type LLMObsExperimentDataAttributesRequest struct {
 	// Configuration parameters for the experiment.
 	Config map[string]interface{} `json:"config,omitempty"`
 	// Identifier of the dataset used in this experiment.
-	DatasetId string `json:"dataset_id"`
+	DatasetId *string `json:"dataset_id,omitempty"`
 	// Version of the dataset to use. Defaults to the current version if not specified.
 	DatasetVersion *int64 `json:"dataset_version,omitempty"`
 	// Description of the experiment.
@@ -26,8 +26,12 @@ type LLMObsExperimentDataAttributesRequest struct {
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
 	// Name of the experiment.
 	Name string `json:"name"`
+	// Identifier of the parent (baseline) experiment this experiment is run against.
+	ParentExperimentId *string `json:"parent_experiment_id,omitempty"`
 	// Identifier of the project this experiment belongs to.
 	ProjectId string `json:"project_id"`
+	// Number of runs configured for this experiment.
+	RunCount *int32 `json:"run_count,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -37,9 +41,8 @@ type LLMObsExperimentDataAttributesRequest struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewLLMObsExperimentDataAttributesRequest(datasetId string, name string, projectId string) *LLMObsExperimentDataAttributesRequest {
+func NewLLMObsExperimentDataAttributesRequest(name string, projectId string) *LLMObsExperimentDataAttributesRequest {
 	this := LLMObsExperimentDataAttributesRequest{}
-	this.DatasetId = datasetId
 	this.Name = name
 	this.ProjectId = projectId
 	return &this
@@ -81,27 +84,32 @@ func (o *LLMObsExperimentDataAttributesRequest) SetConfig(v map[string]interface
 	o.Config = v
 }
 
-// GetDatasetId returns the DatasetId field value.
+// GetDatasetId returns the DatasetId field value if set, zero value otherwise.
 func (o *LLMObsExperimentDataAttributesRequest) GetDatasetId() string {
-	if o == nil {
+	if o == nil || o.DatasetId == nil {
 		var ret string
 		return ret
 	}
-	return o.DatasetId
+	return *o.DatasetId
 }
 
-// GetDatasetIdOk returns a tuple with the DatasetId field value
+// GetDatasetIdOk returns a tuple with the DatasetId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LLMObsExperimentDataAttributesRequest) GetDatasetIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.DatasetId == nil {
 		return nil, false
 	}
-	return &o.DatasetId, true
+	return o.DatasetId, true
 }
 
-// SetDatasetId sets field value.
+// HasDatasetId returns a boolean if a field has been set.
+func (o *LLMObsExperimentDataAttributesRequest) HasDatasetId() bool {
+	return o != nil && o.DatasetId != nil
+}
+
+// SetDatasetId gets a reference to the given string and assigns it to the DatasetId field.
 func (o *LLMObsExperimentDataAttributesRequest) SetDatasetId(v string) {
-	o.DatasetId = v
+	o.DatasetId = &v
 }
 
 // GetDatasetVersion returns the DatasetVersion field value if set, zero value otherwise.
@@ -239,6 +247,34 @@ func (o *LLMObsExperimentDataAttributesRequest) SetName(v string) {
 	o.Name = v
 }
 
+// GetParentExperimentId returns the ParentExperimentId field value if set, zero value otherwise.
+func (o *LLMObsExperimentDataAttributesRequest) GetParentExperimentId() string {
+	if o == nil || o.ParentExperimentId == nil {
+		var ret string
+		return ret
+	}
+	return *o.ParentExperimentId
+}
+
+// GetParentExperimentIdOk returns a tuple with the ParentExperimentId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsExperimentDataAttributesRequest) GetParentExperimentIdOk() (*string, bool) {
+	if o == nil || o.ParentExperimentId == nil {
+		return nil, false
+	}
+	return o.ParentExperimentId, true
+}
+
+// HasParentExperimentId returns a boolean if a field has been set.
+func (o *LLMObsExperimentDataAttributesRequest) HasParentExperimentId() bool {
+	return o != nil && o.ParentExperimentId != nil
+}
+
+// SetParentExperimentId gets a reference to the given string and assigns it to the ParentExperimentId field.
+func (o *LLMObsExperimentDataAttributesRequest) SetParentExperimentId(v string) {
+	o.ParentExperimentId = &v
+}
+
 // GetProjectId returns the ProjectId field value.
 func (o *LLMObsExperimentDataAttributesRequest) GetProjectId() string {
 	if o == nil {
@@ -262,6 +298,34 @@ func (o *LLMObsExperimentDataAttributesRequest) SetProjectId(v string) {
 	o.ProjectId = v
 }
 
+// GetRunCount returns the RunCount field value if set, zero value otherwise.
+func (o *LLMObsExperimentDataAttributesRequest) GetRunCount() int32 {
+	if o == nil || o.RunCount == nil {
+		var ret int32
+		return ret
+	}
+	return *o.RunCount
+}
+
+// GetRunCountOk returns a tuple with the RunCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsExperimentDataAttributesRequest) GetRunCountOk() (*int32, bool) {
+	if o == nil || o.RunCount == nil {
+		return nil, false
+	}
+	return o.RunCount, true
+}
+
+// HasRunCount returns a boolean if a field has been set.
+func (o *LLMObsExperimentDataAttributesRequest) HasRunCount() bool {
+	return o != nil && o.RunCount != nil
+}
+
+// SetRunCount gets a reference to the given int32 and assigns it to the RunCount field.
+func (o *LLMObsExperimentDataAttributesRequest) SetRunCount(v int32) {
+	o.RunCount = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o LLMObsExperimentDataAttributesRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -271,7 +335,9 @@ func (o LLMObsExperimentDataAttributesRequest) MarshalJSON() ([]byte, error) {
 	if o.Config != nil {
 		toSerialize["config"] = o.Config
 	}
-	toSerialize["dataset_id"] = o.DatasetId
+	if o.DatasetId != nil {
+		toSerialize["dataset_id"] = o.DatasetId
+	}
 	if o.DatasetVersion != nil {
 		toSerialize["dataset_version"] = o.DatasetVersion
 	}
@@ -285,7 +351,13 @@ func (o LLMObsExperimentDataAttributesRequest) MarshalJSON() ([]byte, error) {
 		toSerialize["metadata"] = o.Metadata
 	}
 	toSerialize["name"] = o.Name
+	if o.ParentExperimentId != nil {
+		toSerialize["parent_experiment_id"] = o.ParentExperimentId
+	}
 	toSerialize["project_id"] = o.ProjectId
+	if o.RunCount != nil {
+		toSerialize["run_count"] = o.RunCount
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -296,20 +368,19 @@ func (o LLMObsExperimentDataAttributesRequest) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *LLMObsExperimentDataAttributesRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Config         map[string]interface{} `json:"config,omitempty"`
-		DatasetId      *string                `json:"dataset_id"`
-		DatasetVersion *int64                 `json:"dataset_version,omitempty"`
-		Description    *string                `json:"description,omitempty"`
-		EnsureUnique   *bool                  `json:"ensure_unique,omitempty"`
-		Metadata       map[string]interface{} `json:"metadata,omitempty"`
-		Name           *string                `json:"name"`
-		ProjectId      *string                `json:"project_id"`
+		Config             map[string]interface{} `json:"config,omitempty"`
+		DatasetId          *string                `json:"dataset_id,omitempty"`
+		DatasetVersion     *int64                 `json:"dataset_version,omitempty"`
+		Description        *string                `json:"description,omitempty"`
+		EnsureUnique       *bool                  `json:"ensure_unique,omitempty"`
+		Metadata           map[string]interface{} `json:"metadata,omitempty"`
+		Name               *string                `json:"name"`
+		ParentExperimentId *string                `json:"parent_experiment_id,omitempty"`
+		ProjectId          *string                `json:"project_id"`
+		RunCount           *int32                 `json:"run_count,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.DatasetId == nil {
-		return fmt.Errorf("required field dataset_id missing")
 	}
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
@@ -318,19 +389,21 @@ func (o *LLMObsExperimentDataAttributesRequest) UnmarshalJSON(bytes []byte) (err
 		return fmt.Errorf("required field project_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"config", "dataset_id", "dataset_version", "description", "ensure_unique", "metadata", "name", "project_id"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"config", "dataset_id", "dataset_version", "description", "ensure_unique", "metadata", "name", "parent_experiment_id", "project_id", "run_count"})
 	} else {
 		return err
 	}
 	o.Config = all.Config
-	o.DatasetId = *all.DatasetId
+	o.DatasetId = all.DatasetId
 	o.DatasetVersion = all.DatasetVersion
 	o.Description = all.Description
 	o.EnsureUnique = all.EnsureUnique
 	o.Metadata = all.Metadata
 	o.Name = *all.Name
+	o.ParentExperimentId = all.ParentExperimentId
 	o.ProjectId = *all.ProjectId
+	o.RunCount = all.RunCount
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

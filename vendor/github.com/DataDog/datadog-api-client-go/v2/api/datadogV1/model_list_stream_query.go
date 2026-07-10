@@ -12,11 +12,13 @@ import (
 
 // ListStreamQuery Updated list stream widget.
 type ListStreamQuery struct {
+	// Filter by assignee UUIDs. Usable only with `issue_stream`.
+	AssigneeUuids []string `json:"assignee_uuids,omitempty"`
 	// Specifies the field for logs pattern clustering. Usable only with logs_pattern_stream.
 	ClusteringPatternFieldPath *string `json:"clustering_pattern_field_path,omitempty"`
 	// Compute configuration for the List Stream Widget. Compute can be used only with the logs_transaction_stream (from 1 to 5 items) list stream source.
 	Compute []ListStreamComputeItems `json:"compute,omitempty"`
-	// Source from which to query items to display in the stream.
+	// Source from which to query items to display in the stream. apm_issue_stream, rum_issue_stream, and logs_issue_stream are deprecated. Use issue_stream instead.
 	DataSource ListStreamSource `json:"data_source"`
 	// Size to use to display an event.
 	EventSize *WidgetEventSize `json:"event_size,omitempty"`
@@ -24,12 +26,20 @@ type ListStreamQuery struct {
 	GroupBy []ListStreamGroupByItems `json:"group_by,omitempty"`
 	// List of indexes.
 	Indexes []string `json:"indexes,omitempty"`
+	// Persona filter for the `issue_stream` data source.
+	Persona *ListStreamIssuePersona `json:"persona,omitempty"`
 	// Widget query.
 	QueryString string `json:"query_string"`
 	// Which column and order to sort by
 	Sort *WidgetFieldSort `json:"sort,omitempty"`
+	// Filter by issue states. Usable only with `issue_stream`.
+	States []ListStreamIssueState `json:"states,omitempty"`
 	// Option for storage location. Feature in Private Beta.
 	Storage *string `json:"storage,omitempty"`
+	// Filter by suspected causes. Usable only with `issue_stream`.
+	SuspectedCauses []string `json:"suspected_causes,omitempty"`
+	// Filter by team handles. Usable only with `issue_stream`.
+	TeamHandles []string `json:"team_handles,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -51,9 +61,37 @@ func NewListStreamQuery(dataSource ListStreamSource, queryString string) *ListSt
 // but it doesn't guarantee that properties required by API are set.
 func NewListStreamQueryWithDefaults() *ListStreamQuery {
 	this := ListStreamQuery{}
-	var dataSource ListStreamSource = LISTSTREAMSOURCE_APM_ISSUE_STREAM
+	var dataSource ListStreamSource = LISTSTREAMSOURCE_LOGS_STREAM
 	this.DataSource = dataSource
 	return &this
+}
+
+// GetAssigneeUuids returns the AssigneeUuids field value if set, zero value otherwise.
+func (o *ListStreamQuery) GetAssigneeUuids() []string {
+	if o == nil || o.AssigneeUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.AssigneeUuids
+}
+
+// GetAssigneeUuidsOk returns a tuple with the AssigneeUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListStreamQuery) GetAssigneeUuidsOk() (*[]string, bool) {
+	if o == nil || o.AssigneeUuids == nil {
+		return nil, false
+	}
+	return &o.AssigneeUuids, true
+}
+
+// HasAssigneeUuids returns a boolean if a field has been set.
+func (o *ListStreamQuery) HasAssigneeUuids() bool {
+	return o != nil && o.AssigneeUuids != nil
+}
+
+// SetAssigneeUuids gets a reference to the given []string and assigns it to the AssigneeUuids field.
+func (o *ListStreamQuery) SetAssigneeUuids(v []string) {
+	o.AssigneeUuids = v
 }
 
 // GetClusteringPatternFieldPath returns the ClusteringPatternFieldPath field value if set, zero value otherwise.
@@ -219,6 +257,34 @@ func (o *ListStreamQuery) SetIndexes(v []string) {
 	o.Indexes = v
 }
 
+// GetPersona returns the Persona field value if set, zero value otherwise.
+func (o *ListStreamQuery) GetPersona() ListStreamIssuePersona {
+	if o == nil || o.Persona == nil {
+		var ret ListStreamIssuePersona
+		return ret
+	}
+	return *o.Persona
+}
+
+// GetPersonaOk returns a tuple with the Persona field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListStreamQuery) GetPersonaOk() (*ListStreamIssuePersona, bool) {
+	if o == nil || o.Persona == nil {
+		return nil, false
+	}
+	return o.Persona, true
+}
+
+// HasPersona returns a boolean if a field has been set.
+func (o *ListStreamQuery) HasPersona() bool {
+	return o != nil && o.Persona != nil
+}
+
+// SetPersona gets a reference to the given ListStreamIssuePersona and assigns it to the Persona field.
+func (o *ListStreamQuery) SetPersona(v ListStreamIssuePersona) {
+	o.Persona = &v
+}
+
 // GetQueryString returns the QueryString field value.
 func (o *ListStreamQuery) GetQueryString() string {
 	if o == nil {
@@ -270,6 +336,34 @@ func (o *ListStreamQuery) SetSort(v WidgetFieldSort) {
 	o.Sort = &v
 }
 
+// GetStates returns the States field value if set, zero value otherwise.
+func (o *ListStreamQuery) GetStates() []ListStreamIssueState {
+	if o == nil || o.States == nil {
+		var ret []ListStreamIssueState
+		return ret
+	}
+	return o.States
+}
+
+// GetStatesOk returns a tuple with the States field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListStreamQuery) GetStatesOk() (*[]ListStreamIssueState, bool) {
+	if o == nil || o.States == nil {
+		return nil, false
+	}
+	return &o.States, true
+}
+
+// HasStates returns a boolean if a field has been set.
+func (o *ListStreamQuery) HasStates() bool {
+	return o != nil && o.States != nil
+}
+
+// SetStates gets a reference to the given []ListStreamIssueState and assigns it to the States field.
+func (o *ListStreamQuery) SetStates(v []ListStreamIssueState) {
+	o.States = v
+}
+
 // GetStorage returns the Storage field value if set, zero value otherwise.
 func (o *ListStreamQuery) GetStorage() string {
 	if o == nil || o.Storage == nil {
@@ -298,11 +392,70 @@ func (o *ListStreamQuery) SetStorage(v string) {
 	o.Storage = &v
 }
 
+// GetSuspectedCauses returns the SuspectedCauses field value if set, zero value otherwise.
+func (o *ListStreamQuery) GetSuspectedCauses() []string {
+	if o == nil || o.SuspectedCauses == nil {
+		var ret []string
+		return ret
+	}
+	return o.SuspectedCauses
+}
+
+// GetSuspectedCausesOk returns a tuple with the SuspectedCauses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListStreamQuery) GetSuspectedCausesOk() (*[]string, bool) {
+	if o == nil || o.SuspectedCauses == nil {
+		return nil, false
+	}
+	return &o.SuspectedCauses, true
+}
+
+// HasSuspectedCauses returns a boolean if a field has been set.
+func (o *ListStreamQuery) HasSuspectedCauses() bool {
+	return o != nil && o.SuspectedCauses != nil
+}
+
+// SetSuspectedCauses gets a reference to the given []string and assigns it to the SuspectedCauses field.
+func (o *ListStreamQuery) SetSuspectedCauses(v []string) {
+	o.SuspectedCauses = v
+}
+
+// GetTeamHandles returns the TeamHandles field value if set, zero value otherwise.
+func (o *ListStreamQuery) GetTeamHandles() []string {
+	if o == nil || o.TeamHandles == nil {
+		var ret []string
+		return ret
+	}
+	return o.TeamHandles
+}
+
+// GetTeamHandlesOk returns a tuple with the TeamHandles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ListStreamQuery) GetTeamHandlesOk() (*[]string, bool) {
+	if o == nil || o.TeamHandles == nil {
+		return nil, false
+	}
+	return &o.TeamHandles, true
+}
+
+// HasTeamHandles returns a boolean if a field has been set.
+func (o *ListStreamQuery) HasTeamHandles() bool {
+	return o != nil && o.TeamHandles != nil
+}
+
+// SetTeamHandles gets a reference to the given []string and assigns it to the TeamHandles field.
+func (o *ListStreamQuery) SetTeamHandles(v []string) {
+	o.TeamHandles = v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o ListStreamQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
+	}
+	if o.AssigneeUuids != nil {
+		toSerialize["assignee_uuids"] = o.AssigneeUuids
 	}
 	if o.ClusteringPatternFieldPath != nil {
 		toSerialize["clustering_pattern_field_path"] = o.ClusteringPatternFieldPath
@@ -320,12 +473,24 @@ func (o ListStreamQuery) MarshalJSON() ([]byte, error) {
 	if o.Indexes != nil {
 		toSerialize["indexes"] = o.Indexes
 	}
+	if o.Persona != nil {
+		toSerialize["persona"] = o.Persona
+	}
 	toSerialize["query_string"] = o.QueryString
 	if o.Sort != nil {
 		toSerialize["sort"] = o.Sort
 	}
+	if o.States != nil {
+		toSerialize["states"] = o.States
+	}
 	if o.Storage != nil {
 		toSerialize["storage"] = o.Storage
+	}
+	if o.SuspectedCauses != nil {
+		toSerialize["suspected_causes"] = o.SuspectedCauses
+	}
+	if o.TeamHandles != nil {
+		toSerialize["team_handles"] = o.TeamHandles
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -337,15 +502,20 @@ func (o ListStreamQuery) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		AssigneeUuids              []string                 `json:"assignee_uuids,omitempty"`
 		ClusteringPatternFieldPath *string                  `json:"clustering_pattern_field_path,omitempty"`
 		Compute                    []ListStreamComputeItems `json:"compute,omitempty"`
 		DataSource                 *ListStreamSource        `json:"data_source"`
 		EventSize                  *WidgetEventSize         `json:"event_size,omitempty"`
 		GroupBy                    []ListStreamGroupByItems `json:"group_by,omitempty"`
 		Indexes                    []string                 `json:"indexes,omitempty"`
+		Persona                    *ListStreamIssuePersona  `json:"persona,omitempty"`
 		QueryString                *string                  `json:"query_string"`
 		Sort                       *WidgetFieldSort         `json:"sort,omitempty"`
+		States                     []ListStreamIssueState   `json:"states,omitempty"`
 		Storage                    *string                  `json:"storage,omitempty"`
+		SuspectedCauses            []string                 `json:"suspected_causes,omitempty"`
+		TeamHandles                []string                 `json:"team_handles,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -357,13 +527,14 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field query_string missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"clustering_pattern_field_path", "compute", "data_source", "event_size", "group_by", "indexes", "query_string", "sort", "storage"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"assignee_uuids", "clustering_pattern_field_path", "compute", "data_source", "event_size", "group_by", "indexes", "persona", "query_string", "sort", "states", "storage", "suspected_causes", "team_handles"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AssigneeUuids = all.AssigneeUuids
 	o.ClusteringPatternFieldPath = all.ClusteringPatternFieldPath
 	o.Compute = all.Compute
 	if !all.DataSource.IsValid() {
@@ -378,12 +549,20 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.GroupBy = all.GroupBy
 	o.Indexes = all.Indexes
+	if all.Persona != nil && !all.Persona.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Persona = all.Persona
+	}
 	o.QueryString = *all.QueryString
 	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
 	o.Sort = all.Sort
+	o.States = all.States
 	o.Storage = all.Storage
+	o.SuspectedCauses = all.SuspectedCauses
+	o.TeamHandles = all.TeamHandles
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

@@ -16,7 +16,8 @@ import (
 type ServiceLevelObjectiveCorrectionsApi datadog.Service
 
 // CreateSLOCorrection Create an SLO correction.
-// Create an SLO Correction.
+// Create an SLO correction. Use `slo_id` to apply the correction to a single SLO, or `slo_query` to apply the
+// correction to SLOs that match a query. Exactly one of `slo_id` or `slo_query` is required.
 func (a *ServiceLevelObjectiveCorrectionsApi) CreateSLOCorrection(ctx _context.Context, body SLOCorrectionCreateRequest) (SLOCorrectionResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

@@ -247,7 +247,7 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessorRule) UnmarshalJSON(b
 		return fmt.Errorf("required field scope missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"keyword_options", "name", "on_match", "pattern", "scope", "tags"})
 	} else {
 		return err

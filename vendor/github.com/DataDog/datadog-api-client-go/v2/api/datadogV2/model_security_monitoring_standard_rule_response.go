@@ -1016,7 +1016,7 @@ func (o *SecurityMonitoringStandardRuleResponse) UnmarshalJSON(bytes []byte) (er
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"calculatedFields", "cases", "complianceSignalOptions", "createdAt", "creationAuthorId", "customMessage", "customName", "defaultTags", "deprecationDate", "filters", "groupSignalsBy", "hasExtendedTitle", "id", "isDefault", "isDeleted", "isEnabled", "message", "name", "options", "queries", "referenceTables", "schedulingOptions", "tags", "thirdPartyCases", "type", "updateAuthorId", "updatedAt", "version"})
 	} else {
 		return err

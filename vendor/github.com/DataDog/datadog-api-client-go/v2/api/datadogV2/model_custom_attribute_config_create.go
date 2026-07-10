@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomAttributeConfigCreate Custom attribute config
+// CustomAttributeConfigCreate Data object for creating a custom attribute configuration.
 type CustomAttributeConfigCreate struct {
-	// Custom attribute config resource attributes
+	// Attributes required to create a custom attribute configuration.
 	Attributes CustomAttributeConfigAttributesCreate `json:"attributes"`
-	// Custom attributes config JSON:API resource type
+	// JSON:API resource type for custom attribute configurations.
 	Type CustomAttributeConfigResourceType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -119,7 +119,7 @@ func (o *CustomAttributeConfigCreate) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err

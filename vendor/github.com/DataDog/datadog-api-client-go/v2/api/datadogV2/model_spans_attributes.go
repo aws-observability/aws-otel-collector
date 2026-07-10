@@ -643,7 +643,7 @@ func (o *SpansAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "custom", "end_timestamp", "env", "host", "ingestion_reason", "parent_id", "resource_hash", "resource_name", "retained_by", "service", "single_span", "span_id", "start_timestamp", "tags", "trace_id", "type"})
 	} else {
 		return err

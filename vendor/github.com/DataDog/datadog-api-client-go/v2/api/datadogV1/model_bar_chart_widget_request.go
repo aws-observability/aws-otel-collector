@@ -601,7 +601,7 @@ func (o *BarChartWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "audit_query", "conditional_formats", "event_query", "formulas", "log_query", "network_query", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "sort", "style"})
 	} else {
 		return err

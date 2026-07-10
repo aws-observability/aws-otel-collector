@@ -16,6 +16,8 @@ import (
 type ObservabilityPipelineHttpClientDestination struct {
 	// HTTP authentication strategy.
 	AuthStrategy *ObservabilityPipelineHttpClientDestinationAuthStrategy `json:"auth_strategy,omitempty"`
+	// Configuration for buffer settings on destination components.
+	Buffer *ObservabilityPipelineBufferOptions `json:"buffer,omitempty"`
 	// Compression configuration for HTTP requests.
 	Compression *ObservabilityPipelineHttpClientDestinationCompression `json:"compression,omitempty"`
 	// Name of the environment variable or secret that holds a custom header value (used with custom auth strategies).
@@ -92,6 +94,34 @@ func (o *ObservabilityPipelineHttpClientDestination) HasAuthStrategy() bool {
 // SetAuthStrategy gets a reference to the given ObservabilityPipelineHttpClientDestinationAuthStrategy and assigns it to the AuthStrategy field.
 func (o *ObservabilityPipelineHttpClientDestination) SetAuthStrategy(v ObservabilityPipelineHttpClientDestinationAuthStrategy) {
 	o.AuthStrategy = &v
+}
+
+// GetBuffer returns the Buffer field value if set, zero value otherwise.
+func (o *ObservabilityPipelineHttpClientDestination) GetBuffer() ObservabilityPipelineBufferOptions {
+	if o == nil || o.Buffer == nil {
+		var ret ObservabilityPipelineBufferOptions
+		return ret
+	}
+	return *o.Buffer
+}
+
+// GetBufferOk returns a tuple with the Buffer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineHttpClientDestination) GetBufferOk() (*ObservabilityPipelineBufferOptions, bool) {
+	if o == nil || o.Buffer == nil {
+		return nil, false
+	}
+	return o.Buffer, true
+}
+
+// HasBuffer returns a boolean if a field has been set.
+func (o *ObservabilityPipelineHttpClientDestination) HasBuffer() bool {
+	return o != nil && o.Buffer != nil
+}
+
+// SetBuffer gets a reference to the given ObservabilityPipelineBufferOptions and assigns it to the Buffer field.
+func (o *ObservabilityPipelineHttpClientDestination) SetBuffer(v ObservabilityPipelineBufferOptions) {
+	o.Buffer = &v
 }
 
 // GetCompression returns the Compression field value if set, zero value otherwise.
@@ -391,6 +421,9 @@ func (o ObservabilityPipelineHttpClientDestination) MarshalJSON() ([]byte, error
 	if o.AuthStrategy != nil {
 		toSerialize["auth_strategy"] = o.AuthStrategy
 	}
+	if o.Buffer != nil {
+		toSerialize["buffer"] = o.Buffer
+	}
 	if o.Compression != nil {
 		toSerialize["compression"] = o.Compression
 	}
@@ -427,6 +460,7 @@ func (o ObservabilityPipelineHttpClientDestination) MarshalJSON() ([]byte, error
 func (o *ObservabilityPipelineHttpClientDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		AuthStrategy *ObservabilityPipelineHttpClientDestinationAuthStrategy `json:"auth_strategy,omitempty"`
+		Buffer       *ObservabilityPipelineBufferOptions                     `json:"buffer,omitempty"`
 		Compression  *ObservabilityPipelineHttpClientDestinationCompression  `json:"compression,omitempty"`
 		CustomKey    *string                                                 `json:"custom_key,omitempty"`
 		Encoding     *ObservabilityPipelineHttpClientDestinationEncoding     `json:"encoding"`
@@ -455,8 +489,8 @@ func (o *ObservabilityPipelineHttpClientDestination) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"auth_strategy", "compression", "custom_key", "encoding", "id", "inputs", "password_key", "tls", "token_key", "type", "uri_key", "username_key"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"auth_strategy", "buffer", "compression", "custom_key", "encoding", "id", "inputs", "password_key", "tls", "token_key", "type", "uri_key", "username_key"})
 	} else {
 		return err
 	}
@@ -467,6 +501,7 @@ func (o *ObservabilityPipelineHttpClientDestination) UnmarshalJSON(bytes []byte)
 	} else {
 		o.AuthStrategy = all.AuthStrategy
 	}
+	o.Buffer = all.Buffer
 	if all.Compression != nil && all.Compression.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

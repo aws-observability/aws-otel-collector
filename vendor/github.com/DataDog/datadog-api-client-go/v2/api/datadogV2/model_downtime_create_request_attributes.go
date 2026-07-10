@@ -349,7 +349,7 @@ func (o *DowntimeCreateRequestAttributes) UnmarshalJSON(bytes []byte) (err error
 		return fmt.Errorf("required field scope missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"display_timezone", "message", "monitor_identifier", "mute_first_recovery_notification", "notify_end_states", "notify_end_types", "schedule", "scope"})
 	} else {
 		return err

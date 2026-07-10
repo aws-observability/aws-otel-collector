@@ -880,7 +880,7 @@ type DatabaseVersionUpgradeReq struct {
 }
 
 // ListPlans retrieves all database plans
-func (d *DatabaseServiceHandler) ListPlans(ctx context.Context, options *DBPlanListOptions) ([]DatabasePlan, *Meta, *http.Response, error) {
+func (d *DatabaseServiceHandler) ListPlans(ctx context.Context, options *DBPlanListOptions) ([]DatabasePlan, *Meta, *http.Response, error) { //nolint:lll,dupl
 	uri := fmt.Sprintf("%s/plans", databasePath)
 
 	req, err := d.client.NewRequest(ctx, http.MethodGet, uri, nil)

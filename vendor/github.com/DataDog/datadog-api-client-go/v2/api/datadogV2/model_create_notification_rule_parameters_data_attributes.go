@@ -16,6 +16,8 @@ type CreateNotificationRuleParametersDataAttributes struct {
 	Enabled *bool `json:"enabled,omitempty"`
 	// Name of the notification rule.
 	Name string `json:"name"`
+	// Routing configuration for the notification rule.
+	Routing *NotificationRuleRouting `json:"routing,omitempty"`
 	// Selectors are used to filter security issues for which notifications should be generated.
 	// Users can specify rule severities, rule types, a query to filter security issues on tags and attributes, and the trigger source.
 	// Only the trigger_source field is required.
@@ -106,6 +108,34 @@ func (o *CreateNotificationRuleParametersDataAttributes) SetName(v string) {
 	o.Name = v
 }
 
+// GetRouting returns the Routing field value if set, zero value otherwise.
+func (o *CreateNotificationRuleParametersDataAttributes) GetRouting() NotificationRuleRouting {
+	if o == nil || o.Routing == nil {
+		var ret NotificationRuleRouting
+		return ret
+	}
+	return *o.Routing
+}
+
+// GetRoutingOk returns a tuple with the Routing field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CreateNotificationRuleParametersDataAttributes) GetRoutingOk() (*NotificationRuleRouting, bool) {
+	if o == nil || o.Routing == nil {
+		return nil, false
+	}
+	return o.Routing, true
+}
+
+// HasRouting returns a boolean if a field has been set.
+func (o *CreateNotificationRuleParametersDataAttributes) HasRouting() bool {
+	return o != nil && o.Routing != nil
+}
+
+// SetRouting gets a reference to the given NotificationRuleRouting and assigns it to the Routing field.
+func (o *CreateNotificationRuleParametersDataAttributes) SetRouting(v NotificationRuleRouting) {
+	o.Routing = &v
+}
+
 // GetSelectors returns the Selectors field value.
 func (o *CreateNotificationRuleParametersDataAttributes) GetSelectors() Selectors {
 	if o == nil {
@@ -190,6 +220,9 @@ func (o CreateNotificationRuleParametersDataAttributes) MarshalJSON() ([]byte, e
 		toSerialize["enabled"] = o.Enabled
 	}
 	toSerialize["name"] = o.Name
+	if o.Routing != nil {
+		toSerialize["routing"] = o.Routing
+	}
 	toSerialize["selectors"] = o.Selectors
 	toSerialize["targets"] = o.Targets
 	if o.TimeAggregation != nil {
@@ -205,11 +238,12 @@ func (o CreateNotificationRuleParametersDataAttributes) MarshalJSON() ([]byte, e
 // UnmarshalJSON deserializes the given payload.
 func (o *CreateNotificationRuleParametersDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled         *bool      `json:"enabled,omitempty"`
-		Name            *string    `json:"name"`
-		Selectors       *Selectors `json:"selectors"`
-		Targets         *[]string  `json:"targets"`
-		TimeAggregation *int64     `json:"time_aggregation,omitempty"`
+		Enabled         *bool                    `json:"enabled,omitempty"`
+		Name            *string                  `json:"name"`
+		Routing         *NotificationRuleRouting `json:"routing,omitempty"`
+		Selectors       *Selectors               `json:"selectors"`
+		Targets         *[]string                `json:"targets"`
+		TimeAggregation *int64                   `json:"time_aggregation,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -224,8 +258,8 @@ func (o *CreateNotificationRuleParametersDataAttributes) UnmarshalJSON(bytes []b
 		return fmt.Errorf("required field targets missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "name", "selectors", "targets", "time_aggregation"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "name", "routing", "selectors", "targets", "time_aggregation"})
 	} else {
 		return err
 	}
@@ -233,6 +267,10 @@ func (o *CreateNotificationRuleParametersDataAttributes) UnmarshalJSON(bytes []b
 	hasInvalidField := false
 	o.Enabled = all.Enabled
 	o.Name = *all.Name
+	if all.Routing != nil && all.Routing.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Routing = all.Routing
 	if all.Selectors.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

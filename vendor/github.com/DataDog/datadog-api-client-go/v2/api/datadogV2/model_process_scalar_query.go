@@ -14,6 +14,8 @@ import (
 type ProcessScalarQuery struct {
 	// The type of aggregation that can be performed on metrics-based queries.
 	Aggregator *MetricsAggregator `json:"aggregator,omitempty"`
+	// Organization UUIDs to query when using [cross-organization visibility](/account_management/org_settings/cross_org_visibility/). Limited to one organization UUID.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// A data source for process-level infrastructure metrics.
 	DataSource ProcessDataSource `json:"data_source"`
 	// Whether CPU metrics should be normalized by core count.
@@ -91,6 +93,34 @@ func (o *ProcessScalarQuery) HasAggregator() bool {
 // SetAggregator gets a reference to the given MetricsAggregator and assigns it to the Aggregator field.
 func (o *ProcessScalarQuery) SetAggregator(v MetricsAggregator) {
 	o.Aggregator = &v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *ProcessScalarQuery) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProcessScalarQuery) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *ProcessScalarQuery) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *ProcessScalarQuery) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -311,6 +341,9 @@ func (o ProcessScalarQuery) MarshalJSON() ([]byte, error) {
 	if o.Aggregator != nil {
 		toSerialize["aggregator"] = o.Aggregator
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.IsNormalizedCpu != nil {
 		toSerialize["is_normalized_cpu"] = o.IsNormalizedCpu
@@ -340,6 +373,7 @@ func (o ProcessScalarQuery) MarshalJSON() ([]byte, error) {
 func (o *ProcessScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Aggregator      *MetricsAggregator `json:"aggregator,omitempty"`
+		CrossOrgUuids   []string           `json:"cross_org_uuids,omitempty"`
 		DataSource      *ProcessDataSource `json:"data_source"`
 		IsNormalizedCpu *bool              `json:"is_normalized_cpu,omitempty"`
 		Limit           *int64             `json:"limit,omitempty"`
@@ -362,8 +396,8 @@ func (o *ProcessScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "data_source", "is_normalized_cpu", "limit", "metric", "name", "sort", "tag_filters", "text_filter"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "cross_org_uuids", "data_source", "is_normalized_cpu", "limit", "metric", "name", "sort", "tag_filters", "text_filter"})
 	} else {
 		return err
 	}
@@ -374,6 +408,7 @@ func (o *ProcessScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Aggregator = all.Aggregator
 	}
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

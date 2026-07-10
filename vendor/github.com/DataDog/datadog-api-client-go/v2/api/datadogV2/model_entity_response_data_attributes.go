@@ -359,7 +359,7 @@ func (o *EntityResponseDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"apiVersion", "description", "displayName", "kind", "name", "namespace", "owner", "properties", "tags"})
 	} else {
 		return err

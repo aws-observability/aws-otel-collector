@@ -110,7 +110,7 @@ type ServerTypeListOpts struct {
 	Sort []string
 }
 
-func (l ServerTypeListOpts) values() url.Values {
+func (l ServerTypeListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -129,7 +129,7 @@ func (c *ServerTypeClient) List(ctx context.Context, opts ServerTypeListOpts) ([
 	const opPath = "/server_types?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.ServerTypeListResponse](ctx, c.client, reqPath)
 	if err != nil {

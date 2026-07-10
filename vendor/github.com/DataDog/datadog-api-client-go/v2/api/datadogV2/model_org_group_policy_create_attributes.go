@@ -14,7 +14,7 @@ import (
 type OrgGroupPolicyCreateAttributes struct {
 	// The policy content as key-value pairs.
 	Content map[string]interface{} `json:"content"`
-	// The enforcement tier of the policy. `DEFAULT` means the policy is set but member orgs may mutate it. `ENFORCE` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.
+	// The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.
 	EnforcementTier *OrgGroupPolicyEnforcementTier `json:"enforcement_tier,omitempty"`
 	// The name of the policy.
 	PolicyName string `json:"policy_name"`
@@ -32,7 +32,7 @@ type OrgGroupPolicyCreateAttributes struct {
 func NewOrgGroupPolicyCreateAttributes(content map[string]interface{}, policyName string) *OrgGroupPolicyCreateAttributes {
 	this := OrgGroupPolicyCreateAttributes{}
 	this.Content = content
-	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_DEFAULT
+	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED
 	this.EnforcementTier = &enforcementTier
 	this.PolicyName = policyName
 	var policyType OrgGroupPolicyPolicyType = ORGGROUPPOLICYPOLICYTYPE_ORG_CONFIG
@@ -45,7 +45,7 @@ func NewOrgGroupPolicyCreateAttributes(content map[string]interface{}, policyNam
 // but it doesn't guarantee that properties required by API are set.
 func NewOrgGroupPolicyCreateAttributesWithDefaults() *OrgGroupPolicyCreateAttributes {
 	this := OrgGroupPolicyCreateAttributes{}
-	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_DEFAULT
+	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED
 	this.EnforcementTier = &enforcementTier
 	var policyType OrgGroupPolicyPolicyType = ORGGROUPPOLICYPOLICYTYPE_ORG_CONFIG
 	this.PolicyType = &policyType
@@ -193,7 +193,7 @@ func (o *OrgGroupPolicyCreateAttributes) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field policy_name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"content", "enforcement_tier", "policy_name", "policy_type"})
 	} else {
 		return err

@@ -12,9 +12,9 @@ import (
 
 // CaseUpdateCustomAttribute Case update custom attribute
 type CaseUpdateCustomAttribute struct {
-	// Custom attribute values
+	// A typed value for a custom attribute on a specific case.
 	Attributes CustomAttributeValue `json:"attributes"`
-	// Case resource type
+	// JSON:API resource type for cases.
 	Type CaseResourceType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -119,7 +119,7 @@ func (o *CaseUpdateCustomAttribute) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err

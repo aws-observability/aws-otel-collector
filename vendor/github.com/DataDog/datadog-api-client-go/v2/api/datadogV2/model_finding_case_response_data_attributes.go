@@ -38,6 +38,8 @@ type FindingCaseResponseDataAttributes struct {
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Priority of the case.
 	Priority *string `json:"priority,omitempty"`
+	// ServiceNow ticket associated with the case.
+	ServicenowTicket *FindingServiceNowTicket `json:"servicenow_ticket,omitempty"`
 	// Status of the case.
 	Status *string `json:"status,omitempty"`
 	// Status group of the case.
@@ -434,6 +436,34 @@ func (o *FindingCaseResponseDataAttributes) SetPriority(v string) {
 	o.Priority = &v
 }
 
+// GetServicenowTicket returns the ServicenowTicket field value if set, zero value otherwise.
+func (o *FindingCaseResponseDataAttributes) GetServicenowTicket() FindingServiceNowTicket {
+	if o == nil || o.ServicenowTicket == nil {
+		var ret FindingServiceNowTicket
+		return ret
+	}
+	return *o.ServicenowTicket
+}
+
+// GetServicenowTicketOk returns a tuple with the ServicenowTicket field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FindingCaseResponseDataAttributes) GetServicenowTicketOk() (*FindingServiceNowTicket, bool) {
+	if o == nil || o.ServicenowTicket == nil {
+		return nil, false
+	}
+	return o.ServicenowTicket, true
+}
+
+// HasServicenowTicket returns a boolean if a field has been set.
+func (o *FindingCaseResponseDataAttributes) HasServicenowTicket() bool {
+	return o != nil && o.ServicenowTicket != nil
+}
+
+// SetServicenowTicket gets a reference to the given FindingServiceNowTicket and assigns it to the ServicenowTicket field.
+func (o *FindingCaseResponseDataAttributes) SetServicenowTicket(v FindingServiceNowTicket) {
+	o.ServicenowTicket = &v
+}
+
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *FindingCaseResponseDataAttributes) GetStatus() string {
 	if o == nil || o.Status == nil {
@@ -635,6 +665,9 @@ func (o FindingCaseResponseDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.Priority != nil {
 		toSerialize["priority"] = o.Priority
 	}
+	if o.ServicenowTicket != nil {
+		toSerialize["servicenow_ticket"] = o.ServicenowTicket
+	}
 	if o.Status != nil {
 		toSerialize["status"] = o.Status
 	}
@@ -660,31 +693,32 @@ func (o FindingCaseResponseDataAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FindingCaseResponseDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ArchivedAt     *time.Time          `json:"archived_at,omitempty"`
-		AssignedTo     *RelationshipToUser `json:"assigned_to,omitempty"`
-		Attributes     map[string][]string `json:"attributes,omitempty"`
-		ClosedAt       *time.Time          `json:"closed_at,omitempty"`
-		CreatedAt      *time.Time          `json:"created_at,omitempty"`
-		CreationSource *string             `json:"creation_source,omitempty"`
-		Description    *string             `json:"description,omitempty"`
-		DueDate        *string             `json:"due_date,omitempty"`
-		Insights       []CaseInsightsItems `json:"insights,omitempty"`
-		JiraIssue      *FindingJiraIssue   `json:"jira_issue,omitempty"`
-		Key            *string             `json:"key,omitempty"`
-		ModifiedAt     *time.Time          `json:"modified_at,omitempty"`
-		Priority       *string             `json:"priority,omitempty"`
-		Status         *string             `json:"status,omitempty"`
-		StatusGroup    *string             `json:"status_group,omitempty"`
-		StatusName     *string             `json:"status_name,omitempty"`
-		Title          *string             `json:"title,omitempty"`
-		Type           *string             `json:"type,omitempty"`
+		ArchivedAt       *time.Time               `json:"archived_at,omitempty"`
+		AssignedTo       *RelationshipToUser      `json:"assigned_to,omitempty"`
+		Attributes       map[string][]string      `json:"attributes,omitempty"`
+		ClosedAt         *time.Time               `json:"closed_at,omitempty"`
+		CreatedAt        *time.Time               `json:"created_at,omitempty"`
+		CreationSource   *string                  `json:"creation_source,omitempty"`
+		Description      *string                  `json:"description,omitempty"`
+		DueDate          *string                  `json:"due_date,omitempty"`
+		Insights         []CaseInsightsItems      `json:"insights,omitempty"`
+		JiraIssue        *FindingJiraIssue        `json:"jira_issue,omitempty"`
+		Key              *string                  `json:"key,omitempty"`
+		ModifiedAt       *time.Time               `json:"modified_at,omitempty"`
+		Priority         *string                  `json:"priority,omitempty"`
+		ServicenowTicket *FindingServiceNowTicket `json:"servicenow_ticket,omitempty"`
+		Status           *string                  `json:"status,omitempty"`
+		StatusGroup      *string                  `json:"status_group,omitempty"`
+		StatusName       *string                  `json:"status_name,omitempty"`
+		Title            *string                  `json:"title,omitempty"`
+		Type             *string                  `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "assigned_to", "attributes", "closed_at", "created_at", "creation_source", "description", "due_date", "insights", "jira_issue", "key", "modified_at", "priority", "status", "status_group", "status_name", "title", "type"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "assigned_to", "attributes", "closed_at", "created_at", "creation_source", "description", "due_date", "insights", "jira_issue", "key", "modified_at", "priority", "servicenow_ticket", "status", "status_group", "status_name", "title", "type"})
 	} else {
 		return err
 	}
@@ -709,6 +743,10 @@ func (o *FindingCaseResponseDataAttributes) UnmarshalJSON(bytes []byte) (err err
 	o.Key = all.Key
 	o.ModifiedAt = all.ModifiedAt
 	o.Priority = all.Priority
+	if all.ServicenowTicket != nil && all.ServicenowTicket.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ServicenowTicket = all.ServicenowTicket
 	o.Status = all.Status
 	o.StatusGroup = all.StatusGroup
 	o.StatusName = all.StatusName

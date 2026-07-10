@@ -158,7 +158,7 @@ func (o *MonitorFormulaAndFunctionEventQueryGroupBySort) UnmarshalJSON(bytes []b
 		return fmt.Errorf("required field aggregation missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "metric", "order"})
 	} else {
 		return err

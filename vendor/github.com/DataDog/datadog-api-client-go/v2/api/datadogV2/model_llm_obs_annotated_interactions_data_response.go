@@ -14,7 +14,7 @@ import (
 type LLMObsAnnotatedInteractionsDataResponse struct {
 	// Attributes containing the list of annotated interactions.
 	Attributes LLMObsAnnotatedInteractionsDataAttributesResponse `json:"attributes"`
-	// The queue ID.
+	// The annotation queue ID.
 	Id string `json:"id"`
 	// Resource type for annotated interactions.
 	Type LLMObsAnnotatedInteractionsType `json:"type"`
@@ -148,7 +148,7 @@ func (o *LLMObsAnnotatedInteractionsDataResponse) UnmarshalJSON(bytes []byte) (e
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err

@@ -15,12 +15,14 @@ type PersonalAccessTokensSort string
 
 // List of PersonalAccessTokensSort.
 const (
-	PERSONALACCESSTOKENSSORT_NAME_ASCENDING        PersonalAccessTokensSort = "name"
-	PERSONALACCESSTOKENSSORT_NAME_DESCENDING       PersonalAccessTokensSort = "-name"
-	PERSONALACCESSTOKENSSORT_CREATED_AT_ASCENDING  PersonalAccessTokensSort = "created_at"
-	PERSONALACCESSTOKENSSORT_CREATED_AT_DESCENDING PersonalAccessTokensSort = "-created_at"
-	PERSONALACCESSTOKENSSORT_EXPIRES_AT_ASCENDING  PersonalAccessTokensSort = "expires_at"
-	PERSONALACCESSTOKENSSORT_EXPIRES_AT_DESCENDING PersonalAccessTokensSort = "-expires_at"
+	PERSONALACCESSTOKENSSORT_NAME_ASCENDING          PersonalAccessTokensSort = "name"
+	PERSONALACCESSTOKENSSORT_NAME_DESCENDING         PersonalAccessTokensSort = "-name"
+	PERSONALACCESSTOKENSSORT_CREATED_AT_ASCENDING    PersonalAccessTokensSort = "created_at"
+	PERSONALACCESSTOKENSSORT_CREATED_AT_DESCENDING   PersonalAccessTokensSort = "-created_at"
+	PERSONALACCESSTOKENSSORT_EXPIRES_AT_ASCENDING    PersonalAccessTokensSort = "expires_at"
+	PERSONALACCESSTOKENSSORT_EXPIRES_AT_DESCENDING   PersonalAccessTokensSort = "-expires_at"
+	PERSONALACCESSTOKENSSORT_LAST_USED_AT_ASCENDING  PersonalAccessTokensSort = "last_used_at"
+	PERSONALACCESSTOKENSSORT_LAST_USED_AT_DESCENDING PersonalAccessTokensSort = "-last_used_at"
 )
 
 var allowedPersonalAccessTokensSortEnumValues = []PersonalAccessTokensSort{
@@ -30,6 +32,8 @@ var allowedPersonalAccessTokensSortEnumValues = []PersonalAccessTokensSort{
 	PERSONALACCESSTOKENSSORT_CREATED_AT_DESCENDING,
 	PERSONALACCESSTOKENSSORT_EXPIRES_AT_ASCENDING,
 	PERSONALACCESSTOKENSSORT_EXPIRES_AT_DESCENDING,
+	PERSONALACCESSTOKENSSORT_LAST_USED_AT_ASCENDING,
+	PERSONALACCESSTOKENSSORT_LAST_USED_AT_DESCENDING,
 }
 
 // GetAllowedValues reeturns the list of possible values.

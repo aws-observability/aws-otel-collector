@@ -117,7 +117,7 @@ func (o *CustomDestinationElasticsearchDestinationAuth) UnmarshalJSON(bytes []by
 		return fmt.Errorf("required field username missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"password", "username"})
 	} else {
 		return err

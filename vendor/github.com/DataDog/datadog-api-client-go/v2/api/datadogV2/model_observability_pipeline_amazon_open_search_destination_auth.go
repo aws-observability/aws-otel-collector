@@ -223,7 +223,7 @@ func (o *ObservabilityPipelineAmazonOpenSearchDestinationAuth) UnmarshalJSON(byt
 		return fmt.Errorf("required field strategy missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assume_role", "aws_region", "external_id", "session_name", "strategy"})
 	} else {
 		return err

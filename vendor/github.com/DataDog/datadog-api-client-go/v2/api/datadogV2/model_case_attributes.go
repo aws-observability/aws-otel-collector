@@ -14,7 +14,7 @@ import (
 type CaseAttributes struct {
 	// Timestamp of when the case was archived
 	ArchivedAt datadog.NullableTime `json:"archived_at,omitempty"`
-	// The definition of `CaseObjectAttributes` object.
+	// Key-value pairs of case attributes. Each key maps to an array of string values, used for flexible metadata such as labels or tags.
 	Attributes map[string][]string `json:"attributes,omitempty"`
 	// Timestamp of when the case was closed
 	ClosedAt datadog.NullableTime `json:"closed_at,omitempty"`
@@ -704,7 +704,7 @@ func (o *CaseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "attributes", "closed_at", "created_at", "custom_attributes", "description", "jira_issue", "key", "modified_at", "priority", "service_now_ticket", "status", "status_group", "status_name", "title", "type", "type_id"})
 	} else {
 		return err

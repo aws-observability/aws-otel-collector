@@ -120,7 +120,7 @@ func (o *AppTriggerWrapper) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field appTrigger missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"appTrigger", "startStepNames"})
 	} else {
 		return err

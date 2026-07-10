@@ -196,7 +196,7 @@ func (o *SyntheticsTestVersionAttributes) UnmarshalJSON(bytes []byte) (err error
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"author", "change_metadata", "payload", "version_payload_created_at"})
 	} else {
 		return err

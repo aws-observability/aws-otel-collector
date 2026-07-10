@@ -293,7 +293,7 @@ func (o *PowerpackWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"background_color", "banner_img", "powerpack_id", "show_title", "template_variables", "title", "type"})
 	} else {
 		return err

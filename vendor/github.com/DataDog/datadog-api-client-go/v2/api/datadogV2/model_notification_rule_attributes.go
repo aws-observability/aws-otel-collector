@@ -376,7 +376,7 @@ func (o *NotificationRuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field version missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "created_by", "enabled", "modified_at", "modified_by", "name", "selectors", "targets", "time_aggregation", "version"})
 	} else {
 		return err

@@ -221,7 +221,7 @@ func (o *OrgGroupMembershipAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field org_uuid missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "modified_at", "org_name", "org_site", "org_uuid"})
 	} else {
 		return err

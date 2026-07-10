@@ -8,15 +8,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimelineCellAuthorUserContent user author content.
+// TimelineCellAuthorUserContent Profile information for the user who authored the timeline cell.
 type TimelineCellAuthorUserContent struct {
-	// user email
+	// The email address of the user.
 	Email *string `json:"email,omitempty"`
-	// user handle
+	// The Datadog handle of the user.
 	Handle *string `json:"handle,omitempty"`
-	// user UUID
+	// The UUID of the user.
 	Id *string `json:"id,omitempty"`
-	// user name
+	// The display name of the user.
 	Name *string `json:"name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -189,7 +189,7 @@ func (o *TimelineCellAuthorUserContent) UnmarshalJSON(bytes []byte) (err error) 
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"email", "handle", "id", "name"})
 	} else {
 		return err

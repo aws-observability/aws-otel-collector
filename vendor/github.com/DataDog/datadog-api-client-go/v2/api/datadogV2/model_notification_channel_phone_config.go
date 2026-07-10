@@ -258,7 +258,7 @@ func (o *NotificationChannelPhoneConfig) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field verified missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"formatted_number", "number", "region", "sms_subscribed_at", "type", "verified"})
 	} else {
 		return err

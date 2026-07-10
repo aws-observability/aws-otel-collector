@@ -335,7 +335,7 @@ func (o *PatchMaintenanceRequestDataAttributes) UnmarshalJSON(bytes []byte) (err
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"completed_date", "completed_description", "components_affected", "in_progress_description", "scheduled_description", "start_date", "status", "title"})
 	} else {
 		return err

@@ -11,7 +11,13 @@ import (
 )
 
 // DeploymentGatesEvaluationRequestAttributes Attributes for a deployment gate evaluation request.
+// When `configuration` is provided, rules are evaluated inline from that configuration.
+// When omitted, rules are resolved from the preconfigured gate for the given service and environment.
 type DeploymentGatesEvaluationRequestAttributes struct {
+	// Inline rule definitions for a deployment gate evaluation. When provided, rules are evaluated
+	// directly from this configuration instead of using the preconfigured gate rules.
+	// At least one rule is required.
+	Configuration *DeploymentGatesEvaluationConfiguration `json:"configuration,omitempty"`
 	// The environment of the deployment.
 	Env string `json:"env"`
 	// The identifier of the deployment gate. Defaults to "default".
@@ -48,6 +54,34 @@ func NewDeploymentGatesEvaluationRequestAttributesWithDefaults() *DeploymentGate
 	var identifier string = "default"
 	this.Identifier = &identifier
 	return &this
+}
+
+// GetConfiguration returns the Configuration field value if set, zero value otherwise.
+func (o *DeploymentGatesEvaluationRequestAttributes) GetConfiguration() DeploymentGatesEvaluationConfiguration {
+	if o == nil || o.Configuration == nil {
+		var ret DeploymentGatesEvaluationConfiguration
+		return ret
+	}
+	return *o.Configuration
+}
+
+// GetConfigurationOk returns a tuple with the Configuration field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploymentGatesEvaluationRequestAttributes) GetConfigurationOk() (*DeploymentGatesEvaluationConfiguration, bool) {
+	if o == nil || o.Configuration == nil {
+		return nil, false
+	}
+	return o.Configuration, true
+}
+
+// HasConfiguration returns a boolean if a field has been set.
+func (o *DeploymentGatesEvaluationRequestAttributes) HasConfiguration() bool {
+	return o != nil && o.Configuration != nil
+}
+
+// SetConfiguration gets a reference to the given DeploymentGatesEvaluationConfiguration and assigns it to the Configuration field.
+func (o *DeploymentGatesEvaluationRequestAttributes) SetConfiguration(v DeploymentGatesEvaluationConfiguration) {
+	o.Configuration = &v
 }
 
 // GetEnv returns the Env field value.
@@ -186,6 +220,9 @@ func (o DeploymentGatesEvaluationRequestAttributes) MarshalJSON() ([]byte, error
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Configuration != nil {
+		toSerialize["configuration"] = o.Configuration
+	}
 	toSerialize["env"] = o.Env
 	if o.Identifier != nil {
 		toSerialize["identifier"] = o.Identifier
@@ -207,11 +244,12 @@ func (o DeploymentGatesEvaluationRequestAttributes) MarshalJSON() ([]byte, error
 // UnmarshalJSON deserializes the given payload.
 func (o *DeploymentGatesEvaluationRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Env        *string `json:"env"`
-		Identifier *string `json:"identifier,omitempty"`
-		PrimaryTag *string `json:"primary_tag,omitempty"`
-		Service    *string `json:"service"`
-		Version    *string `json:"version,omitempty"`
+		Configuration *DeploymentGatesEvaluationConfiguration `json:"configuration,omitempty"`
+		Env           *string                                 `json:"env"`
+		Identifier    *string                                 `json:"identifier,omitempty"`
+		PrimaryTag    *string                                 `json:"primary_tag,omitempty"`
+		Service       *string                                 `json:"service"`
+		Version       *string                                 `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -223,11 +261,17 @@ func (o *DeploymentGatesEvaluationRequestAttributes) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field service missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"env", "identifier", "primary_tag", "service", "version"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"configuration", "env", "identifier", "primary_tag", "service", "version"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	if all.Configuration != nil && all.Configuration.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Configuration = all.Configuration
 	o.Env = *all.Env
 	o.Identifier = all.Identifier
 	o.PrimaryTag = all.PrimaryTag
@@ -236,6 +280,10 @@ func (o *DeploymentGatesEvaluationRequestAttributes) UnmarshalJSON(bytes []byte)
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

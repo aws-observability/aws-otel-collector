@@ -148,7 +148,7 @@ func (o *SyntheticsFetchUptimesPayload) UnmarshalJSON(bytes []byte) (err error) 
 		return fmt.Errorf("required field to_ts missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"from_ts", "public_ids", "to_ts"})
 	} else {
 		return err

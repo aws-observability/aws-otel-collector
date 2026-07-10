@@ -12,33 +12,34 @@ import (
 
 // UserAttributes Attributes of user object returned by the API.
 type UserAttributes struct {
-	// Creation time of the user.
+	// The ISO 8601 timestamp of when the user account was created.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
-	// Whether the user is disabled.
+	// Whether the user account is deactivated. Disabled users cannot log in.
 	Disabled *bool `json:"disabled,omitempty"`
-	// Email of the user.
+	// The email address of the user, used for login and notifications.
 	Email *string `json:"email,omitempty"`
-	// Handle of the user.
+	// The unique handle (username) of the user, typically matching their email prefix.
 	Handle *string `json:"handle,omitempty"`
-	// URL of the user's icon.
+	// URL of the user's profile icon, typically a Gravatar URL derived from the email address.
 	Icon *string `json:"icon,omitempty"`
-	// The last time the user logged in.
+	// The ISO 8601 timestamp of the user's most recent login, or null if the user has never logged in.
 	LastLoginTime datadog.NullableTime `json:"last_login_time,omitempty"`
-	// If user has MFA enabled.
+	// Whether multi-factor authentication (MFA) is enabled for the user's account.
 	MfaEnabled *bool `json:"mfa_enabled,omitempty"`
-	// Time that the user was last modified.
+	// The ISO 8601 timestamp of when the user account was last modified.
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
-	// Name of the user.
+	// The full display name of the user as shown in the Datadog UI.
 	Name datadog.NullableString `json:"name,omitempty"`
-	// Whether the user is a service account.
+	// Whether this is a service account rather than a human user.
+	// Service accounts are used for programmatic API access.
 	ServiceAccount *bool `json:"service_account,omitempty"`
-	// Status of the user.
+	// The current status of the user account (for example, `Active`, `Pending`, or `Disabled`).
 	Status *string `json:"status,omitempty"`
-	// Title of the user.
+	// The job title of the user (for example, "Senior Engineer" or "Product Manager").
 	Title datadog.NullableString `json:"title,omitempty"`
-	// UUID of the user.
+	// The globally unique identifier (UUID) of the user.
 	Uuid *string `json:"uuid,omitempty"`
-	// Whether the user is verified.
+	// Whether the user's email address has been verified.
 	Verified *bool `json:"verified,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -572,7 +573,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "disabled", "email", "handle", "icon", "last_login_time", "mfa_enabled", "modified_at", "name", "service_account", "status", "title", "uuid", "verified"})
 	} else {
 		return err

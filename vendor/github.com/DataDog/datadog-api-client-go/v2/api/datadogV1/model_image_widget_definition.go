@@ -367,7 +367,7 @@ func (o *ImageWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field url missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"has_background", "has_border", "horizontal_align", "margin", "sizing", "type", "url", "url_dark_theme", "vertical_align"})
 	} else {
 		return err

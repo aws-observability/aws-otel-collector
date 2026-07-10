@@ -189,7 +189,7 @@ func (o *WidgetSearchMeta) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_by_anyone_total", "created_by_you_total", "favorited_by_you_total", "filtered_total"})
 	} else {
 		return err

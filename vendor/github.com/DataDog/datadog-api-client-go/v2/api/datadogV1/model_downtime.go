@@ -839,7 +839,7 @@ func (o *Downtime) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"active", "active_child", "canceled", "creator_id", "disabled", "downtime_type", "end", "id", "message", "monitor_id", "monitor_tags", "mute_first_recovery_notification", "notify_end_states", "notify_end_types", "parent_id", "recurrence", "scope", "start", "timezone", "updater_id"})
 	} else {
 		return err

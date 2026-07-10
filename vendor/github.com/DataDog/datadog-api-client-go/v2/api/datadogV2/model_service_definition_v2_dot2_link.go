@@ -182,7 +182,7 @@ func (o *ServiceDefinitionV2Dot2Link) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field url missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"name", "provider", "type", "url"})
 	} else {
 		return err

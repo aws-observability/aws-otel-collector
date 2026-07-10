@@ -244,7 +244,7 @@ func (o *GCPUsageCostConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (e
 		return fmt.Errorf("required field service_account missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"billing_account_id", "bucket_name", "export_dataset_name", "export_prefix", "export_project_name", "service_account"})
 	} else {
 		return err

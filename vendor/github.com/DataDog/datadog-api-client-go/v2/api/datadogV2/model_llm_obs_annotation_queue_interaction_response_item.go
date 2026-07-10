@@ -5,203 +5,101 @@
 package datadogV2
 
 import (
-	"fmt"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// LLMObsAnnotationQueueInteractionResponseItem A single interaction result.
+// LLMObsAnnotationQueueInteractionResponseItem - A single interaction result.
 type LLMObsAnnotationQueueInteractionResponseItem struct {
-	// Whether this interaction already existed in the queue.
-	AlreadyExisted bool `json:"already_existed"`
-	// Identifier of the content for this interaction.
-	ContentId string `json:"content_id"`
-	// Unique identifier of the interaction.
-	Id string `json:"id"`
-	// Type of interaction in an annotation queue.
-	Type LLMObsInteractionType `json:"type"`
+	LLMObsTraceInteractionResponseItem        *LLMObsTraceInteractionResponseItem
+	LLMObsDisplayBlockInteractionResponseItem *LLMObsDisplayBlockInteractionResponseItem
+
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
-	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	UnparsedObject interface{}
 }
 
-// NewLLMObsAnnotationQueueInteractionResponseItem instantiates a new LLMObsAnnotationQueueInteractionResponseItem object.
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed.
-func NewLLMObsAnnotationQueueInteractionResponseItem(alreadyExisted bool, contentId string, id string, typeVar LLMObsInteractionType) *LLMObsAnnotationQueueInteractionResponseItem {
-	this := LLMObsAnnotationQueueInteractionResponseItem{}
-	this.AlreadyExisted = alreadyExisted
-	this.ContentId = contentId
-	this.Id = id
-	this.Type = typeVar
-	return &this
+// LLMObsTraceInteractionResponseItemAsLLMObsAnnotationQueueInteractionResponseItem is a convenience function that returns LLMObsTraceInteractionResponseItem wrapped in LLMObsAnnotationQueueInteractionResponseItem.
+func LLMObsTraceInteractionResponseItemAsLLMObsAnnotationQueueInteractionResponseItem(v *LLMObsTraceInteractionResponseItem) LLMObsAnnotationQueueInteractionResponseItem {
+	return LLMObsAnnotationQueueInteractionResponseItem{LLMObsTraceInteractionResponseItem: v}
 }
 
-// NewLLMObsAnnotationQueueInteractionResponseItemWithDefaults instantiates a new LLMObsAnnotationQueueInteractionResponseItem object.
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set.
-func NewLLMObsAnnotationQueueInteractionResponseItemWithDefaults() *LLMObsAnnotationQueueInteractionResponseItem {
-	this := LLMObsAnnotationQueueInteractionResponseItem{}
-	return &this
+// LLMObsDisplayBlockInteractionResponseItemAsLLMObsAnnotationQueueInteractionResponseItem is a convenience function that returns LLMObsDisplayBlockInteractionResponseItem wrapped in LLMObsAnnotationQueueInteractionResponseItem.
+func LLMObsDisplayBlockInteractionResponseItemAsLLMObsAnnotationQueueInteractionResponseItem(v *LLMObsDisplayBlockInteractionResponseItem) LLMObsAnnotationQueueInteractionResponseItem {
+	return LLMObsAnnotationQueueInteractionResponseItem{LLMObsDisplayBlockInteractionResponseItem: v}
 }
 
-// GetAlreadyExisted returns the AlreadyExisted field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetAlreadyExisted() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
-	return o.AlreadyExisted
-}
-
-// GetAlreadyExistedOk returns a tuple with the AlreadyExisted field value
-// and a boolean to check if the value has been set.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetAlreadyExistedOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.AlreadyExisted, true
-}
-
-// SetAlreadyExisted sets field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) SetAlreadyExisted(v bool) {
-	o.AlreadyExisted = v
-}
-
-// GetContentId returns the ContentId field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetContentId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-	return o.ContentId
-}
-
-// GetContentIdOk returns a tuple with the ContentId field value
-// and a boolean to check if the value has been set.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetContentIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.ContentId, true
-}
-
-// SetContentId sets field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) SetContentId(v string) {
-	o.ContentId = v
-}
-
-// GetId returns the Id field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-	return o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
-
-// SetId sets field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) SetId(v string) {
-	o.Id = v
-}
-
-// GetType returns the Type field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetType() LLMObsInteractionType {
-	if o == nil {
-		var ret LLMObsInteractionType
-		return ret
-	}
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) GetTypeOk() (*LLMObsInteractionType, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) SetType(v LLMObsInteractionType) {
-	o.Type = v
-}
-
-// MarshalJSON serializes the struct using spec logic.
-func (o LLMObsAnnotationQueueInteractionResponseItem) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.UnparsedObject != nil {
-		return datadog.Marshal(o.UnparsedObject)
-	}
-	toSerialize["already_existed"] = o.AlreadyExisted
-	toSerialize["content_id"] = o.ContentId
-	toSerialize["id"] = o.Id
-	toSerialize["type"] = o.Type
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
-	return datadog.Marshal(toSerialize)
-}
-
-// UnmarshalJSON deserializes the given payload.
-func (o *LLMObsAnnotationQueueInteractionResponseItem) UnmarshalJSON(bytes []byte) (err error) {
-	all := struct {
-		AlreadyExisted *bool                  `json:"already_existed"`
-		ContentId      *string                `json:"content_id"`
-		Id             *string                `json:"id"`
-		Type           *LLMObsInteractionType `json:"type"`
-	}{}
-	if err = datadog.Unmarshal(bytes, &all); err != nil {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.AlreadyExisted == nil {
-		return fmt.Errorf("required field already_existed missing")
-	}
-	if all.ContentId == nil {
-		return fmt.Errorf("required field content_id missing")
-	}
-	if all.Id == nil {
-		return fmt.Errorf("required field id missing")
-	}
-	if all.Type == nil {
-		return fmt.Errorf("required field type missing")
-	}
-	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"already_existed", "content_id", "id", "type"})
+// UnmarshalJSON turns data into one of the pointers in the struct.
+func (obj *LLMObsAnnotationQueueInteractionResponseItem) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into LLMObsTraceInteractionResponseItem
+	err = datadog.Unmarshal(data, &obj.LLMObsTraceInteractionResponseItem)
+	if err == nil {
+		if obj.LLMObsTraceInteractionResponseItem != nil && obj.LLMObsTraceInteractionResponseItem.UnparsedObject == nil {
+			jsonLLMObsTraceInteractionResponseItem, _ := datadog.Marshal(obj.LLMObsTraceInteractionResponseItem)
+			if string(jsonLLMObsTraceInteractionResponseItem) == "{}" { // empty struct
+				obj.LLMObsTraceInteractionResponseItem = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.LLMObsTraceInteractionResponseItem = nil
+		}
 	} else {
-		return err
+		obj.LLMObsTraceInteractionResponseItem = nil
 	}
 
-	hasInvalidField := false
-	o.AlreadyExisted = *all.AlreadyExisted
-	o.ContentId = *all.ContentId
-	o.Id = *all.Id
-	if !all.Type.IsValid() {
-		hasInvalidField = true
+	// try to unmarshal data into LLMObsDisplayBlockInteractionResponseItem
+	err = datadog.Unmarshal(data, &obj.LLMObsDisplayBlockInteractionResponseItem)
+	if err == nil {
+		if obj.LLMObsDisplayBlockInteractionResponseItem != nil && obj.LLMObsDisplayBlockInteractionResponseItem.UnparsedObject == nil {
+			jsonLLMObsDisplayBlockInteractionResponseItem, _ := datadog.Marshal(obj.LLMObsDisplayBlockInteractionResponseItem)
+			if string(jsonLLMObsDisplayBlockInteractionResponseItem) == "{}" { // empty struct
+				obj.LLMObsDisplayBlockInteractionResponseItem = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.LLMObsDisplayBlockInteractionResponseItem = nil
+		}
 	} else {
-		o.Type = *all.Type
+		obj.LLMObsDisplayBlockInteractionResponseItem = nil
 	}
 
-	if len(additionalProperties) > 0 {
-		o.AdditionalProperties = additionalProperties
+	if match != 1 { // more than 1 match
+		// reset to nil
+		obj.LLMObsTraceInteractionResponseItem = nil
+		obj.LLMObsDisplayBlockInteractionResponseItem = nil
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
+	}
+	return nil // exactly one match
+}
+
+// MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
+func (obj LLMObsAnnotationQueueInteractionResponseItem) MarshalJSON() ([]byte, error) {
+	if obj.LLMObsTraceInteractionResponseItem != nil {
+		return datadog.Marshal(&obj.LLMObsTraceInteractionResponseItem)
 	}
 
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	if obj.LLMObsDisplayBlockInteractionResponseItem != nil {
+		return datadog.Marshal(&obj.LLMObsDisplayBlockInteractionResponseItem)
 	}
 
+	if obj.UnparsedObject != nil {
+		return datadog.Marshal(obj.UnparsedObject)
+	}
+	return nil, nil // no data in oneOf schemas
+}
+
+// GetActualInstance returns the actual instance.
+func (obj *LLMObsAnnotationQueueInteractionResponseItem) GetActualInstance() interface{} {
+	if obj.LLMObsTraceInteractionResponseItem != nil {
+		return obj.LLMObsTraceInteractionResponseItem
+	}
+
+	if obj.LLMObsDisplayBlockInteractionResponseItem != nil {
+		return obj.LLMObsDisplayBlockInteractionResponseItem
+	}
+
+	// all schemas are nil
 	return nil
 }

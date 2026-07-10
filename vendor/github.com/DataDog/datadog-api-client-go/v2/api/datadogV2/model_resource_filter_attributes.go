@@ -120,7 +120,7 @@ func (o *ResourceFilterAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field cloud_provider missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"cloud_provider", "uuid"})
 	} else {
 		return err

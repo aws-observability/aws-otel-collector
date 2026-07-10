@@ -461,7 +461,7 @@ func (o *DataDeletionResponseItemAttributes) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field updated_at missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "created_by", "from_time", "indexes", "is_created", "org_id", "product", "query", "starting_at", "status", "to_time", "total_unrestricted", "updated_at"})
 	} else {
 		return err

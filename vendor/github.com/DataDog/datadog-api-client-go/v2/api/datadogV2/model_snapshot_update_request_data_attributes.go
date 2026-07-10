@@ -216,7 +216,7 @@ func (o *SnapshotUpdateRequestDataAttributes) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field start missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"event_id", "is_device_type_selected_by_user", "session_id", "start", "view_id"})
 	} else {
 		return err

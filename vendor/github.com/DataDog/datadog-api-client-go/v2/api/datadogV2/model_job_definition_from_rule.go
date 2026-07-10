@@ -12,6 +12,8 @@ import (
 
 // JobDefinitionFromRule Definition of a historical job based on a security monitoring rule.
 type JobDefinitionFromRule struct {
+	// Zero-based index of the rule case to use as the job's signal condition. When omitted, all cases are evaluated. Up to 10 cases are supported, so valid values are 0 to 9.
+	CaseIndex *int32 `json:"caseIndex,omitempty"`
 	// Starting time of data analyzed by the job.
 	From int64 `json:"from"`
 	// ID of the detection rule used to create the job.
@@ -46,6 +48,34 @@ func NewJobDefinitionFromRule(from int64, id string, index string, to int64) *Jo
 func NewJobDefinitionFromRuleWithDefaults() *JobDefinitionFromRule {
 	this := JobDefinitionFromRule{}
 	return &this
+}
+
+// GetCaseIndex returns the CaseIndex field value if set, zero value otherwise.
+func (o *JobDefinitionFromRule) GetCaseIndex() int32 {
+	if o == nil || o.CaseIndex == nil {
+		var ret int32
+		return ret
+	}
+	return *o.CaseIndex
+}
+
+// GetCaseIndexOk returns a tuple with the CaseIndex field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *JobDefinitionFromRule) GetCaseIndexOk() (*int32, bool) {
+	if o == nil || o.CaseIndex == nil {
+		return nil, false
+	}
+	return o.CaseIndex, true
+}
+
+// HasCaseIndex returns a boolean if a field has been set.
+func (o *JobDefinitionFromRule) HasCaseIndex() bool {
+	return o != nil && o.CaseIndex != nil
+}
+
+// SetCaseIndex gets a reference to the given int32 and assigns it to the CaseIndex field.
+func (o *JobDefinitionFromRule) SetCaseIndex(v int32) {
+	o.CaseIndex = &v
 }
 
 // GetFrom returns the From field value.
@@ -174,6 +204,9 @@ func (o JobDefinitionFromRule) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CaseIndex != nil {
+		toSerialize["caseIndex"] = o.CaseIndex
+	}
 	toSerialize["from"] = o.From
 	toSerialize["id"] = o.Id
 	toSerialize["index"] = o.Index
@@ -191,6 +224,7 @@ func (o JobDefinitionFromRule) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *JobDefinitionFromRule) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		CaseIndex     *int32   `json:"caseIndex,omitempty"`
 		From          *int64   `json:"from"`
 		Id            *string  `json:"id"`
 		Index         *string  `json:"index"`
@@ -213,11 +247,12 @@ func (o *JobDefinitionFromRule) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field to missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"from", "id", "index", "notifications", "to"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"caseIndex", "from", "id", "index", "notifications", "to"})
 	} else {
 		return err
 	}
+	o.CaseIndex = all.CaseIndex
 	o.From = *all.From
 	o.Id = *all.Id
 	o.Index = *all.Index

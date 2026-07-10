@@ -254,7 +254,7 @@ func (o *UpdateRulesetRequestDataAttributesRulesItemsReferenceTable) UnmarshalJS
 		return fmt.Errorf("required field table_name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"case_insensitivity", "field_pairs", "if_not_exists", "if_tag_exists", "source_keys", "table_name"})
 	} else {
 		return err

@@ -357,7 +357,7 @@ func (o *RunWorkflowWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field workflow_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "description", "inputs", "time", "title", "title_align", "title_size", "type", "workflow_id"})
 	} else {
 		return err

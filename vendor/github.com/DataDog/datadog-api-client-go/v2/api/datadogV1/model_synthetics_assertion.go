@@ -11,12 +11,14 @@ import (
 // SyntheticsAssertion - Object describing the assertions type, their associated operator,
 // which property they apply, and upon which target.
 type SyntheticsAssertion struct {
-	SyntheticsAssertionTarget           *SyntheticsAssertionTarget
-	SyntheticsAssertionBodyHashTarget   *SyntheticsAssertionBodyHashTarget
-	SyntheticsAssertionJSONPathTarget   *SyntheticsAssertionJSONPathTarget
-	SyntheticsAssertionJSONSchemaTarget *SyntheticsAssertionJSONSchemaTarget
-	SyntheticsAssertionXPathTarget      *SyntheticsAssertionXPathTarget
-	SyntheticsAssertionJavascript       *SyntheticsAssertionJavascript
+	SyntheticsAssertionTarget                      *SyntheticsAssertionTarget
+	SyntheticsAssertionBodyHashTarget              *SyntheticsAssertionBodyHashTarget
+	SyntheticsAssertionJSONPathTarget              *SyntheticsAssertionJSONPathTarget
+	SyntheticsAssertionJSONSchemaTarget            *SyntheticsAssertionJSONSchemaTarget
+	SyntheticsAssertionXPathTarget                 *SyntheticsAssertionXPathTarget
+	SyntheticsAssertionJavascript                  *SyntheticsAssertionJavascript
+	SyntheticsAssertionMCPServerCapabilitiesTarget *SyntheticsAssertionMCPServerCapabilitiesTarget
+	SyntheticsAssertionMCPRespectsSpecification    *SyntheticsAssertionMCPRespectsSpecification
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -50,6 +52,16 @@ func SyntheticsAssertionXPathTargetAsSyntheticsAssertion(v *SyntheticsAssertionX
 // SyntheticsAssertionJavascriptAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionJavascript wrapped in SyntheticsAssertion.
 func SyntheticsAssertionJavascriptAsSyntheticsAssertion(v *SyntheticsAssertionJavascript) SyntheticsAssertion {
 	return SyntheticsAssertion{SyntheticsAssertionJavascript: v}
+}
+
+// SyntheticsAssertionMCPServerCapabilitiesTargetAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionMCPServerCapabilitiesTarget wrapped in SyntheticsAssertion.
+func SyntheticsAssertionMCPServerCapabilitiesTargetAsSyntheticsAssertion(v *SyntheticsAssertionMCPServerCapabilitiesTarget) SyntheticsAssertion {
+	return SyntheticsAssertion{SyntheticsAssertionMCPServerCapabilitiesTarget: v}
+}
+
+// SyntheticsAssertionMCPRespectsSpecificationAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionMCPRespectsSpecification wrapped in SyntheticsAssertion.
+func SyntheticsAssertionMCPRespectsSpecificationAsSyntheticsAssertion(v *SyntheticsAssertionMCPRespectsSpecification) SyntheticsAssertion {
+	return SyntheticsAssertion{SyntheticsAssertionMCPRespectsSpecification: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -158,6 +170,40 @@ func (obj *SyntheticsAssertion) UnmarshalJSON(data []byte) error {
 		obj.SyntheticsAssertionJavascript = nil
 	}
 
+	// try to unmarshal data into SyntheticsAssertionMCPServerCapabilitiesTarget
+	err = datadog.Unmarshal(data, &obj.SyntheticsAssertionMCPServerCapabilitiesTarget)
+	if err == nil {
+		if obj.SyntheticsAssertionMCPServerCapabilitiesTarget != nil && obj.SyntheticsAssertionMCPServerCapabilitiesTarget.UnparsedObject == nil {
+			jsonSyntheticsAssertionMCPServerCapabilitiesTarget, _ := datadog.Marshal(obj.SyntheticsAssertionMCPServerCapabilitiesTarget)
+			if string(jsonSyntheticsAssertionMCPServerCapabilitiesTarget) == "{}" { // empty struct
+				obj.SyntheticsAssertionMCPServerCapabilitiesTarget = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.SyntheticsAssertionMCPServerCapabilitiesTarget = nil
+		}
+	} else {
+		obj.SyntheticsAssertionMCPServerCapabilitiesTarget = nil
+	}
+
+	// try to unmarshal data into SyntheticsAssertionMCPRespectsSpecification
+	err = datadog.Unmarshal(data, &obj.SyntheticsAssertionMCPRespectsSpecification)
+	if err == nil {
+		if obj.SyntheticsAssertionMCPRespectsSpecification != nil && obj.SyntheticsAssertionMCPRespectsSpecification.UnparsedObject == nil {
+			jsonSyntheticsAssertionMCPRespectsSpecification, _ := datadog.Marshal(obj.SyntheticsAssertionMCPRespectsSpecification)
+			if string(jsonSyntheticsAssertionMCPRespectsSpecification) == "{}" { // empty struct
+				obj.SyntheticsAssertionMCPRespectsSpecification = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.SyntheticsAssertionMCPRespectsSpecification = nil
+		}
+	} else {
+		obj.SyntheticsAssertionMCPRespectsSpecification = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.SyntheticsAssertionTarget = nil
@@ -166,6 +212,8 @@ func (obj *SyntheticsAssertion) UnmarshalJSON(data []byte) error {
 		obj.SyntheticsAssertionJSONSchemaTarget = nil
 		obj.SyntheticsAssertionXPathTarget = nil
 		obj.SyntheticsAssertionJavascript = nil
+		obj.SyntheticsAssertionMCPServerCapabilitiesTarget = nil
+		obj.SyntheticsAssertionMCPRespectsSpecification = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -195,6 +243,14 @@ func (obj SyntheticsAssertion) MarshalJSON() ([]byte, error) {
 
 	if obj.SyntheticsAssertionJavascript != nil {
 		return datadog.Marshal(&obj.SyntheticsAssertionJavascript)
+	}
+
+	if obj.SyntheticsAssertionMCPServerCapabilitiesTarget != nil {
+		return datadog.Marshal(&obj.SyntheticsAssertionMCPServerCapabilitiesTarget)
+	}
+
+	if obj.SyntheticsAssertionMCPRespectsSpecification != nil {
+		return datadog.Marshal(&obj.SyntheticsAssertionMCPRespectsSpecification)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -227,6 +283,14 @@ func (obj *SyntheticsAssertion) GetActualInstance() interface{} {
 
 	if obj.SyntheticsAssertionJavascript != nil {
 		return obj.SyntheticsAssertionJavascript
+	}
+
+	if obj.SyntheticsAssertionMCPServerCapabilitiesTarget != nil {
+		return obj.SyntheticsAssertionMCPServerCapabilitiesTarget
+	}
+
+	if obj.SyntheticsAssertionMCPRespectsSpecification != nil {
+		return obj.SyntheticsAssertionMCPRespectsSpecification
 	}
 
 	// all schemas are nil

@@ -323,7 +323,7 @@ func (o *EventTimelineWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "query", "tags_execution", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err

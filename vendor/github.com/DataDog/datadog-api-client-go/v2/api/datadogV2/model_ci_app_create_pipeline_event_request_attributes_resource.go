@@ -82,7 +82,7 @@ func (obj *CIAppCreatePipelineEventRequestAttributesResource) UnmarshalJSON(data
 	if err == nil {
 		if obj.CIAppPipelineEventJob != nil && obj.CIAppPipelineEventJob.UnparsedObject == nil {
 			jsonCIAppPipelineEventJob, _ := datadog.Marshal(obj.CIAppPipelineEventJob)
-			if string(jsonCIAppPipelineEventJob) == "{}" { // empty struct
+			if string(jsonCIAppPipelineEventJob) == "{}" && string(data) != "{}" { // empty struct
 				obj.CIAppPipelineEventJob = nil
 			} else {
 				match++

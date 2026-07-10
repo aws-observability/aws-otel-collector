@@ -699,7 +699,7 @@ func (o *GetDeviceAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "device_type", "integration", "ip_address", "location", "model", "name", "os_hostname", "os_name", "os_version", "ping_status", "product_name", "serial_number", "status", "subnet", "sys_object_id", "tags", "vendor", "version"})
 	} else {
 		return err

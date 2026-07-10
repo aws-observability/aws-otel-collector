@@ -44,6 +44,8 @@ type AzureAccount struct {
 	ResourceCollectionEnabled *bool `json:"resource_collection_enabled,omitempty"`
 	// Configuration settings applied to resources from the specified Azure resource providers.
 	ResourceProviderConfigs []ResourceProviderConfig `json:"resource_provider_configs,omitempty"`
+	// (Preview) When enabled, Datadog authenticates with this app registration using federated workload identity credentials instead of a client secret.
+	SecretlessAuthEnabled *bool `json:"secretless_auth_enabled,omitempty"`
 	// Your Azure Active Directory ID.
 	TenantName *string `json:"tenant_name,omitempty"`
 	// Enable azure.usage metrics for your organization.
@@ -490,6 +492,34 @@ func (o *AzureAccount) SetResourceProviderConfigs(v []ResourceProviderConfig) {
 	o.ResourceProviderConfigs = v
 }
 
+// GetSecretlessAuthEnabled returns the SecretlessAuthEnabled field value if set, zero value otherwise.
+func (o *AzureAccount) GetSecretlessAuthEnabled() bool {
+	if o == nil || o.SecretlessAuthEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.SecretlessAuthEnabled
+}
+
+// GetSecretlessAuthEnabledOk returns a tuple with the SecretlessAuthEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AzureAccount) GetSecretlessAuthEnabledOk() (*bool, bool) {
+	if o == nil || o.SecretlessAuthEnabled == nil {
+		return nil, false
+	}
+	return o.SecretlessAuthEnabled, true
+}
+
+// HasSecretlessAuthEnabled returns a boolean if a field has been set.
+func (o *AzureAccount) HasSecretlessAuthEnabled() bool {
+	return o != nil && o.SecretlessAuthEnabled != nil
+}
+
+// SetSecretlessAuthEnabled gets a reference to the given bool and assigns it to the SecretlessAuthEnabled field.
+func (o *AzureAccount) SetSecretlessAuthEnabled(v bool) {
+	o.SecretlessAuthEnabled = &v
+}
+
 // GetTenantName returns the TenantName field value if set, zero value otherwise.
 func (o *AzureAccount) GetTenantName() string {
 	if o == nil || o.TenantName == nil {
@@ -597,6 +627,9 @@ func (o AzureAccount) MarshalJSON() ([]byte, error) {
 	if o.ResourceProviderConfigs != nil {
 		toSerialize["resource_provider_configs"] = o.ResourceProviderConfigs
 	}
+	if o.SecretlessAuthEnabled != nil {
+		toSerialize["secretless_auth_enabled"] = o.SecretlessAuthEnabled
+	}
 	if o.TenantName != nil {
 		toSerialize["tenant_name"] = o.TenantName
 	}
@@ -628,6 +661,7 @@ func (o *AzureAccount) UnmarshalJSON(bytes []byte) (err error) {
 		NewTenantName             *string                  `json:"new_tenant_name,omitempty"`
 		ResourceCollectionEnabled *bool                    `json:"resource_collection_enabled,omitempty"`
 		ResourceProviderConfigs   []ResourceProviderConfig `json:"resource_provider_configs,omitempty"`
+		SecretlessAuthEnabled     *bool                    `json:"secretless_auth_enabled,omitempty"`
 		TenantName                *string                  `json:"tenant_name,omitempty"`
 		UsageMetricsEnabled       *bool                    `json:"usage_metrics_enabled,omitempty"`
 	}{}
@@ -635,8 +669,8 @@ func (o *AzureAccount) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"app_service_plan_filters", "automute", "client_id", "client_secret", "container_app_filters", "cspm_enabled", "custom_metrics_enabled", "errors", "host_filters", "metrics_enabled", "metrics_enabled_default", "new_client_id", "new_tenant_name", "resource_collection_enabled", "resource_provider_configs", "tenant_name", "usage_metrics_enabled"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"app_service_plan_filters", "automute", "client_id", "client_secret", "container_app_filters", "cspm_enabled", "custom_metrics_enabled", "errors", "host_filters", "metrics_enabled", "metrics_enabled_default", "new_client_id", "new_tenant_name", "resource_collection_enabled", "resource_provider_configs", "secretless_auth_enabled", "tenant_name", "usage_metrics_enabled"})
 	} else {
 		return err
 	}
@@ -655,6 +689,7 @@ func (o *AzureAccount) UnmarshalJSON(bytes []byte) (err error) {
 	o.NewTenantName = all.NewTenantName
 	o.ResourceCollectionEnabled = all.ResourceCollectionEnabled
 	o.ResourceProviderConfigs = all.ResourceProviderConfigs
+	o.SecretlessAuthEnabled = all.SecretlessAuthEnabled
 	o.TenantName = all.TenantName
 	o.UsageMetricsEnabled = all.UsageMetricsEnabled
 

@@ -365,7 +365,7 @@ func (o *AWSAccountCreateRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field aws_partition missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "auth_config", "aws_account_id", "aws_partition", "aws_regions", "logs_config", "metrics_config", "resources_config", "traces_config"})
 	} else {
 		return err

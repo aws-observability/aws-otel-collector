@@ -189,7 +189,7 @@ func (o *StatusPagesComponentDataRelationships) UnmarshalJSON(bytes []byte) (err
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_by_user", "group", "last_modified_by_user", "status_page"})
 	} else {
 		return err

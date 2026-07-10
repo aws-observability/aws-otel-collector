@@ -395,7 +395,7 @@ func (o *NoteWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"background_color", "content", "font_size", "has_padding", "show_tick", "text_align", "tick_edge", "tick_pos", "type", "vertical_align"})
 	} else {
 		return err

@@ -162,7 +162,7 @@ func (o *ObservabilityPipelineDiskBufferOptions) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field max_size missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"max_size", "type", "when_full"})
 	} else {
 		return err

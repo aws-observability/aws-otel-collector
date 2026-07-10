@@ -9,8 +9,6 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen ./...
-
 /*
 This file generates conversions methods between the schema and the hcloud package.
 Goverter (https://github.com/jmattheis/goverter) is used to generate these conversion
@@ -25,7 +23,7 @@ You can find a documentation of goverter here: https://goverter.jmattheis.de/
 //
 // Specify where and in which package to output the generated
 // conversion methods.
-// goverter:output:file zz_schema.go
+// goverter:output:file zz_schema_converter.go
 // goverter:output:package github.com/hetznercloud/hcloud-go/v2/hcloud
 //
 // In case of *T -> T conversion, use zero value if *T is nil.
@@ -286,7 +284,7 @@ type converter interface {
 	// goverter:map PriceHourly Hourly
 	// goverter:map PriceMonthly Monthly
 	// goverter:map PricePerTBTraffic PerTBTraffic
-	serverTypePricingFromSchema(schema.PricingServerTypePrice) ServerTypeLocationPricing
+	serverTypeLocationPricingFromSchema(schema.PricingServerTypePrice) ServerTypeLocationPricing
 
 	// goverter:map Image.PerGBMonth.Currency Currency
 	// goverter:map Image.PerGBMonth.VATRate VATRate
@@ -716,7 +714,7 @@ func intSecondsFromDuration(d time.Duration) int {
 	return int(d.Seconds())
 }
 
-func errorDetailsFromSchema(d interface{}) interface{} {
+func errorDetailsFromSchema(d any) any {
 	switch typed := d.(type) {
 	case schema.ErrorDetailsInvalidInput:
 		details := ErrorDetailsInvalidInput{
@@ -738,7 +736,7 @@ func errorDetailsFromSchema(d interface{}) interface{} {
 	return nil
 }
 
-func schemaFromErrorDetails(d interface{}) interface{} {
+func schemaFromErrorDetails(d any) any {
 	switch typed := d.(type) {
 	case ErrorDetailsInvalidInput:
 		details := schema.ErrorDetailsInvalidInput{
@@ -932,7 +930,7 @@ func serverMetricsTimeSeriesFromSchema(s schema.ServerTimeSeriesVals) ([]ServerM
 	for i, rawVal := range s.Values {
 		var val ServerMetricsValue
 
-		tup, ok := rawVal.([]interface{})
+		tup, ok := rawVal.([]any)
 		if !ok {
 			return nil, fmt.Errorf("failed to convert value to tuple: %v", rawVal)
 		}
@@ -962,7 +960,7 @@ func loadBalancerMetricsTimeSeriesFromSchema(s schema.LoadBalancerTimeSeriesVals
 	for i, rawVal := range s.Values {
 		var val LoadBalancerMetricsValue
 
-		tup, ok := rawVal.([]interface{})
+		tup, ok := rawVal.([]any)
 		if !ok {
 			return nil, fmt.Errorf("failed to convert value to tuple: %v", rawVal)
 		}
@@ -1043,7 +1041,7 @@ func stringMapToStringMapPtr(m map[string]string) *map[string]string {
 	return &m
 }
 
-func rawSchemaFromErrorDetails(v interface{}) json.RawMessage {
+func rawSchemaFromErrorDetails(v any) json.RawMessage {
 	d := schemaFromErrorDetails(v)
 	if v == nil {
 		return nil

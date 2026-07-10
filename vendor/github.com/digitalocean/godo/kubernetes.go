@@ -27,7 +27,7 @@ type KubernetesService interface {
 	Get(context.Context, string) (*KubernetesCluster, *Response, error)
 	GetUser(context.Context, string) (*KubernetesClusterUser, *Response, error)
 	GetUpgrades(context.Context, string) ([]*KubernetesVersion, *Response, error)
-	GetKubeConfig(context.Context, string) (*KubernetesClusterConfig, *Response, error)
+	GetKubeConfig(context.Context, string, *KubernetesClusterKubeconfigGetRequest) (*KubernetesClusterConfig, *Response, error)
 	GetKubeConfigWithExpiry(context.Context, string, int64) (*KubernetesClusterConfig, *Response, error)
 	GetCredentials(context.Context, string, *KubernetesClusterCredentialsGetRequest) (*KubernetesClusterCredentials, *Response, error)
 	List(context.Context, *ListOptions) ([]*KubernetesCluster, *Response, error)
@@ -68,16 +68,18 @@ type KubernetesServiceOp struct {
 
 // KubernetesClusterCreateRequest represents a request to create a Kubernetes cluster.
 type KubernetesClusterCreateRequest struct {
-	Name          string   `json:"name,omitempty"`
-	RegionSlug    string   `json:"region,omitempty"`
-	VersionSlug   string   `json:"version,omitempty"`
-	Tags          []string `json:"tags,omitempty"`
-	VPCUUID       string   `json:"vpc_uuid,omitempty"`
-	ClusterSubnet string   `json:"cluster_subnet,omitempty"`
-	ServiceSubnet string   `json:"service_subnet,omitempty"`
+	Name             string   `json:"name,omitempty"`
+	RegionSlug       string   `json:"region,omitempty"`
+	VersionSlug      string   `json:"version,omitempty"`
+	Tags             []string `json:"tags,omitempty"`
+	VPCUUID          string   `json:"vpc_uuid,omitempty"`
+	WorkerSubnetUUID string   `json:"worker_subnet_uuid,omitempty"`
+	ClusterSubnet    string   `json:"cluster_subnet,omitempty"`
+	ServiceSubnet    string   `json:"service_subnet,omitempty"`
 
-	// Create cluster with highly available control plane
-	HA bool `json:"ha"`
+	// HA enables a highly available control plane. When omitted, the API applies
+	// version-based defaults: false for versions < 1.36, true for versions >= 1.36.
+	HA *bool `json:"ha,omitempty"`
 
 	NodePools []*KubernetesNodePoolCreateRequest `json:"node_pools,omitempty"`
 
@@ -188,6 +190,11 @@ type KubernetesClusterCredentialsGetRequest struct {
 	ExpirySeconds *int `json:"expiry_seconds,omitempty"`
 }
 
+// KubernetesClusterKubeconfigGetRequest is a request to get cluster kubeconfig.
+type KubernetesClusterKubeconfigGetRequest struct {
+	Type string `json:"type,omitempty"`
+}
+
 // KubernetesClusterRegistryRequest represents clusters to integrate with docr registry
 type KubernetesClusterRegistryRequest struct {
 	ClusterUUIDs []string `json:"cluster_uuids,omitempty"`
@@ -219,16 +226,17 @@ type KubernetesGetClusterStatusMessagesRequest struct {
 
 // KubernetesCluster represents a Kubernetes cluster.
 type KubernetesCluster struct {
-	ID            string   `json:"id,omitempty"`
-	Name          string   `json:"name,omitempty"`
-	RegionSlug    string   `json:"region,omitempty"`
-	VersionSlug   string   `json:"version,omitempty"`
-	ClusterSubnet string   `json:"cluster_subnet,omitempty"`
-	ServiceSubnet string   `json:"service_subnet,omitempty"`
-	IPv4          string   `json:"ipv4,omitempty"`
-	Endpoint      string   `json:"endpoint,omitempty"`
-	Tags          []string `json:"tags,omitempty"`
-	VPCUUID       string   `json:"vpc_uuid,omitempty"`
+	ID               string   `json:"id,omitempty"`
+	Name             string   `json:"name,omitempty"`
+	RegionSlug       string   `json:"region,omitempty"`
+	VersionSlug      string   `json:"version,omitempty"`
+	ClusterSubnet    string   `json:"cluster_subnet,omitempty"`
+	ServiceSubnet    string   `json:"service_subnet,omitempty"`
+	IPv4             string   `json:"ipv4,omitempty"`
+	Endpoint         string   `json:"endpoint,omitempty"`
+	Tags             []string `json:"tags,omitempty"`
+	VPCUUID          string   `json:"vpc_uuid,omitempty"`
+	WorkerSubnetUUID string   `json:"worker_subnet_uuid,omitempty"`
 
 	// Cluster runs a highly available control plane
 	HA bool `json:"ha,omitempty"`
@@ -325,11 +333,11 @@ type KubernetesRdmaSharedDevicePlugin struct {
 }
 
 // KubernetesClusterSSO configures Single Sign-On (SSO) for a Kubernetes cluster.
-// Identity Provider (IDP) settings for SSO are set up on the team level,
-// whereas on a per-cluster level, users can enable or require SSO for the cluster.
 type KubernetesClusterSSO struct {
-	Enabled  *bool `json:"enabled,omitempty"`
-	Required *bool `json:"required,omitempty"`
+	Enabled   bool   `json:"enabled"`
+	Required  bool   `json:"required"`
+	IssuerURL string `json:"issuer_url,omitempty"`
+	ClientID  string `json:"client_id,omitempty"`
 }
 
 // KubernetesMaintenancePolicyDay represents the possible days of a maintenance
@@ -506,15 +514,17 @@ type KubernetesNodePoolTemplate struct {
 // This follows https://pkg.go.dev/k8s.io/kubernetes@v1.32.1/pkg/scheduler/framework#Resource to represent
 // node resources within the node object.
 type KubernetesNodePoolResources struct {
-	CPU    int64  `json:"cpu,omitempty"`
-	Memory string `json:"memory,omitempty"`
-	Pods   int64  `json:"pods,omitempty"`
+	CPU           int64  `json:"cpu,omitempty"` // deprecated in favor of cpuMilliCores
+	CpuMilliCores int64  `json:"cpu_milli_cores,omitempty"`
+	Memory        string `json:"memory,omitempty"`
+	Pods          int64  `json:"pods,omitempty"`
 }
 
 // KubernetesNodePoolGPUResources exposes model and GPU count of a node pool template
 type KubernetesNodePoolGPUResources struct {
-	Model string `json:"model"`
-	Count int64  `json:"count"`
+	Vendor string `json:"vendor"`
+	Model  string `json:"model"`
+	Count  int64  `json:"count"`
 }
 
 // KubernetesNode represents a Node in a node pool in a Kubernetes cluster.
@@ -793,12 +803,17 @@ type KubernetesClusterConfig struct {
 }
 
 // GetKubeConfig returns a Kubernetes config file for the specified cluster.
-func (svc *KubernetesServiceOp) GetKubeConfig(ctx context.Context, clusterID string) (*KubernetesClusterConfig, *Response, error) {
+func (svc *KubernetesServiceOp) GetKubeConfig(ctx context.Context, clusterID string, get *KubernetesClusterKubeconfigGetRequest) (*KubernetesClusterConfig, *Response, error) {
 	path := fmt.Sprintf("%s/%s/kubeconfig", kubernetesClustersPath, clusterID)
 	req, err := svc.client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, nil, err
 	}
+	q := req.URL.Query()
+	if get != nil && get.Type != "" {
+		q.Add("type", get.Type)
+	}
+	req.URL.RawQuery = q.Encode()
 	configBytes := bytes.NewBuffer(nil)
 	resp, err := svc.client.Do(ctx, req, configBytes)
 	if err != nil {
@@ -811,6 +826,7 @@ func (svc *KubernetesServiceOp) GetKubeConfig(ctx context.Context, clusterID str
 }
 
 // GetKubeConfigWithExpiry returns a Kubernetes config file for the specified cluster with expiry_seconds.
+// Expiry only makes sense for token-based kubeconfigs.
 func (svc *KubernetesServiceOp) GetKubeConfigWithExpiry(ctx context.Context, clusterID string, expirySeconds int64) (*KubernetesClusterConfig, *Response, error) {
 	path := fmt.Sprintf("%s/%s/kubeconfig", kubernetesClustersPath, clusterID)
 	req, err := svc.client.NewRequest(ctx, http.MethodGet, path, nil)
@@ -819,6 +835,7 @@ func (svc *KubernetesServiceOp) GetKubeConfigWithExpiry(ctx context.Context, clu
 	}
 	q := req.URL.Query()
 	q.Add("expiry_seconds", fmt.Sprintf("%d", expirySeconds))
+	q.Add("type", "token")
 	req.URL.RawQuery = q.Encode()
 	configBytes := bytes.NewBuffer(nil)
 	resp, err := svc.client.Do(ctx, req, configBytes)
@@ -839,7 +856,7 @@ func (svc *KubernetesServiceOp) GetCredentials(ctx context.Context, clusterID st
 		return nil, nil, err
 	}
 	q := req.URL.Query()
-	if get.ExpirySeconds != nil {
+	if get != nil && get.ExpirySeconds != nil {
 		q.Add("expiry_seconds", strconv.Itoa(*get.ExpirySeconds))
 	}
 	req.URL.RawQuery = q.Encode()

@@ -182,7 +182,7 @@ func (o *OpsgenieServiceCreateAttributes) UnmarshalJSON(bytes []byte) (err error
 		return fmt.Errorf("required field region missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"custom_url", "name", "opsgenie_api_key", "region"})
 	} else {
 		return err

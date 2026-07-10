@@ -57,10 +57,11 @@ func (device *FirewallDevice) UnmarshalJSON(b []byte) error {
 
 // FirewallDeviceEntity contains information about a device associated with a Firewall
 type FirewallDeviceEntity struct {
-	ID    int                `json:"id"`
-	Type  FirewallDeviceType `json:"type"`
-	Label string             `json:"label"`
-	URL   string             `json:"url"`
+	ID           int                   `json:"id"`
+	Type         FirewallDeviceType    `json:"type"`
+	Label        string                `json:"label"`
+	URL          string                `json:"url"`
+	ParentEntity *FirewallDeviceEntity `json:"parent_entity"`
 }
 
 // ListFirewallDevices get devices associated with a given Firewall
