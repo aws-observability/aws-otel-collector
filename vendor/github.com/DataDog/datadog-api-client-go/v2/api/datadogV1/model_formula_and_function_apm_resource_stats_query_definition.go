@@ -10,7 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FormulaAndFunctionApmResourceStatsQueryDefinition APM resource stats query using formulas and functions.
+// FormulaAndFunctionApmResourceStatsQueryDefinition APM resource stats query using formulas and functions. Deprecated - Use `apm_metrics` query type instead.
+//
+// Deprecated: This model is deprecated.
 type FormulaAndFunctionApmResourceStatsQueryDefinition struct {
 	// The source organization UUID for cross organization queries. Feature in Private Beta.
 	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
@@ -414,7 +416,7 @@ func (o *FormulaAndFunctionApmResourceStatsQueryDefinition) UnmarshalJSON(bytes 
 		return fmt.Errorf("required field stat missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"cross_org_uuids", "data_source", "env", "group_by", "name", "operation_name", "primary_tag_name", "primary_tag_value", "resource_name", "service", "stat"})
 	} else {
 		return err

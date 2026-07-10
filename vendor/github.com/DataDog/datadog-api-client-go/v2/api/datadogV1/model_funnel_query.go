@@ -150,7 +150,7 @@ func (o *FunnelQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field steps missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "query_string", "steps"})
 	} else {
 		return err

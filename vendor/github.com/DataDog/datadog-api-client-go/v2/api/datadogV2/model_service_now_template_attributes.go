@@ -286,7 +286,7 @@ func (o *ServiceNowTemplateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field servicenow_tablename missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assignment_group_id", "business_service_id", "fields_mapping", "handle_name", "instance_id", "servicenow_tablename", "user_id"})
 	} else {
 		return err

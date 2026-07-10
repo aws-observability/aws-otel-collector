@@ -66,6 +66,12 @@ Body: {{.Body}}`))
 
 var envDebug = false
 
+// redactHeadersMap is a map of headers that should be redacted in logs,
+// mapping the header name to its redacted value.
+var redactHeadersMap = map[string]string{
+	"Authorization": "Bearer *******************************",
+}
+
 // Client is a wrapper around the Resty client
 type Client struct {
 	resty             *resty.Client
@@ -395,6 +401,19 @@ func (c *httpClient) applyAfterResponse(resp *http.Response) error {
 }
 
 // nolint:unused
+func redactHeaders(headers http.Header) http.Header {
+	redacted := headers.Clone()
+
+	for header, redactedValue := range redactHeadersMap {
+		if headers.Get(header) != "" {
+			redacted.Set(header, redactedValue)
+		}
+	}
+
+	return redacted
+}
+
+// nolint:unused
 func (c *httpClient) logRequest(req *http.Request, method, url string, bodyBuffer *bytes.Buffer) {
 	var reqBody string
 	if bodyBuffer != nil {
@@ -408,7 +427,7 @@ func (c *httpClient) logRequest(req *http.Request, method, url string, bodyBuffe
 	err := reqLogTemplate.Execute(&logBuf, map[string]any{
 		"Method":  method,
 		"URL":     url,
-		"Headers": req.Header,
+		"Headers": redactHeaders(req.Header),
 		"Body":    reqBody,
 	})
 	if err == nil {
@@ -456,7 +475,7 @@ func (c *httpClient) logResponse(resp *http.Response) (*http.Response, error) {
 
 	err := respLogTemplate.Execute(&logBuf, map[string]any{
 		"Status":  resp.Status,
-		"Headers": resp.Header,
+		"Headers": redactHeaders(resp.Header),
 		"Body":    respBody.String(),
 	})
 	if err == nil {
@@ -736,7 +755,7 @@ func (c *Client) addCachedResponse(endpoint string, response any, expiry *time.D
 	}
 
 	switch responseValue.Kind() {
-	case reflect.Ptr:
+	case reflect.Pointer:
 		// We want to automatically deref pointers to
 		// avoid caching mutable data.
 		entry.Data = responseValue.Elem().Interface()
@@ -827,10 +846,22 @@ func (c *Client) updateHostURL() {
 	)
 }
 
+func redactLogHeaders(header http.Header) {
+	for h, redactedValue := range redactHeadersMap {
+		if header.Get(h) != "" {
+			header.Set(h, redactedValue)
+		}
+	}
+}
+
 func (c *Client) enableLogSanitization() *Client {
 	c.resty.OnRequestLog(func(r *resty.RequestLog) error {
-		// masking authorization header
-		r.Header.Set("Authorization", "Bearer *******************************")
+		redactLogHeaders(r.Header)
+		return nil
+	})
+
+	c.resty.OnResponseLog(func(r *resty.ResponseLog) error {
+		redactLogHeaders(r.Header)
 		return nil
 	})
 

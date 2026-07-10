@@ -349,7 +349,7 @@ func (o *DeploymentRuleResponseDataAttributes) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "created_by", "dry_run", "gate_id", "name", "options", "type", "updated_at", "updated_by"})
 	} else {
 		return err

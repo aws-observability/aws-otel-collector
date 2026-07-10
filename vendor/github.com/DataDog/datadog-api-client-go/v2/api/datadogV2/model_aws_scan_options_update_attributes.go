@@ -10,6 +10,8 @@ import (
 
 // AwsScanOptionsUpdateAttributes Attributes for the AWS scan options to update.
 type AwsScanOptionsUpdateAttributes struct {
+	// Indicates whether host compliance scanning is enabled.
+	ComplianceHost *bool `json:"compliance_host,omitempty"`
 	// Indicates if scanning of Lambda functions is enabled.
 	Lambda *bool `json:"lambda,omitempty"`
 	// Indicates if scanning for sensitive data is enabled.
@@ -38,6 +40,34 @@ func NewAwsScanOptionsUpdateAttributes() *AwsScanOptionsUpdateAttributes {
 func NewAwsScanOptionsUpdateAttributesWithDefaults() *AwsScanOptionsUpdateAttributes {
 	this := AwsScanOptionsUpdateAttributes{}
 	return &this
+}
+
+// GetComplianceHost returns the ComplianceHost field value if set, zero value otherwise.
+func (o *AwsScanOptionsUpdateAttributes) GetComplianceHost() bool {
+	if o == nil || o.ComplianceHost == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ComplianceHost
+}
+
+// GetComplianceHostOk returns a tuple with the ComplianceHost field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AwsScanOptionsUpdateAttributes) GetComplianceHostOk() (*bool, bool) {
+	if o == nil || o.ComplianceHost == nil {
+		return nil, false
+	}
+	return o.ComplianceHost, true
+}
+
+// HasComplianceHost returns a boolean if a field has been set.
+func (o *AwsScanOptionsUpdateAttributes) HasComplianceHost() bool {
+	return o != nil && o.ComplianceHost != nil
+}
+
+// SetComplianceHost gets a reference to the given bool and assigns it to the ComplianceHost field.
+func (o *AwsScanOptionsUpdateAttributes) SetComplianceHost(v bool) {
+	o.ComplianceHost = &v
 }
 
 // GetLambda returns the Lambda field value if set, zero value otherwise.
@@ -158,6 +188,9 @@ func (o AwsScanOptionsUpdateAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ComplianceHost != nil {
+		toSerialize["compliance_host"] = o.ComplianceHost
+	}
 	if o.Lambda != nil {
 		toSerialize["lambda"] = o.Lambda
 	}
@@ -180,6 +213,7 @@ func (o AwsScanOptionsUpdateAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AwsScanOptionsUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		ComplianceHost   *bool `json:"compliance_host,omitempty"`
 		Lambda           *bool `json:"lambda,omitempty"`
 		SensitiveData    *bool `json:"sensitive_data,omitempty"`
 		VulnContainersOs *bool `json:"vuln_containers_os,omitempty"`
@@ -189,11 +223,12 @@ func (o *AwsScanOptionsUpdateAttributes) UnmarshalJSON(bytes []byte) (err error)
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"lambda", "sensitive_data", "vuln_containers_os", "vuln_host_os"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"compliance_host", "lambda", "sensitive_data", "vuln_containers_os", "vuln_host_os"})
 	} else {
 		return err
 	}
+	o.ComplianceHost = all.ComplianceHost
 	o.Lambda = all.Lambda
 	o.SensitiveData = all.SensitiveData
 	o.VulnContainersOs = all.VulnContainersOs

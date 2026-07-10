@@ -427,7 +427,7 @@ func (o *ApplicationSecurityWafExclusionFilterAttributes) UnmarshalJSON(bytes []
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "enabled", "event_query", "ip_list", "metadata", "on_match", "parameters", "path_glob", "rules_target", "scope", "search_query"})
 	} else {
 		return err

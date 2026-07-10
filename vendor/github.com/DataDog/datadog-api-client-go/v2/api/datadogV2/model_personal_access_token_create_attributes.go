@@ -11,13 +11,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// PersonalAccessTokenCreateAttributes Attributes used to create a personal access token.
+// PersonalAccessTokenCreateAttributes Attributes used to create an access token.
 type PersonalAccessTokenCreateAttributes struct {
-	// Expiration date of the personal access token. Must be at least 24 hours in the future.
+	// Expiration date of the access token. Must be at least 24 hours in the future.
 	ExpiresAt time.Time `json:"expires_at"`
-	// Name of the personal access token.
+	// Name of the access token.
 	Name string `json:"name"`
-	// Array of scopes to grant the personal access token.
+	// Array of scopes to grant the access token.
 	Scopes []string `json:"scopes"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -153,7 +153,7 @@ func (o *PersonalAccessTokenCreateAttributes) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field scopes missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"expires_at", "name", "scopes"})
 	} else {
 		return err

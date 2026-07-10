@@ -257,7 +257,7 @@ func (o *MonitorStateGroup) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"last_nodata_ts", "last_notified_ts", "last_resolved_ts", "last_triggered_ts", "name", "status"})
 	} else {
 		return err

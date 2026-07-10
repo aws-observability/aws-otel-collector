@@ -461,7 +461,7 @@ func (o *SLOWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field view_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "description", "global_time_target", "show_error_budget", "slo_id", "time_windows", "title", "title_align", "title_size", "type", "view_mode", "view_type"})
 	} else {
 		return err

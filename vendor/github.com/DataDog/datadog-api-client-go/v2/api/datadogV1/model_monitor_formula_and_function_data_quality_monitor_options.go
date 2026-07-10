@@ -223,7 +223,7 @@ func (o *MonitorFormulaAndFunctionDataQualityMonitorOptions) UnmarshalJSON(bytes
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"crontab_override", "custom_sql", "custom_where", "group_by_columns", "model_type_override"})
 	} else {
 		return err

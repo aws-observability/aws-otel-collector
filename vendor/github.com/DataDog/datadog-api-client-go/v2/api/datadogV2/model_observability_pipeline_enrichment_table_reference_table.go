@@ -185,7 +185,7 @@ func (o *ObservabilityPipelineEnrichmentTableReferenceTable) UnmarshalJSON(bytes
 		return fmt.Errorf("required field table_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"app_key_key", "columns", "key_field", "table_id"})
 	} else {
 		return err

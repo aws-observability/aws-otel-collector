@@ -405,7 +405,7 @@ func (o *OrganizationSettings) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"private_widget_share", "saml", "saml_autocreate_access_role", "saml_autocreate_users_domains", "saml_can_be_enabled", "saml_idp_endpoint", "saml_idp_initiated_login", "saml_idp_metadata_uploaded", "saml_login_url", "saml_strict_mode"})
 	} else {
 		return err

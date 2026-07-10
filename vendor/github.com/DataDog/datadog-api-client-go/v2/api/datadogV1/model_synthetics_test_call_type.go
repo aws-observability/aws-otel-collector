@@ -10,18 +10,26 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SyntheticsTestCallType The type of gRPC call to perform.
+// SyntheticsTestCallType The type of call to perform. Used by gRPC steps (`healthcheck`, `unary`)
+// and MCP steps (`init`, `tool_list`, `tool_call`). Valid values depend on
+// the parent step's `subtype`.
 type SyntheticsTestCallType string
 
 // List of SyntheticsTestCallType.
 const (
 	SYNTHETICSTESTCALLTYPE_HEALTHCHECK SyntheticsTestCallType = "healthcheck"
 	SYNTHETICSTESTCALLTYPE_UNARY       SyntheticsTestCallType = "unary"
+	SYNTHETICSTESTCALLTYPE_INIT        SyntheticsTestCallType = "init"
+	SYNTHETICSTESTCALLTYPE_TOOL_LIST   SyntheticsTestCallType = "tool_list"
+	SYNTHETICSTESTCALLTYPE_TOOL_CALL   SyntheticsTestCallType = "tool_call"
 )
 
 var allowedSyntheticsTestCallTypeEnumValues = []SyntheticsTestCallType{
 	SYNTHETICSTESTCALLTYPE_HEALTHCHECK,
 	SYNTHETICSTESTCALLTYPE_UNARY,
+	SYNTHETICSTESTCALLTYPE_INIT,
+	SYNTHETICSTESTCALLTYPE_TOOL_LIST,
+	SYNTHETICSTESTCALLTYPE_TOOL_CALL,
 }
 
 // GetAllowedValues reeturns the list of possible values.

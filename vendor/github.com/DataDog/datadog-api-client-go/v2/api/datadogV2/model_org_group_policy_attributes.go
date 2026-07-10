@@ -15,7 +15,7 @@ import (
 type OrgGroupPolicyAttributes struct {
 	// The policy content as key-value pairs.
 	Content map[string]interface{} `json:"content,omitempty"`
-	// The enforcement tier of the policy. `DEFAULT` means the policy is set but member orgs may mutate it. `ENFORCE` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.
+	// The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.
 	EnforcementTier OrgGroupPolicyEnforcementTier `json:"enforcement_tier"`
 	// Timestamp when the policy was last modified.
 	ModifiedAt time.Time `json:"modified_at"`
@@ -46,7 +46,7 @@ func NewOrgGroupPolicyAttributes(enforcementTier OrgGroupPolicyEnforcementTier, 
 // but it doesn't guarantee that properties required by API are set.
 func NewOrgGroupPolicyAttributesWithDefaults() *OrgGroupPolicyAttributes {
 	this := OrgGroupPolicyAttributes{}
-	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_DEFAULT
+	var enforcementTier OrgGroupPolicyEnforcementTier = ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED
 	this.EnforcementTier = enforcementTier
 	var policyType OrgGroupPolicyPolicyType = ORGGROUPPOLICYPOLICYTYPE_ORG_CONFIG
 	this.PolicyType = policyType
@@ -222,7 +222,7 @@ func (o *OrgGroupPolicyAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field policy_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"content", "enforcement_tier", "modified_at", "policy_name", "policy_type"})
 	} else {
 		return err

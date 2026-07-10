@@ -10,6 +10,8 @@ import (
 
 // LLMObsAnnotationQueueUpdateDataAttributesRequest Attributes for updating an LLM Observability annotation queue. All fields are optional.
 type LLMObsAnnotationQueueUpdateDataAttributesRequest struct {
+	// Schema defining the labels for an annotation queue.
+	AnnotationSchema *LLMObsAnnotationSchema `json:"annotation_schema,omitempty"`
 	// Updated description of the annotation queue.
 	Description *string `json:"description,omitempty"`
 	// Updated name of the annotation queue.
@@ -34,6 +36,34 @@ func NewLLMObsAnnotationQueueUpdateDataAttributesRequest() *LLMObsAnnotationQueu
 func NewLLMObsAnnotationQueueUpdateDataAttributesRequestWithDefaults() *LLMObsAnnotationQueueUpdateDataAttributesRequest {
 	this := LLMObsAnnotationQueueUpdateDataAttributesRequest{}
 	return &this
+}
+
+// GetAnnotationSchema returns the AnnotationSchema field value if set, zero value otherwise.
+func (o *LLMObsAnnotationQueueUpdateDataAttributesRequest) GetAnnotationSchema() LLMObsAnnotationSchema {
+	if o == nil || o.AnnotationSchema == nil {
+		var ret LLMObsAnnotationSchema
+		return ret
+	}
+	return *o.AnnotationSchema
+}
+
+// GetAnnotationSchemaOk returns a tuple with the AnnotationSchema field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LLMObsAnnotationQueueUpdateDataAttributesRequest) GetAnnotationSchemaOk() (*LLMObsAnnotationSchema, bool) {
+	if o == nil || o.AnnotationSchema == nil {
+		return nil, false
+	}
+	return o.AnnotationSchema, true
+}
+
+// HasAnnotationSchema returns a boolean if a field has been set.
+func (o *LLMObsAnnotationQueueUpdateDataAttributesRequest) HasAnnotationSchema() bool {
+	return o != nil && o.AnnotationSchema != nil
+}
+
+// SetAnnotationSchema gets a reference to the given LLMObsAnnotationSchema and assigns it to the AnnotationSchema field.
+func (o *LLMObsAnnotationQueueUpdateDataAttributesRequest) SetAnnotationSchema(v LLMObsAnnotationSchema) {
+	o.AnnotationSchema = &v
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -98,6 +128,9 @@ func (o LLMObsAnnotationQueueUpdateDataAttributesRequest) MarshalJSON() ([]byte,
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AnnotationSchema != nil {
+		toSerialize["annotation_schema"] = o.AnnotationSchema
+	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
@@ -114,23 +147,34 @@ func (o LLMObsAnnotationQueueUpdateDataAttributesRequest) MarshalJSON() ([]byte,
 // UnmarshalJSON deserializes the given payload.
 func (o *LLMObsAnnotationQueueUpdateDataAttributesRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Description *string `json:"description,omitempty"`
-		Name        *string `json:"name,omitempty"`
+		AnnotationSchema *LLMObsAnnotationSchema `json:"annotation_schema,omitempty"`
+		Description      *string                 `json:"description,omitempty"`
+		Name             *string                 `json:"name,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "name"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"annotation_schema", "description", "name"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	if all.AnnotationSchema != nil && all.AnnotationSchema.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.AnnotationSchema = all.AnnotationSchema
 	o.Description = all.Description
 	o.Name = all.Name
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

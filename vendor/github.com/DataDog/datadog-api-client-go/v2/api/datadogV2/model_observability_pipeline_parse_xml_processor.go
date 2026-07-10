@@ -486,7 +486,7 @@ func (o *ObservabilityPipelineParseXMLProcessor) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"always_use_text_key", "attr_prefix", "display_name", "enabled", "field", "id", "include", "include_attr", "parse_bool", "parse_null", "parse_number", "text_key", "type"})
 	} else {
 		return err

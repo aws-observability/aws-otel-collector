@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SankeyRumQueryMode Sankey mode for RUM queries.
+// SankeyRumQueryMode Sankey mode for Product Analytics or RUM queries.
 type SankeyRumQueryMode string
 
 // List of SankeyRumQueryMode.

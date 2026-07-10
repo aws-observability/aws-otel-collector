@@ -13,7 +13,7 @@ import (
 // ListFeatureFlagsResponse Response containing a list of feature flags.
 type ListFeatureFlagsResponse struct {
 	// List of feature flags.
-	Data []FeatureFlag `json:"data"`
+	Data []FeatureFlagListItem `json:"data"`
 	// Pagination metadata for feature flags.
 	Meta *FeatureFlagsPaginationMeta `json:"meta,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -25,7 +25,7 @@ type ListFeatureFlagsResponse struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewListFeatureFlagsResponse(data []FeatureFlag) *ListFeatureFlagsResponse {
+func NewListFeatureFlagsResponse(data []FeatureFlagListItem) *ListFeatureFlagsResponse {
 	this := ListFeatureFlagsResponse{}
 	this.Data = data
 	return &this
@@ -40,9 +40,9 @@ func NewListFeatureFlagsResponseWithDefaults() *ListFeatureFlagsResponse {
 }
 
 // GetData returns the Data field value.
-func (o *ListFeatureFlagsResponse) GetData() []FeatureFlag {
+func (o *ListFeatureFlagsResponse) GetData() []FeatureFlagListItem {
 	if o == nil {
-		var ret []FeatureFlag
+		var ret []FeatureFlagListItem
 		return ret
 	}
 	return o.Data
@@ -50,7 +50,7 @@ func (o *ListFeatureFlagsResponse) GetData() []FeatureFlag {
 
 // GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
-func (o *ListFeatureFlagsResponse) GetDataOk() (*[]FeatureFlag, bool) {
+func (o *ListFeatureFlagsResponse) GetDataOk() (*[]FeatureFlagListItem, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -58,7 +58,7 @@ func (o *ListFeatureFlagsResponse) GetDataOk() (*[]FeatureFlag, bool) {
 }
 
 // SetData sets field value.
-func (o *ListFeatureFlagsResponse) SetData(v []FeatureFlag) {
+func (o *ListFeatureFlagsResponse) SetData(v []FeatureFlagListItem) {
 	o.Data = v
 }
 
@@ -110,7 +110,7 @@ func (o ListFeatureFlagsResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ListFeatureFlagsResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data *[]FeatureFlag              `json:"data"`
+		Data *[]FeatureFlagListItem      `json:"data"`
 		Meta *FeatureFlagsPaginationMeta `json:"meta,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -120,7 +120,7 @@ func (o *ListFeatureFlagsResponse) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field data missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data", "meta"})
 	} else {
 		return err

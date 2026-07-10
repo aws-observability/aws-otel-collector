@@ -20,6 +20,8 @@ type MaintenanceDataAttributes struct {
 	ComponentsAffected []MaintenanceDataAttributesComponentsAffectedItems `json:"components_affected,omitempty"`
 	// The description shown while the maintenance is in progress.
 	InProgressDescription *string `json:"in_progress_description,omitempty"`
+	// Whether the maintenance was backfilled.
+	IsBackfilled *bool `json:"is_backfilled,omitempty"`
 	// Timestamp of when the maintenance was last modified.
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Timestamp of when the maintenance was published.
@@ -166,6 +168,34 @@ func (o *MaintenanceDataAttributes) HasInProgressDescription() bool {
 // SetInProgressDescription gets a reference to the given string and assigns it to the InProgressDescription field.
 func (o *MaintenanceDataAttributes) SetInProgressDescription(v string) {
 	o.InProgressDescription = &v
+}
+
+// GetIsBackfilled returns the IsBackfilled field value if set, zero value otherwise.
+func (o *MaintenanceDataAttributes) GetIsBackfilled() bool {
+	if o == nil || o.IsBackfilled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsBackfilled
+}
+
+// GetIsBackfilledOk returns a tuple with the IsBackfilled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MaintenanceDataAttributes) GetIsBackfilledOk() (*bool, bool) {
+	if o == nil || o.IsBackfilled == nil {
+		return nil, false
+	}
+	return o.IsBackfilled, true
+}
+
+// HasIsBackfilled returns a boolean if a field has been set.
+func (o *MaintenanceDataAttributes) HasIsBackfilled() bool {
+	return o != nil && o.IsBackfilled != nil
+}
+
+// SetIsBackfilled gets a reference to the given bool and assigns it to the IsBackfilled field.
+func (o *MaintenanceDataAttributes) SetIsBackfilled(v bool) {
+	o.IsBackfilled = &v
 }
 
 // GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
@@ -386,6 +416,9 @@ func (o MaintenanceDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.InProgressDescription != nil {
 		toSerialize["in_progress_description"] = o.InProgressDescription
 	}
+	if o.IsBackfilled != nil {
+		toSerialize["is_backfilled"] = o.IsBackfilled
+	}
 	if o.ModifiedAt != nil {
 		if o.ModifiedAt.Nanosecond() == 0 {
 			toSerialize["modified_at"] = o.ModifiedAt.Format("2006-01-02T15:04:05Z07:00")
@@ -433,6 +466,7 @@ func (o *MaintenanceDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		CompletedDescription  *string                                            `json:"completed_description,omitempty"`
 		ComponentsAffected    []MaintenanceDataAttributesComponentsAffectedItems `json:"components_affected,omitempty"`
 		InProgressDescription *string                                            `json:"in_progress_description,omitempty"`
+		IsBackfilled          *bool                                              `json:"is_backfilled,omitempty"`
 		ModifiedAt            *time.Time                                         `json:"modified_at,omitempty"`
 		PublishedDate         *time.Time                                         `json:"published_date,omitempty"`
 		ScheduledDescription  *string                                            `json:"scheduled_description,omitempty"`
@@ -445,8 +479,8 @@ func (o *MaintenanceDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"completed_date", "completed_description", "components_affected", "in_progress_description", "modified_at", "published_date", "scheduled_description", "start_date", "status", "title", "updates"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"completed_date", "completed_description", "components_affected", "in_progress_description", "is_backfilled", "modified_at", "published_date", "scheduled_description", "start_date", "status", "title", "updates"})
 	} else {
 		return err
 	}
@@ -456,6 +490,7 @@ func (o *MaintenanceDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.CompletedDescription = all.CompletedDescription
 	o.ComponentsAffected = all.ComponentsAffected
 	o.InProgressDescription = all.InProgressDescription
+	o.IsBackfilled = all.IsBackfilled
 	o.ModifiedAt = all.ModifiedAt
 	o.PublishedDate = all.PublishedDate
 	o.ScheduledDescription = all.ScheduledDescription

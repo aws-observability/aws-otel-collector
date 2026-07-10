@@ -120,7 +120,7 @@ func (o *CreateTenancyConfigDataAttributesAuthCredentials) UnmarshalJSON(bytes [
 		return fmt.Errorf("required field private_key missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"fingerprint", "private_key"})
 	} else {
 		return err

@@ -214,7 +214,7 @@ func (o *ObservabilityPipelineGeneratedMetric) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field value missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"group_by", "include", "metric_type", "name", "value"})
 	} else {
 		return err

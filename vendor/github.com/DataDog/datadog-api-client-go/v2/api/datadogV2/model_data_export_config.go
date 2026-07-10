@@ -210,7 +210,7 @@ func (o *DataExportConfig) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field report_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"bucket_name", "bucket_region", "report_name", "report_prefix", "report_type"})
 	} else {
 		return err

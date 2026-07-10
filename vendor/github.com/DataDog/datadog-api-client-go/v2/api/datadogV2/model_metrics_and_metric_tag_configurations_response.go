@@ -12,6 +12,8 @@ import (
 type MetricsAndMetricTagConfigurationsResponse struct {
 	// Array of metrics and metric tag configurations.
 	Data []MetricsAndMetricTagConfigurations `json:"data,omitempty"`
+	// Array of metric volume resources included when requested with `include=metric_volumes`.
+	Included []MetricIngestedIndexedVolume `json:"included,omitempty"`
 	// Pagination links. Only present if pagination query parameters were provided.
 	Links *MetricsListResponseLinks `json:"links,omitempty"`
 	// Response metadata object.
@@ -64,6 +66,34 @@ func (o *MetricsAndMetricTagConfigurationsResponse) HasData() bool {
 // SetData gets a reference to the given []MetricsAndMetricTagConfigurations and assigns it to the Data field.
 func (o *MetricsAndMetricTagConfigurationsResponse) SetData(v []MetricsAndMetricTagConfigurations) {
 	o.Data = v
+}
+
+// GetIncluded returns the Included field value if set, zero value otherwise.
+func (o *MetricsAndMetricTagConfigurationsResponse) GetIncluded() []MetricIngestedIndexedVolume {
+	if o == nil || o.Included == nil {
+		var ret []MetricIngestedIndexedVolume
+		return ret
+	}
+	return o.Included
+}
+
+// GetIncludedOk returns a tuple with the Included field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricsAndMetricTagConfigurationsResponse) GetIncludedOk() (*[]MetricIngestedIndexedVolume, bool) {
+	if o == nil || o.Included == nil {
+		return nil, false
+	}
+	return &o.Included, true
+}
+
+// HasIncluded returns a boolean if a field has been set.
+func (o *MetricsAndMetricTagConfigurationsResponse) HasIncluded() bool {
+	return o != nil && o.Included != nil
+}
+
+// SetIncluded gets a reference to the given []MetricIngestedIndexedVolume and assigns it to the Included field.
+func (o *MetricsAndMetricTagConfigurationsResponse) SetIncluded(v []MetricIngestedIndexedVolume) {
+	o.Included = v
 }
 
 // GetLinks returns the Links field value if set, zero value otherwise.
@@ -131,6 +161,9 @@ func (o MetricsAndMetricTagConfigurationsResponse) MarshalJSON() ([]byte, error)
 	if o.Data != nil {
 		toSerialize["data"] = o.Data
 	}
+	if o.Included != nil {
+		toSerialize["included"] = o.Included
+	}
 	if o.Links != nil {
 		toSerialize["links"] = o.Links
 	}
@@ -147,22 +180,24 @@ func (o MetricsAndMetricTagConfigurationsResponse) MarshalJSON() ([]byte, error)
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricsAndMetricTagConfigurationsResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data  []MetricsAndMetricTagConfigurations `json:"data,omitempty"`
-		Links *MetricsListResponseLinks           `json:"links,omitempty"`
-		Meta  *MetricPaginationMeta               `json:"meta,omitempty"`
+		Data     []MetricsAndMetricTagConfigurations `json:"data,omitempty"`
+		Included []MetricIngestedIndexedVolume       `json:"included,omitempty"`
+		Links    *MetricsListResponseLinks           `json:"links,omitempty"`
+		Meta     *MetricPaginationMeta               `json:"meta,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data", "links", "meta"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"data", "included", "links", "meta"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Data = all.Data
+	o.Included = all.Included
 	if all.Links != nil && all.Links.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

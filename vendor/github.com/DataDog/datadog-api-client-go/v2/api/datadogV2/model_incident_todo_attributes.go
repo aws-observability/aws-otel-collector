@@ -318,7 +318,7 @@ func (o *IncidentTodoAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field content missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assignees", "completed", "content", "created", "due_date", "incident_id", "modified"})
 	} else {
 		return err

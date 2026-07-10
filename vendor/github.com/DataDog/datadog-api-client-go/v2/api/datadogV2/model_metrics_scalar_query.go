@@ -14,6 +14,8 @@ import (
 type MetricsScalarQuery struct {
 	// The type of aggregation that can be performed on metrics-based queries.
 	Aggregator MetricsAggregator `json:"aggregator"`
+	// Organization UUIDs to query when using [cross-organization visibility](/account_management/org_settings/cross_org_visibility/). Limited to one organization UUID.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// A data source that is powered by the Metrics platform.
 	DataSource MetricsDataSource `json:"data_source"`
 	// The variable name for use in formulas.
@@ -70,6 +72,34 @@ func (o *MetricsScalarQuery) GetAggregatorOk() (*MetricsAggregator, bool) {
 // SetAggregator sets field value.
 func (o *MetricsScalarQuery) SetAggregator(v MetricsAggregator) {
 	o.Aggregator = v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *MetricsScalarQuery) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricsScalarQuery) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *MetricsScalarQuery) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *MetricsScalarQuery) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -153,6 +183,9 @@ func (o MetricsScalarQuery) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["aggregator"] = o.Aggregator
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
@@ -168,10 +201,11 @@ func (o MetricsScalarQuery) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Aggregator *MetricsAggregator `json:"aggregator"`
-		DataSource *MetricsDataSource `json:"data_source"`
-		Name       *string            `json:"name,omitempty"`
-		Query      *string            `json:"query"`
+		Aggregator    *MetricsAggregator `json:"aggregator"`
+		CrossOrgUuids []string           `json:"cross_org_uuids,omitempty"`
+		DataSource    *MetricsDataSource `json:"data_source"`
+		Name          *string            `json:"name,omitempty"`
+		Query         *string            `json:"query"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -186,8 +220,8 @@ func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field query missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "data_source", "name", "query"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "cross_org_uuids", "data_source", "name", "query"})
 	} else {
 		return err
 	}
@@ -198,6 +232,7 @@ func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Aggregator = *all.Aggregator
 	}
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListStreamSource Source from which to query items to display in the stream.
+// ListStreamSource Source from which to query items to display in the stream. apm_issue_stream, rum_issue_stream, and logs_issue_stream are deprecated. Use issue_stream instead.
 type ListStreamSource string
 
 // List of ListStreamSource.
@@ -28,6 +28,7 @@ const (
 	LISTSTREAMSOURCE_EVENT_STREAM             ListStreamSource = "event_stream"
 	LISTSTREAMSOURCE_RUM_STREAM               ListStreamSource = "rum_stream"
 	LISTSTREAMSOURCE_LLM_OBSERVABILITY_STREAM ListStreamSource = "llm_observability_stream"
+	LISTSTREAMSOURCE_ISSUE_STREAM             ListStreamSource = "issue_stream"
 )
 
 var allowedListStreamSourceEnumValues = []ListStreamSource{
@@ -44,6 +45,7 @@ var allowedListStreamSourceEnumValues = []ListStreamSource{
 	LISTSTREAMSOURCE_EVENT_STREAM,
 	LISTSTREAMSOURCE_RUM_STREAM,
 	LISTSTREAMSOURCE_LLM_OBSERVABILITY_STREAM,
+	LISTSTREAMSOURCE_ISSUE_STREAM,
 }
 
 // GetAllowedValues reeturns the list of possible values.

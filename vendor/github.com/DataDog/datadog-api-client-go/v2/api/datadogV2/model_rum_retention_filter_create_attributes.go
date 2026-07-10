@@ -250,7 +250,7 @@ func (o *RumRetentionFilterCreateAttributes) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field sample_rate missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"cross_product_sampling", "enabled", "event_type", "name", "query", "sample_rate"})
 	} else {
 		return err

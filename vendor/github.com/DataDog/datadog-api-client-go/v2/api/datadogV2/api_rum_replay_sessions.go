@@ -19,7 +19,7 @@ type RumReplaySessionsApi datadog.Service
 type GetSegmentsOptionalParameters struct {
 	Source      *string
 	Ts          *int64
-	MaxListSize *int32
+	MaxListSize *int64
 	Paging      *string
 }
 
@@ -42,7 +42,7 @@ func (r *GetSegmentsOptionalParameters) WithTs(ts int64) *GetSegmentsOptionalPar
 }
 
 // WithMaxListSize sets the corresponding parameter name and returns the struct.
-func (r *GetSegmentsOptionalParameters) WithMaxListSize(maxListSize int32) *GetSegmentsOptionalParameters {
+func (r *GetSegmentsOptionalParameters) WithMaxListSize(maxListSize int64) *GetSegmentsOptionalParameters {
 	r.MaxListSize = &maxListSize
 	return r
 }

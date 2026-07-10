@@ -189,7 +189,7 @@ func (o *SyntheticsTestResultStepAssertionResult) UnmarshalJSON(bytes []byte) (e
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"actual", "check_type", "expected", "has_secure_variables"})
 	} else {
 		return err

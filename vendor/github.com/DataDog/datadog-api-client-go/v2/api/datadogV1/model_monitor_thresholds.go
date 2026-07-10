@@ -12,8 +12,12 @@ import (
 type MonitorThresholds struct {
 	// The monitor `CRITICAL` threshold.
 	Critical *float64 `json:"critical,omitempty"`
+	// Query evaluated as a dynamic `CRITICAL` threshold. Only supported on metric monitors with a formula query and options['variables']. Cannot be combined with static thresholds. This field is in preview.
+	CriticalQuery *string `json:"critical_query,omitempty"`
 	// The monitor `CRITICAL` recovery threshold.
 	CriticalRecovery datadog.NullableFloat64 `json:"critical_recovery,omitempty"`
+	// Query evaluated as a dynamic `CRITICAL` recovery threshold. Only supported on metric monitors with a formula query and options['variables']. Cannot be combined with static thresholds. This field is in preview.
+	CriticalRecoveryQuery *string `json:"critical_recovery_query,omitempty"`
 	// The monitor `OK` threshold.
 	Ok datadog.NullableFloat64 `json:"ok,omitempty"`
 	// The monitor UNKNOWN threshold.
@@ -72,6 +76,34 @@ func (o *MonitorThresholds) SetCritical(v float64) {
 	o.Critical = &v
 }
 
+// GetCriticalQuery returns the CriticalQuery field value if set, zero value otherwise.
+func (o *MonitorThresholds) GetCriticalQuery() string {
+	if o == nil || o.CriticalQuery == nil {
+		var ret string
+		return ret
+	}
+	return *o.CriticalQuery
+}
+
+// GetCriticalQueryOk returns a tuple with the CriticalQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorThresholds) GetCriticalQueryOk() (*string, bool) {
+	if o == nil || o.CriticalQuery == nil {
+		return nil, false
+	}
+	return o.CriticalQuery, true
+}
+
+// HasCriticalQuery returns a boolean if a field has been set.
+func (o *MonitorThresholds) HasCriticalQuery() bool {
+	return o != nil && o.CriticalQuery != nil
+}
+
+// SetCriticalQuery gets a reference to the given string and assigns it to the CriticalQuery field.
+func (o *MonitorThresholds) SetCriticalQuery(v string) {
+	o.CriticalQuery = &v
+}
+
 // GetCriticalRecovery returns the CriticalRecovery field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *MonitorThresholds) GetCriticalRecovery() float64 {
 	if o == nil || o.CriticalRecovery.Get() == nil {
@@ -109,6 +141,34 @@ func (o *MonitorThresholds) SetCriticalRecoveryNil() {
 // UnsetCriticalRecovery ensures that no value is present for CriticalRecovery, not even an explicit nil.
 func (o *MonitorThresholds) UnsetCriticalRecovery() {
 	o.CriticalRecovery.Unset()
+}
+
+// GetCriticalRecoveryQuery returns the CriticalRecoveryQuery field value if set, zero value otherwise.
+func (o *MonitorThresholds) GetCriticalRecoveryQuery() string {
+	if o == nil || o.CriticalRecoveryQuery == nil {
+		var ret string
+		return ret
+	}
+	return *o.CriticalRecoveryQuery
+}
+
+// GetCriticalRecoveryQueryOk returns a tuple with the CriticalRecoveryQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorThresholds) GetCriticalRecoveryQueryOk() (*string, bool) {
+	if o == nil || o.CriticalRecoveryQuery == nil {
+		return nil, false
+	}
+	return o.CriticalRecoveryQuery, true
+}
+
+// HasCriticalRecoveryQuery returns a boolean if a field has been set.
+func (o *MonitorThresholds) HasCriticalRecoveryQuery() bool {
+	return o != nil && o.CriticalRecoveryQuery != nil
+}
+
+// SetCriticalRecoveryQuery gets a reference to the given string and assigns it to the CriticalRecoveryQuery field.
+func (o *MonitorThresholds) SetCriticalRecoveryQuery(v string) {
+	o.CriticalRecoveryQuery = &v
 }
 
 // GetOk returns the Ok field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -276,8 +336,14 @@ func (o MonitorThresholds) MarshalJSON() ([]byte, error) {
 	if o.Critical != nil {
 		toSerialize["critical"] = o.Critical
 	}
+	if o.CriticalQuery != nil {
+		toSerialize["critical_query"] = o.CriticalQuery
+	}
 	if o.CriticalRecovery.IsSet() {
 		toSerialize["critical_recovery"] = o.CriticalRecovery.Get()
+	}
+	if o.CriticalRecoveryQuery != nil {
+		toSerialize["critical_recovery_query"] = o.CriticalRecoveryQuery
 	}
 	if o.Ok.IsSet() {
 		toSerialize["ok"] = o.Ok.Get()
@@ -301,24 +367,28 @@ func (o MonitorThresholds) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorThresholds) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Critical         *float64                `json:"critical,omitempty"`
-		CriticalRecovery datadog.NullableFloat64 `json:"critical_recovery,omitempty"`
-		Ok               datadog.NullableFloat64 `json:"ok,omitempty"`
-		Unknown          datadog.NullableFloat64 `json:"unknown,omitempty"`
-		Warning          datadog.NullableFloat64 `json:"warning,omitempty"`
-		WarningRecovery  datadog.NullableFloat64 `json:"warning_recovery,omitempty"`
+		Critical              *float64                `json:"critical,omitempty"`
+		CriticalQuery         *string                 `json:"critical_query,omitempty"`
+		CriticalRecovery      datadog.NullableFloat64 `json:"critical_recovery,omitempty"`
+		CriticalRecoveryQuery *string                 `json:"critical_recovery_query,omitempty"`
+		Ok                    datadog.NullableFloat64 `json:"ok,omitempty"`
+		Unknown               datadog.NullableFloat64 `json:"unknown,omitempty"`
+		Warning               datadog.NullableFloat64 `json:"warning,omitempty"`
+		WarningRecovery       datadog.NullableFloat64 `json:"warning_recovery,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"critical", "critical_recovery", "ok", "unknown", "warning", "warning_recovery"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"critical", "critical_query", "critical_recovery", "critical_recovery_query", "ok", "unknown", "warning", "warning_recovery"})
 	} else {
 		return err
 	}
 	o.Critical = all.Critical
+	o.CriticalQuery = all.CriticalQuery
 	o.CriticalRecovery = all.CriticalRecovery
+	o.CriticalRecoveryQuery = all.CriticalRecoveryQuery
 	o.Ok = all.Ok
 	o.Unknown = all.Unknown
 	o.Warning = all.Warning

@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// PersonalAccessTokenRelationships Resources related to the personal access token.
+// PersonalAccessTokenRelationships Resources related to the access token.
 type PersonalAccessTokenRelationships struct {
 	// Relationship to user.
 	OwnedBy *RelationshipToUser `json:"owned_by,omitempty"`
@@ -87,7 +87,7 @@ func (o *PersonalAccessTokenRelationships) UnmarshalJSON(bytes []byte) (err erro
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"owned_by"})
 	} else {
 		return err

@@ -329,7 +329,7 @@ func (o *DORADeploymentObjectAttributes) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field started_at missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"custom_tags", "env", "finished_at", "git", "service", "started_at", "team", "version"})
 	} else {
 		return err

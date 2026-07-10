@@ -86,7 +86,7 @@ func (o *AttachJiraIssueRequestDataAttributes) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field jira_issue_url missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"jira_issue_url"})
 	} else {
 		return err

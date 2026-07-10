@@ -36,6 +36,8 @@ const (
 	SYNTHETICSASSERTIONTYPE_CONNECTION              SyntheticsAssertionType = "connection"
 	SYNTHETICSASSERTIONTYPE_MULTI_NETWORK_HOP       SyntheticsAssertionType = "multiNetworkHop"
 	SYNTHETICSASSERTIONTYPE_JITTER                  SyntheticsAssertionType = "jitter"
+	SYNTHETICSASSERTIONTYPE_MCP_TOOL_NAME_LENGTH    SyntheticsAssertionType = "mcpToolNameLength"
+	SYNTHETICSASSERTIONTYPE_MCP_TOOL_COUNT          SyntheticsAssertionType = "mcpToolCount"
 )
 
 var allowedSyntheticsAssertionTypeEnumValues = []SyntheticsAssertionType{
@@ -60,6 +62,8 @@ var allowedSyntheticsAssertionTypeEnumValues = []SyntheticsAssertionType{
 	SYNTHETICSASSERTIONTYPE_CONNECTION,
 	SYNTHETICSASSERTIONTYPE_MULTI_NETWORK_HOP,
 	SYNTHETICSASSERTIONTYPE_JITTER,
+	SYNTHETICSASSERTIONTYPE_MCP_TOOL_NAME_LENGTH,
+	SYNTHETICSASSERTIONTYPE_MCP_TOOL_COUNT,
 }
 
 // GetAllowedValues reeturns the list of possible values.

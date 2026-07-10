@@ -393,7 +393,7 @@ func (o *FleetTracerAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"env", "hostname", "language", "language_version", "remote_config_status", "runtime_ids", "service", "service_hostname", "service_version", "tracer_version"})
 	} else {
 		return err

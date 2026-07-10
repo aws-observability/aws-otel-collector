@@ -7,6 +7,7 @@
 package datadog
 
 import (
+	stdbytes "bytes"
 	"encoding/json"
 	"io"
 )
@@ -17,6 +18,16 @@ func Marshal(v interface{}) ([]byte, error) {
 
 func Unmarshal(data []byte, v interface{}) error {
 	return json.Unmarshal(data, v)
+}
+
+// UnmarshalUseNumber decodes JSON with UseNumber enabled so that JSON numbers
+// landing in interface{} targets (e.g. map[string]interface{} from
+// additionalProperties) are kept as json.Number rather than coerced to float64.
+// This preserves precision for integers above 2^53.
+func UnmarshalUseNumber(data []byte, v interface{}) error {
+	dec := json.NewDecoder(stdbytes.NewReader(data))
+	dec.UseNumber()
+	return dec.Decode(v)
 }
 
 func NewEncoder(w io.Writer) *json.Encoder {

@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// RumMetricUpdateAttributes The rum-based metric properties that will be updated.
+// RumMetricUpdateAttributes The RUM-based metric properties that will be updated.
 type RumMetricUpdateAttributes struct {
-	// The compute rule to compute the rum-based metric.
+	// The compute rule to compute the RUM-based metric.
 	Compute *RumMetricUpdateCompute `json:"compute,omitempty"`
-	// The rum-based metric filter. Events matching this filter will be aggregated in this metric.
+	// The RUM-based metric filter. Events matching this filter will be aggregated in this metric.
 	Filter *RumMetricFilter `json:"filter,omitempty"`
 	// The rules for the group by.
 	GroupBy []RumMetricGroupBy `json:"group_by,omitempty"`
@@ -155,7 +155,7 @@ func (o *RumMetricUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"compute", "filter", "group_by"})
 	} else {
 		return err

@@ -296,7 +296,7 @@ func (o *UsageProfilingHour) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aas_count", "avg_container_agent_count", "host_count", "hour", "org_name", "public_id"})
 	} else {
 		return err

@@ -18,7 +18,7 @@ type CreateMaintenanceRequestDataAttributes struct {
 	// The description shown when the maintenance is completed.
 	CompletedDescription string `json:"completed_description"`
 	// The components affected by the maintenance.
-	ComponentsAffected []CreateMaintenanceRequestDataAttributesComponentsAffectedItems `json:"components_affected"`
+	ComponentsAffected []CreateMaintenanceRequestDataAttributesComponentsAffectedItems `json:"components_affected,omitempty"`
 	// The description shown while the maintenance is in progress.
 	InProgressDescription string `json:"in_progress_description"`
 	// The description shown when the maintenance is scheduled.
@@ -36,11 +36,10 @@ type CreateMaintenanceRequestDataAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCreateMaintenanceRequestDataAttributes(completedDate time.Time, completedDescription string, componentsAffected []CreateMaintenanceRequestDataAttributesComponentsAffectedItems, inProgressDescription string, scheduledDescription string, startDate time.Time, title string) *CreateMaintenanceRequestDataAttributes {
+func NewCreateMaintenanceRequestDataAttributes(completedDate time.Time, completedDescription string, inProgressDescription string, scheduledDescription string, startDate time.Time, title string) *CreateMaintenanceRequestDataAttributes {
 	this := CreateMaintenanceRequestDataAttributes{}
 	this.CompletedDate = completedDate
 	this.CompletedDescription = completedDescription
-	this.ComponentsAffected = componentsAffected
 	this.InProgressDescription = inProgressDescription
 	this.ScheduledDescription = scheduledDescription
 	this.StartDate = startDate
@@ -102,25 +101,30 @@ func (o *CreateMaintenanceRequestDataAttributes) SetCompletedDescription(v strin
 	o.CompletedDescription = v
 }
 
-// GetComponentsAffected returns the ComponentsAffected field value.
+// GetComponentsAffected returns the ComponentsAffected field value if set, zero value otherwise.
 func (o *CreateMaintenanceRequestDataAttributes) GetComponentsAffected() []CreateMaintenanceRequestDataAttributesComponentsAffectedItems {
-	if o == nil {
+	if o == nil || o.ComponentsAffected == nil {
 		var ret []CreateMaintenanceRequestDataAttributesComponentsAffectedItems
 		return ret
 	}
 	return o.ComponentsAffected
 }
 
-// GetComponentsAffectedOk returns a tuple with the ComponentsAffected field value
+// GetComponentsAffectedOk returns a tuple with the ComponentsAffected field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CreateMaintenanceRequestDataAttributes) GetComponentsAffectedOk() (*[]CreateMaintenanceRequestDataAttributesComponentsAffectedItems, bool) {
-	if o == nil {
+	if o == nil || o.ComponentsAffected == nil {
 		return nil, false
 	}
 	return &o.ComponentsAffected, true
 }
 
-// SetComponentsAffected sets field value.
+// HasComponentsAffected returns a boolean if a field has been set.
+func (o *CreateMaintenanceRequestDataAttributes) HasComponentsAffected() bool {
+	return o != nil && o.ComponentsAffected != nil
+}
+
+// SetComponentsAffected gets a reference to the given []CreateMaintenanceRequestDataAttributesComponentsAffectedItems and assigns it to the ComponentsAffected field.
 func (o *CreateMaintenanceRequestDataAttributes) SetComponentsAffected(v []CreateMaintenanceRequestDataAttributesComponentsAffectedItems) {
 	o.ComponentsAffected = v
 }
@@ -229,7 +233,9 @@ func (o CreateMaintenanceRequestDataAttributes) MarshalJSON() ([]byte, error) {
 		toSerialize["completed_date"] = o.CompletedDate.Format("2006-01-02T15:04:05.000Z07:00")
 	}
 	toSerialize["completed_description"] = o.CompletedDescription
-	toSerialize["components_affected"] = o.ComponentsAffected
+	if o.ComponentsAffected != nil {
+		toSerialize["components_affected"] = o.ComponentsAffected
+	}
 	toSerialize["in_progress_description"] = o.InProgressDescription
 	toSerialize["scheduled_description"] = o.ScheduledDescription
 	if o.StartDate.Nanosecond() == 0 {
@@ -248,13 +254,13 @@ func (o CreateMaintenanceRequestDataAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CreateMaintenanceRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CompletedDate         *time.Time                                                       `json:"completed_date"`
-		CompletedDescription  *string                                                          `json:"completed_description"`
-		ComponentsAffected    *[]CreateMaintenanceRequestDataAttributesComponentsAffectedItems `json:"components_affected"`
-		InProgressDescription *string                                                          `json:"in_progress_description"`
-		ScheduledDescription  *string                                                          `json:"scheduled_description"`
-		StartDate             *time.Time                                                       `json:"start_date"`
-		Title                 *string                                                          `json:"title"`
+		CompletedDate         *time.Time                                                      `json:"completed_date"`
+		CompletedDescription  *string                                                         `json:"completed_description"`
+		ComponentsAffected    []CreateMaintenanceRequestDataAttributesComponentsAffectedItems `json:"components_affected,omitempty"`
+		InProgressDescription *string                                                         `json:"in_progress_description"`
+		ScheduledDescription  *string                                                         `json:"scheduled_description"`
+		StartDate             *time.Time                                                      `json:"start_date"`
+		Title                 *string                                                         `json:"title"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -264,9 +270,6 @@ func (o *CreateMaintenanceRequestDataAttributes) UnmarshalJSON(bytes []byte) (er
 	}
 	if all.CompletedDescription == nil {
 		return fmt.Errorf("required field completed_description missing")
-	}
-	if all.ComponentsAffected == nil {
-		return fmt.Errorf("required field components_affected missing")
 	}
 	if all.InProgressDescription == nil {
 		return fmt.Errorf("required field in_progress_description missing")
@@ -281,14 +284,14 @@ func (o *CreateMaintenanceRequestDataAttributes) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field title missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"completed_date", "completed_description", "components_affected", "in_progress_description", "scheduled_description", "start_date", "title"})
 	} else {
 		return err
 	}
 	o.CompletedDate = *all.CompletedDate
 	o.CompletedDescription = *all.CompletedDescription
-	o.ComponentsAffected = *all.ComponentsAffected
+	o.ComponentsAffected = all.ComponentsAffected
 	o.InProgressDescription = *all.InProgressDescription
 	o.ScheduledDescription = *all.ScheduledDescription
 	o.StartDate = *all.StartDate

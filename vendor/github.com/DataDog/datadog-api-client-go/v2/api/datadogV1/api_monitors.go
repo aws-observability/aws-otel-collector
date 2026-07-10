@@ -151,6 +151,10 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - `operator`: <, <=, >, >=, ==, or !=
 // - `#`: an integer or decimal number used to set the threshold
 //
+// To use a dynamic threshold on a metric monitor with a formula query, replace `#` with the `threshold` keyword
+// (for example, `... > threshold`) and provide the threshold as a query via `critical_query` on `options.thresholds`.
+// This feature is in preview.
+//
 // If you are using the `_change_` or `_pct_change_` time aggregator, instead use `change_aggr(time_aggr(time_window),
 // timeshift):space_aggr:metric{tags} [by {key}] operator #` with:
 //
@@ -1219,6 +1223,8 @@ func (a *MonitorsApi) UpdateMonitor(ctx _context.Context, monitorId int64, body 
 
 // ValidateExistingMonitor Validate an existing monitor.
 // Validate the monitor provided in the request.
+//
+// **Note**: Log monitors require an unscoped App Key and `logs_read_data` permission.
 func (a *MonitorsApi) ValidateExistingMonitor(ctx _context.Context, monitorId int64, body Monitor) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -1301,7 +1307,7 @@ func (a *MonitorsApi) ValidateExistingMonitor(ctx _context.Context, monitorId in
 // ValidateMonitor Validate a monitor.
 // Validate the monitor provided in the request.
 //
-// **Note**: Log monitors require an unscoped App Key.
+// **Note**: Log monitors require an unscoped App Key and `logs_read_data` permission.
 func (a *MonitorsApi) ValidateMonitor(ctx _context.Context, body Monitor) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

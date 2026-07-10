@@ -355,7 +355,7 @@ func (o *Step) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"actionId", "completionGate", "connectionLabel", "display", "errorHandlers", "name", "outboundEdges", "parameters", "readinessGate"})
 	} else {
 		return err

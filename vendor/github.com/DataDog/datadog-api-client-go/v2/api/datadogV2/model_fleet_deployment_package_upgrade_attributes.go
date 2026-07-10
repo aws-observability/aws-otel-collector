@@ -120,7 +120,7 @@ func (o *FleetDeploymentPackageUpgradeAttributes) UnmarshalJSON(bytes []byte) (e
 		return fmt.Errorf("required field target_packages missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"filter_query", "target_packages"})
 	} else {
 		return err

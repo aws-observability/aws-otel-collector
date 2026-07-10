@@ -86,7 +86,7 @@ func (o *AWSCcmConfig) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field data_export_configs missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data_export_configs"})
 	} else {
 		return err

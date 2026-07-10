@@ -1,4 +1,37 @@
 # Change Log
+## [3.31.2](https://github.com/vultr/govultr/compare/v3.31.1...v3.31.2) (2026-05-12)
+### Bug Fixes
+* Organization: Remove member count on group [PR 458](https://github.com/vultr/govultr/pull/458)
+
+### Clean Up
+* Instance: Replace request body with type structs [PR 459](https://github.com/vultr/govultr/pull/459)
+* Bare Metal Server: Replace request body with type structs [PR 459](https://github.com/vultr/govultr/pull/459)
+
+## [3.31.1](https://github.com/vultr/govultr/compare/v3.31.0...v3.31.1) (2026-04-21)
+* Inference: Fix image usage struct fields type [PR 456](https://github.com/vultr/govultr/pull/456)
+
+## [3.31.0](https://github.com/vultr/govultr/compare/v3.30.0...v3.31.0) (2026-04-21)
+### Enhancements
+* Inference: Update usage response [PR 454](https://github.com/vultr/govultr/pull/454)
+* Inference: Deprecate old fields [PR 454](https://github.com/vultr/govultr/pull/454)
+
+## [3.30.0](https://github.com/vultr/govultr/compare/v3.29.0...v3.30.0) (2026-04-08)
+### Enhancements
+* Object Storage: Add tier data to storage list [PR 449](https://github.com/vultr/govultr/pull/449)
+* Load Balancer: Add firewall rules create/delete [PR 450](https://github.com/vultr/govultr/pull/450)
+
+### Bug Fixes
+* Bare Metal Server: Make bandwidth fields int64  [PR 451](https://github.com/vultr/govultr/pull/451)
+* Instance: Make bandwidth fields int64  [PR 451](https://github.com/vultr/govultr/pull/451)
+
+### Automation
+* Update releaser & gochecks actions [PR 452](https://github.com/vultr/govultr/pull/452)
+
+## [3.29.0](https://github.com/vultr/govultr/compare/v3.28.1...v3.29.0) (2026-03-30)
+### Enhancements
+* Add IAM/Organization functionality [PR 446](https://github.com/vultr/govultr/pull/446)
+* Organization: Update role policy assign to use new endpoint [PR 447](https://github.com/vultr/govultr/pull/447)
+
 ## [3.28.1](https://github.com/vultr/govultr/compare/v3.28.0...v3.28.1) (2026-02-25)
 ### Enhancements
 * Block Storage: Add missing snapshot ID create param [PR 442](https://github.com/vultr/govultr/pull/442)

@@ -179,7 +179,7 @@ func (o *ServiceNowBasicAuth) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field username missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"instance", "password", "type", "username"})
 	} else {
 		return err

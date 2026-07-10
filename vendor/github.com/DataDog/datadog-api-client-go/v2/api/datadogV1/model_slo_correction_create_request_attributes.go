@@ -11,6 +11,8 @@ import (
 )
 
 // SLOCorrectionCreateRequestAttributes The attribute object associated with the SLO correction to be created.
+//
+// Exactly one of `slo_id` or `slo_query` must be provided.
 type SLOCorrectionCreateRequestAttributes struct {
 	// Category the SLO correction belongs to.
 	Category SLOCorrectionCategory `json:"category"`
@@ -23,8 +25,12 @@ type SLOCorrectionCreateRequestAttributes struct {
 	// The recurrence rules as defined in the iCalendar RFC 5545. The supported rules for SLO corrections
 	// are `FREQ`, `INTERVAL`, `COUNT`, `UNTIL` and `BYDAY`.
 	Rrule *string `json:"rrule,omitempty"`
-	// ID of the SLO that this correction applies to.
-	SloId string `json:"slo_id"`
+	// ID of the single SLO that this correction applies to.
+	SloId *string `json:"slo_id,omitempty"`
+	// Query that matches the SLOs this correction applies to.
+	// The query uses the [Events search syntax](https://docs.datadoghq.com/events/explorer/searching/)
+	// and can filter SLOs by SLO tags.
+	SloQuery *string `json:"slo_query,omitempty"`
 	// Starting time of the correction in epoch seconds.
 	Start int64 `json:"start"`
 	// The timezone to display in the UI for the correction times (defaults to "UTC").
@@ -38,10 +44,9 @@ type SLOCorrectionCreateRequestAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSLOCorrectionCreateRequestAttributes(category SLOCorrectionCategory, sloId string, start int64) *SLOCorrectionCreateRequestAttributes {
+func NewSLOCorrectionCreateRequestAttributes(category SLOCorrectionCategory, start int64) *SLOCorrectionCreateRequestAttributes {
 	this := SLOCorrectionCreateRequestAttributes{}
 	this.Category = category
-	this.SloId = sloId
 	this.Start = start
 	return &this
 }
@@ -189,27 +194,60 @@ func (o *SLOCorrectionCreateRequestAttributes) SetRrule(v string) {
 	o.Rrule = &v
 }
 
-// GetSloId returns the SloId field value.
+// GetSloId returns the SloId field value if set, zero value otherwise.
 func (o *SLOCorrectionCreateRequestAttributes) GetSloId() string {
-	if o == nil {
+	if o == nil || o.SloId == nil {
 		var ret string
 		return ret
 	}
-	return o.SloId
+	return *o.SloId
 }
 
-// GetSloIdOk returns a tuple with the SloId field value
+// GetSloIdOk returns a tuple with the SloId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SLOCorrectionCreateRequestAttributes) GetSloIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.SloId == nil {
 		return nil, false
 	}
-	return &o.SloId, true
+	return o.SloId, true
 }
 
-// SetSloId sets field value.
+// HasSloId returns a boolean if a field has been set.
+func (o *SLOCorrectionCreateRequestAttributes) HasSloId() bool {
+	return o != nil && o.SloId != nil
+}
+
+// SetSloId gets a reference to the given string and assigns it to the SloId field.
 func (o *SLOCorrectionCreateRequestAttributes) SetSloId(v string) {
-	o.SloId = v
+	o.SloId = &v
+}
+
+// GetSloQuery returns the SloQuery field value if set, zero value otherwise.
+func (o *SLOCorrectionCreateRequestAttributes) GetSloQuery() string {
+	if o == nil || o.SloQuery == nil {
+		var ret string
+		return ret
+	}
+	return *o.SloQuery
+}
+
+// GetSloQueryOk returns a tuple with the SloQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SLOCorrectionCreateRequestAttributes) GetSloQueryOk() (*string, bool) {
+	if o == nil || o.SloQuery == nil {
+		return nil, false
+	}
+	return o.SloQuery, true
+}
+
+// HasSloQuery returns a boolean if a field has been set.
+func (o *SLOCorrectionCreateRequestAttributes) HasSloQuery() bool {
+	return o != nil && o.SloQuery != nil
+}
+
+// SetSloQuery gets a reference to the given string and assigns it to the SloQuery field.
+func (o *SLOCorrectionCreateRequestAttributes) SetSloQuery(v string) {
+	o.SloQuery = &v
 }
 
 // GetStart returns the Start field value.
@@ -282,7 +320,12 @@ func (o SLOCorrectionCreateRequestAttributes) MarshalJSON() ([]byte, error) {
 	if o.Rrule != nil {
 		toSerialize["rrule"] = o.Rrule
 	}
-	toSerialize["slo_id"] = o.SloId
+	if o.SloId != nil {
+		toSerialize["slo_id"] = o.SloId
+	}
+	if o.SloQuery != nil {
+		toSerialize["slo_query"] = o.SloQuery
+	}
 	toSerialize["start"] = o.Start
 	if o.Timezone != nil {
 		toSerialize["timezone"] = o.Timezone
@@ -302,7 +345,8 @@ func (o *SLOCorrectionCreateRequestAttributes) UnmarshalJSON(bytes []byte) (err 
 		Duration    *int64                 `json:"duration,omitempty"`
 		End         *int64                 `json:"end,omitempty"`
 		Rrule       *string                `json:"rrule,omitempty"`
-		SloId       *string                `json:"slo_id"`
+		SloId       *string                `json:"slo_id,omitempty"`
+		SloQuery    *string                `json:"slo_query,omitempty"`
 		Start       *int64                 `json:"start"`
 		Timezone    *string                `json:"timezone,omitempty"`
 	}{}
@@ -312,15 +356,12 @@ func (o *SLOCorrectionCreateRequestAttributes) UnmarshalJSON(bytes []byte) (err 
 	if all.Category == nil {
 		return fmt.Errorf("required field category missing")
 	}
-	if all.SloId == nil {
-		return fmt.Errorf("required field slo_id missing")
-	}
 	if all.Start == nil {
 		return fmt.Errorf("required field start missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"category", "description", "duration", "end", "rrule", "slo_id", "start", "timezone"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"category", "description", "duration", "end", "rrule", "slo_id", "slo_query", "start", "timezone"})
 	} else {
 		return err
 	}
@@ -335,7 +376,8 @@ func (o *SLOCorrectionCreateRequestAttributes) UnmarshalJSON(bytes []byte) (err 
 	o.Duration = all.Duration
 	o.End = all.End
 	o.Rrule = all.Rrule
-	o.SloId = *all.SloId
+	o.SloId = all.SloId
+	o.SloQuery = all.SloQuery
 	o.Start = *all.Start
 	o.Timezone = all.Timezone
 

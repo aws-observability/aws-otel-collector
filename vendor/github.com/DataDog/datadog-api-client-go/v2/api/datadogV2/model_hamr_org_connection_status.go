@@ -17,7 +17,7 @@ import (
 // - 3: FAILOVER - Liminal status between PASSIVE and ACTIVE
 // - 4: ACTIVE - Organization is an active failover
 // - 5: RECOVERY - Recovery operation in progress
-type HamrOrgConnectionStatus int32
+type HamrOrgConnectionStatus int64
 
 // List of HamrOrgConnectionStatus.
 const (
@@ -45,7 +45,7 @@ func (v *HamrOrgConnectionStatus) GetAllowedValues() []HamrOrgConnectionStatus {
 
 // UnmarshalJSON deserializes the given payload.
 func (v *HamrOrgConnectionStatus) UnmarshalJSON(src []byte) error {
-	var value int32
+	var value int64
 	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (v *HamrOrgConnectionStatus) UnmarshalJSON(src []byte) error {
 
 // NewHamrOrgConnectionStatusFromValue returns a pointer to a valid HamrOrgConnectionStatus
 // for the value passed as argument, or an error if the value passed is not allowed by the enum.
-func NewHamrOrgConnectionStatusFromValue(v int32) (*HamrOrgConnectionStatus, error) {
+func NewHamrOrgConnectionStatusFromValue(v int64) (*HamrOrgConnectionStatus, error) {
 	ev := HamrOrgConnectionStatus(v)
 	if ev.IsValid() {
 		return &ev, nil

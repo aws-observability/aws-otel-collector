@@ -352,7 +352,7 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) UnmarshalJSON(bytes []by
 		return fmt.Errorf("required field rule_query missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "start_date", "suppression_query", "tags"})
 	} else {
 		return err

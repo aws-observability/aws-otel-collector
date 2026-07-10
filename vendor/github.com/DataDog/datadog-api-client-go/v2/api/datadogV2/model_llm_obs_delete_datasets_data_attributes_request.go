@@ -86,7 +86,7 @@ func (o *LLMObsDeleteDatasetsDataAttributesRequest) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field dataset_ids missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"dataset_ids"})
 	} else {
 		return err

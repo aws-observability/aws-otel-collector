@@ -454,7 +454,7 @@ func (o *FormulaAndFunctionApmMetricsQueryDefinition) UnmarshalJSON(bytes []byte
 		return fmt.Errorf("required field stat missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "group_by", "name", "operation_mode", "operation_name", "peer_tags", "query_filter", "resource_hash", "resource_name", "service", "span_kind", "stat"})
 	} else {
 		return err

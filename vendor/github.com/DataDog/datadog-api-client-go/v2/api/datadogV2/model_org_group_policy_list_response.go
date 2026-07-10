@@ -14,7 +14,9 @@ import (
 type OrgGroupPolicyListResponse struct {
 	// An array of org group policies.
 	Data []OrgGroupPolicyData `json:"data"`
-	// Pagination metadata.
+	// Pagination links for navigating between pages of an org group list response.
+	Links *OrgGroupPaginationLinks `json:"links,omitempty"`
+	// Pagination metadata for org group list responses.
 	Meta *OrgGroupPaginationMeta `json:"meta,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -62,6 +64,34 @@ func (o *OrgGroupPolicyListResponse) SetData(v []OrgGroupPolicyData) {
 	o.Data = v
 }
 
+// GetLinks returns the Links field value if set, zero value otherwise.
+func (o *OrgGroupPolicyListResponse) GetLinks() OrgGroupPaginationLinks {
+	if o == nil || o.Links == nil {
+		var ret OrgGroupPaginationLinks
+		return ret
+	}
+	return *o.Links
+}
+
+// GetLinksOk returns a tuple with the Links field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OrgGroupPolicyListResponse) GetLinksOk() (*OrgGroupPaginationLinks, bool) {
+	if o == nil || o.Links == nil {
+		return nil, false
+	}
+	return o.Links, true
+}
+
+// HasLinks returns a boolean if a field has been set.
+func (o *OrgGroupPolicyListResponse) HasLinks() bool {
+	return o != nil && o.Links != nil
+}
+
+// SetLinks gets a reference to the given OrgGroupPaginationLinks and assigns it to the Links field.
+func (o *OrgGroupPolicyListResponse) SetLinks(v OrgGroupPaginationLinks) {
+	o.Links = &v
+}
+
 // GetMeta returns the Meta field value if set, zero value otherwise.
 func (o *OrgGroupPolicyListResponse) GetMeta() OrgGroupPaginationMeta {
 	if o == nil || o.Meta == nil {
@@ -97,6 +127,9 @@ func (o OrgGroupPolicyListResponse) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["data"] = o.Data
+	if o.Links != nil {
+		toSerialize["links"] = o.Links
+	}
 	if o.Meta != nil {
 		toSerialize["meta"] = o.Meta
 	}
@@ -110,8 +143,9 @@ func (o OrgGroupPolicyListResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *OrgGroupPolicyListResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data *[]OrgGroupPolicyData   `json:"data"`
-		Meta *OrgGroupPaginationMeta `json:"meta,omitempty"`
+		Data  *[]OrgGroupPolicyData    `json:"data"`
+		Links *OrgGroupPaginationLinks `json:"links,omitempty"`
+		Meta  *OrgGroupPaginationMeta  `json:"meta,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -120,14 +154,18 @@ func (o *OrgGroupPolicyListResponse) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field data missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data", "meta"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"data", "links", "meta"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Data = *all.Data
+	if all.Links != nil && all.Links.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Links = all.Links
 	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

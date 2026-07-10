@@ -151,7 +151,7 @@ func (o *SecurityMonitoringTerraformExportAttributes) UnmarshalJSON(bytes []byte
 		return fmt.Errorf("required field type_name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"output", "resource_id", "type_name"})
 	} else {
 		return err

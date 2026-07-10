@@ -158,7 +158,7 @@ func (o *WebhooksIntegrationCustomVariableUpdateRequest) UnmarshalJSON(bytes []b
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_secret", "name", "value"})
 	} else {
 		return err

@@ -757,7 +757,7 @@ func (o *ChangeRequestResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"archived_at", "attributes", "change_request_linked_incident_uuid", "change_request_maintenance_window_query", "change_request_plan", "change_request_risk", "change_request_type", "closed_at", "created_at", "creation_source", "description", "end_date", "key", "modified_at", "plan_notebook_id", "priority", "project_id", "start_date", "status", "title", "type"})
 	} else {
 		return err

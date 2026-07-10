@@ -241,7 +241,7 @@ func (o *SecureEmbedCreateRequestAttributes) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field viewing_preferences missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"global_time", "global_time_selectable", "selectable_template_vars", "status", "title", "viewing_preferences"})
 	} else {
 		return err

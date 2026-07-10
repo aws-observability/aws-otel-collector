@@ -76,6 +76,12 @@ type FirewallRuleSet struct {
 	InboundPolicy  string         `json:"inbound_policy"`
 	Outbound       []FirewallRule `json:"outbound"`
 	OutboundPolicy string         `json:"outbound_policy"`
+
+	// TODO: separate request and response types in linodego v2
+	// read-only, can't be used in creating or updating a Firewall
+	Version int `json:"version,omitempty"`
+	// read-only, can't be used in creating or updating a Firewall
+	Fingerprint string `json:"fingerprint,omitempty"`
 }
 
 // GetFirewallRules gets the FirewallRuleSet for the given Firewall.

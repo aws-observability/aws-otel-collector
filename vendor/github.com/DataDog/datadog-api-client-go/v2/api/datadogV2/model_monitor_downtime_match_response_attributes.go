@@ -206,7 +206,7 @@ func (o *MonitorDowntimeMatchResponseAttributes) UnmarshalJSON(bytes []byte) (er
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"end", "groups", "scope", "start"})
 	} else {
 		return err

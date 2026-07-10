@@ -1487,6 +1487,124 @@ func (a *UsageMeteringApi) GetUsageObservabilityPipelines(ctx _context.Context, 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// GetUsageSummaryAvailableFields Get available fields for usage summary.
+// List the field names returned by `GET /api/v1/usage/summary` at each of its
+// three response levels. Each list contains every key the data endpoint
+// emits—both typed fields declared in the OpenAPI spec and untyped keys
+// exposed through `additionalProperties` (the latter used for billing
+// dimensions and usage types added after the v1 schema freeze).
+//
+// This endpoint is only accessible for [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
+//
+// Go example:
+//
+// ```go
+// fields, _, err := api.GetUsageSummaryAvailableFields(ctx)
+// attr := fields.Data.GetAttributes()
+//
+// // resp is the *UsageSummaryResponse returned by api.GetUsageSummary(ctx, ...)
+// // Layer 1: UsageSummaryResponse
+//
+//	for _, key := range attr.GetResponseFields() {
+//	    if val, ok := resp.AdditionalProperties[key]; ok {
+//	        fmt.Println(key, val.(json.Number))
+//	    }
+//	}
+//
+// // Layer 2: UsageSummaryDate (per month)
+//
+//	for _, date := range resp.GetUsage() {
+//	    for _, key := range attr.GetDateFields() {
+//	        if val, ok := date.AdditionalProperties[key]; ok {
+//	            fmt.Println(key, val.(json.Number))
+//	        }
+//	    }
+//	    // Layer 3: UsageSummaryDateOrg (per org per month)
+//	    for _, org := range date.GetOrgs() {
+//	        for _, key := range attr.GetDateOrgFields() {
+//	            if val, ok := org.AdditionalProperties[key]; ok {
+//	                fmt.Println(key, val.(json.Number))
+//	            }
+//	        }
+//	    }
+//	}
+//
+// ```
+func (a *UsageMeteringApi) GetUsageSummaryAvailableFields(ctx _context.Context) (UsageSummaryAvailableFieldsResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue UsageSummaryAvailableFieldsResponse
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetUsageSummaryAvailableFields")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/usage/summary/available_fields"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // NewUsageMeteringApi Returns NewUsageMeteringApi.
 func NewUsageMeteringApi(client *datadog.APIClient) *UsageMeteringApi {
 	return &UsageMeteringApi{

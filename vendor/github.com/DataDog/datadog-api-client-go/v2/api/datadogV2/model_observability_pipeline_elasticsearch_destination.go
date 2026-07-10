@@ -527,7 +527,7 @@ func (o *ObservabilityPipelineElasticsearchDestination) UnmarshalJSON(bytes []by
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"api_version", "auth", "buffer", "bulk_index", "compression", "data_stream", "endpoint_url_key", "id", "id_key", "inputs", "pipeline", "request_retry_partial", "tls", "type"})
 	} else {
 		return err

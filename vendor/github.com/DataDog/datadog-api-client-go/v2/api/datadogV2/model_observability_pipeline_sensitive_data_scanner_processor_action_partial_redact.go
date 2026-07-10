@@ -117,7 +117,7 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessorActionPartialRedact) 
 		return fmt.Errorf("required field options missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"action", "options"})
 	} else {
 		return err

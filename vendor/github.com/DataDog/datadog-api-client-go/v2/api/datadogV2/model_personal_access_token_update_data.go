@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// PersonalAccessTokenUpdateData Object used to update a personal access token.
+// PersonalAccessTokenUpdateData Object used to update an access token.
 type PersonalAccessTokenUpdateData struct {
-	// Attributes used to update a personal access token.
+	// Attributes used to update an access token.
 	Attributes PersonalAccessTokenUpdateAttributes `json:"attributes"`
-	// ID of the personal access token.
+	// ID of the access token.
 	Id string `json:"id"`
 	// Personal access tokens resource type.
 	Type PersonalAccessTokensType `json:"type"`
@@ -150,7 +150,7 @@ func (o *PersonalAccessTokenUpdateData) UnmarshalJSON(bytes []byte) (err error) 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err

@@ -86,7 +86,7 @@ func (o *AzureUCConfigPatchRequestAttributes) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field is_enabled missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_enabled"})
 	} else {
 		return err

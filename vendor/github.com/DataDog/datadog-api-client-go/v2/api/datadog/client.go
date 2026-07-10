@@ -173,13 +173,23 @@ func (c *APIClient) CallAPI(request *http.Request) (*http.Response, error) {
 			if err != nil {
 				return nil, err
 			}
-			// Strip any api keys from the response being logged
-			keys, ok := newRequest.Context().Value(ContextAPIKeys).(map[string]APIKey)
-			if keys != nil && ok {
+			// Strip any credential values from the request being logged.
+			// ContextAPIKeys carries the DD-API-KEY / DD-APPLICATION-KEY values;
+			// ContextAccessToken carries bearer tokens (PATs, delegated tokens).
+			var secretsToRedact []string
+			if keys, ok := newRequest.Context().Value(ContextAPIKeys).(map[string]APIKey); ok && keys != nil {
 				for _, apiKey := range keys {
-					valueRegex := regexp.MustCompile(fmt.Sprintf("(?m)%s", apiKey.Key))
-					dump = valueRegex.ReplaceAll(dump, []byte("REDACTED"))
+					if apiKey.Key != "" {
+						secretsToRedact = append(secretsToRedact, apiKey.Key)
+					}
 				}
+			}
+			if token, ok := newRequest.Context().Value(ContextAccessToken).(string); ok && token != "" {
+				secretsToRedact = append(secretsToRedact, token)
+			}
+			for _, secret := range secretsToRedact {
+				valueRegex := regexp.MustCompile(fmt.Sprintf("(?m)%s", regexp.QuoteMeta(secret)))
+				dump = valueRegex.ReplaceAll(dump, []byte("REDACTED"))
 			}
 			log.Printf("\n%s\n", string(dump))
 		}
@@ -237,8 +247,10 @@ func (c *APIClient) shouldRetryRequest(response *http.Response, retryCount int) 
 	if err != nil || response.StatusCode == 429 || response.StatusCode >= 500 {
 		// Calculate the retry val (base * multiplier^retryCount)
 		retryVal := c.Cfg.RetryConfiguration.BackOffBase * math.Pow(c.Cfg.RetryConfiguration.BackOffMultiplier, float64(retryCount))
-		// retry duration shouldn't exceed default timeout period
-		retryVal = math.Min(float64(c.Cfg.HTTPClient.Timeout/time.Second), retryVal)
+		// retry duration shouldn't exceed the configured timeout period (skip cap when Timeout==0, which means no timeout)
+		if c.Cfg.HTTPClient.Timeout > 0 {
+			retryVal = math.Min(float64(c.Cfg.HTTPClient.Timeout/time.Second), retryVal)
+		}
 		retryDuration := time.Duration(retryVal) * time.Second
 		return &retryDuration, true
 	}

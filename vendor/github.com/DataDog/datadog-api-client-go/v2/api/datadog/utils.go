@@ -43,6 +43,50 @@ func PtrTime(v time.Time) *time.Time { return &v }
 // PtrUUID is helper routine that returns a pointer to given UUID value.
 func PtrUUID(v uuid.UUID) *uuid.UUID { return &v }
 
+// NullableUUID is a struct to hold a nullable UUID value.
+type NullableUUID struct {
+	value *uuid.UUID
+	isSet bool
+}
+
+// Get returns the value associated with the nullable UUID.
+func (v NullableUUID) Get() *uuid.UUID {
+	return v.value
+}
+
+// Set sets the value associated with the nullable UUID.
+func (v *NullableUUID) Set(val *uuid.UUID) {
+	v.value = val
+	v.isSet = true
+}
+
+// IsSet returns true if the value has been set.
+func (v NullableUUID) IsSet() bool {
+	return v.isSet
+}
+
+// Unset resets fields of the nullable UUID.
+func (v *NullableUUID) Unset() {
+	v.value = nil
+	v.isSet = false
+}
+
+// NewNullableUUID instantiates a new nullable UUID.
+func NewNullableUUID(val *uuid.UUID) *NullableUUID {
+	return &NullableUUID{value: val, isSet: true}
+}
+
+// MarshalJSON serializes the associated value.
+func (v NullableUUID) MarshalJSON() ([]byte, error) {
+	return Marshal(v.value)
+}
+
+// UnmarshalJSON deserializes to the associated value.
+func (v *NullableUUID) UnmarshalJSON(src []byte) error {
+	v.isSet = true
+	return Unmarshal(src, &v.value)
+}
+
 // PaginationResult pagination item helper struct
 type PaginationResult[T any] struct {
 	Item  T

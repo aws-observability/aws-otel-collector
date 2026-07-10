@@ -117,7 +117,7 @@ func (o *OrgGroupPolicyOverrideCreateRelationships) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field org_group_policy missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"org_group", "org_group_policy"})
 	} else {
 		return err

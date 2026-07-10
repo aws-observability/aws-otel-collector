@@ -427,7 +427,7 @@ func (o *IncidentSearchResponseFacetsData) UnmarshalJSON(bytes []byte) (err erro
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"commander", "created_by", "fields", "impact", "last_modified_by", "postmortem", "responder", "severity", "state", "time_to_repair", "time_to_resolve"})
 	} else {
 		return err

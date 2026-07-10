@@ -71,7 +71,7 @@ type SSHKeyListOpts struct {
 	Sort        []string
 }
 
-func (l SSHKeyListOpts) values() url.Values {
+func (l SSHKeyListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -93,7 +93,7 @@ func (c *SSHKeyClient) List(ctx context.Context, opts SSHKeyListOpts) ([]*SSHKey
 	const opPath = "/ssh_keys?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.SSHKeyListResponse](ctx, c.client, reqPath)
 	if err != nil {

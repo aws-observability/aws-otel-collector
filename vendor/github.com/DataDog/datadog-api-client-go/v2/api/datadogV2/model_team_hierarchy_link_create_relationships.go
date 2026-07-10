@@ -117,7 +117,7 @@ func (o *TeamHierarchyLinkCreateRelationships) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field sub_team missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"parent_team", "sub_team"})
 	} else {
 		return err

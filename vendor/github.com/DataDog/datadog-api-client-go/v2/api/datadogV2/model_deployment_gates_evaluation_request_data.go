@@ -13,6 +13,8 @@ import (
 // DeploymentGatesEvaluationRequestData Data for a deployment gate evaluation request.
 type DeploymentGatesEvaluationRequestData struct {
 	// Attributes for a deployment gate evaluation request.
+	// When `configuration` is provided, rules are evaluated inline from that configuration.
+	// When omitted, rules are resolved from the preconfigured gate for the given service and environment.
 	Attributes DeploymentGatesEvaluationRequestAttributes `json:"attributes"`
 	// JSON:API type for a deployment gate evaluation request.
 	Type DeploymentGatesEvaluationRequestDataType `json:"type"`
@@ -119,7 +121,7 @@ func (o *DeploymentGatesEvaluationRequestData) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err

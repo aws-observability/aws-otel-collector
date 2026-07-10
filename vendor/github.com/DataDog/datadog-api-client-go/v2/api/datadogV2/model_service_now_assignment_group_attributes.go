@@ -150,7 +150,7 @@ func (o *ServiceNowAssignmentGroupAttributes) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field instance_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assignment_group_name", "assignment_group_sys_id", "instance_id"})
 	} else {
 		return err

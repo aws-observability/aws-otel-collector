@@ -553,7 +553,7 @@ func (o *AzureUCConfig) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field storage_container missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "client_id", "created_at", "dataset_type", "error_messages", "export_name", "export_path", "id", "months", "scope", "status", "status_updated_at", "storage_account", "storage_container", "updated_at"})
 	} else {
 		return err

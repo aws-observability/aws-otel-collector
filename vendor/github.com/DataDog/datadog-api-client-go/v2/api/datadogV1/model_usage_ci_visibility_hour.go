@@ -346,7 +346,7 @@ func (o *UsageCIVisibilityHour) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"ci_pipeline_indexed_spans", "ci_test_indexed_spans", "ci_visibility_itr_committers", "ci_visibility_pipeline_committers", "ci_visibility_test_committers", "org_name", "public_id"})
 	} else {
 		return err

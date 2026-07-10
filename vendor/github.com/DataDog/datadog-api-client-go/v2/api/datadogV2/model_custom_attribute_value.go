@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomAttributeValue Custom attribute values
+// CustomAttributeValue A typed value for a custom attribute on a specific case.
 type CustomAttributeValue struct {
 	// If true, value must be an array
 	IsMulti bool `json:"is_multi"`
-	// Custom attributes type
+	// The data type of the custom attribute, which determines the allowed values and UI input control.
 	Type CustomAttributeType `json:"type"`
-	// Union of supported value for a custom attribute
+	// The value of a custom attribute. The accepted format depends on the attribute's type and whether it accepts multiple values.
 	Value CustomAttributeValuesUnion `json:"value"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -148,7 +148,7 @@ func (o *CustomAttributeValue) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field value missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_multi", "type", "value"})
 	} else {
 		return err

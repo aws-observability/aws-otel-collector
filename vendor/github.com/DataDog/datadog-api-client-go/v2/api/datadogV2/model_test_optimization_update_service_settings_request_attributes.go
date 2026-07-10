@@ -12,25 +12,36 @@ import (
 
 // TestOptimizationUpdateServiceSettingsRequestAttributes Attributes for updating Test Optimization service settings.
 // All non-required fields are optional; only provided fields will be updated.
+// Setting a field to `null` is a no-op. To reset a setting to inherit from the repository level, use the corresponding `<setting>_inherit` field.
 type TestOptimizationUpdateServiceSettingsRequestAttributes struct {
-	// Whether Auto Test Retries are enabled for this service.
+	// Whether Auto Test Retries are enabled for this service. Setting to `null` is a no-op; use `auto_test_retries_enabled_inherit` to reset to repository-level inheritance.
 	AutoTestRetriesEnabled *bool `json:"auto_test_retries_enabled,omitempty"`
-	// Whether Code Coverage is enabled for this service.
+	// When `true`, resets the Auto Test Retries setting to inherit from the repository level.
+	AutoTestRetriesEnabledInherit *bool `json:"auto_test_retries_enabled_inherit,omitempty"`
+	// Whether Code Coverage is enabled for this service. Setting to `null` is a no-op; use `code_coverage_enabled_inherit` to reset to repository-level inheritance.
 	CodeCoverageEnabled *bool `json:"code_coverage_enabled,omitempty"`
-	// Whether Early Flake Detection is enabled for this service.
+	// When `true`, resets the Code Coverage setting to inherit from the repository level.
+	CodeCoverageEnabledInherit *bool `json:"code_coverage_enabled_inherit,omitempty"`
+	// Whether Early Flake Detection is enabled for this service. Setting to `null` is a no-op; use `early_flake_detection_enabled_inherit` to reset to repository-level inheritance.
 	EarlyFlakeDetectionEnabled *bool `json:"early_flake_detection_enabled,omitempty"`
+	// When `true`, resets the Early Flake Detection setting to inherit from the repository level.
+	EarlyFlakeDetectionEnabledInherit *bool `json:"early_flake_detection_enabled_inherit,omitempty"`
 	// The environment name. If omitted, defaults to `none`.
 	Env *string `json:"env,omitempty"`
-	// Whether Failed Test Replay is enabled for this service.
+	// Whether Failed Test Replay is enabled for this service. Setting to `null` is a no-op; use `failed_test_replay_enabled_inherit` to reset to repository-level inheritance.
 	FailedTestReplayEnabled *bool `json:"failed_test_replay_enabled,omitempty"`
-	// Whether PR Comments are enabled for this service.
+	// When `true`, resets the Failed Test Replay setting to inherit from the repository level.
+	FailedTestReplayEnabledInherit *bool `json:"failed_test_replay_enabled_inherit,omitempty"`
+	// This field is ignored. PR Comments cannot be overridden at the service level.
 	PrCommentsEnabled *bool `json:"pr_comments_enabled,omitempty"`
 	// The repository identifier.
 	RepositoryId string `json:"repository_id"`
 	// The service name.
 	ServiceName string `json:"service_name"`
-	// Whether Test Impact Analysis is enabled for this service.
+	// Whether Test Impact Analysis is enabled for this service. Setting to `null` is a no-op; use `test_impact_analysis_enabled_inherit` to reset to repository-level inheritance.
 	TestImpactAnalysisEnabled *bool `json:"test_impact_analysis_enabled,omitempty"`
+	// When `true`, resets the Test Impact Analysis setting to inherit from the repository level.
+	TestImpactAnalysisEnabledInherit *bool `json:"test_impact_analysis_enabled_inherit,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -83,6 +94,34 @@ func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetAutoTestRetr
 	o.AutoTestRetriesEnabled = &v
 }
 
+// GetAutoTestRetriesEnabledInherit returns the AutoTestRetriesEnabledInherit field value if set, zero value otherwise.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetAutoTestRetriesEnabledInherit() bool {
+	if o == nil || o.AutoTestRetriesEnabledInherit == nil {
+		var ret bool
+		return ret
+	}
+	return *o.AutoTestRetriesEnabledInherit
+}
+
+// GetAutoTestRetriesEnabledInheritOk returns a tuple with the AutoTestRetriesEnabledInherit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetAutoTestRetriesEnabledInheritOk() (*bool, bool) {
+	if o == nil || o.AutoTestRetriesEnabledInherit == nil {
+		return nil, false
+	}
+	return o.AutoTestRetriesEnabledInherit, true
+}
+
+// HasAutoTestRetriesEnabledInherit returns a boolean if a field has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) HasAutoTestRetriesEnabledInherit() bool {
+	return o != nil && o.AutoTestRetriesEnabledInherit != nil
+}
+
+// SetAutoTestRetriesEnabledInherit gets a reference to the given bool and assigns it to the AutoTestRetriesEnabledInherit field.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetAutoTestRetriesEnabledInherit(v bool) {
+	o.AutoTestRetriesEnabledInherit = &v
+}
+
 // GetCodeCoverageEnabled returns the CodeCoverageEnabled field value if set, zero value otherwise.
 func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetCodeCoverageEnabled() bool {
 	if o == nil || o.CodeCoverageEnabled == nil {
@@ -111,6 +150,34 @@ func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetCodeCoverage
 	o.CodeCoverageEnabled = &v
 }
 
+// GetCodeCoverageEnabledInherit returns the CodeCoverageEnabledInherit field value if set, zero value otherwise.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetCodeCoverageEnabledInherit() bool {
+	if o == nil || o.CodeCoverageEnabledInherit == nil {
+		var ret bool
+		return ret
+	}
+	return *o.CodeCoverageEnabledInherit
+}
+
+// GetCodeCoverageEnabledInheritOk returns a tuple with the CodeCoverageEnabledInherit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetCodeCoverageEnabledInheritOk() (*bool, bool) {
+	if o == nil || o.CodeCoverageEnabledInherit == nil {
+		return nil, false
+	}
+	return o.CodeCoverageEnabledInherit, true
+}
+
+// HasCodeCoverageEnabledInherit returns a boolean if a field has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) HasCodeCoverageEnabledInherit() bool {
+	return o != nil && o.CodeCoverageEnabledInherit != nil
+}
+
+// SetCodeCoverageEnabledInherit gets a reference to the given bool and assigns it to the CodeCoverageEnabledInherit field.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetCodeCoverageEnabledInherit(v bool) {
+	o.CodeCoverageEnabledInherit = &v
+}
+
 // GetEarlyFlakeDetectionEnabled returns the EarlyFlakeDetectionEnabled field value if set, zero value otherwise.
 func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetEarlyFlakeDetectionEnabled() bool {
 	if o == nil || o.EarlyFlakeDetectionEnabled == nil {
@@ -137,6 +204,34 @@ func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) HasEarlyFlakeDe
 // SetEarlyFlakeDetectionEnabled gets a reference to the given bool and assigns it to the EarlyFlakeDetectionEnabled field.
 func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetEarlyFlakeDetectionEnabled(v bool) {
 	o.EarlyFlakeDetectionEnabled = &v
+}
+
+// GetEarlyFlakeDetectionEnabledInherit returns the EarlyFlakeDetectionEnabledInherit field value if set, zero value otherwise.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetEarlyFlakeDetectionEnabledInherit() bool {
+	if o == nil || o.EarlyFlakeDetectionEnabledInherit == nil {
+		var ret bool
+		return ret
+	}
+	return *o.EarlyFlakeDetectionEnabledInherit
+}
+
+// GetEarlyFlakeDetectionEnabledInheritOk returns a tuple with the EarlyFlakeDetectionEnabledInherit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetEarlyFlakeDetectionEnabledInheritOk() (*bool, bool) {
+	if o == nil || o.EarlyFlakeDetectionEnabledInherit == nil {
+		return nil, false
+	}
+	return o.EarlyFlakeDetectionEnabledInherit, true
+}
+
+// HasEarlyFlakeDetectionEnabledInherit returns a boolean if a field has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) HasEarlyFlakeDetectionEnabledInherit() bool {
+	return o != nil && o.EarlyFlakeDetectionEnabledInherit != nil
+}
+
+// SetEarlyFlakeDetectionEnabledInherit gets a reference to the given bool and assigns it to the EarlyFlakeDetectionEnabledInherit field.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetEarlyFlakeDetectionEnabledInherit(v bool) {
+	o.EarlyFlakeDetectionEnabledInherit = &v
 }
 
 // GetEnv returns the Env field value if set, zero value otherwise.
@@ -193,6 +288,34 @@ func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) HasFailedTestRe
 // SetFailedTestReplayEnabled gets a reference to the given bool and assigns it to the FailedTestReplayEnabled field.
 func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetFailedTestReplayEnabled(v bool) {
 	o.FailedTestReplayEnabled = &v
+}
+
+// GetFailedTestReplayEnabledInherit returns the FailedTestReplayEnabledInherit field value if set, zero value otherwise.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetFailedTestReplayEnabledInherit() bool {
+	if o == nil || o.FailedTestReplayEnabledInherit == nil {
+		var ret bool
+		return ret
+	}
+	return *o.FailedTestReplayEnabledInherit
+}
+
+// GetFailedTestReplayEnabledInheritOk returns a tuple with the FailedTestReplayEnabledInherit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetFailedTestReplayEnabledInheritOk() (*bool, bool) {
+	if o == nil || o.FailedTestReplayEnabledInherit == nil {
+		return nil, false
+	}
+	return o.FailedTestReplayEnabledInherit, true
+}
+
+// HasFailedTestReplayEnabledInherit returns a boolean if a field has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) HasFailedTestReplayEnabledInherit() bool {
+	return o != nil && o.FailedTestReplayEnabledInherit != nil
+}
+
+// SetFailedTestReplayEnabledInherit gets a reference to the given bool and assigns it to the FailedTestReplayEnabledInherit field.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetFailedTestReplayEnabledInherit(v bool) {
+	o.FailedTestReplayEnabledInherit = &v
 }
 
 // GetPrCommentsEnabled returns the PrCommentsEnabled field value if set, zero value otherwise.
@@ -297,6 +420,34 @@ func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetTestImpactAn
 	o.TestImpactAnalysisEnabled = &v
 }
 
+// GetTestImpactAnalysisEnabledInherit returns the TestImpactAnalysisEnabledInherit field value if set, zero value otherwise.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetTestImpactAnalysisEnabledInherit() bool {
+	if o == nil || o.TestImpactAnalysisEnabledInherit == nil {
+		var ret bool
+		return ret
+	}
+	return *o.TestImpactAnalysisEnabledInherit
+}
+
+// GetTestImpactAnalysisEnabledInheritOk returns a tuple with the TestImpactAnalysisEnabledInherit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) GetTestImpactAnalysisEnabledInheritOk() (*bool, bool) {
+	if o == nil || o.TestImpactAnalysisEnabledInherit == nil {
+		return nil, false
+	}
+	return o.TestImpactAnalysisEnabledInherit, true
+}
+
+// HasTestImpactAnalysisEnabledInherit returns a boolean if a field has been set.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) HasTestImpactAnalysisEnabledInherit() bool {
+	return o != nil && o.TestImpactAnalysisEnabledInherit != nil
+}
+
+// SetTestImpactAnalysisEnabledInherit gets a reference to the given bool and assigns it to the TestImpactAnalysisEnabledInherit field.
+func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) SetTestImpactAnalysisEnabledInherit(v bool) {
+	o.TestImpactAnalysisEnabledInherit = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o TestOptimizationUpdateServiceSettingsRequestAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -306,17 +457,29 @@ func (o TestOptimizationUpdateServiceSettingsRequestAttributes) MarshalJSON() ([
 	if o.AutoTestRetriesEnabled != nil {
 		toSerialize["auto_test_retries_enabled"] = o.AutoTestRetriesEnabled
 	}
+	if o.AutoTestRetriesEnabledInherit != nil {
+		toSerialize["auto_test_retries_enabled_inherit"] = o.AutoTestRetriesEnabledInherit
+	}
 	if o.CodeCoverageEnabled != nil {
 		toSerialize["code_coverage_enabled"] = o.CodeCoverageEnabled
 	}
+	if o.CodeCoverageEnabledInherit != nil {
+		toSerialize["code_coverage_enabled_inherit"] = o.CodeCoverageEnabledInherit
+	}
 	if o.EarlyFlakeDetectionEnabled != nil {
 		toSerialize["early_flake_detection_enabled"] = o.EarlyFlakeDetectionEnabled
+	}
+	if o.EarlyFlakeDetectionEnabledInherit != nil {
+		toSerialize["early_flake_detection_enabled_inherit"] = o.EarlyFlakeDetectionEnabledInherit
 	}
 	if o.Env != nil {
 		toSerialize["env"] = o.Env
 	}
 	if o.FailedTestReplayEnabled != nil {
 		toSerialize["failed_test_replay_enabled"] = o.FailedTestReplayEnabled
+	}
+	if o.FailedTestReplayEnabledInherit != nil {
+		toSerialize["failed_test_replay_enabled_inherit"] = o.FailedTestReplayEnabledInherit
 	}
 	if o.PrCommentsEnabled != nil {
 		toSerialize["pr_comments_enabled"] = o.PrCommentsEnabled
@@ -325,6 +488,9 @@ func (o TestOptimizationUpdateServiceSettingsRequestAttributes) MarshalJSON() ([
 	toSerialize["service_name"] = o.ServiceName
 	if o.TestImpactAnalysisEnabled != nil {
 		toSerialize["test_impact_analysis_enabled"] = o.TestImpactAnalysisEnabled
+	}
+	if o.TestImpactAnalysisEnabledInherit != nil {
+		toSerialize["test_impact_analysis_enabled_inherit"] = o.TestImpactAnalysisEnabledInherit
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -336,15 +502,20 @@ func (o TestOptimizationUpdateServiceSettingsRequestAttributes) MarshalJSON() ([
 // UnmarshalJSON deserializes the given payload.
 func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AutoTestRetriesEnabled     *bool   `json:"auto_test_retries_enabled,omitempty"`
-		CodeCoverageEnabled        *bool   `json:"code_coverage_enabled,omitempty"`
-		EarlyFlakeDetectionEnabled *bool   `json:"early_flake_detection_enabled,omitempty"`
-		Env                        *string `json:"env,omitempty"`
-		FailedTestReplayEnabled    *bool   `json:"failed_test_replay_enabled,omitempty"`
-		PrCommentsEnabled          *bool   `json:"pr_comments_enabled,omitempty"`
-		RepositoryId               *string `json:"repository_id"`
-		ServiceName                *string `json:"service_name"`
-		TestImpactAnalysisEnabled  *bool   `json:"test_impact_analysis_enabled,omitempty"`
+		AutoTestRetriesEnabled            *bool   `json:"auto_test_retries_enabled,omitempty"`
+		AutoTestRetriesEnabledInherit     *bool   `json:"auto_test_retries_enabled_inherit,omitempty"`
+		CodeCoverageEnabled               *bool   `json:"code_coverage_enabled,omitempty"`
+		CodeCoverageEnabledInherit        *bool   `json:"code_coverage_enabled_inherit,omitempty"`
+		EarlyFlakeDetectionEnabled        *bool   `json:"early_flake_detection_enabled,omitempty"`
+		EarlyFlakeDetectionEnabledInherit *bool   `json:"early_flake_detection_enabled_inherit,omitempty"`
+		Env                               *string `json:"env,omitempty"`
+		FailedTestReplayEnabled           *bool   `json:"failed_test_replay_enabled,omitempty"`
+		FailedTestReplayEnabledInherit    *bool   `json:"failed_test_replay_enabled_inherit,omitempty"`
+		PrCommentsEnabled                 *bool   `json:"pr_comments_enabled,omitempty"`
+		RepositoryId                      *string `json:"repository_id"`
+		ServiceName                       *string `json:"service_name"`
+		TestImpactAnalysisEnabled         *bool   `json:"test_impact_analysis_enabled,omitempty"`
+		TestImpactAnalysisEnabledInherit  *bool   `json:"test_impact_analysis_enabled_inherit,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -356,20 +527,25 @@ func (o *TestOptimizationUpdateServiceSettingsRequestAttributes) UnmarshalJSON(b
 		return fmt.Errorf("required field service_name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"auto_test_retries_enabled", "code_coverage_enabled", "early_flake_detection_enabled", "env", "failed_test_replay_enabled", "pr_comments_enabled", "repository_id", "service_name", "test_impact_analysis_enabled"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"auto_test_retries_enabled", "auto_test_retries_enabled_inherit", "code_coverage_enabled", "code_coverage_enabled_inherit", "early_flake_detection_enabled", "early_flake_detection_enabled_inherit", "env", "failed_test_replay_enabled", "failed_test_replay_enabled_inherit", "pr_comments_enabled", "repository_id", "service_name", "test_impact_analysis_enabled", "test_impact_analysis_enabled_inherit"})
 	} else {
 		return err
 	}
 	o.AutoTestRetriesEnabled = all.AutoTestRetriesEnabled
+	o.AutoTestRetriesEnabledInherit = all.AutoTestRetriesEnabledInherit
 	o.CodeCoverageEnabled = all.CodeCoverageEnabled
+	o.CodeCoverageEnabledInherit = all.CodeCoverageEnabledInherit
 	o.EarlyFlakeDetectionEnabled = all.EarlyFlakeDetectionEnabled
+	o.EarlyFlakeDetectionEnabledInherit = all.EarlyFlakeDetectionEnabledInherit
 	o.Env = all.Env
 	o.FailedTestReplayEnabled = all.FailedTestReplayEnabled
+	o.FailedTestReplayEnabledInherit = all.FailedTestReplayEnabledInherit
 	o.PrCommentsEnabled = all.PrCommentsEnabled
 	o.RepositoryId = *all.RepositoryId
 	o.ServiceName = *all.ServiceName
 	o.TestImpactAnalysisEnabled = all.TestImpactAnalysisEnabled
+	o.TestImpactAnalysisEnabledInherit = all.TestImpactAnalysisEnabledInherit
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

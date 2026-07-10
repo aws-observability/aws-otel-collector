@@ -86,7 +86,7 @@ func (o *SecurityMonitoringSignalAssigneeUpdateData) UnmarshalJSON(bytes []byte)
 		return fmt.Errorf("required field attributes missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes"})
 	} else {
 		return err

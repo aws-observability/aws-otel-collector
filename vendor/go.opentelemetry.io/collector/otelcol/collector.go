@@ -21,7 +21,7 @@ import (
 
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/confmap"
-	"go.opentelemetry.io/collector/confmap/xconfmap"
+	"go.opentelemetry.io/collector/extension/extensioncapabilities"
 	"go.opentelemetry.io/collector/otelcol/internal/grpclog"
 	"go.opentelemetry.io/collector/service"
 )
@@ -189,7 +189,7 @@ func (col *Collector) setupConfigurationComponents(ctx context.Context) error {
 		return fmt.Errorf("failed to get config: %w", err)
 	}
 
-	if err = xconfmap.Validate(cfg); err != nil {
+	if err = confmap.Validate(cfg); err != nil {
 		return fmt.Errorf("invalid configuration: %w", err)
 	}
 
@@ -198,6 +198,10 @@ func (col *Collector) setupConfigurationComponents(ctx context.Context) error {
 	if err = conf.Marshal(cfg); err != nil {
 		return fmt.Errorf("could not marshal configuration: %w", err)
 	}
+
+	// Build a pre-expansion view of the configuration (with provider references
+	// such as ${env:FOO} still intact and configopaque.String fields redacted).
+	unexpandedConf := redactByMirroring(col.configProvider.mapResolver.UnexpandedConf(), conf)
 
 	// Wrap the buildZapLogger to append LoggingOptions from collector settings,
 	// since service.Settings.LoggingOptions is deprecated.
@@ -211,8 +215,9 @@ func (col *Collector) setupConfigurationComponents(ctx context.Context) error {
 	}
 
 	col.service, err = service.New(ctx, service.Settings{
-		BuildInfo:     col.set.BuildInfo,
-		CollectorConf: conf,
+		BuildInfo:      col.set.BuildInfo,
+		ConfigSnapshot: extensioncapabilities.NewConfigSnapshot(conf, unexpandedConf),
+		CollectorConf:  conf,
 
 		ReceiversConfigs:    cfg.Receivers,
 		ReceiversFactories:  factories.Receivers,
@@ -290,7 +295,7 @@ func (col *Collector) DryRun(ctx context.Context) error {
 		return fmt.Errorf("failed to get config: %w", err)
 	}
 
-	if err := xconfmap.Validate(cfg); err != nil {
+	if err := confmap.Validate(cfg); err != nil {
 		return err
 	}
 

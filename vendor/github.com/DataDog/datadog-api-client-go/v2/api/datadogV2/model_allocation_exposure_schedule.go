@@ -421,7 +421,7 @@ func (o *AllocationExposureSchedule) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field updated_at missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"absolute_start_time", "allocation_id", "control_variant_id", "created_at", "guardrail_triggered_action", "guardrail_triggers", "id", "rollout_options", "rollout_steps", "updated_at"})
 	} else {
 		return err

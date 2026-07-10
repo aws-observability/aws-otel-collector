@@ -12,6 +12,8 @@ import (
 type BudgetWithEntriesDataAttributesEntriesItems struct {
 	// The budgeted amount for this entry.
 	Amount *float64 `json:"amount,omitempty"`
+	// Cost data for a single budget entry.
+	Costs *BudgetWithEntriesDataAttributesEntriesItemsCosts `json:"costs,omitempty"`
 	// The month this budget entry applies to, in YYYYMM format.
 	Month *int64 `json:"month,omitempty"`
 	// The list of tag filters that scope this budget entry to specific resources.
@@ -64,6 +66,34 @@ func (o *BudgetWithEntriesDataAttributesEntriesItems) HasAmount() bool {
 // SetAmount gets a reference to the given float64 and assigns it to the Amount field.
 func (o *BudgetWithEntriesDataAttributesEntriesItems) SetAmount(v float64) {
 	o.Amount = &v
+}
+
+// GetCosts returns the Costs field value if set, zero value otherwise.
+func (o *BudgetWithEntriesDataAttributesEntriesItems) GetCosts() BudgetWithEntriesDataAttributesEntriesItemsCosts {
+	if o == nil || o.Costs == nil {
+		var ret BudgetWithEntriesDataAttributesEntriesItemsCosts
+		return ret
+	}
+	return *o.Costs
+}
+
+// GetCostsOk returns a tuple with the Costs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BudgetWithEntriesDataAttributesEntriesItems) GetCostsOk() (*BudgetWithEntriesDataAttributesEntriesItemsCosts, bool) {
+	if o == nil || o.Costs == nil {
+		return nil, false
+	}
+	return o.Costs, true
+}
+
+// HasCosts returns a boolean if a field has been set.
+func (o *BudgetWithEntriesDataAttributesEntriesItems) HasCosts() bool {
+	return o != nil && o.Costs != nil
+}
+
+// SetCosts gets a reference to the given BudgetWithEntriesDataAttributesEntriesItemsCosts and assigns it to the Costs field.
+func (o *BudgetWithEntriesDataAttributesEntriesItems) SetCosts(v BudgetWithEntriesDataAttributesEntriesItemsCosts) {
+	o.Costs = &v
 }
 
 // GetMonth returns the Month field value if set, zero value otherwise.
@@ -131,6 +161,9 @@ func (o BudgetWithEntriesDataAttributesEntriesItems) MarshalJSON() ([]byte, erro
 	if o.Amount != nil {
 		toSerialize["amount"] = o.Amount
 	}
+	if o.Costs != nil {
+		toSerialize["costs"] = o.Costs
+	}
 	if o.Month != nil {
 		toSerialize["month"] = o.Month
 	}
@@ -148,6 +181,7 @@ func (o BudgetWithEntriesDataAttributesEntriesItems) MarshalJSON() ([]byte, erro
 func (o *BudgetWithEntriesDataAttributesEntriesItems) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Amount     *float64                                                     `json:"amount,omitempty"`
+		Costs      *BudgetWithEntriesDataAttributesEntriesItemsCosts            `json:"costs,omitempty"`
 		Month      *int64                                                       `json:"month,omitempty"`
 		TagFilters []BudgetWithEntriesDataAttributesEntriesItemsTagFiltersItems `json:"tag_filters,omitempty"`
 	}{}
@@ -155,17 +189,27 @@ func (o *BudgetWithEntriesDataAttributesEntriesItems) UnmarshalJSON(bytes []byte
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"amount", "month", "tag_filters"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"amount", "costs", "month", "tag_filters"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Amount = all.Amount
+	if all.Costs != nil && all.Costs.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Costs = all.Costs
 	o.Month = all.Month
 	o.TagFilters = all.TagFilters
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

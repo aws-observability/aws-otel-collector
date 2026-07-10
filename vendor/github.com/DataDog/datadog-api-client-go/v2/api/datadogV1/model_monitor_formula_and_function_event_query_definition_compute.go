@@ -20,6 +20,8 @@ type MonitorFormulaAndFunctionEventQueryDefinitionCompute struct {
 	Metric *string `json:"metric,omitempty"`
 	// The name assigned to this aggregation, when multiple aggregations are defined for a query.
 	Name *string `json:"name,omitempty"`
+	// Source reference for composite query payloads.
+	Source *string `json:"source,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -150,6 +152,34 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) SetName(v string)
 	o.Name = &v
 }
 
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) GetSource() string {
+	if o == nil || o.Source == nil {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) GetSourceOk() (*string, bool) {
+	if o == nil || o.Source == nil {
+		return nil, false
+	}
+	return o.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) HasSource() bool {
+	return o != nil && o.Source != nil
+}
+
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) SetSource(v string) {
+	o.Source = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o MonitorFormulaAndFunctionEventQueryDefinitionCompute) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -166,6 +196,9 @@ func (o MonitorFormulaAndFunctionEventQueryDefinitionCompute) MarshalJSON() ([]b
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.Source != nil {
+		toSerialize["source"] = o.Source
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -180,6 +213,7 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(byt
 		Interval    *int64                                     `json:"interval,omitempty"`
 		Metric      *string                                    `json:"metric,omitempty"`
 		Name        *string                                    `json:"name,omitempty"`
+		Source      *string                                    `json:"source,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -188,8 +222,8 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(byt
 		return fmt.Errorf("required field aggregation missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "interval", "metric", "name"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "interval", "metric", "name", "source"})
 	} else {
 		return err
 	}
@@ -203,6 +237,7 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(byt
 	o.Interval = all.Interval
 	o.Metric = all.Metric
 	o.Name = all.Name
+	o.Source = all.Source
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

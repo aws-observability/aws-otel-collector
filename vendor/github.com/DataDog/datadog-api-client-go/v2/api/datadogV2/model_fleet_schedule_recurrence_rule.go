@@ -182,7 +182,7 @@ func (o *FleetScheduleRecurrenceRule) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field timezone missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"days_of_week", "maintenance_window_duration", "start_maintenance_window", "timezone"})
 	} else {
 		return err

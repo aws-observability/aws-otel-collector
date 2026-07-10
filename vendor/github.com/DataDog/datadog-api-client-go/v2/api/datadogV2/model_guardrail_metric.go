@@ -162,7 +162,7 @@ func (o *GuardrailMetric) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field trigger_action missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"metric_id", "trigger_action", "triggered_by"})
 	} else {
 		return err

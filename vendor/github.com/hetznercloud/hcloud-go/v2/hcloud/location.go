@@ -68,7 +68,7 @@ type LocationListOpts struct {
 	Sort []string
 }
 
-func (l LocationListOpts) values() url.Values {
+func (l LocationListOpts) Values() url.Values {
 	vals := l.ListOpts.Values()
 	if l.Name != "" {
 		vals.Add("name", l.Name)
@@ -87,7 +87,7 @@ func (c *LocationClient) List(ctx context.Context, opts LocationListOpts) ([]*Lo
 	const opPath = "/locations?%s"
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
-	reqPath := fmt.Sprintf(opPath, opts.values().Encode())
+	reqPath := fmt.Sprintf(opPath, opts.Values().Encode())
 
 	respBody, resp, err := getRequest[schema.LocationListResponse](ctx, c.client, reqPath)
 	if err != nil {

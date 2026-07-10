@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TimelineCellContent - timeline cell content
+// TimelineCellContent - The content payload of a timeline cell, varying by cell type.
 type TimelineCellContent struct {
 	TimelineCellContentComment *TimelineCellContentComment
 

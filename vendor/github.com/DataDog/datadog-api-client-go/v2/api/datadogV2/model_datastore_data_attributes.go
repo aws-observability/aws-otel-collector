@@ -371,7 +371,7 @@ func (o *DatastoreDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "creator_user_id", "creator_user_uuid", "description", "modified_at", "name", "org_id", "primary_column_name", "primary_key_generation_strategy"})
 	} else {
 		return err

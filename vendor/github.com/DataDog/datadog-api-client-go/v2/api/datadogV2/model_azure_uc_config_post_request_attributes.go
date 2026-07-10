@@ -210,7 +210,7 @@ func (o *AzureUCConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field scope missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "actual_bill_config", "amortized_bill_config", "client_id", "scope"})
 	} else {
 		return err

@@ -13,6 +13,7 @@ type DistributionWidgetHistogramRequestQuery struct {
 	FormulaAndFunctionMetricQueryDefinition           *FormulaAndFunctionMetricQueryDefinition
 	FormulaAndFunctionEventQueryDefinition            *FormulaAndFunctionEventQueryDefinition
 	FormulaAndFunctionApmResourceStatsQueryDefinition *FormulaAndFunctionApmResourceStatsQueryDefinition
+	FormulaAndFunctionApmMetricsQueryDefinition       *FormulaAndFunctionApmMetricsQueryDefinition
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -31,6 +32,11 @@ func FormulaAndFunctionEventQueryDefinitionAsDistributionWidgetHistogramRequestQ
 // FormulaAndFunctionApmResourceStatsQueryDefinitionAsDistributionWidgetHistogramRequestQuery is a convenience function that returns FormulaAndFunctionApmResourceStatsQueryDefinition wrapped in DistributionWidgetHistogramRequestQuery.
 func FormulaAndFunctionApmResourceStatsQueryDefinitionAsDistributionWidgetHistogramRequestQuery(v *FormulaAndFunctionApmResourceStatsQueryDefinition) DistributionWidgetHistogramRequestQuery {
 	return DistributionWidgetHistogramRequestQuery{FormulaAndFunctionApmResourceStatsQueryDefinition: v}
+}
+
+// FormulaAndFunctionApmMetricsQueryDefinitionAsDistributionWidgetHistogramRequestQuery is a convenience function that returns FormulaAndFunctionApmMetricsQueryDefinition wrapped in DistributionWidgetHistogramRequestQuery.
+func FormulaAndFunctionApmMetricsQueryDefinitionAsDistributionWidgetHistogramRequestQuery(v *FormulaAndFunctionApmMetricsQueryDefinition) DistributionWidgetHistogramRequestQuery {
+	return DistributionWidgetHistogramRequestQuery{FormulaAndFunctionApmMetricsQueryDefinition: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -88,11 +94,29 @@ func (obj *DistributionWidgetHistogramRequestQuery) UnmarshalJSON(data []byte) e
 		obj.FormulaAndFunctionApmResourceStatsQueryDefinition = nil
 	}
 
+	// try to unmarshal data into FormulaAndFunctionApmMetricsQueryDefinition
+	err = datadog.Unmarshal(data, &obj.FormulaAndFunctionApmMetricsQueryDefinition)
+	if err == nil {
+		if obj.FormulaAndFunctionApmMetricsQueryDefinition != nil && obj.FormulaAndFunctionApmMetricsQueryDefinition.UnparsedObject == nil {
+			jsonFormulaAndFunctionApmMetricsQueryDefinition, _ := datadog.Marshal(obj.FormulaAndFunctionApmMetricsQueryDefinition)
+			if string(jsonFormulaAndFunctionApmMetricsQueryDefinition) == "{}" { // empty struct
+				obj.FormulaAndFunctionApmMetricsQueryDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.FormulaAndFunctionApmMetricsQueryDefinition = nil
+		}
+	} else {
+		obj.FormulaAndFunctionApmMetricsQueryDefinition = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.FormulaAndFunctionMetricQueryDefinition = nil
 		obj.FormulaAndFunctionEventQueryDefinition = nil
 		obj.FormulaAndFunctionApmResourceStatsQueryDefinition = nil
+		obj.FormulaAndFunctionApmMetricsQueryDefinition = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -110,6 +134,10 @@ func (obj DistributionWidgetHistogramRequestQuery) MarshalJSON() ([]byte, error)
 
 	if obj.FormulaAndFunctionApmResourceStatsQueryDefinition != nil {
 		return datadog.Marshal(&obj.FormulaAndFunctionApmResourceStatsQueryDefinition)
+	}
+
+	if obj.FormulaAndFunctionApmMetricsQueryDefinition != nil {
+		return datadog.Marshal(&obj.FormulaAndFunctionApmMetricsQueryDefinition)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -130,6 +158,10 @@ func (obj *DistributionWidgetHistogramRequestQuery) GetActualInstance() interfac
 
 	if obj.FormulaAndFunctionApmResourceStatsQueryDefinition != nil {
 		return obj.FormulaAndFunctionApmResourceStatsQueryDefinition
+	}
+
+	if obj.FormulaAndFunctionApmMetricsQueryDefinition != nil {
+		return obj.FormulaAndFunctionApmMetricsQueryDefinition
 	}
 
 	// all schemas are nil

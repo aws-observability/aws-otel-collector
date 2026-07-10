@@ -241,7 +241,7 @@ func (o *SecurityEntityConfigRisks) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field isPubliclyAccessible missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"hasIdentityRisk", "hasMisconfiguration", "hasPrivilegedRole", "isPrivileged", "isProduction", "isPubliclyAccessible"})
 	} else {
 		return err

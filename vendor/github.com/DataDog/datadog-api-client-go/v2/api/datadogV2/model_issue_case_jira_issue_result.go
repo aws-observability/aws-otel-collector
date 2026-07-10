@@ -10,12 +10,16 @@ import (
 
 // IssueCaseJiraIssueResult Contains the identifiers and URL for a successfully created Jira issue.
 type IssueCaseJiraIssueResult struct {
+	// Jira account identifier.
+	AccountId *string `json:"account_id,omitempty"`
 	// Jira issue identifier.
 	IssueId *string `json:"issue_id,omitempty"`
 	// Jira issue key.
 	IssueKey *string `json:"issue_key,omitempty"`
 	// Jira issue URL.
 	IssueUrl *string `json:"issue_url,omitempty"`
+	// Jira project identifier.
+	ProjectId *string `json:"project_id,omitempty"`
 	// Jira project key.
 	ProjectKey *string `json:"project_key,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -38,6 +42,34 @@ func NewIssueCaseJiraIssueResult() *IssueCaseJiraIssueResult {
 func NewIssueCaseJiraIssueResultWithDefaults() *IssueCaseJiraIssueResult {
 	this := IssueCaseJiraIssueResult{}
 	return &this
+}
+
+// GetAccountId returns the AccountId field value if set, zero value otherwise.
+func (o *IssueCaseJiraIssueResult) GetAccountId() string {
+	if o == nil || o.AccountId == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountId
+}
+
+// GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssueCaseJiraIssueResult) GetAccountIdOk() (*string, bool) {
+	if o == nil || o.AccountId == nil {
+		return nil, false
+	}
+	return o.AccountId, true
+}
+
+// HasAccountId returns a boolean if a field has been set.
+func (o *IssueCaseJiraIssueResult) HasAccountId() bool {
+	return o != nil && o.AccountId != nil
+}
+
+// SetAccountId gets a reference to the given string and assigns it to the AccountId field.
+func (o *IssueCaseJiraIssueResult) SetAccountId(v string) {
+	o.AccountId = &v
 }
 
 // GetIssueId returns the IssueId field value if set, zero value otherwise.
@@ -124,6 +156,34 @@ func (o *IssueCaseJiraIssueResult) SetIssueUrl(v string) {
 	o.IssueUrl = &v
 }
 
+// GetProjectId returns the ProjectId field value if set, zero value otherwise.
+func (o *IssueCaseJiraIssueResult) GetProjectId() string {
+	if o == nil || o.ProjectId == nil {
+		var ret string
+		return ret
+	}
+	return *o.ProjectId
+}
+
+// GetProjectIdOk returns a tuple with the ProjectId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IssueCaseJiraIssueResult) GetProjectIdOk() (*string, bool) {
+	if o == nil || o.ProjectId == nil {
+		return nil, false
+	}
+	return o.ProjectId, true
+}
+
+// HasProjectId returns a boolean if a field has been set.
+func (o *IssueCaseJiraIssueResult) HasProjectId() bool {
+	return o != nil && o.ProjectId != nil
+}
+
+// SetProjectId gets a reference to the given string and assigns it to the ProjectId field.
+func (o *IssueCaseJiraIssueResult) SetProjectId(v string) {
+	o.ProjectId = &v
+}
+
 // GetProjectKey returns the ProjectKey field value if set, zero value otherwise.
 func (o *IssueCaseJiraIssueResult) GetProjectKey() string {
 	if o == nil || o.ProjectKey == nil {
@@ -158,6 +218,9 @@ func (o IssueCaseJiraIssueResult) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AccountId != nil {
+		toSerialize["account_id"] = o.AccountId
+	}
 	if o.IssueId != nil {
 		toSerialize["issue_id"] = o.IssueId
 	}
@@ -166,6 +229,9 @@ func (o IssueCaseJiraIssueResult) MarshalJSON() ([]byte, error) {
 	}
 	if o.IssueUrl != nil {
 		toSerialize["issue_url"] = o.IssueUrl
+	}
+	if o.ProjectId != nil {
+		toSerialize["project_id"] = o.ProjectId
 	}
 	if o.ProjectKey != nil {
 		toSerialize["project_key"] = o.ProjectKey
@@ -180,23 +246,27 @@ func (o IssueCaseJiraIssueResult) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *IssueCaseJiraIssueResult) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		AccountId  *string `json:"account_id,omitempty"`
 		IssueId    *string `json:"issue_id,omitempty"`
 		IssueKey   *string `json:"issue_key,omitempty"`
 		IssueUrl   *string `json:"issue_url,omitempty"`
+		ProjectId  *string `json:"project_id,omitempty"`
 		ProjectKey *string `json:"project_key,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"issue_id", "issue_key", "issue_url", "project_key"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "issue_id", "issue_key", "issue_url", "project_id", "project_key"})
 	} else {
 		return err
 	}
+	o.AccountId = all.AccountId
 	o.IssueId = all.IssueId
 	o.IssueKey = all.IssueKey
 	o.IssueUrl = all.IssueUrl
+	o.ProjectId = all.ProjectId
 	o.ProjectKey = all.ProjectKey
 
 	if len(additionalProperties) > 0 {

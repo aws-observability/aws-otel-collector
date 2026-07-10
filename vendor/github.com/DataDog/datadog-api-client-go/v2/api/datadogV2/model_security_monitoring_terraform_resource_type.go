@@ -15,13 +15,17 @@ type SecurityMonitoringTerraformResourceType string
 
 // List of SecurityMonitoringTerraformResourceType.
 const (
-	SECURITYMONITORINGTERRAFORMRESOURCETYPE_SUPPRESSIONS    SecurityMonitoringTerraformResourceType = "suppressions"
-	SECURITYMONITORINGTERRAFORMRESOURCETYPE_CRITICAL_ASSETS SecurityMonitoringTerraformResourceType = "critical_assets"
+	SECURITYMONITORINGTERRAFORMRESOURCETYPE_SUPPRESSIONS     SecurityMonitoringTerraformResourceType = "suppressions"
+	SECURITYMONITORINGTERRAFORMRESOURCETYPE_CRITICAL_ASSETS  SecurityMonitoringTerraformResourceType = "critical_assets"
+	SECURITYMONITORINGTERRAFORMRESOURCETYPE_SECURITY_FILTERS SecurityMonitoringTerraformResourceType = "security_filters"
+	SECURITYMONITORINGTERRAFORMRESOURCETYPE_RULES            SecurityMonitoringTerraformResourceType = "rules"
 )
 
 var allowedSecurityMonitoringTerraformResourceTypeEnumValues = []SecurityMonitoringTerraformResourceType{
 	SECURITYMONITORINGTERRAFORMRESOURCETYPE_SUPPRESSIONS,
 	SECURITYMONITORINGTERRAFORMRESOURCETYPE_CRITICAL_ASSETS,
+	SECURITYMONITORINGTERRAFORMRESOURCETYPE_SECURITY_FILTERS,
+	SECURITYMONITORINGTERRAFORMRESOURCETYPE_RULES,
 }
 
 // GetAllowedValues reeturns the list of possible values.

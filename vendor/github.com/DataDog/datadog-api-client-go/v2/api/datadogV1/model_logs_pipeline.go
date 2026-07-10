@@ -362,7 +362,7 @@ func (o *LogsPipeline) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "filter", "id", "is_enabled", "is_read_only", "name", "processors", "tags", "type"})
 	} else {
 		return err

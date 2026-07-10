@@ -563,7 +563,7 @@ func (o *HostMeta) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"agent_checks", "agent_version", "cpuCores", "fbsdV", "gohai", "install_method", "macV", "machine", "nixV", "platform", "processor", "pythonV", "socket-fqdn", "socket-hostname", "winV"})
 	} else {
 		return err

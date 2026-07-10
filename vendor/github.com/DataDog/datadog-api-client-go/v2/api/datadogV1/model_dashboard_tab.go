@@ -150,7 +150,7 @@ func (o *DashboardTab) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field widget_ids missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"id", "name", "widget_ids"})
 	} else {
 		return err

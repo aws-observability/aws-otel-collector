@@ -121,7 +121,7 @@ func (o *IncidentNotificationRuleCreateDataRelationships) UnmarshalJSON(bytes []
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"incident_type", "notification_template"})
 	} else {
 		return err

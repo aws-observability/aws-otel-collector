@@ -313,7 +313,7 @@ func (o *LLMObsCustomEvalConfigLLMJudgeConfig) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field inference_params missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"assessment_criteria", "inference_params", "last_used_library_prompt_template_name", "modified_library_prompt_template", "output_schema", "parsing_type", "prompt_template"})
 	} else {
 		return err

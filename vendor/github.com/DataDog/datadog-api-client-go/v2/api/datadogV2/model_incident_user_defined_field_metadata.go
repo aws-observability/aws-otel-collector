@@ -241,7 +241,7 @@ func (o *IncidentUserDefinedFieldMetadata) UnmarshalJSON(bytes []byte) (err erro
 		return fmt.Errorf("required field search_url missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"category", "search_limit_param", "search_params", "search_query_param", "search_result_path", "search_url"})
 	} else {
 		return err

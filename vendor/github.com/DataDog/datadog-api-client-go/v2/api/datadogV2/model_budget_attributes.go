@@ -10,6 +10,14 @@ import (
 
 // BudgetAttributes The attributes of a budget.
 type BudgetAttributes struct {
+	// Aggregated cost data for the budget over the requested period.
+	Costs *BudgetAttributesCosts `json:"costs,omitempty"`
+	// The end of the period used to compute cost data, in milliseconds since epoch.
+	CostsPeriodEnd *int64 `json:"costs_period_end,omitempty"`
+	// The start of the period used to compute cost data, in milliseconds since epoch.
+	CostsPeriodStart *int64 `json:"costs_period_start,omitempty"`
+	// The unit used for all cost values in the response.
+	CostsUnit *BudgetAttributesCostsUnit `json:"costs_unit,omitempty"`
 	// The timestamp when the budget was created.
 	CreatedAt *int64 `json:"created_at,omitempty"`
 	// The id of the user that created the budget.
@@ -52,6 +60,118 @@ func NewBudgetAttributes() *BudgetAttributes {
 func NewBudgetAttributesWithDefaults() *BudgetAttributes {
 	this := BudgetAttributes{}
 	return &this
+}
+
+// GetCosts returns the Costs field value if set, zero value otherwise.
+func (o *BudgetAttributes) GetCosts() BudgetAttributesCosts {
+	if o == nil || o.Costs == nil {
+		var ret BudgetAttributesCosts
+		return ret
+	}
+	return *o.Costs
+}
+
+// GetCostsOk returns a tuple with the Costs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BudgetAttributes) GetCostsOk() (*BudgetAttributesCosts, bool) {
+	if o == nil || o.Costs == nil {
+		return nil, false
+	}
+	return o.Costs, true
+}
+
+// HasCosts returns a boolean if a field has been set.
+func (o *BudgetAttributes) HasCosts() bool {
+	return o != nil && o.Costs != nil
+}
+
+// SetCosts gets a reference to the given BudgetAttributesCosts and assigns it to the Costs field.
+func (o *BudgetAttributes) SetCosts(v BudgetAttributesCosts) {
+	o.Costs = &v
+}
+
+// GetCostsPeriodEnd returns the CostsPeriodEnd field value if set, zero value otherwise.
+func (o *BudgetAttributes) GetCostsPeriodEnd() int64 {
+	if o == nil || o.CostsPeriodEnd == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CostsPeriodEnd
+}
+
+// GetCostsPeriodEndOk returns a tuple with the CostsPeriodEnd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BudgetAttributes) GetCostsPeriodEndOk() (*int64, bool) {
+	if o == nil || o.CostsPeriodEnd == nil {
+		return nil, false
+	}
+	return o.CostsPeriodEnd, true
+}
+
+// HasCostsPeriodEnd returns a boolean if a field has been set.
+func (o *BudgetAttributes) HasCostsPeriodEnd() bool {
+	return o != nil && o.CostsPeriodEnd != nil
+}
+
+// SetCostsPeriodEnd gets a reference to the given int64 and assigns it to the CostsPeriodEnd field.
+func (o *BudgetAttributes) SetCostsPeriodEnd(v int64) {
+	o.CostsPeriodEnd = &v
+}
+
+// GetCostsPeriodStart returns the CostsPeriodStart field value if set, zero value otherwise.
+func (o *BudgetAttributes) GetCostsPeriodStart() int64 {
+	if o == nil || o.CostsPeriodStart == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CostsPeriodStart
+}
+
+// GetCostsPeriodStartOk returns a tuple with the CostsPeriodStart field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BudgetAttributes) GetCostsPeriodStartOk() (*int64, bool) {
+	if o == nil || o.CostsPeriodStart == nil {
+		return nil, false
+	}
+	return o.CostsPeriodStart, true
+}
+
+// HasCostsPeriodStart returns a boolean if a field has been set.
+func (o *BudgetAttributes) HasCostsPeriodStart() bool {
+	return o != nil && o.CostsPeriodStart != nil
+}
+
+// SetCostsPeriodStart gets a reference to the given int64 and assigns it to the CostsPeriodStart field.
+func (o *BudgetAttributes) SetCostsPeriodStart(v int64) {
+	o.CostsPeriodStart = &v
+}
+
+// GetCostsUnit returns the CostsUnit field value if set, zero value otherwise.
+func (o *BudgetAttributes) GetCostsUnit() BudgetAttributesCostsUnit {
+	if o == nil || o.CostsUnit == nil {
+		var ret BudgetAttributesCostsUnit
+		return ret
+	}
+	return *o.CostsUnit
+}
+
+// GetCostsUnitOk returns a tuple with the CostsUnit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BudgetAttributes) GetCostsUnitOk() (*BudgetAttributesCostsUnit, bool) {
+	if o == nil || o.CostsUnit == nil {
+		return nil, false
+	}
+	return o.CostsUnit, true
+}
+
+// HasCostsUnit returns a boolean if a field has been set.
+func (o *BudgetAttributes) HasCostsUnit() bool {
+	return o != nil && o.CostsUnit != nil
+}
+
+// SetCostsUnit gets a reference to the given BudgetAttributesCostsUnit and assigns it to the CostsUnit field.
+func (o *BudgetAttributes) SetCostsUnit(v BudgetAttributesCostsUnit) {
+	o.CostsUnit = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
@@ -368,6 +488,18 @@ func (o BudgetAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Costs != nil {
+		toSerialize["costs"] = o.Costs
+	}
+	if o.CostsPeriodEnd != nil {
+		toSerialize["costs_period_end"] = o.CostsPeriodEnd
+	}
+	if o.CostsPeriodStart != nil {
+		toSerialize["costs_period_start"] = o.CostsPeriodStart
+	}
+	if o.CostsUnit != nil {
+		toSerialize["costs_unit"] = o.CostsUnit
+	}
 	if o.CreatedAt != nil {
 		toSerialize["created_at"] = o.CreatedAt
 	}
@@ -411,27 +543,43 @@ func (o BudgetAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *BudgetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreatedAt    *int64                                        `json:"created_at,omitempty"`
-		CreatedBy    *string                                       `json:"created_by,omitempty"`
-		EndMonth     *int64                                        `json:"end_month,omitempty"`
-		Entries      []BudgetWithEntriesDataAttributesEntriesItems `json:"entries,omitempty"`
-		MetricsQuery *string                                       `json:"metrics_query,omitempty"`
-		Name         *string                                       `json:"name,omitempty"`
-		OrgId        *int64                                        `json:"org_id,omitempty"`
-		StartMonth   *int64                                        `json:"start_month,omitempty"`
-		TotalAmount  *float64                                      `json:"total_amount,omitempty"`
-		UpdatedAt    *int64                                        `json:"updated_at,omitempty"`
-		UpdatedBy    *string                                       `json:"updated_by,omitempty"`
+		Costs            *BudgetAttributesCosts                        `json:"costs,omitempty"`
+		CostsPeriodEnd   *int64                                        `json:"costs_period_end,omitempty"`
+		CostsPeriodStart *int64                                        `json:"costs_period_start,omitempty"`
+		CostsUnit        *BudgetAttributesCostsUnit                    `json:"costs_unit,omitempty"`
+		CreatedAt        *int64                                        `json:"created_at,omitempty"`
+		CreatedBy        *string                                       `json:"created_by,omitempty"`
+		EndMonth         *int64                                        `json:"end_month,omitempty"`
+		Entries          []BudgetWithEntriesDataAttributesEntriesItems `json:"entries,omitempty"`
+		MetricsQuery     *string                                       `json:"metrics_query,omitempty"`
+		Name             *string                                       `json:"name,omitempty"`
+		OrgId            *int64                                        `json:"org_id,omitempty"`
+		StartMonth       *int64                                        `json:"start_month,omitempty"`
+		TotalAmount      *float64                                      `json:"total_amount,omitempty"`
+		UpdatedAt        *int64                                        `json:"updated_at,omitempty"`
+		UpdatedBy        *string                                       `json:"updated_by,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "created_by", "end_month", "entries", "metrics_query", "name", "org_id", "start_month", "total_amount", "updated_at", "updated_by"})
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"costs", "costs_period_end", "costs_period_start", "costs_unit", "created_at", "created_by", "end_month", "entries", "metrics_query", "name", "org_id", "start_month", "total_amount", "updated_at", "updated_by"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	if all.Costs != nil && all.Costs.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Costs = all.Costs
+	o.CostsPeriodEnd = all.CostsPeriodEnd
+	o.CostsPeriodStart = all.CostsPeriodStart
+	if all.CostsUnit != nil && all.CostsUnit.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.CostsUnit = all.CostsUnit
 	o.CreatedAt = all.CreatedAt
 	o.CreatedBy = all.CreatedBy
 	o.EndMonth = all.EndMonth
@@ -446,6 +594,10 @@ func (o *BudgetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

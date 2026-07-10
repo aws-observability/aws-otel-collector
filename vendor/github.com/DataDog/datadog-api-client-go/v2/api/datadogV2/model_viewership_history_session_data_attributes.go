@@ -193,7 +193,7 @@ func (o *ViewershipHistorySessionDataAttributes) UnmarshalJSON(bytes []byte) (er
 		return fmt.Errorf("required field last_watched_at missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"event_id", "last_watched_at", "session_event", "track"})
 	} else {
 		return err

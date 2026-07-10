@@ -489,7 +489,7 @@ func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"embeddable_domains", "expiration", "global_time", "global_time_selectable_enabled", "invitees", "selectable_template_vars", "share_list", "share_type", "status", "title", "viewing_preferences"})
 	} else {
 		return err

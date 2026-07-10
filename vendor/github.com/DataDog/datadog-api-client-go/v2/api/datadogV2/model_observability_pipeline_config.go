@@ -267,7 +267,7 @@ func (o *ObservabilityPipelineConfig) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field sources missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"destinations", "pipeline_type", "processor_groups", "processors", "sources", "use_legacy_search_syntax"})
 	} else {
 		return err

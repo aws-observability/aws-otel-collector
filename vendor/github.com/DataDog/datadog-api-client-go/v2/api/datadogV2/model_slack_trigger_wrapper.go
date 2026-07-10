@@ -120,7 +120,7 @@ func (o *SlackTriggerWrapper) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field slackTrigger missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"slackTrigger", "startStepNames"})
 	} else {
 		return err

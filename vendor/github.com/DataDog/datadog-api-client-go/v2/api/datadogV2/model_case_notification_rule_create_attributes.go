@@ -189,7 +189,7 @@ func (o *CaseNotificationRuleCreateAttributes) UnmarshalJSON(bytes []byte) (err 
 		return fmt.Errorf("required field triggers missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_enabled", "query", "recipients", "triggers"})
 	} else {
 		return err

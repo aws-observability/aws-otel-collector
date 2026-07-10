@@ -315,7 +315,7 @@ func (o *IncidentNotificationRuleAttributes) UnmarshalJSON(bytes []byte) (err er
 		return fmt.Errorf("required field visibility missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.UnmarshalUseNumber(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"conditions", "created", "enabled", "handles", "modified", "renotify_on", "trigger", "visibility"})
 	} else {
 		return err
