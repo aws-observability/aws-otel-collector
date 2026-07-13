@@ -184,6 +184,9 @@ jobs:
           path: testing-framework/cmd/aotutil/aotutil
           fail-on-cache-miss: true
 
+      - name: Build validator image
+        run: docker build -t aoc-validator:local testing-framework/validator
+
       - name: Run Performance test
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
