@@ -132,12 +132,17 @@ jobs:
           cd testing-framework
           docker build -t aoc-validator:local ./validator
 
+      - name: Get runner IP
+        id: runner_ip
+        run: echo "ip=$(curl -s https://checkip.amazonaws.com)/32" >> "$GITHUB_OUTPUT"
+
       - name: Run Canary test
         uses: nick-fields/retry@v2
         with:
           max_attempts: 3
           timeout_minutes: 60
           command: |
+            export TF_VAR_runner_ip=${{ steps.runner_ip.outputs.ip }}
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
             cd testing-framework/terraform/canary
@@ -147,4 +152,5 @@ jobs:
       - name: Destroy terraform resources
         if: ${{ always() }}
         run: |
+          export TF_VAR_runner_ip=${{ steps.runner_ip.outputs.ip }}
           cd testing-framework/terraform/canary && terraform destroy -auto-approve -var="region=us-west-2"
