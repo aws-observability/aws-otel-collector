@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 env:
-  TF_VAR_patch: 'true'
+  TF_VAR_patch: 'false'
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
 
 concurrency:
