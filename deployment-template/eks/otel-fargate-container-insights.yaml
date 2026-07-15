@@ -437,9 +437,8 @@ data:
             action: update
             new_name: container_$$1
 
-      # add cluster name from env variable and EKS metadata
       resourcedetection:
-        detectors: [env, eks]
+        detectors: [env]
 
       batch:
         timeout: 60s
