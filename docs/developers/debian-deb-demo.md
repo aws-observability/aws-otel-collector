@@ -43,7 +43,7 @@ sudo dpkg -i -E ./aws-otel-collector.deb
     ```
 6. Test the data with the running ADOTCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
-docker run --rm -it --network host -e "OTEL_EXPORTER_OTLP_ENDPOINT=127.0.0.1:4317" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=ADOTCollectorRPMDemo,service.name=ADOTCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
+docker run --rm -it --network host -e "OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:4317" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=ADOTCollectorRPMDemo,service.name=ADOTCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
 ```
 
 
