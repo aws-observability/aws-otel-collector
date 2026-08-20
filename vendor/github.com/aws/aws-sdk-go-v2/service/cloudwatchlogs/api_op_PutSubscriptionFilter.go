@@ -124,8 +124,9 @@ type PutSubscriptionFilterInput struct {
 	Distribution types.Distribution
 
 	// A list of system fields to include in the log events sent to the subscription
-	// destination. Valid values are @aws.account and @aws.region . These fields
-	// provide source information for centralized log data in the forwarded payload.
+	// destination. Valid values are @aws.account , @aws.region , and @source.log .
+	// These fields provide source information for centralized log data in the
+	// forwarded payload.
 	EmitSystemFields []string
 
 	// A filter expression that specifies which log events should be processed by this
@@ -172,7 +173,7 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRecordResponseTiming(stack); err != nil {
+	if err = addRecordResponseTiming(stack, options); err != nil {
 		return err
 	}
 	if err = smithyhttp.AddErrorCloseResponseBodyMiddleware(stack); err != nil {
