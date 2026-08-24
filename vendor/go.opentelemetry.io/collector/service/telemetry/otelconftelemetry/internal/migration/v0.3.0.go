@@ -9,11 +9,11 @@ import (
 	"time"
 
 	config "go.opentelemetry.io/contrib/otelconf/v0.3.0"
+	xotelconf "go.opentelemetry.io/contrib/otelconf/x"
 	"go.uber.org/zap/zapcore"
 
 	"go.opentelemetry.io/collector/config/configtelemetry"
 	"go.opentelemetry.io/collector/confmap"
-	"go.opentelemetry.io/collector/confmap/xconfmap"
 )
 
 type TracesConfigV030 struct {
@@ -262,10 +262,11 @@ type LogsSamplingConfig struct {
 type ResourceConfigV030 struct {
 	config.Resource `mapstructure:",squash"`
 
-	LegacyAttributes map[string]any `mapstructure:",remain"`
+	DetectionDevelopment *xotelconf.ExperimentalResourceDetection `mapstructure:"detection/development,omitempty"`
+	LegacyAttributes     map[string]any                           `mapstructure:",remain"`
 }
 
-var _ xconfmap.Validator = (*ResourceConfigV030)(nil)
+var _ confmap.Validator = (*ResourceConfigV030)(nil)
 
 func (cfg *ResourceConfigV030) Validate() error {
 	// resource::attributes_list isn't currently supported by otelconf, so we have to put the default values under resource::attributes.

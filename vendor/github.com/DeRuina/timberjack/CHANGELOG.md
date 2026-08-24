@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.6](https://github.com/DeRuina/timberjack/compare/v1.4.5...v1.4.6) (2026-07-31)
+
+### Performance
+
+* avoid a stat syscall per directory entry in oldLogFiles ([#121](https://github.com/DeRuina/timberjack/pull/121)) ([0e8d599](https://github.com/DeRuina/timberjack/commit/0e8d599a6365b658d78d93cb887d5f560be4f7a9))
+
 ## [1.4.5](https://github.com/DeRuina/timberjack/compare/v1.4.4...v1.4.5) (2026-05-27)
 
 ### Bug Fixes

@@ -1,25 +1,20 @@
 package auto
 
-// detect inspects the bytes after the PRI closing bracket to determine
-// whether the input is RFC 5424 or RFC 3164. It returns the detected format.
-//
-// The function examines at most ~6 bytes and runs in O(1) time.
-// Decision table:
-//   - Letter, space, '*'     → RFC 3164 (month name, leading space, Cisco star)
-//   - '0'                    → RFC 3164 (zero-padded or Cisco counter)
-//   - 4+ digits              → RFC 3164 (year prefix / long Cisco counter)
-//   - 1-3 digits + space     → RFC 5424 (VERSION SP)
-//   - 1-3 digits + ':'       → RFC 3164 (Cisco counter)
-//   - Default                → RFC 5424
+// detect classifies input as RFC3164 or RFC5424 using narrow leading-byte
+// signatures. Inputs beginning with '<' retain the existing post-PRI heuristic;
+// inputs without PRI use timestamp or VERSION signatures.
 func detect(input []byte) Format {
+	if len(input) == 0 || input[0] != '<' {
+		return detectWithoutPRI(input)
+	}
+
 	// Find the closing '>' of PRI.
 	pos := 0
 	for pos < len(input) && input[pos] != '>' {
 		pos++
 	}
 	if pos >= len(input) {
-		// No '>' found — default to RFC 5424 (will fail with PRI error).
-		return FormatRFC5424
+		return detectWithoutPRI(input)
 	}
 
 	// Move past '>'.
@@ -71,4 +66,33 @@ func detect(input []byte) Format {
 
 	// Any other byte — default to RFC 5424 (stricter grammar gives clearer errors).
 	return FormatRFC5424
+}
+
+func detectWithoutPRI(input []byte) Format {
+	if hasRFC3164MonthPrefix(input) {
+		return FormatRFC3164
+	}
+	if len(input) >= 5 &&
+		input[0] >= '0' && input[0] <= '9' &&
+		input[1] >= '0' && input[1] <= '9' &&
+		input[2] >= '0' && input[2] <= '9' &&
+		input[3] >= '0' && input[3] <= '9' &&
+		input[4] == '-' {
+		return FormatRFC3164
+	}
+	return FormatRFC5424
+}
+
+func hasRFC3164MonthPrefix(input []byte) bool {
+	if len(input) < 4 || input[3] != ' ' {
+		return false
+	}
+
+	switch string(input[:3]) {
+	case "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec":
+		return true
+	default:
+		return false
+	}
 }
