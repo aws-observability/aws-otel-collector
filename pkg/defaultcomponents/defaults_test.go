@@ -28,7 +28,7 @@ const (
 	exportersCount  = 18
 	receiversCount  = 11
 	extensionsCount = 7
-	processorCount  = 18
+	processorCount  = 20
 )
 
 // Assert that the components behind feature gate are not in the default
