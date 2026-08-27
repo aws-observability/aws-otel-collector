@@ -216,7 +216,7 @@ main() {
     # detect which init system is in use
     if [ "$(/sbin/init --version 2>/dev/null | grep -c upstart)" = 1 ]; then
         SYSTEMD='false'
-    elif [ "$(systemctl | grep -c '\-\.mount')" = 1 ]; then
+    elif [ -d /run/systemd/system ]; then
         SYSTEMD='true'
     elif [ -f /etc/init.d/cron ] && [ ! -h /etc/init.d/cron ]; then
         echo "sysv-init is not supported" >&2
