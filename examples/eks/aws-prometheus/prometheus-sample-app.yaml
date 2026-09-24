@@ -26,7 +26,15 @@ spec:
     spec:
       containers:
       - name: prometheus-sample-app
-        image: "" # change to your local image
+        # To build the image, clone and build from the sample app source:
+        # https://github.com/aws-observability/aws-otel-community/tree/master/sample-apps/prometheus-sample-app
+        # 
+        # Quick build command:
+        # docker build -t prometheus-sample-app:latest https://github.com/aws-observability/aws-otel-community.git#master:sample-apps/prometheus-sample-app
+        #
+        # Then update the image field below with your built image name
+        image: "prometheus-sample-app:latest"  # Replace with your registry/image:tag
+        imagePullPolicy: IfNotPresent
         command: ["/bin/main", "-listen_address=0.0.0.0:8080", "-metric_count=10"]
         ports:
         - name: web
