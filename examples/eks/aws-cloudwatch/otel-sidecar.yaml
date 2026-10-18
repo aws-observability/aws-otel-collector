@@ -63,12 +63,12 @@ spec:
     exporters:
       otlp_http/traces:
         compression: gzip
-        traces_endpoint: https://xray."us-west-2".amazonaws.com/v1/traces
+        traces_endpoint: https://xray.us-west-2.amazonaws.com/v1/traces
         auth:
           authenticator: sigv4auth/traces
       otlp_http/metrics:
         compression: gzip
-        metrics_endpoint: https://monitoring."us-west-2".amazonaws.com/v1/metrics
+        metrics_endpoint: https://monitoring.us-west-2.amazonaws.com/v1/metrics
         auth:
           authenticator: sigv4auth/metrics
     service:

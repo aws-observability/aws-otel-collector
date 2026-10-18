@@ -101,6 +101,10 @@ Resources:
                           endpoint: 0.0.0.0:4317
                         http:
                           endpoint: 0.0.0.0:4318
+                    # Accepts segments from applications still using the X-Ray SDK.
+                    awsxray:
+                      endpoint: 0.0.0.0:2000
+                      transport: udp
                     statsd:
                       endpoint: 0.0.0.0:8125
                       aggregation_interval: 60s
@@ -125,7 +129,7 @@ Resources:
                     extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
                     pipelines:
                       traces:
-                        receivers: [otlp]
+                        receivers: [otlp, awsxray]
                         processors: [batch/traces]
                         exporters: [otlp_http/traces]
                       metrics:
@@ -226,9 +230,9 @@ Resources:
             - ContainerName: aws-collector
               Condition: START
           EntryPoint:
-            - "/bin/sh"
+            - "/bin/bash"
             - "-c"
-            - "yum install -y socat; while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
+            - "while true; do echo 'statsdTestMetric:1|c' > /dev/udp/127.0.0.1/8125; sleep 1; done"
       RequiresCompatibilities:
         - FARGATE
       Cpu: '1024'
