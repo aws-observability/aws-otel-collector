@@ -1,8 +1,7 @@
 ---
-# This template sends Container Insights metrics for EKS on Fargate as CloudWatch
-# embedded metric format (EMF) logs, which the Container Insights experience is built on.
-# See the Container Insights documentation for current setup options:
-# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html
+# This template produces Container Insights (Classic) metrics for EKS on Fargate in CloudWatch
+# embedded metric format (EMF). Classic is in maintenance mode. For current Container Insights
+# options, see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

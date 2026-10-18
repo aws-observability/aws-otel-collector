@@ -1,9 +1,9 @@
-# This template sends Prometheus metrics to Container Insights as CloudWatch embedded
-# metric format (EMF) logs. For new EKS clusters, AWS recommends the CloudWatch agent
-# for Container Insights Prometheus monitoring:
-# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup.html
-# To send Prometheus metrics as OpenTelemetry metrics instead, use an otlp_http exporter
-# with the CloudWatch OTLP metrics endpoint: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html
+# This template sends Prometheus metrics to Container Insights (Classic) as CloudWatch
+# embedded metric format (EMF) logs. To query Prometheus metrics with PromQL in CloudWatch,
+# export them with otlp_http to the CloudWatch OTLP metrics endpoint instead:
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html
+# For cluster metrics, AWS recommends OTel Container Insights:
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/container-insights-eks-otel.html
 apiVersion: v1
 kind: Namespace
 metadata:
