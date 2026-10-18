@@ -1,4 +1,13 @@
-# create namespace
+# Runs the ADOT Collector as a sidecar using the OpenTelemetry Operator, which the
+# ADOT EKS add-on installs: https://aws-otel.github.io/docs/getting-started/adot-eks-add-on
+#
+# The collector sends traces to the X-Ray OTLP endpoint and metrics to the CloudWatch
+# OTLP endpoint. Before applying:
+#   1. Install the ADOT EKS add-on (or the OpenTelemetry Operator).
+#   2. Enable CloudWatch Transaction Search to send traces to the OTLP endpoint.
+#   3. Grant the aws-otel-sidecar service account an IAM role with the
+#      CloudWatchAgentServerPolicy managed policy, using EKS Pod Identity or IRSA
+#      (for IRSA, set the eks.amazonaws.com/role-arn annotation below).
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -6,7 +15,74 @@ metadata:
   labels:
     name: aws-otel-eks
 ---
-# create deployment
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aws-otel-sidecar
+  namespace: aws-otel-eks
+  # annotations:
+  #   eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/<role-name>
+---
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: cloudwatch-otlp
+  namespace: aws-otel-eks
+spec:
+  mode: sidecar
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  resources:
+    limits:
+      cpu: 256m
+      memory: 512Mi
+    requests:
+      cpu: 32m
+      memory: 24Mi
+  config:
+    extensions:
+      health_check: {}
+      sigv4auth/traces:
+        region: "us-west-2"
+        service: xray
+      sigv4auth/metrics:
+        region: "us-west-2"
+        service: monitoring
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      batch/traces:
+        timeout: 1s
+        send_batch_size: 50
+      batch/metrics:
+        timeout: 60s
+    exporters:
+      otlp_http/traces:
+        compression: gzip
+        traces_endpoint: https://xray."us-west-2".amazonaws.com/v1/traces
+        auth:
+          authenticator: sigv4auth/traces
+      otlp_http/metrics:
+        compression: gzip
+        metrics_endpoint: https://monitoring."us-west-2".amazonaws.com/v1/metrics
+        auth:
+          authenticator: sigv4auth/metrics
+    service:
+      extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch/traces]
+          exporters: [otlp_http/traces]
+        metrics:
+          receivers: [otlp]
+          processors: [batch/metrics]
+          exporters: [otlp_http/metrics]
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,31 +99,21 @@ spec:
     metadata:
       labels:
         name: aws-otel-eks-sidecar
+      annotations:
+        # The Operator injects the cloudwatch-otlp collector into this pod.
+        sidecar.opentelemetry.io/inject: "cloudwatch-otlp"
     spec:
+      serviceAccountName: aws-otel-sidecar
       containers:
         - name: aws-otel-emitter
           image: "public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest"
           env:
-          - name: OTEL_OTLP_ENDPOINT
-            value: "localhost:4317"
-          - name: OTEL_RESOURCE_ATTRIBUTES
-            value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
-          - name: S3_REGION
-            value: "us-west-2"
-          - name: OTEL_METRICS_EXPORTER
-            value: "otlp"
-          imagePullPolicy: Always
-        - name: aws-otel-collector
-          image: public.ecr.aws/aws-observability/aws-otel-collector:latest
-          env:
-            - name: AWS_REGION
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://localhost:4317"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
+            - name: S3_REGION
               value: "us-west-2"
+            - name: OTEL_METRICS_EXPORTER
+              value: "otlp"
           imagePullPolicy: Always
-          resources:
-            limits:
-              cpu:  256m
-              memory: 512Mi
-            requests:
-              cpu: 32m
-              memory: 24Mi
-

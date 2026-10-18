@@ -1,4 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Runs the ADOT Collector as an ECS sidecar that sends traces and metrics to the
+  CloudWatch OTLP endpoints (traces to X-Ray, metrics to CloudWatch). Enable
+  CloudWatch Transaction Search before sending traces to the OTLP endpoint.
 Parameters:
   ClusterName:
     Type: String
@@ -29,9 +33,15 @@ Parameters:
     Default: Default
   command:
     Type: String
-    Description: Using the right command to choose the config file you want to config your AOC
-    Default: '--config=/etc/ecs/ecs-default-config.yaml'
+    Description: >-
+      Leave empty to use the CloudWatch OTLP endpoint configuration defined in this
+      template. To use a configuration bundled in the collector image instead, enter
+      for example --config=/etc/ecs/ecs-default-config.yaml
+    Default: ''
 Conditions:
+  UseInlineConfig: !Equals
+    - !Ref command
+    - ''
   CreateRoles: !Equals
     - !Ref CreateIAMRoles
     - 'True'
@@ -68,7 +78,61 @@ Resources:
       ContainerDefinitions:
         - Name: aws-collector
           Image: 'public.ecr.aws/aws-observability/aws-otel-collector:latest'
-          Command: [!Ref command]
+          Command: !If
+            - UseInlineConfig
+            - !Ref 'AWS::NoValue'
+            - [!Ref command]
+          Environment: !If
+            - UseInlineConfig
+            - - Name: AOT_CONFIG_CONTENT
+                Value: !Sub |
+                  extensions:
+                    health_check:
+                    sigv4auth/traces:
+                      region: ${AWS::Region}
+                      service: xray
+                    sigv4auth/metrics:
+                      region: ${AWS::Region}
+                      service: monitoring
+                  receivers:
+                    otlp:
+                      protocols:
+                        grpc:
+                          endpoint: 0.0.0.0:4317
+                        http:
+                          endpoint: 0.0.0.0:4318
+                    statsd:
+                      endpoint: 0.0.0.0:8125
+                      aggregation_interval: 60s
+                  processors:
+                    batch/traces:
+                      timeout: 1s
+                      send_batch_size: 50
+                    batch/metrics:
+                      timeout: 60s
+                  exporters:
+                    otlp_http/traces:
+                      compression: gzip
+                      traces_endpoint: https://xray.${AWS::Region}.${AWS::URLSuffix}/v1/traces
+                      auth:
+                        authenticator: sigv4auth/traces
+                    otlp_http/metrics:
+                      compression: gzip
+                      metrics_endpoint: https://monitoring.${AWS::Region}.${AWS::URLSuffix}/v1/metrics
+                      auth:
+                        authenticator: sigv4auth/metrics
+                  service:
+                    extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
+                    pipelines:
+                      traces:
+                        receivers: [otlp]
+                        processors: [batch/traces]
+                        exporters: [otlp_http/traces]
+                      metrics:
+                        receivers: [otlp, statsd]
+                        processors: [batch/metrics]
+                        exporters: [otlp_http/metrics]
+            - !Ref 'AWS::NoValue'
           Cpu: '256'
           Memory: '512'
           LogConfiguration:
@@ -84,8 +148,8 @@ Resources:
             Interval: 5
             Retries: 2
             Timeout: 3
-        - Name: aws-xray-data-emitter
-          Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
+        - Name: ot-sample-app
+          Image: 'public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest'
           Essential: false
           Cpu: '256'
           Memory: '512'
@@ -93,12 +157,42 @@ Resources:
             LogDriver: awslogs
             Options:
               awslogs-create-group: 'True'
-              awslogs-group: /ecs/ecs-aws-xray-sidecar-emitter
+              awslogs-group: /ecs/ecs-aws-otel-sidecar-sample-app
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
+          Environment:
+            - Name: OTEL_EXPORTER_OTLP_ENDPOINT
+              Value: 'http://localhost:4317'
+            - Name: OTEL_METRICS_EXPORTER
+              Value: otlp
+            - Name: OTEL_RESOURCE_ATTRIBUTES
+              Value: 'service.namespace=AWSOTel,service.name=ecs-otel-sample-app'
+            - Name: AWS_REGION
+              Value: !Ref 'AWS::Region'
+            - Name: LISTEN_ADDRESS
+              Value: '0.0.0.0:4567'
           DependsOn:
             - ContainerName: aws-collector
               Condition: START
+        - Name: traffic-generator
+          Image: 'public.ecr.aws/amazonlinux/amazonlinux:latest'
+          Essential: false
+          Cpu: '128'
+          Memory: '256'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/traffic-generator
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          DependsOn:
+            - ContainerName: ot-sample-app
+              Condition: START
+          EntryPoint:
+            - "/bin/sh"
+            - "-c"
+            - "sleep 30; while :; do curl -s http://localhost:4567/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl -s http://localhost:4567/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
         - Name: nginx
           Image: 'public.ecr.aws/nginx/nginx:latest'
           Essential: false
@@ -176,6 +270,7 @@ Resources:
                   - 'logs:CreateLogStream'
                   - 'logs:DescribeLogStreams'
                   - 'logs:DescribeLogGroups'
+                  - 'cloudwatch:PutMetricData'
                   - 'xray:PutTraceSegments'
                   - 'xray:PutTelemetryRecords'
                   - 'xray:GetSamplingRules'

@@ -1,3 +1,8 @@
+# This template sends Container Insights infrastructure metrics as CloudWatch embedded
+# metric format (EMF) logs, which the Container Insights experience is built on.
+# For new EKS clusters, AWS recommends the Amazon CloudWatch Observability EKS add-on,
+# which provides Container Insights with OpenTelemetry metrics:
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/container-insights-eks-otel.html
 # create namespace
 apiVersion: v1
 kind: Namespace

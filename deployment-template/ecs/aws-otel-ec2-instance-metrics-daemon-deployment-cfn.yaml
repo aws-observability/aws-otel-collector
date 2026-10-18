@@ -1,3 +1,8 @@
+# This template sends ECS EC2 instance-level Container Insights metrics as CloudWatch
+# embedded metric format (EMF) logs. AWS recommends Container Insights with enhanced
+# observability for ECS, and the CloudWatch agent for instance-level metrics:
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/deploy-container-insights-ECS-cluster.html
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/deploy-container-insights-ECS-instancelevel.html
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   ClusterName:

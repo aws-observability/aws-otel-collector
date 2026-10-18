@@ -1,6 +1,10 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Template to install aws-otel-collector on amazon linux. It was validated on amazon linux 2'
+Description: >-
+  Installs the ADOT Collector on Amazon Linux 2023 and sends traces and metrics to the
+  CloudWatch OTLP endpoints (traces to X-Ray, metrics to CloudWatch). The instance role
+  needs the CloudWatchAgentServerPolicy managed policy. Enable CloudWatch Transaction
+  Search before sending traces to the OTLP endpoint.
 Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
@@ -12,11 +16,11 @@ Parameters:
     Default: m4.2xlarge
     ConstraintDescription: must be a valid EC2 instance type.
   InstanceAMI:
-    Description: Managed AMI ID for EC2 Instance
-    Type : String
-    Default: ami-7707a10f
+    Description: Amazon Linux 2023 AMI, resolved from the public SSM parameter
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
   IAMRole:
-    Description: EC2 attached IAM role
+    Description: EC2 instance profile name. Its role needs the CloudWatchAgentServerPolicy managed policy.
     Type: String
     Default: AWSOTelRole
     ConstraintDescription: must be an existing IAM role which will be attached to EC2 instance.
@@ -48,22 +52,47 @@ Resources:
               content: !Sub |
                 extensions:
                   health_check:
+                  sigv4auth/traces:
+                    region: ${AWS::Region}
+                    service: xray
+                  sigv4auth/metrics:
+                    region: ${AWS::Region}
+                    service: monitoring
                 receivers:
                   otlp:
                     protocols:
                       grpc:
                         endpoint: 0.0.0.0:4317
+                      http:
+                        endpoint: 0.0.0.0:4318
+                processors:
+                  batch/traces:
+                    timeout: 1s
+                    send_batch_size: 50
+                  batch/metrics:
+                    timeout: 60s
                 exporters:
-                  awsxray:
-                  awsemf:
+                  otlp_http/traces:
+                    compression: gzip
+                    traces_endpoint: https://xray.${AWS::Region}.${AWS::URLSuffix}/v1/traces
+                    auth:
+                      authenticator: sigv4auth/traces
+                  otlp_http/metrics:
+                    compression: gzip
+                    metrics_endpoint: https://monitoring.${AWS::Region}.${AWS::URLSuffix}/v1/metrics
+                    auth:
+                      authenticator: sigv4auth/metrics
                 service:
+                  extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
                   pipelines:
                     traces:
                       receivers: [otlp]
-                      exporters: [awsxray]
+                      processors: [batch/traces]
+                      exporters: [otlp_http/traces]
                     metrics:
                       receivers: [otlp]
-                      exporters: [awsemf]
+                      processors: [batch/metrics]
+                      exporters: [otlp_http/metrics]
         # Invoke aws-otel-collector-ctl to restart aws-otel-collector.
         03_restart-aws-otel-collector:
           commands:
@@ -127,6 +156,7 @@ Resources:
         # This script below is to install aws-otel-collector, restart aws-otel-collector and tell the result to cloudformation.
         Fn::Base64: !Sub |
           #!/bin/bash
+          dnf install -y aws-cfn-bootstrap
           sudo rpm -Uvh https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource EC2Instance --region ${AWS::Region} --configsets default
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource EC2Instance --region ${AWS::Region}
