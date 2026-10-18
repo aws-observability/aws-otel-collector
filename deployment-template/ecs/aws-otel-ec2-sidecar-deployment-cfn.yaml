@@ -150,9 +150,11 @@ Resources:
               awslogs-stream-prefix: ecs
           Environment:
             - Name: OTEL_EXPORTER_OTLP_ENDPOINT
-              Value: 'http://aws-collector:4317'
+              Value: 'http://aws-collector:4318'
             - Name: OTEL_METRICS_EXPORTER
               Value: otlp
+            - Name: OTEL_LOGS_EXPORTER
+              Value: none
             - Name: OTEL_RESOURCE_ATTRIBUTES
               Value: 'service.namespace=AWSOTel,service.name=ecs-otel-sample-app'
             - Name: AWS_REGION

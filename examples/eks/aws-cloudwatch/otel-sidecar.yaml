@@ -109,11 +109,13 @@ spec:
           image: "public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest"
           env:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://localhost:4317"
+              value: "http://localhost:4318"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
             - name: S3_REGION
               value: "us-west-2"
             - name: OTEL_METRICS_EXPORTER
               value: "otlp"
+            - name: OTEL_LOGS_EXPORTER
+              value: "none"
           imagePullPolicy: Always
