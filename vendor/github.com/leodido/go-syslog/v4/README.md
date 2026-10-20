@@ -85,7 +85,9 @@ RFC5424 parser has the ability to perform partial matches (until it can).
 
 With this mode enabled, when the parsing process errors out it returns the message collected until that position, and the error that caused the parser to stop.
 
-Notice that in this modality the output is returned _iff_ it represents a minimally valid message - ie., a message containing almost a priority field in `[1,191]` within angular brackets, followed by a version in `]0,999]` (in the case of RFC5424).
+By default, best-effort parsing returns a partial RFC5424 message only after a
+valid PRI and VERSION have been parsed. With `WithOptionalPriority()`, PRI may
+be absent and a valid VERSION is the parser-level minimum.
 
 Let's look at an example.
 
@@ -126,6 +128,11 @@ Both `m` and `e` have a value since at the column the parser stopped it already 
 ### Builder
 
 This library also provides a builder to construct valid syslog messages.
+
+`SyslogMessage.Valid()` reports parser-level structural validity. A message
+with a valid VERSION and no PRI can therefore be valid after priorityless
+parsing, but `String()` deliberately remains stricter and returns an error
+unless PRI is present.
 
 Notice that its API ignores input values that does not match the grammar.
 
@@ -186,9 +193,27 @@ m := auto.NewMachine(
 )
 ```
 
-It also works with the stream parsers via `NewParserAuto` - see [octet counting](#octet-counting) and [non-transparent](#non-transparent) below.
+To accept messages that omit PRI, enable the parser option for both inner
+formats. Strict PRI handling remains the default when these options are absent.
 
-Performance-wise, auto-detect peeks at a few bytes after the PRI to pick the format - no allocations, no copying. It's as fast as calling the right parser yourself.
+```go
+m := auto.NewMachine(
+    auto.WithRFC3164Options(rfc3164.WithOptionalPriority()),
+    auto.WithRFC5424Options(rfc5424.WithOptionalPriority()),
+)
+```
+
+`NewParserAuto` also provides auto-detection to the stream parsers for
+PRI-bearing messages - see [octet counting](#octet-counting) and
+[non-transparent](#non-transparent) below. Stream framing still requires the
+syslog payload to begin with PRI, so priorityless auto-detection currently
+applies only when parsing directly with `auto.Machine`.
+
+Auto-detect chooses a format before parsing. Inputs beginning with `<` scan for
+the first `>` and then use the existing post-PRI VERSION-versus-timestamp
+heuristic. Inputs without PRI use narrow leading signatures: an RFC3164 month
+or four-digit RFC3339 year selects RFC3164, while other inputs default to
+RFC5424.
 
 ## Message transfer
 

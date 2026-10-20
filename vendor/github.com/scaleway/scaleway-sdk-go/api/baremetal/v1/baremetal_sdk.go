@@ -275,6 +275,47 @@ func (enum *ListSettingsRequestOrderBy) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+type MemoryEccType string
+
+const (
+	MemoryEccTypeUnknownEccType = MemoryEccType("unknown_ecc_type")
+	MemoryEccTypeNone           = MemoryEccType("none")
+	MemoryEccTypeStandard       = MemoryEccType("standard")
+	MemoryEccTypeOnDie          = MemoryEccType("on_die")
+)
+
+func (enum MemoryEccType) String() string {
+	if enum == "" {
+		// return default value if empty
+		return string(MemoryEccTypeUnknownEccType)
+	}
+	return string(enum)
+}
+
+func (enum MemoryEccType) Values() []MemoryEccType {
+	return []MemoryEccType{
+		"unknown_ecc_type",
+		"none",
+		"standard",
+		"on_die",
+	}
+}
+
+func (enum MemoryEccType) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, enum)), nil
+}
+
+func (enum *MemoryEccType) UnmarshalJSON(data []byte) error {
+	tmp := ""
+
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+
+	*enum = MemoryEccType(MemoryEccType(tmp).String())
+	return nil
+}
+
 type OfferStock string
 
 const (
@@ -1118,6 +1159,10 @@ type Memory struct {
 
 	// IsEcc: true if the memory is an error-correcting code memory.
 	IsEcc bool `json:"is_ecc"`
+
+	// EccType: type of ECC memory.
+	// Default value: unknown_ecc_type
+	EccType MemoryEccType `json:"ecc_type"`
 }
 
 // OfferOptionOffer: offer option offer.
@@ -1183,6 +1228,15 @@ type RaidController struct {
 	Model string `json:"model"`
 
 	RaidLevel []string `json:"raid_level"`
+}
+
+// BatchCreateServersRequestServerConfig: batch create servers request server config.
+type BatchCreateServersRequestServerConfig struct {
+	Hostname string `json:"hostname"`
+
+	Description string `json:"description"`
+
+	Tags []string `json:"tags"`
 }
 
 // CreateServerRequest: create server request.
@@ -1545,6 +1599,23 @@ type BMCAccess struct {
 
 	// ExpiresAt: the date after which the BMC (Baseboard Management Controller) access will be closed.
 	ExpiresAt *time.Time `json:"expires_at"`
+}
+
+// BatchCreateServersRequest: batch create servers request.
+type BatchCreateServersRequest struct {
+	// Zone: zone to target. If none is passed will use default zone from the config.
+	Zone scw.Zone `json:"-"`
+
+	// CommonConfiguration: configuration wanted for the servers to create.
+	CommonConfiguration *CreateServerRequest `json:"common_configuration,omitempty"`
+
+	// Servers: list of servers to create.
+	Servers []*BatchCreateServersRequestServerConfig `json:"servers"`
+}
+
+// BatchCreateServersResponse: batch create servers response.
+type BatchCreateServersResponse struct {
+	Servers []*Server `json:"servers"`
 }
 
 // DeleteOptionServerRequest: delete option server request.
@@ -2378,6 +2449,38 @@ func (s *API) CreateServer(req *CreateServerRequest, opts ...scw.RequestOption) 
 	}
 
 	var resp Server
+
+	err = s.client.Do(scwReq, &resp, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// BatchCreateServers: Create multiple new Elastic Metal servers. Once the servers are created, proceed with the [installation of an OS](#post-3e949e).
+func (s *API) BatchCreateServers(req *BatchCreateServersRequest, opts ...scw.RequestOption) (*BatchCreateServersResponse, error) {
+	var err error
+
+	if req.Zone == "" {
+		defaultZone, _ := s.client.GetDefaultZone()
+		req.Zone = defaultZone
+	}
+
+	if fmt.Sprint(req.Zone) == "" {
+		return nil, errors.New("field Zone cannot be empty in request")
+	}
+
+	scwReq := &scw.ScalewayRequest{
+		Method: "POST",
+		Path:   "/baremetal/v1/zones/" + fmt.Sprint(req.Zone) + "/batch-create-servers",
+	}
+
+	err = scwReq.SetBody(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp BatchCreateServersResponse
 
 	err = s.client.Do(scwReq, &resp, opts...)
 	if err != nil {

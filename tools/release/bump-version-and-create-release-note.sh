@@ -18,6 +18,29 @@
 ## below is an example to run this script:
 ## RELEASE_VERSION=v0.1.8 GITHUB_TOKEN=e75***********fa3d0d ./tools/release/bump-version-and-create-release-note.sh
 
+# verify the required environment variables are set before doing anything
+if [ -z "${GITHUB_TOKEN}" ]; then
+    echo "GITHUB_TOKEN is not set. Please set it before running this script." >&2
+    exit 1
+fi
+if [ -z "${RELEASE_VERSION}" ]; then
+    echo "RELEASE_VERSION is not set. Please set it before running this script (e.g. RELEASE_VERSION=v0.1.8)." >&2
+    exit 1
+fi
+
+# abort if the working tree is not clean, leftover files can break the release note generation
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Working tree is not clean. Please commit, stash, or remove local changes before running this script." >&2
+    exit 1
+fi
+
+# make sure the local branch is up to date with origin/main before reading the VERSION file
+git fetch origin
+if ! git merge-base --is-ancestor origin/main HEAD; then
+    echo "Local branch is behind origin/main. Please run 'git merge --ff-only origin/main' before running this script." >&2
+    exit 1
+fi
+
 # get the current version
 VERSION=$(cat VERSION)
 OUTPUT="docs/releases/${RELEASE_VERSION}.md"
@@ -41,5 +64,5 @@ sed -E "s/^Version\=\"[0-9]+.[0-9]+.[0-9]+\"/Version=\"${RELEASE_VERSION:1}\"/" 
 mv ./tools/packaging/windows/aws-otel-collector.wxs.tmp ./tools/packaging/windows/aws-otel-collector.wxs
 
 # git commit
-git add VERSION "docs/releases/${RELEASE_VERSION}.md"
+git add VERSION "docs/releases/${RELEASE_VERSION}.md" ./tools/packaging/windows/aws-otel-collector.wxs
 git commit -m "bump version to ${RELEASE_VERSION}"

@@ -18,6 +18,8 @@ import (
 type LocationProperties struct {
 	// The location name.
 	Name *string `json:"name,omitempty"`
+	// the metro region, to which this datacenter location belongs to
+	MetroRegion *string `json:"metroRegion,omitempty"`
 	// A list of available features in the location.
 	Features *[]string `json:"features,omitempty"`
 	// A list of image aliases available in the location.
@@ -78,6 +80,44 @@ func (o *LocationProperties) SetName(v string) {
 // HasName returns a boolean if a field has been set.
 func (o *LocationProperties) HasName() bool {
 	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMetroRegion returns the MetroRegion field value
+// If the value is explicit nil, nil is returned
+func (o *LocationProperties) GetMetroRegion() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.MetroRegion
+
+}
+
+// GetMetroRegionOk returns a tuple with the MetroRegion field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LocationProperties) GetMetroRegionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.MetroRegion, true
+}
+
+// SetMetroRegion sets field value
+func (o *LocationProperties) SetMetroRegion(v string) {
+
+	o.MetroRegion = &v
+
+}
+
+// HasMetroRegion returns a boolean if a field has been set.
+func (o *LocationProperties) HasMetroRegion() bool {
+	if o != nil && o.MetroRegion != nil {
 		return true
 	}
 
@@ -240,6 +280,10 @@ func (o LocationProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
+	}
+
+	if o.MetroRegion != nil {
+		toSerialize["metroRegion"] = o.MetroRegion
 	}
 
 	if o.Features != nil {
