@@ -3,6 +3,9 @@ Description: >-
   Runs the ADOT Collector as an ECS sidecar that sends traces and metrics to the
   CloudWatch OTLP endpoints (traces to X-Ray, metrics to CloudWatch). Enable
   CloudWatch Transaction Search before sending traces to the OTLP endpoint.
+  Earlier versions of this template sent metrics as EMF to the
+  ECS/AWSOTel/Application namespace; set the command parameter to
+  --config=/etc/ecs/ecs-default-config.yaml to keep that behavior.
 Parameters:
   ClusterName:
     Type: String
@@ -36,7 +39,9 @@ Parameters:
     Description: >-
       Leave empty to use the CloudWatch OTLP endpoint configuration defined in this
       template. To use a configuration bundled in the collector image instead, enter
-      for example --config=/etc/ecs/ecs-default-config.yaml
+      for example --config=/etc/ecs/ecs-default-config.yaml, which sends metrics as
+      EMF to the ECS/AWSOTel/Application namespace as earlier versions of this
+      template did.
     Default: ''
 Conditions:
   UseInlineConfig: !Equals
