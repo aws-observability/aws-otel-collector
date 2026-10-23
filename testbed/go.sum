@@ -278,8 +278,8 @@ github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.35.0
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.35.0/go.mod h1:Yj5vHEz/aAepZGliRJsA6uvHAVAQyEwajq9ORCHPxzM=
 github.com/HdrHistogram/hdrhistogram-go v1.2.0 h1:XMJkDWuz6bM9Fzy7zORuVFKH7ZJY41G2q8KWhVGkNiY=
 github.com/HdrHistogram/hdrhistogram-go v1.2.0/go.mod h1:CiIeGiHSd06zjX+FypuEJ5EQ07KKtxZ+8J6hszwVQig=
-github.com/Masterminds/semver/v3 v3.4.0 h1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=
-github.com/Masterminds/semver/v3 v3.4.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
+github.com/Masterminds/semver/v3 v3.5.0 h1:kQceYJfbupGfZOKZQg0kou0DgAKhzDg2NZPAwZ/2OOE=
+github.com/Masterminds/semver/v3 v3.5.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/Microsoft/go-winio v0.5.0/go.mod h1:JPGBdM1cNvN/6ISo+n8V5iA4v8pBzdOpzfwIujj1a84=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
@@ -1136,6 +1136,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocesso
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.158.0/go.mod h1:HhBuFMrcegMpoVooV5ZYj5vH28rZ6HbWAHBNutYnRQg=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.158.0 h1:ByYwcazbwGt8WqIF0Y9g/grtjxrXz8ydRM6f9NhzGTo=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.158.0/go.mod h1:S41TAW2PqMwMEEjYN/LfuB7oLCDr8KuMiDp2A2xeFmA=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.158.0 h1:kaQITIrqQC6HZxCoFxUo85wT2dxTQMhrS5xIqFz3wHc=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.158.0/go.mod h1:EJk1vwQku4XBzN0i0n6M8vMHDbTdSj/CcbnCZqp86sc=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.158.0 h1:x8MysyEhJBXmjUiXtewkLUO98FhjGVMqeaQElHO+lMY=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.158.0/go.mod h1:v7o/F8LQug68cuf0YKfVsQj0pejZONc+c7i0ExnRqeI=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.158.0 h1:wlCwsiGjsD+tot9mr8Rm8zpfJ+s0epxzJmXmUH7jquk=
