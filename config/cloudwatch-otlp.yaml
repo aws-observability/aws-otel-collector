@@ -28,6 +28,38 @@ processors:
     send_batch_size: 50
   batch/metrics:
     timeout: 60s
+  # Resource attributes match the CloudWatch Container Insights OpenTelemetry pipeline
+  # (amazon-cloudwatch-observability Helm chart).
+  resource_detection:
+    detectors:
+      - env
+      - ec2
+    ec2:
+      resource_attributes:
+        host.id: { enabled: true }
+        host.type: { enabled: true }
+        host.name: { enabled: true }
+        host.image.id: { enabled: true }
+        cloud.provider: { enabled: true }
+        cloud.platform: { enabled: true }
+        cloud.region: { enabled: true }
+        cloud.availability_zone: { enabled: true }
+        cloud.account.id: { enabled: true }
+  # cloud.resource_id is the ARN of the EC2 instance, unless the application set one.
+  transform/cloud_resource_id:
+    error_mode: ignore
+    trace_statements:
+      - &cloud_resource_id
+        context: resource
+        statements:
+          - set(resource.attributes["cloud.resource_id"], Concat(["arn:aws-cn:ec2:", resource.attributes["cloud.region"], ":", resource.attributes["cloud.account.id"], ":instance/", resource.attributes["host.id"]], ""))
+            where resource.attributes["cloud.resource_id"] == nil and resource.attributes["cloud.platform"] == "aws_ec2" and IsMatch(resource.attributes["cloud.region"], "^cn-") and resource.attributes["cloud.account.id"] != nil and resource.attributes["host.id"] != nil
+          - set(resource.attributes["cloud.resource_id"], Concat(["arn:aws-us-gov:ec2:", resource.attributes["cloud.region"], ":", resource.attributes["cloud.account.id"], ":instance/", resource.attributes["host.id"]], ""))
+            where resource.attributes["cloud.resource_id"] == nil and resource.attributes["cloud.platform"] == "aws_ec2" and IsMatch(resource.attributes["cloud.region"], "^us-gov-") and resource.attributes["cloud.account.id"] != nil and resource.attributes["host.id"] != nil
+          - set(resource.attributes["cloud.resource_id"], Concat(["arn:aws:ec2:", resource.attributes["cloud.region"], ":", resource.attributes["cloud.account.id"], ":instance/", resource.attributes["host.id"]], ""))
+            where resource.attributes["cloud.resource_id"] == nil and resource.attributes["cloud.platform"] == "aws_ec2" and resource.attributes["cloud.region"] != nil and resource.attributes["cloud.account.id"] != nil and resource.attributes["host.id"] != nil
+    metric_statements:
+      - *cloud_resource_id
 
 exporters:
   otlp_http/traces:
@@ -45,11 +77,11 @@ service:
   pipelines:
     traces:
       receivers: [otlp, awsxray]
-      processors: [batch/traces]
+      processors: [resource_detection, transform/cloud_resource_id, batch/traces]
       exporters: [otlp_http/traces]
     metrics:
       receivers: [otlp]
-      processors: [batch/metrics]
+      processors: [resource_detection, transform/cloud_resource_id, batch/metrics]
       exporters: [otlp_http/metrics]
 
   extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]

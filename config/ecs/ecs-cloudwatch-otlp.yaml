@@ -31,11 +31,35 @@ processors:
     send_batch_size: 50
   batch/metrics:
     timeout: 60s
+  # Resource attributes match the CloudWatch Container Insights OpenTelemetry pipeline
+  # (amazon-cloudwatch-observability Helm chart).
   resource_detection:
     detectors:
       - env
       - ecs
       - ec2
+    ec2:
+      resource_attributes:
+        host.id: { enabled: true }
+        host.type: { enabled: true }
+        host.name: { enabled: true }
+        host.image.id: { enabled: true }
+        cloud.provider: { enabled: true }
+        cloud.platform: { enabled: true }
+        cloud.region: { enabled: true }
+        cloud.availability_zone: { enabled: true }
+        cloud.account.id: { enabled: true }
+  # cloud.resource_id is the ARN of the ECS cluster, unless the application set one.
+  transform/cloud_resource_id:
+    error_mode: ignore
+    trace_statements:
+      - &cloud_resource_id
+        context: resource
+        statements:
+          - set(resource.attributes["cloud.resource_id"], resource.attributes["aws.ecs.cluster.arn"])
+            where resource.attributes["cloud.resource_id"] == nil and resource.attributes["aws.ecs.cluster.arn"] != nil
+    metric_statements:
+      - *cloud_resource_id
 
 exporters:
   otlp_http/traces:
@@ -53,11 +77,11 @@ service:
   pipelines:
     traces:
       receivers: [otlp, awsxray]
-      processors: [resource_detection, batch/traces]
+      processors: [resource_detection, transform/cloud_resource_id, batch/traces]
       exporters: [otlp_http/traces]
     metrics:
       receivers: [otlp, statsd]
-      processors: [resource_detection, batch/metrics]
+      processors: [resource_detection, transform/cloud_resource_id, batch/metrics]
       exporters: [otlp_http/metrics]
 
   extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
