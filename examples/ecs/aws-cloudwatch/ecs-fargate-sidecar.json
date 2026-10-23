@@ -28,8 +28,30 @@
     },
     {
       "name": "aws-otel-emitter",
-      "image": "public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest",
+      "image": "public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest",
       "essential": false,
+      "environment": [
+        {
+          "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+          "value": "http://localhost:4318"
+        },
+        {
+          "name": "OTEL_METRICS_EXPORTER",
+          "value": "otlp"
+        },
+        {
+          "name": "OTEL_LOGS_EXPORTER",
+          "value": "none"
+        },
+        {
+          "name": "OTEL_RESOURCE_ATTRIBUTES",
+          "value": "service.namespace=AWSOTel,service.name=ecs-otel-sample-app"
+        },
+        {
+          "name": "LISTEN_ADDRESS",
+          "value": "0.0.0.0:4567"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -88,6 +110,6 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "256",
-  "memory": "512"
+  "cpu": "1024",
+  "memory": "2048"
 }
