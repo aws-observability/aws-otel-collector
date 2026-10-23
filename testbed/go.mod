@@ -1,6 +1,6 @@
 module github.com/aws-observability/aws-otel-collector/testbed
 
-go 1.26.9
+go 1.26.10
 
 require (
 	github.com/aws-observability/aws-otel-collector v0.46.0
