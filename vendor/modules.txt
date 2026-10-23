@@ -543,6 +543,9 @@ github.com/DeRuina/timberjack
 # github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.35.0
 ## explicit; go 1.25.0
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp
+# github.com/Masterminds/semver/v3 v3.5.0
+## explicit; go 1.21
+github.com/Masterminds/semver/v3
 # github.com/Microsoft/go-winio v0.6.2
 ## explicit; go 1.21
 github.com/Microsoft/go-winio
@@ -1766,6 +1769,9 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataprovi
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/tencent/cvm
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/upcloud
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/vultr
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/pdatautil v0.158.0
+## explicit; go 1.25.0
+github.com/open-telemetry/opentelemetry-collector-contrib/internal/pdatautil
 # github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent v0.158.0
 ## explicit; go 1.25.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent
@@ -2057,6 +2063,16 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsampling
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/internal/tailstorageextension
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/internal/telemetry
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/pkg/samplingpolicy
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.158.0
+## explicit; go 1.25.0
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/common
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/logparsingfuncs
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/logs
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/metrics
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/profiles
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/traces
 # github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.158.0
 ## explicit; go 1.25.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver
