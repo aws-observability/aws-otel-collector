@@ -209,7 +209,11 @@ jobs:
     # Build and archive binaries into cache.
     - name: Build Binaries
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: PARALLEL=1 make build
+      run: make build
+      env:
+        # Build in parallel only on the large runner. Standard runners, which pull
+        # requests from forks get, run out of memory building 8 binaries at once.
+        PARALLEL: ${{ vars.ADOTLARGERUNNERS && '1' || '' }}
 
     # upload the binaries to artifact as well because cache@v3 hasn't support windows
     - name: Upload
