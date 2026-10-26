@@ -70,7 +70,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-create-group": "True",
-          "awslogs-region": "us-west-2",
+          "awslogs-region": "{{region}}",
           "awslogs-stream-prefix": "ecs",
           "awslogs-group": "/ecs/statsd-emitter"
         }
