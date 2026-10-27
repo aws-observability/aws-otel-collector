@@ -106,13 +106,6 @@ Resources:
                           endpoint: 0.0.0.0:4317
                         http:
                           endpoint: 0.0.0.0:4318
-                    # Accepts segments from applications still using the X-Ray SDK.
-                    awsxray:
-                      endpoint: 0.0.0.0:2000
-                      transport: udp
-                    statsd:
-                      endpoint: 0.0.0.0:8125
-                      aggregation_interval: 60s
                   processors:
                     batch/traces:
                       timeout: 1s
@@ -134,11 +127,11 @@ Resources:
                     extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
                     pipelines:
                       traces:
-                        receivers: [otlp, awsxray]
+                        receivers: [otlp]
                         processors: [batch/traces]
                         exporters: [otlp_http/traces]
                       metrics:
-                        receivers: [otlp, statsd]
+                        receivers: [otlp]
                         processors: [batch/metrics]
                         exporters: [otlp_http/metrics]
             - !Ref 'AWS::NoValue'
@@ -219,25 +212,6 @@ Resources:
           DependsOn:
             - ContainerName: aws-collector
               Condition: START
-        - Name: aoc-statsd-emitter
-          Image: 'public.ecr.aws/amazonlinux/amazonlinux:latest'
-          Essential: false
-          Cpu: '128'
-          Memory: '256'
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-create-group: 'True'
-              awslogs-group: /ecs/statsd-emitter
-              awslogs-region: !Ref 'AWS::Region'
-              awslogs-stream-prefix: ecs
-          DependsOn:
-            - ContainerName: aws-collector
-              Condition: START
-          EntryPoint:
-            - "/bin/bash"
-            - "-c"
-            - "while true; do echo 'statsdTestMetric:1|c' > /dev/udp/127.0.0.1/8125; sleep 1; done"
       RequiresCompatibilities:
         - FARGATE
       Cpu: '1024'
