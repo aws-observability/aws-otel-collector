@@ -68,6 +68,8 @@ The ADOT Collector is built with a [default configuration](https://github.com/aw
 The ADOT Collector configuration uses the same configuration syntax/design from [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector). For more information regarding OpenTelemetry Collector configuration please refer to the [upstream documentation](https://opentelemetry.io/docs/collector/configuration/). 
 so you can customize or port your OpenTelemetry Collector configuration files when running ADOT Collector. Please refer to the `Try out the ADOT Collector` section on configuring ADOT Collector.
 
+To send traces and metrics to the [CloudWatch OTLP endpoints](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html), use [config/cloudwatch-otlp.yaml](config/cloudwatch-otlp.yaml), or [config/ecs/ecs-cloudwatch-otlp.yaml](config/ecs/ecs-cloudwatch-otlp.yaml) on Amazon ECS. Both are included in the container image (`--config=/etc/cloudwatch-otlp.yaml` and `--config=/etc/ecs/ecs-cloudwatch-otlp.yaml`) and require the `AWS_REGION` environment variable. Enable CloudWatch Transaction Search before sending traces to the OTLP endpoint. These configurations receive OTLP only; for applications that send StatsD metrics or use the X-Ray SDK, use the existing configurations such as `--config=/etc/ecs/ecs-default-config.yaml`.
+
 #### Try out the ADOT Collector
 
 The ADOT Collector supports all AWS computing platforms and Docker/Kubernetes. Here are some examples on how to run the ADOT Collector to send telemetry data:
