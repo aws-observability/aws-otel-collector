@@ -18,9 +18,6 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-  awsxray:
-    endpoint: 0.0.0.0:2000
-    transport: udp
 
 processors:
   batch/traces:
@@ -44,7 +41,7 @@ exporters:
 service:
   pipelines:
     traces:
-      receivers: [otlp, awsxray]
+      receivers: [otlp]
       processors: [batch/traces]
       exporters: [otlp_http/traces]
     metrics:

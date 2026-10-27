@@ -18,12 +18,6 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-  awsxray:
-    endpoint: 0.0.0.0:2000
-    transport: udp
-  statsd:
-    endpoint: 0.0.0.0:8125
-    aggregation_interval: 60s
 
 processors:
   batch/traces:
@@ -52,11 +46,11 @@ exporters:
 service:
   pipelines:
     traces:
-      receivers: [otlp, awsxray]
+      receivers: [otlp]
       processors: [resource_detection, batch/traces]
       exporters: [otlp_http/traces]
     metrics:
-      receivers: [otlp, statsd]
+      receivers: [otlp]
       processors: [resource_detection, batch/metrics]
       exporters: [otlp_http/metrics]
 
