@@ -1,6 +1,6 @@
 module github.com/aws-observability/aws-otel-collector
 
-go 1.26.9
+go 1.26.10
 
 require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.158.0
