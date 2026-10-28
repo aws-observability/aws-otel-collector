@@ -1,3 +1,8 @@
+# This template produces Container Insights (Classic) metrics in CloudWatch embedded metric
+# format (EMF). Classic is in maintenance mode. AWS recommends OTel Container Insights, which
+# collects open-source metrics (cAdvisor, Node Exporter, kube-state-metrics) over OTLP for
+# PromQL queries, enabled through the Amazon CloudWatch Observability EKS add-on:
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/container-insights-eks-otel.html
 # create namespace
 apiVersion: v1
 kind: Namespace

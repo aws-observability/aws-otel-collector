@@ -1,4 +1,11 @@
 AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Runs the ADOT Collector as an ECS sidecar that sends traces and metrics to the
+  CloudWatch OTLP endpoints (traces to X-Ray, metrics to CloudWatch). Enable
+  CloudWatch Transaction Search before sending traces to the OTLP endpoint.
+  Earlier versions of this template sent metrics as EMF to the
+  ECS/AWSOTel/Application namespace; set the command parameter to
+  --config=/etc/ecs/ecs-default-config.yaml to keep that behavior.
 Parameters:
   ClusterName:
     Type: String
@@ -21,9 +28,17 @@ Parameters:
     Description: Enter the role arn you want to use as the ecs execution role
   command:
     Type: String
-    Description: Using the right command to choose the config file you want to config your AOC
-    Default: '--config=/etc/ecs/ecs-default-config.yaml'
+    Description: >-
+      Leave empty to use the CloudWatch OTLP endpoint configuration defined in this
+      template. To use a configuration bundled in the collector image instead, enter
+      for example --config=/etc/ecs/ecs-default-config.yaml, which sends metrics as
+      EMF to the ECS/AWSOTel/Application namespace as earlier versions of this
+      template did.
+    Default: ''
 Conditions:
+  UseInlineConfig: !Equals
+    - !Ref command
+    - ''
   CreateRoles: !Equals
     - !Ref CreateIAMRoles
     - 'True'
@@ -67,32 +82,87 @@ Resources:
               awslogs-group: /ecs/aws-collector
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
-          Command: [!Ref command]
+          Command: !If
+            - UseInlineConfig
+            - !Ref 'AWS::NoValue'
+            - [!Ref command]
+          Environment: !If
+            - UseInlineConfig
+            - - Name: AOT_CONFIG_CONTENT
+                Value: !Sub |
+                  extensions:
+                    health_check:
+                    sigv4auth/traces:
+                      region: ${AWS::Region}
+                      service: xray
+                    sigv4auth/metrics:
+                      region: ${AWS::Region}
+                      service: monitoring
+                  receivers:
+                    otlp:
+                      protocols:
+                        grpc:
+                          endpoint: 0.0.0.0:4317
+                        http:
+                          endpoint: 0.0.0.0:4318
+                  processors:
+                    batch/traces:
+                      timeout: 1s
+                      send_batch_size: 50
+                    batch/metrics:
+                      timeout: 60s
+                  exporters:
+                    otlp_http/traces:
+                      compression: gzip
+                      traces_endpoint: https://xray.${AWS::Region}.${AWS::URLSuffix}/v1/traces
+                      auth:
+                        authenticator: sigv4auth/traces
+                    otlp_http/metrics:
+                      compression: gzip
+                      metrics_endpoint: https://monitoring.${AWS::Region}.${AWS::URLSuffix}/v1/metrics
+                      auth:
+                        authenticator: sigv4auth/metrics
+                  service:
+                    extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
+                    pipelines:
+                      traces:
+                        receivers: [otlp]
+                        processors: [batch/traces]
+                        exporters: [otlp_http/traces]
+                      metrics:
+                        receivers: [otlp]
+                        processors: [batch/metrics]
+                        exporters: [otlp_http/metrics]
+            - !Ref 'AWS::NoValue'
           HealthCheck:
             Command:
               - "/healthcheck"
             Interval: 5
             Retries: 2
             Timeout: 3
-        - Name: aws-xray-data-emitter
-          Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
+        - Name: ot-sample-app
+          Image: 'public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest'
           Essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
               awslogs-create-group: 'True'
-              awslogs-group: /ecs/aws-xray-data-emitter
+              awslogs-group: /ecs/ot-sample-app
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
-          PortMappings:
-            - HostPort: 5000
-              Protocol: tcp
-              ContainerPort: 5000
           Environment:
-            - Name: AWS_XRAY_DAEMON_ADDRESS
-              Value: 'aws-collector:2000'
+            - Name: OTEL_EXPORTER_OTLP_ENDPOINT
+              Value: 'http://aws-collector:4318'
+            - Name: OTEL_METRICS_EXPORTER
+              Value: otlp
+            - Name: OTEL_LOGS_EXPORTER
+              Value: none
+            - Name: OTEL_RESOURCE_ATTRIBUTES
+              Value: 'service.namespace=AWSOTel,service.name=ecs-otel-sample-app'
+            - Name: AWS_REGION
+              Value: !Ref 'AWS::Region'
             - Name: LISTEN_ADDRESS
-              Value: '0.0.0.0:5000'
+              Value: '0.0.0.0:4567'
           DependsOn:
             - ContainerName: aws-collector
               Condition: START
@@ -111,44 +181,25 @@ Resources:
           DependsOn:
             - ContainerName: aws-collector
               Condition: START
-        - Name: aoc-statsd-emitter
+        - Name: traffic-generator
           Image: 'public.ecr.aws/amazonlinux/amazonlinux:latest'
           Essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
               awslogs-create-group: 'True'
-              awslogs-group: /ecs/statsd-emitter
+              awslogs-group: /ecs/traffic-generator
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - ContainerName: aws-collector
+            - ContainerName: ot-sample-app
               Condition: START
           EntryPoint:
             - "/bin/sh"
             - "-c"
-            - "yum install -y socat; while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:aws-collector:8125; sleep 1; done"
+            - "sleep 30; while :; do curl -s http://ot-sample-app:4567/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl -s http://ot-sample-app:4567/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
           Links:
-            - aws-collector
-        - Name: traffic-generator-xray
-          Image: 'public.ecr.aws/amazonlinux/amazonlinux:latest'
-          Essential: false
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-create-group: 'True'
-              awslogs-group: /ecs/traffic-generator-xray
-              awslogs-region: !Ref 'AWS::Region'
-              awslogs-stream-prefix: ecs
-          DependsOn:
-            - ContainerName: aws-xray-data-emitter
-              Condition: START
-          EntryPoint:
-            - "/bin/sh"
-            - "-c"
-            - "while :; do curl http://aws-xray-data-emitter:5000/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl http://aws-xray-data-emitter:5000/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
-          Links:
-            - aws-xray-data-emitter
+            - ot-sample-app
       RequiresCompatibilities:
         - EC2
       Cpu: '1024'
@@ -187,6 +238,7 @@ Resources:
                   - 'logs:CreateLogStream'
                   - 'logs:DescribeLogStreams'
                   - 'logs:DescribeLogGroups'
+                  - 'cloudwatch:PutMetricData'
                   - 'xray:PutTraceSegments'
                   - 'xray:PutTelemetryRecords'
                   - 'xray:GetSamplingRules'
