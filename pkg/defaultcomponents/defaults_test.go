@@ -28,7 +28,7 @@ const (
 	exportersCount  = 18
 	receiversCount  = 11
 	extensionsCount = 7
-	processorCount  = 20
+	processorCount  = 21
 )
 
 // Assert that the components behind feature gate are not in the default
@@ -102,6 +102,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors[component.MustNewType("groupbytrace")])
 	assert.NotNil(t, processors[component.MustNewType("tail_sampling")])
 	assert.NotNil(t, processors[component.MustNewType("k8sattributes")])
+	assert.NotNil(t, processors[component.MustNewType("transform")])
 
 	// Ensure that the components behind feature gates are included
 	assert.NotNil(t, exporters[component.MustNewType("datadog")])
