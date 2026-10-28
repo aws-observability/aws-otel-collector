@@ -1,3 +1,30 @@
+# v1.89.3 (2026-07-31.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.27.6 to fix various serde issues in HTTP binding services.
+
+# v1.89.2 (2026-07-29)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.89.1 (2026-07-28)
+
+* **Dependency Update**: Update to smithy-go v1.27.5.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.89.0 (2026-07-21)
+
+* **Feature**: Add an option to clients to disable clock skew
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.88.1 (2026-07-13)
+
+* No change notes available for this release.
+
+# v1.88.0 (2026-07-08)
+
+* **Feature**: Amazon ECS now automatically detects the correct CPU architecture for Express Mode services.
+
 # v1.87.0 (2026-07-06)
 
 * **Feature**: Add request serialization snapshot tests.
