@@ -9,17 +9,38 @@ To run ADOTCollector on Debian (or Ubuntu) EC2 host, you can choose to install A
 wget https://aws-otel-collector.s3.amazonaws.com/ubuntu/amd64/latest/aws-otel-collector.deb
 ```
 2. (Optional) Verify the package integrity.
-```
+
+`dpkg-sig` is not available in Debian 12 or Ubuntu 24.04 repositories. The package contains a signed manifest with SHA-1 checksums. Verify the manifest with the published signing key, then check the contents against those checksums:
+
+```sh
+sudo apt install binutils gnupg gpgv
 wget https://aws-otel-collector.s3.amazonaws.com/aws-otel-collector.gpg
-gpg --import aws-otel-collector.gpg
-sudo apt install dpkg-sig
-dpkg-sig --verify aws-otel-collector.deb
+package=$(realpath aws-otel-collector.deb)
+key=$(realpath aws-otel-collector.gpg)
+(
+    set -e
+    verify_dir=$(mktemp -d)
+    trap 'rm -rf "$verify_dir"' EXIT
+    gpg --dearmor < "$key" > "$verify_dir/keyring.gpg"
+    cd "$verify_dir"
+    test "$(ar t "$package" | wc -l)" -eq 4
+    ar x "$package" debian-binary control.tar.gz data.tar.gz _gpgorigin
+    gpgv --keyring ./keyring.gpg --output manifest _gpgorigin
+    awk 'NF == 4 && $4 ~ /^(debian-binary|control.tar.gz|data.tar.gz)$/ {print $2 "  " $4}' manifest > checksums
+    test "$(wc -l < checksums)" -eq 3
+    sha1sum --check --strict checksums
+)
 ```
-If the package is verified, you should see output similar to this:
+
+Successful verification prints `Good signature` from `AWS OTel Collector` and all three checksums must pass:
+
+```text
+debian-binary: OK
+control.tar.gz: OK
+data.tar.gz: OK
 ```
-GOODSIG _gpgorigin XXXXX...
-```
-However, if you see `BADSIG` or `UNKNOWNSIG`, you should stop and try download the deb package from the offical source again.
+
+If any command fails, do not install the package. Download it again from the official source and repeat verification. A good signature on the manifest alone does not verify the package contents.
 
 3. Install aws-otel-collector DEB by the following command on the host
 ```
