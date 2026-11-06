@@ -45,6 +45,7 @@ func executeHealthCheck(host string, port *string, path string) (string, error) 
 	if err != nil {
 		return "", fmt.Errorf("unable to retrieve health status: %s", err.Error())
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return "", fmt.Errorf("STATUS: %d", resp.StatusCode)
 	}
