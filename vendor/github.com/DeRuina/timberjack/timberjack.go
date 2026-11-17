@@ -1071,25 +1071,20 @@ func (l *Logger) oldLogFiles() ([]logInfo, error) {
 			continue
 		}
 		name := e.Name()
-		info, errInfo := e.Info() // Get FileInfo for modification time and other details
-		if errInfo != nil {
-			// fmt.Fprintf(os.Stderr, "timberjack: failed to get FileInfo for %s: %v\n", name, errInfo)
-			continue // Skip files we can't stat
-		}
 
 		// Attempt to parse timestamp from filename (e.g., from "filename-timestamp-reason.log")
 		if t, errTime := l.timeFromName(name, prefix, ext); errTime == nil {
-			logFiles = append(logFiles, logInfo{t, info})
+			logFiles = append(logFiles, logInfo{t, name})
 			continue
 		}
 		// Attempt to parse timestamp from compressed gzip filename (e.g., from "filename-timestamp-reason.log.gz")
 		if t, errTime := l.timeFromName(name, prefix, ext+compressSuffix); errTime == nil {
-			logFiles = append(logFiles, logInfo{t, info})
+			logFiles = append(logFiles, logInfo{t, name})
 			continue
 		}
 		// Attempt to parse timestamp from compressed zstd filename (e.g., from "filename-timestamp-reason.log.zst")
 		if t, errTime := l.timeFromName(name, prefix, ext+zstdSuffix); errTime == nil {
-			logFiles = append(logFiles, logInfo{t, info})
+			logFiles = append(logFiles, logInfo{t, name})
 			continue
 		}
 		// Files that don't match the expected backup pattern are ignored.
@@ -1423,12 +1418,16 @@ func sanitizeReason(s string) string {
 	return out
 }
 
-// logInfo is a convenience struct to return the filename and its embedded
-// timestamp, along with its os.FileInfo.
+// logInfo is a convenience struct to return the filename of a backup and the
+// timestamp embedded in that filename.
 type logInfo struct {
-	timestamp   time.Time // Parsed timestamp from the filename
-	os.FileInfo           // Full FileInfo
+	timestamp time.Time // Parsed timestamp from the filename
+	name      string    // Base name of the backup file
 }
+
+// Name returns the base name of the backup file. Retention is decided from the timestamp
+// encoded in the filename, so a logInfo never needs to stat the file it refers to.
+func (i logInfo) Name() string { return i.name }
 
 // byFormatTime sorts a slice of logInfo structs by their parsed timestamp in descending order (newest first).
 type byFormatTime []logInfo

@@ -34,7 +34,9 @@ action mark {
 	m.pb = m.p
 }
 
+# Referencing the body label makes Ragel export its entry state.
 action set_prival {
+	_ = fentry(main::message_body);
 	output.priority = uint8(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
 	output.prioritySet = true
 }
@@ -160,7 +162,7 @@ time = hhmmss (timesecfrac? when { m.secfrac });
 timestamp = (datemmm sp datemday sp time) >mark %set_timestamp @err(err_timestamp);
 timestamp_lenient = (datemmm sp datemday_lenient sp time) >mark %set_timestamp @err(err_timestamp);
 
-rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
+rfc3339 = fulldate >mark 'T' fulltime %set_rfc3339 @err(err_rfc3339);
 
 # note > RFC 3164 says "The Domain Name MUST NOT be included in the HOSTNAME field"
 # note > this could mean that the we may need to create and to use a labelrange = graph{1,63} here if we want the parser to be stricter.
@@ -213,7 +215,9 @@ fail := ((any when { m.newline }) | (any - [\n\r]) when { !m.newline })* @err{ f
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* ciscoextras ciscostar ((timestamp_lenient when { m.lenientDay }) | timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
+timestamp_value = ((timestamp_lenient when { m.lenientDay }) | timestamp | (rfc3339 when { m.rfc3339 }));
+
+main := pri sp* message_body: (ciscoextras ciscostar timestamp_value ciscocolon sp+ (hostname sp+)? msg '\n'?);
 
 }%%
 
@@ -234,6 +238,7 @@ type machine struct {
 	ciscoHostname bool
 	lenientDay    bool
 	newline       bool
+	optionalPriority bool
 	loc           *time.Location
 	timezone      *time.Location
 }
@@ -258,6 +263,11 @@ func NewMachine(options ...syslog.MachineOption) syslog.Machine {
 // WithBestEffort enables best effort mode.
 func (m *machine) WithBestEffort() {
 	m.bestEffort = true
+}
+
+// WithOptionalPriority enables parsing messages without a PRI prefix.
+func (m *machine) WithOptionalPriority() {
+	m.optionalPriority = true
 }
 
 // HasBestEffort tells whether the receiving machine has best effort mode on or off.
@@ -338,15 +348,31 @@ func (m *machine) text() []byte {
 
 // Parse parses the input byte array as a RFC3164 syslog message.
 func (m *machine) Parse(input []byte) (syslog.Message, error) {
+	hasPriority := len(input) > 0 && input[0] == '<'
+	if !hasPriority && !m.optionalPriority {
+		m.err = fmt.Errorf(errPri, 0)
+		return nil, m.err
+	}
+	if !hasPriority {
+		msgcount, sequence, ciscoHostname := m.msgcount, m.sequence, m.ciscoHostname
+		m.msgcount, m.sequence, m.ciscoHostname = false, false, false
+		defer func() {
+			m.msgcount, m.sequence, m.ciscoHostname = msgcount, sequence, ciscoHostname
+		}()
+	}
+
 	m.data = input
 	m.p = 0
 	m.pb = 0
 	m.pe = len(input)
 	m.eof = len(input)
 	m.err = nil
-	output := &syslogMessage{}
+	output := &syslogMessage{priorityOptional: m.optionalPriority}
 
 	%% write init;
+	if !hasPriority {
+		m.cs = en_main_message_body
+	}
 	%% write exec;
 
 	if m.cs < first_final || m.cs == en_fail {
