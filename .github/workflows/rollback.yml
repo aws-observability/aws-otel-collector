@@ -211,15 +211,15 @@ jobs:
         env:
           AWS_REGION: us-east-1
       - name: Rollback ECR latest
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ github.event.inputs.rollback-version }}
-          dst: public.ecr.aws/${{ env.ECR_REPO }}:latest
+        env:
+          IMAGE: public.ecr.aws/${{ env.ECR_REPO }}
+          ROLLBACK_VERSION: ${{ github.event.inputs.rollback-version }}
+        run: docker buildx imagetools create --tag "$IMAGE:latest" "$IMAGE:$ROLLBACK_VERSION"
       - name: Rollback DockerHub latest
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: ${{ env.DOCKERHUB_REPO }}:${{ github.event.inputs.rollback-version }}
-          dst: ${{ env.DOCKERHUB_REPO }}:latest
+        env:
+          IMAGE: ${{ env.DOCKERHUB_REPO }}
+          ROLLBACK_VERSION: ${{ github.event.inputs.rollback-version }}
+        run: docker buildx imagetools create --tag "$IMAGE:latest" "$IMAGE:$ROLLBACK_VERSION"
   s3-rollback:
     runs-on: ubuntu-22.04
     needs: [all-checked]
