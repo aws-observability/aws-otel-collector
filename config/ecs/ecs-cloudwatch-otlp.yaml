@@ -1,0 +1,57 @@
+# Sends traces to the X-Ray OTLP endpoint and metrics to the CloudWatch OTLP endpoint.
+# Requires the AWS_REGION environment variable. Enable CloudWatch Transaction Search
+# before sending traces to the OTLP endpoint. The task role needs CloudWatchAgentServerPolicy.
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OTLPEndpoint.html
+extensions:
+  health_check:
+  sigv4auth/traces:
+    region: ${env:AWS_REGION}
+    service: xray
+  sigv4auth/metrics:
+    region: ${env:AWS_REGION}
+    service: monitoring
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+  resource_detection:
+    detectors:
+      - env
+      - ecs
+      - ec2
+
+exporters:
+  otlp_http/traces:
+    compression: gzip
+    traces_endpoint: https://xray.${env:AWS_REGION}.amazonaws.com/v1/traces
+    auth:
+      authenticator: sigv4auth/traces
+  otlp_http/metrics:
+    compression: gzip
+    metrics_endpoint: https://monitoring.${env:AWS_REGION}.amazonaws.com/v1/metrics
+    auth:
+      authenticator: sigv4auth/metrics
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resource_detection, batch/traces]
+      exporters: [otlp_http/traces]
+    metrics:
+      receivers: [otlp]
+      processors: [resource_detection, batch/metrics]
+      exporters: [otlp_http/metrics]
+
+  extensions: [health_check, sigv4auth/traces, sigv4auth/metrics]
