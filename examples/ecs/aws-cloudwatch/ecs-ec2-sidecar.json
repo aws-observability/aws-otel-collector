@@ -23,19 +23,9 @@
       },
       "portMappings": [
         {
-          "hostPort": 2000,
-          "protocol": "udp",
-          "containerPort": 2000
-        },
-        {
           "hostPort": 4317,
           "protocol": "tcp",
           "containerPort": 4317
-        },
-        {
-          "hostPort": 8125,
-          "protocol": "udp",
-          "containerPort": 8125
         }
       ],
       "command": [
@@ -46,26 +36,31 @@
     },
     {
       "name": "aws-otel-emitter",
-      "image": "public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest",
+      "image": "public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest",
       "links": [
         "aws-otel-collector"
-      ],
-      "portMappings": [
-        {
-          "containerPort": 5000,
-          "hostPort": 5000,
-          "protocol": "tcp"
-        }
       ],
       "essential": false,
       "environment": [
         {
-          "name": "AWS_XRAY_DAEMON_ADDRESS",
-          "value": "aws-otel-collector:2000"
+          "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+          "value": "http://aws-otel-collector:4318"
+        },
+        {
+          "name": "OTEL_METRICS_EXPORTER",
+          "value": "otlp"
+        },
+        {
+          "name": "OTEL_LOGS_EXPORTER",
+          "value": "none"
+        },
+        {
+          "name": "OTEL_RESOURCE_ATTRIBUTES",
+          "value": "service.namespace=AWSOTel,service.name=ecs-otel-sample-app"
         },
         {
           "name": "LISTEN_ADDRESS",
-          "value": "0.0.0.0:5000"
+          "value": "0.0.0.0:4567"
         }
       ],
       "dependsOn": [
@@ -85,7 +80,7 @@
       }
     },
     {
-      "name": "traffic-generator-xray",
+      "name": "traffic-generator",
       "image": "curlimages/curl:latest",
       "links": [
         "aws-otel-emitter"
@@ -94,7 +89,7 @@
       "entryPoint": [
         "/bin/sh",
         "-c",
-        "while :; do curl http://aws-otel-emitter:5000/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl http://aws-otel-emitter:5000/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
+        "sleep 30; while :; do curl -s http://aws-otel-emitter:4567/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl -s http://aws-otel-emitter:4567/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
       ],
       "dependsOn": [
         {
@@ -106,7 +101,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-create-group": "True",
-          "awslogs-group": "/ecs/traffic-generator-xray",
+          "awslogs-group": "/ecs/traffic-generator",
           "awslogs-region": "{{region}}",
           "awslogs-stream-prefix": "ecs"
         }
@@ -116,31 +111,6 @@
       "image": "public.ecr.aws/nginx/nginx:latest",
       "name": "nginx",
       "essential": false,
-      "dependsOn": [
-        {
-          "containerName": "aws-otel-collector",
-          "condition": "START"
-        }
-      ]
-    },
-    {
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-create-group": "True",
-          "awslogs-region": "{{region}}",
-          "awslogs-stream-prefix": "ecs",
-          "awslogs-group": "/ecs/statsd-emitter"
-        }
-      },
-      "image": "alpine/socat:latest",
-      "essential": false,
-      "name": "aoc-statsd-emitter",
-      "entryPoint": [
-        "/bin/sh",
-        "-c",
-        "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
-      ],
       "dependsOn": [
         {
           "containerName": "aws-otel-collector",

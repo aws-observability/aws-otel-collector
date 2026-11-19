@@ -1,3 +1,6 @@
+# This template sends Prometheus metrics to Container Insights as CloudWatch embedded metric
+# format (EMF) logs. CloudWatch also documents the CloudWatch agent for ECS Prometheus monitoring:
+# https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup-ECS.html
 Parameters:
   ClusterName:
     Type: String
