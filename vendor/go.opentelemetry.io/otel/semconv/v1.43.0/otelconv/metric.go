@@ -2872,6 +2872,9 @@ func (SDKSpanLive) Description() string {
 // Add adds incr to the existing count for attrs.
 //
 // All additional attrs passed are included in the recorded value.
+//
+// Non-recording spans are not counted, hence `otel.span.sampling_result` can
+// only take values `RECORD_ONLY` and `RECORD_AND_SAMPLE`, not `DROP`.
 func (m SDKSpanLive) Add(
 	ctx context.Context,
 	incr int64,
@@ -2899,6 +2902,9 @@ func (m SDKSpanLive) Add(
 }
 
 // AddSet adds incr to the existing count for set.
+//
+// Non-recording spans are not counted, hence `otel.span.sampling_result` can
+// only take values `RECORD_ONLY` and `RECORD_AND_SAMPLE`, not `DROP`.
 func (m SDKSpanLive) AddSet(ctx context.Context, incr int64, set attribute.Set) {
 	if !m.Int64UpDownCounter.Enabled(ctx) {
 		return
