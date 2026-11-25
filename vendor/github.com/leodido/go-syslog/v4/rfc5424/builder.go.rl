@@ -251,7 +251,7 @@ func (sm *SyslogMessage) SetMessage(value string) Builder {
 }
 
 func (sm *SyslogMessage) String() (string, error) {
-    if !sm.Valid() {
+    if sm.Priority == nil || !sm.Valid() {
         return "", fmt.Errorf("invalid syslog")
     }
 

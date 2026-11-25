@@ -88,7 +88,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		require.NotNil(t, cfg)
 		receiver := cfg.Receivers[component.MustNewID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
-		require.Equal(t, expectedEndpoint, receiver.Endpoint)
+		require.Equal(t, expectedEndpoint, receiver.AddrConfig.Endpoint)
 	})
 
 	t.Run("test_config_without_env_var_set", func(t *testing.T) {
@@ -112,7 +112,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		require.NotNil(t, cfg)
 		receiver := cfg.Receivers[component.MustNewID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
-		require.Empty(t, receiver.Endpoint)
+		require.Empty(t, receiver.AddrConfig.Endpoint)
 	})
 }
 
